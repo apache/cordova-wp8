@@ -1,0 +1,24 @@
+﻿<Application
+    x:Class="PhoneGap.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phoneNavigation="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone">
+
+    <!--RootFrame points to and loads the first page of your application-->
+    <Application.RootVisual>
+        <phoneNavigation:PhoneApplicationFrame x:Name="RootView" Source="/MainPage.xaml"/>
+    </Application.RootVisual>
+
+    <!-- Resources for following the Windows Phone design guidelines -->
+    <Application.Resources>
+    </Application.Resources>
+
+    <Application.ApplicationLifetimeObjects>
+        <!--Required object that handles lifetime events for the application-->
+        <shell:PhoneApplicationService 
+            Launching="Application_Launching" Closing="Application_Closing" 
+            Activated="Application_Activated" Deactivated="Application_Deactivated"/>
+    </Application.ApplicationLifetimeObjects>
+
+</Application>
