@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
-    <meta name="mobileoptimized" content="480" />
-    <meta name="viewport" content="width=480;height=800;user-scalable=no" />
+    <meta name="mobileoptimized" content="800" />
+    <meta name="viewport" content="user-scalable=no" />
     <title>PhoneGap - WP7 : Proof of concept</title>
     <link rel="stylesheet" type="text/css" href="css/master.css" />
     <script type="text/javascript" src="js/phonegap.js"></script>
@@ -59,9 +59,13 @@
     <div class="ListItem" onclick="navigator.notification.alert('this is a sample alert message', 'Attention');">
         Show Alert
     </div>
-
+    
     <div class="ListItem" onclick="navigator.notification.beep(4);">
         Beep 4 times
+    </div>
+
+    <div class="ListItem">
+        Here is a long item that does nothing when touched
     </div>
 
     <div class="ListItem" onclick="navigator.notification.vibrate(500));">
