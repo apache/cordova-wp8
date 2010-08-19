@@ -8,17 +8,18 @@ h1 {
     font-size: 60px;
 }
 
-.ListItem {
+li {
     background-image:url('../images/ArrowImg.png');
     background-repeat:no-repeat;
     min-height: 50px;
     padding-left:55px;
     font-size:36px;
-    margin-left:4px;
+    margin-left:-30px;
     margin-bottom:4px;
+    list-style-type:none;
 }
 
-.ListItem a {
+li a {
     color:#FFF;
     text-decoration:none;
 }

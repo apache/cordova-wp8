@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
-    <meta name="mobileoptimized" content="800" />
-    <meta name="viewport" content="user-scalable=no" />
+    <meta name="mobileoptimized" content="480" />
     <title>PhoneGap - WP7 : Proof of concept</title>
     <link rel="stylesheet" type="text/css" href="css/master.css" />
     <script type="text/javascript" src="js/phonegap.js"></script>
@@ -32,94 +31,59 @@
 </head>
 <body onload="onLoad()">
     <h1>PhoneGap WP7</h1>
-    <div class="ListItem" onclick="navigator.notification.alert(device.platform, 'Device Platform');">
-        Device Platform
-    </div>
 
-    <div class="ListItem" onclick="navigator.notification.alert(device.version, 'Device Version');">
-        Device Version
-    </div>
+    <ul>
+        <li onclick="navigator.notification.alert(device.platform, 'Device Platform');">Device Platform</li>
 
-    <div class="ListItem" onclick="navigator.notification.alert(device.name, 'Device Name');">
-        Device Name
-    </div>
+        <li onclick="navigator.notification.alert(device.platform, 'Device Platform');">Device Platform</li>
 
-    <div class="ListItem" onclick="navigator.notification.alert(device.uuid, 'Device UUID');">
-        Device UUID
-    </div>
+        <li onclick="navigator.notification.alert(device.version, 'Device Version');">Device Version</li>
 
-    <div class="ListItem" onclick="navigator.notification.alert(device.gap, 'Device Gap');">
-        Device Gap
-    </div>
+        <li onclick="navigator.notification.alert(device.name, 'Device Name');">Device Name</li>
 
-    <div class="ListItem" onclick="navigator.accelerometer.getCurrentAcceleration(function(val){navigator.notification.alert('X: '+val.x+'  Y: '+val.y+'  Z: '+val.z, 'Acceleration', 'Ok');}, function(val){navigator.notification.alert('getCurrentAcceleration: '+val, 'Error', 'Ok');}, null);">
-        Current Acceleration
-    </div>
+        <li onclick="navigator.notification.alert(device.uuid, 'Device UUID');">Device UUID</li>
 
-    <div class="ListItem" onclick="navigator.notification.alert('this is a sample alert message', 'Attention');">
-        Show Alert
-    </div>
+        <li onclick="navigator.notification.alert(device.gap, 'Device Gap');">Device Gap</li>
+
+        <li onclick="navigator.accelerometer.getCurrentAcceleration(function(val){navigator.notification.alert('X: '+val.x+'  Y: '+val.y+'  Z: '+val.z, 'Acceleration', 'Ok');}, function(val){navigator.notification.alert('getCurrentAcceleration: '+val, 'Error', 'Ok');}, null);">Current Acceleration</li>
+
+        <li onclick="navigator.notification.alert('this is a sample alert message', 'Attention');">Show Alert</li>
+
+        <li onclick="navigator.notification.beep(4);">Beep 4 times</li>
+
+        <li onclick="navigator.notification.vibrate(500));">Vibrate</li>
+
+        <!--<li onclick="navigator.camera.getPicture(function(imagestring){navigator.notification.alert(imagestring, 'Base64', 'Ok');}, function(val){navigator.notification.alert('getPicture: '+val, 'Error', 'Ok');}, true);">-->
+        <li onclick="navigator.notification.alert('This is implemented. Yet. :(', 'Oops');">Get Picture from Camera</li>
+
+        <li onclick="navigator.geolocation.getCurrentPosition(function(position){navigator.notification.alert(position.coords.latitude+','+position.coords.longitude, 'Location', 'Ok');}, function(val){navigator.notification.alert('getCurrentPosition: '+val, 'Error', 'Ok');}, true);">Current Position</li>
     
-    <div class="ListItem" onclick="navigator.notification.beep(4);">
-        Beep 4 times
-    </div>
+        <li onclick="navigator.orientation.getCurrentOrientation(function(val){navigator.notification.alert(val, 'Orientation', 'Ok');}, null);">Current Orientation</li>
 
-    <div class="ListItem">
-        Here is a long item that does nothing when touched
-    </div>
+        <li onclick="oaId = navigator.orientation.watchOrientation(oaWatcher, null);">
+            Watch orientation A
+            <br />
+            <div id="oa"></div>
+        </li>
 
-    <div class="ListItem" onclick="navigator.notification.vibrate(500));">
-        Vibrate
-    </div>
+        <li onclick="navigator.orientation.clearWatch(oaId);">Clear watch  A</li>
 
-    <!--<div class="ListItem" onclick="navigator.camera.getPicture(function(imagestring){navigator.notification.alert(imagestring, 'Base64', 'Ok');}, function(val){navigator.notification.alert('getPicture: '+val, 'Error', 'Ok');}, true);">-->
-    <div class="ListItem" onclick="navigator.notification.alert('This is implemented. Yet. :(', 'Oops');">
-        Get Picture from Camera
-    </div>
+        <li onclick="obId = navigator.orientation.watchOrientation(obWatcher, null);">
+            Watch orientation B
+            <br />
+            <div id="ob"></div>
+        </li>
 
-    <div class="ListItem" onclick="navigator.geolocation.getCurrentPosition(function(position){navigator.notification.alert(position.coords.latitude+','+position.coords.longitude, 'Location', 'Ok');}, function(val){navigator.notification.alert('getCurrentPosition: '+val, 'Error', 'Ok');}, true);">
-        Current Position
-    </div>
-    
-    <div class="ListItem" onclick="navigator.orientation.getCurrentOrientation(function(val){navigator.notification.alert(val, 'Orientation', 'Ok');}, null);">
-        Current Orientation
-    </div>
+        <li onclick="navigator.orientation.clearWatch(oaId);">Clear watch B</li>
 
-    <div class="ListItem" onclick="oaId = navigator.orientation.watchOrientation(oaWatcher, null);">
-        Watch orientation A
-        <br />
-        <div id="oa"></div>
-    </div>
+        <li onclick="navigator.network.isReachable('http:\/\/www.google.com\/', function(val){navigator.notification.alert(val, 'is reachable', 'Ok');}, null);" >Is Google reachable?</li>
 
-    <div class="ListItem" onclick="navigator.orientation.clearWatch(oaId);">
-        Clear watch  A
-    </div>
+        <li onclick="navigator.sms.send('+447970123456', 'test message', null, null, null);">Send SMS</li>
 
-    <div class="ListItem" onclick="obId = navigator.orientation.watchOrientation(obWatcher, null);">
-        Watch orientation B
-        <br />
-        <div id="ob"></div>
-    </div>
+        <li onclick="navigator.telephony.call('07123456789');">CALL 07123456789</li>
 
-    <div class="ListItem" onclick="navigator.orientation.clearWatch(oaId);">
-        Clear watch B
-    </div>
-
-    <div class="ListItem" onclick="navigator.network.isReachable('http:\/\/www.google.com\/', function(val){navigator.notification.alert(val, 'is reachable', 'Ok');}, null);" >
-        Is Google reachable?
-    </div>
-
-    <div class="ListItem" onclick="navigator.sms.send('+447970123456', 'test message', null, null, null);">
-        Send SMS
-    </div>
-
-    <div class="ListItem" onclick="navigator.telephony.call('07123456789');">
-        CALL 07123456789
-    </div>
-
-    <div class="ListItem">
-        <a href="mobile-spec.html">mobile spec tests</a>
-    </div>
+        <li><a href="mobile-spec.html">mobile spec tests</a></li>
+    </ul>
 
     <!-- This image has been included to prove it can be done -->
     <img alt="PhoneGap" src="pg_logo.png" />
