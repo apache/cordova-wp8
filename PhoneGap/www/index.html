@@ -1,7 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
-    <meta name="mobileoptimized" content="480" />
+    <meta name="mobileoptimized" content="800" />
+    <meta name="viewport" content="user-scalable=no" />
     <title>PhoneGap - WP7 : Proof of concept</title>
     <link rel="stylesheet" type="text/css" href="css/master.css" />
     <script type="text/javascript" src="js/phonegap.js"></script>
@@ -35,8 +36,6 @@
     <ul>
         <li onclick="navigator.notification.alert(device.platform, 'Device Platform');">Device Platform</li>
 
-        <li onclick="navigator.notification.alert(device.platform, 'Device Platform');">Device Platform</li>
-
         <li onclick="navigator.notification.alert(device.version, 'Device Version');">Device Version</li>
 
         <li onclick="navigator.notification.alert(device.name, 'Device Name');">Device Name</li>
@@ -51,7 +50,7 @@
 
         <li onclick="navigator.notification.beep(4);">Beep 4 times</li>
 
-        <li onclick="navigator.notification.vibrate(500));">Vibrate</li>
+        <li onclick="navigator.notification.vibrate(500);">Vibrate</li>
 
         <!--<li onclick="navigator.camera.getPicture(function(imagestring){navigator.notification.alert(imagestring, 'Base64', 'Ok');}, function(val){navigator.notification.alert('getPicture: '+val, 'Error', 'Ok');}, true);">-->
         <li onclick="navigator.notification.alert('This is implemented. Yet. :(', 'Oops');">Get Picture from Camera</li>
