@@ -22,7 +22,7 @@ function SetDeviceProperties(platform, version, name, uuid, gap) {
   device.gap = gap;
 
   // in theory, everything is now set up and working so this is where we should fire the deviceready event
-  // unfortunately IE7 mobile doesn't seem to support a way of dynaically raising events
+  // unfortunately IE7 mobile doesn't seem to support a way of dynamically raising events
   PhoneGap.available = true;
 }
 

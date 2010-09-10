@@ -29,7 +29,7 @@ Orientation.prototype.watchOrientation = function (successCallback, errorCallbac
   var newId = this._baseWatchId;
   this._baseWatchId = this._baseWatchId + 1;
 
-  // Not currenlty doing anything with errorCallBack
+  // Not currently doing anything with errorCallBack
   this._watches[newId] = successCallback;
   PhoneGap.exec("Orientation.WatchOrientation;watchOrientation_Changed;" + newId);
 

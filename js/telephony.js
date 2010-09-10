@@ -8,7 +8,7 @@ Telephony.prototype.call = function (number) {
   PhoneGap.exec("Telephony.CallNumber;"+number);
 };
 
-// The spec say this, but hte above makes more sense (to me at least)
+// The spec say this, but the above makes more sense (to me at least)
 Telephony.prototype.send = function (number) {
   PhoneGap.exec("Telephony.CallNumber;"+number);
 };

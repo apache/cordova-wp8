@@ -6,7 +6,7 @@ function Sms() {
 }
 
 Sms.prototype.send = function (number, message, successCallback, errorCallback, options) {
-// successcallback and options are not supported on WP7
+// successCallback and options are not supported on WP7
   this._errorCallback = errorCallback;
   PhoneGap.exec("Send.Sms;send_Error;" + number + ";" + message);
 }
