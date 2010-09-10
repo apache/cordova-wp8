@@ -99,6 +99,7 @@ namespace PhoneGap.Commands
             if (this.OnCommandCompleted != null)
             {
                 this.OnCommandCompleted(null, this);
+                this.OnCommandCompleted = null; // Make sure that only return the result once
             }
         }
     }
