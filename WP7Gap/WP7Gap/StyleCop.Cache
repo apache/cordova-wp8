@@ -1,0 +1,292 @@
+<stylecopresultscache>
+  <version>10</version>
+  <sourcecode name="IAsyncCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:05:21</timestamp>
+    <milliseconds>951</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="IWatcherCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:05:21</timestamp>
+    <milliseconds>925</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="PhoneGapCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:05:21</timestamp>
+    <milliseconds>898</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="GetCurrentAccelerationCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:07:54</timestamp>
+    <milliseconds>660</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="NativeExecution.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:32:36</timestamp>
+    <milliseconds>701</milliseconds>
+    <violations>
+      <violation namespace="Microsoft.StyleCop.CSharp.NamingRules" rule="AccessibleFieldsMustBeginWithUpperCaseLetter" ruleCheckId="SA1307">
+        <context>Public and internal fields must start with an upper-case letter: watchers.</context>
+        <line>22</line>
+        <warning>False</warning>
+      </violation>
+      <violation namespace="Microsoft.StyleCop.CSharp.NamingRules" rule="FieldNamesMustNotUseHungarianNotation" ruleCheckId="SA1305">
+        <context>The variable name 'jsParams' begins with a prefix that looks like Hungarian notation. Remove the prefix or add it to the list of allowed prefixes.</context>
+        <line>52</line>
+        <warning>False</warning>
+      </violation>
+      <violation namespace="Microsoft.StyleCop.CSharp.ReadabilityRules" rule="ParameterMustNotSpanMultipleLines" ruleCheckId="SA1118">
+        <context>The parameter spans multiple lines. If the parameter is short, place the entire parameter on a single line. Otherwise, save the contents of the parameter in a temporary variable and pass the temporary variable as a parameter. </context>
+        <line>100</line>
+        <warning>False</warning>
+      </violation>
+    </violations>
+  </sourcecode>
+  <sourcecode name="GetPictureCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:35:07</timestamp>
+    <milliseconds>319</milliseconds>
+    <violations>
+      <violation namespace="Microsoft.StyleCop.CSharp.NamingRules" rule="ElementMustBeginWithUpperCaseLetter" ruleCheckId="SA1300">
+        <context>method names begin with an upper-case letter: cct_Completed.</context>
+        <line>40</line>
+        <warning>False</warning>
+      </violation>
+    </violations>
+  </sourcecode>
+  <sourcecode name="DebugCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:19:14</timestamp>
+    <milliseconds>802</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="GetAllCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:00:57</timestamp>
+    <milliseconds>892</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="IsReachableCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:18:02</timestamp>
+    <milliseconds>552</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="GetCurrentPositionCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:41:55</timestamp>
+    <milliseconds>264</milliseconds>
+    <violations>
+      <violation namespace="Microsoft.StyleCop.CSharp.NamingRules" rule="ElementMustBeginWithUpperCaseLetter" ruleCheckId="SA1300">
+        <context>method names begin with an upper-case letter: watcher_PositionChanged.</context>
+        <line>78</line>
+        <warning>False</warning>
+      </violation>
+    </violations>
+  </sourcecode>
+  <sourcecode name="AlertCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:16:51</timestamp>
+    <milliseconds>779</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="BeepCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:16:34</timestamp>
+    <milliseconds>905</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="VibrateCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:16:42</timestamp>
+    <milliseconds>484</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="ChangedWatcherCallbackCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:27:27</timestamp>
+    <milliseconds>603</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="ClearWatchCommmand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:23:08</timestamp>
+    <milliseconds>680</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="GetCurrentOrientationCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:26:51</timestamp>
+    <milliseconds>92</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="WatchOrientationCommmand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:23:08</timestamp>
+    <milliseconds>703</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="SendCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:14:08</timestamp>
+    <milliseconds>778</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="CallCommand.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:20:24</timestamp>
+    <milliseconds>135</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="AssemblyInfo.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 21:43:51</timestamp>
+    <milliseconds>286</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="Watchers.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 21:48:18</timestamp>
+    <milliseconds>682</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="XNAAsyncDispatcher.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 21:48:18</timestamp>
+    <milliseconds>691</milliseconds>
+    <violations>
+      <violation namespace="Microsoft.StyleCop.CSharp.NamingRules" rule="ElementMustBeginWithUpperCaseLetter" ruleCheckId="SA1300">
+        <context>method names begin with an upper-case letter: frameworkDispatcherTimer_Tick.</context>
+        <line>35</line>
+        <warning>False</warning>
+      </violation>
+    </violations>
+  </sourcecode>
+  <sourcecode name="App.xaml.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 22:39:43</timestamp>
+    <milliseconds>263</milliseconds>
+    <violations>
+      <violation namespace="Microsoft.StyleCop.CSharp.SpacingRules" rule="SingleLineCommentsMustBeginWithSingleSpace" ruleCheckId="SA1005">
+        <context>The comment must start with a single space. To ignore this error when commenting out a line of code, begin the comment with '////' rather than '//'.</context>
+        <line>47</line>
+        <warning>False</warning>
+      </violation>
+      <violation namespace="Microsoft.StyleCop.CSharp.SpacingRules" rule="SingleLineCommentsMustBeginWithSingleSpace" ruleCheckId="SA1005">
+        <context>The comment must start with a single space. To ignore this error when commenting out a line of code, begin the comment with '////' rather than '//'.</context>
+        <line>51</line>
+        <warning>False</warning>
+      </violation>
+    </violations>
+  </sourcecode>
+  <sourcecode name="MainPage.xaml.gen.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 21:57:16</timestamp>
+    <milliseconds>946</milliseconds>
+    <violations />
+  </sourcecode>
+  <sourcecode name="MainPage.xaml.cs" parser="Microsoft.StyleCop.CSharp.CsParser">
+    <settings>
+      <timestamp>07/22/2011 23:33:46</timestamp>
+      <milliseconds>726</milliseconds>
+    </settings>
+    <timestamp>07/22/2011 23:33:56</timestamp>
+    <milliseconds>182</milliseconds>
+    <violations>
+      <violation namespace="Microsoft.StyleCop.CSharp.MaintainabilityRules" rule="AccessModifierMustBeDeclared" ruleCheckId="SA1400">
+        <context>The method must have an access modifier.</context>
+        <line>29</line>
+        <warning>False</warning>
+      </violation>
+      <violation namespace="Microsoft.StyleCop.CSharp.NamingRules" rule="ElementMustBeginWithUpperCaseLetter" ruleCheckId="SA1300">
+        <context>method names begin with an upper-case letter: isoLoader_RunWorkerCompleted.</context>
+        <line>44</line>
+        <warning>False</warning>
+      </violation>
+      <violation namespace="Microsoft.StyleCop.CSharp.NamingRules" rule="ElementMustBeginWithUpperCaseLetter" ruleCheckId="SA1300">
+        <context>method names begin with an upper-case letter: isoLoader_DoWork.</context>
+        <line>49</line>
+        <warning>False</warning>
+      </violation>
+    </violations>
+  </sourcecode>
+  <project key="1078233146">
+    <configuration>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</configuration>
+  </project>
+</stylecopresultscache>
