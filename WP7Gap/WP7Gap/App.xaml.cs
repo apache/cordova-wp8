@@ -37,6 +37,8 @@ namespace WP7Gap
             // Phone-specific initialization
             this.InitializePhoneApplication();
 
+            this.ApplicationLifetimeObjects.Add(new PhoneGap.XnaAsyncDispatcher(TimeSpan.FromMilliseconds(50)));
+
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
             {

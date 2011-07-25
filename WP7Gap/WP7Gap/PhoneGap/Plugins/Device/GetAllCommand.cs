@@ -14,6 +14,12 @@ namespace PhoneGap.Plugins.Device
     {
         public override void Execute(params string[] args)
         {
+            object id;
+
+            UserExtendedProperties.TryGetValue("ANID", out id);
+
+            var uuid = id == null ? "???" : id.ToString().Substring(2, 32);
+
             this.HasCallback = true;
             this.CallbackName = args[0];
             this.CallbackArgs = new[]
@@ -21,7 +27,7 @@ namespace PhoneGap.Plugins.Device
                                         Environment.OSVersion.Platform.ToString(),
                                         Environment.OSVersion.Version.ToString(), // or DeviceStatus.DeviceFirmwareVersion ???
                                         DeviceStatus.DeviceName, // name
-                                        UserExtendedProperties.GetValue("ANID").ToString().Substring(2, 32), // no UUID but this is hopefully a suitable alternative
+                                        uuid, // no UUID but this is hopefully a suitable alternative
                                         "1.X" // gap version
                                     };
         }
