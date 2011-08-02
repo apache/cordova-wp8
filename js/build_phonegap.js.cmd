@@ -1,9 +1,4 @@
 
-del phonegap.js
-
-for /f %%a IN ('dir /b *.js') do type %%a >> phonegap.js
-
-
-type phonegap.js.base >> phonegap.js
-
-
+del phonegap.*.js
+copy /b *.js phonegap._js
+ren phonegap._js phonegap.%1.js
