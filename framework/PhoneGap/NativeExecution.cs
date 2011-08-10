@@ -49,6 +49,8 @@ namespace PhoneGap
 
         public void ProcessJavascriptCommand(string javascriptDetails)
         {
+            // TODO: process JSON rep of command
+            //
             var jsParams = javascriptDetails.Split(';');
 
             var commandName = jsParams[0];

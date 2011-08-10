@@ -13,28 +13,31 @@ using Microsoft.Phone.Controls;
 using System.IO.IsolatedStorage;
 using System.Windows.Resources;
 using System.Windows.Interop;
-
 using System.Runtime.Serialization.Json;
 using System.IO;
 using System.ComponentModel;
 using System.Xml.Linq;
+using WP7GapClassLib.PhoneGap.Commands;
+using System.Diagnostics;
+using System.Text;
 
 
 namespace WP7GapClassLib
 {
     public partial class PGView : UserControl
     {
+        Dictionary<string, BaseCommand> commandMap;
+
         public PGView()
         {
             InitializeComponent();
-            GapBrowser.IsScriptEnabled = true;
-            GapBrowser.ScriptNotify += new EventHandler<NotifyEventArgs>(GapBrowser_ScriptNotify);
-            GapBrowser.Navigating += new EventHandler<NavigatingEventArgs>(GapBrowser_Navigating);
-            GapBrowser.LoadCompleted += new System.Windows.Navigation.LoadCompletedEventHandler(GapBrowser_LoadCompleted);
-            GapBrowser.Loaded += new RoutedEventHandler(GapBrowser_Loaded);
-            GapBrowser.NavigationFailed += new System.Windows.Navigation.NavigationFailedEventHandler(GapBrowser_NavigationFailed);
 
-            GapBrowser.Unloaded += new RoutedEventHandler(GapBrowser_Unloaded);
+            commandMap = new Dictionary<string, BaseCommand>();
+
+            //Device device = new Device();
+            //device.InvokeMethodNamed("Get");
+
+            //Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands.Camera");
 
         }
 
@@ -46,6 +49,7 @@ namespace WP7GapClassLib
             }
             try
             {
+
                 StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("GapSourceDictionary.xml", UriKind.Relative));
 
                 if (streamInfo != null)
@@ -60,67 +64,73 @@ namespace WP7GapClassLib
                                  {
                                      path = (string)results.Attribute("Value")
                                  };
-                    StreamResourceInfo fileRespourceStreamInfo;
+                    StreamResourceInfo fileResourceStreamInfo;
 
-                    using (var isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                    // always overwrite it if we are in debug mode.
+                    //#if DEBUG
+                    //IsolatedStorageFile.GetUserStoreForApplication().Remove();
+                    //#endif 
+
+                    using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        // always overwrite it if we are in debug mode.
-                        #if DEBUG
-                            isoStore.Remove();
-                        #endif 
 
-                            foreach (var file in files)
+                        foreach (var file in files)
+                        {
+                            fileResourceStreamInfo = Application.GetResourceStream(new Uri(file.path, UriKind.Relative));
+
+                            if (fileResourceStreamInfo != null)
                             {
-                                fileRespourceStreamInfo = Application.GetResourceStream(new Uri(file.path, UriKind.Relative));
-
-                                if (fileRespourceStreamInfo != null)
+                                using (BinaryReader br = new BinaryReader(fileResourceStreamInfo.Stream))
                                 {
-                                    using (BinaryReader br = new BinaryReader(fileRespourceStreamInfo.Stream))
+                                    byte[] data = br.ReadBytes((int)fileResourceStreamInfo.Stream.Length);
+
+                                    string strBaseDir = file.path.Substring(0, file.path.LastIndexOf('/'));
+                                    appStorage.CreateDirectory(strBaseDir);
+
+                                    // This will truncate/overwrite an existing file, or 
+                                    using (IsolatedStorageFileStream outFile = appStorage.OpenFile(file.path, FileMode.Create))
                                     {
-                                        byte[] data = br.ReadBytes((int)fileRespourceStreamInfo.Stream.Length);
-                                        SaveFileToIsoStore(file.path, data);
+                                        Debug.WriteLine("Writing data for " + file.path + " and length = " + data.Length);
+                                        using (var writer = new BinaryWriter(outFile))
+                                        {
+                                            writer.Write(data);
+                                            writer.Flush();
+                                            writer.Close();
+                                        }
                                     }
+
                                 }
                             }
+                        }
                     }
                 }
 
+                // todo: this should be a start page param passed in via a getter/setter
+                // aka StartPage
+                //Uri indexUri = new Uri("http://www.google.com", UriKind.Absolute);
                 Uri indexUri = new Uri("www/index.html", UriKind.Relative);
-                GapBrowser.Navigate(indexUri);
+                this.GapBrowser.Navigate(indexUri);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception in GapBrowser_Loaded :: {0}", ex.Message);
-            }
-        }
-
-        private static void SaveFileToIsoStore(string fileName, byte[] data)
-        {
-            string strBaseDir = string.Empty;
-            string[] dirsPath = fileName.Split(new[] { '/' });
-
-            using (var isoStore = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                // Recreate the directory structure
-                for (int i = 0; i < dirsPath.Length - 1; i++)
-                {
-                    strBaseDir = System.IO.Path.Combine(strBaseDir, dirsPath[i]);
-                    isoStore.CreateDirectory(strBaseDir);
-                }
-
-                if (!isoStore.FileExists(fileName))
-                {
-                    using (var bw = new BinaryWriter(isoStore.CreateFile(fileName)))
-                    {
-                        bw.Write(data);
-                    }
-                }
+                Debug.WriteLine("Exception in GapBrowser_Loaded :: {0}", ex.Message);
             }
         }
 
         void GapBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            //throw new NotImplementedException();
+            try
+            {
+                //string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithoutParameters");
+                string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithParameters", "1");
+                System.Diagnostics.Debug.WriteLine("Called JS with result :: " + res);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBoxResult res = MessageBox.Show("Could not call script: " + ex.Message, "caption", MessageBoxButton.OKCancel);
+
+            }
         }
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
@@ -130,7 +140,43 @@ namespace WP7GapClassLib
 
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
-            //throw new NotImplementedException();
+            //{"action":"log","service":"Debug","params":"This is a message","callbackId":"Debug0"}
+
+            string commandStr = e.Value;
+
+            string[] split = commandStr.Split('/');
+            if (split.Length < 3)
+            {
+                // ERROR
+
+                Debug.WriteLine(commandStr); // this is the case of window.error messages
+
+                return;
+            }
+            string service = split[0];
+            string action = split[1];
+            string callbackId = split[2];
+            string args = split[3];
+
+            if (!commandMap.ContainsKey(service))
+            {
+                // TODO: if we do not find the command with that name, handle the error, somehow ...
+                Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
+                if (t != null)
+                {
+                    BaseCommand bc = (BaseCommand)Activator.CreateInstance(t);
+                    if (bc != null)
+                    {
+                        commandMap[service] = bc;
+                        bc.InvokeMethodNamed(action, args);
+                    }
+                }
+            }
+            else
+            {
+                BaseCommand bc = commandMap[service];
+                bc.InvokeMethodNamed(action, args);
+            }
         }
 
         private void GapBrowser_Unloaded(object sender, RoutedEventArgs e)
@@ -141,6 +187,11 @@ namespace WP7GapClassLib
         private void GapBrowser_NavigationFailed(object sender, System.Windows.Navigation.NavigationFailedEventArgs e)
         {
             //throw new NotImplementedException();
+        }
+
+        private void GapBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+
         }
     }
 }
