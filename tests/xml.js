@@ -1,8 +1,9 @@
-var DIR_PATH = "C:\\Users\\herm\\Documents\\hermwong\\phonegap-wp7\\tests\\";
-
 var strLine = "";
 
 var objFS = new ActiveXObject("Scripting.FileSystemObject");
+
+var DIR_PATH = objFS.GetAbsolutePathName("") + "\\";
+var PATH = DIR_PATH + "MobileSpecUnitTests\\";
 
 var objInputFile = objFS.OpenTextFile(DIR_PATH + "filelist.txt");
 var objOutputFile = objFS.CreateTextFile(DIR_PATH + "temp.txt", true);
@@ -10,7 +11,7 @@ var objOutputFile = objFS.CreateTextFile(DIR_PATH + "temp.txt", true);
 while (!objInputFile.AtEndOfStream)
 {
 	strLine = objInputFile.ReadLine();
-
+	strLine = strLine.replace(PATH, "");
 	strLine = strLine.replace(/\\/gi, "/");
 
 	objOutputFile.WriteLine("<FilePath Value=\"" + strLine + "\"/>");
@@ -25,7 +26,7 @@ objOutputFile = null;
 objInputFile = null;
 
 var objXmlNodeFile = objFS.OpenTextFile(DIR_PATH + "temp.txt");
-var objResourceFile = objFS.CreateTextFile(DIR_PATH + "GapSourceDictionary.xml", true);
+var objResourceFile = objFS.CreateTextFile(PATH + "GapSourceDictionary.xml", true);
 
 objResourceFile.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 objResourceFile.WriteLine("<GapSourceDictionary>");
