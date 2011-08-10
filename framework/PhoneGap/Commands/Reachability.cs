@@ -9,20 +9,10 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace WP7GapClassLib.PhoneGap
+namespace WP7GapClassLib.PhoneGap.Commands
 {
-    public class BaseCommand
+    public class Reachability : BaseCommand
     {
-        public BaseCommand()
-        {
 
-        }
-
-
-        public int Execute()
-        {
-
-            return 0;
-        }
     }
 }

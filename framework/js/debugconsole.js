@@ -58,6 +58,18 @@ DebugConsole.prototype.log = function(message) {
   }
 };
 
+DebugConsole.prototype.log = function(message) 
+{
+    if (PhoneGap.available && this.logLevel <= DebugConsole.INFO_LEVEL)
+	{
+        PhoneGap.exec(null, null, 'com.phonegap.debugconsole', 'log', message);
+    }     
+    else
+	{
+        this.winConsole.log(message);
+	}
+};
+
 /**
  * Print a warning message to the console
  * @param {Object|String} message Message or object to print to the console
