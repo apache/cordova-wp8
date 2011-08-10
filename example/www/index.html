@@ -13,19 +13,16 @@
   <script type="text/javascript" charset="utf-8" src="phonegap-base.js"></script>
   <script type="text/javascript" charset="utf-8">
 
+    // provide our own console if it does not exist, huge dev aid!
     if(typeof window.console == "undefined")
     {
-       window.console = {log:function(str){window.external.Notify(str);}};
+    window.console = {log:function(str){window.external.Notify(str);}};
     }
 
+    // output any errors to console log, created above.
     window.onerror=function(e){console.log("Error ::" + e);};
 
     console.log("Installed console ! ");
-    
-    //forceError();
-    
-
-    //document.writeln(getScript("Accelerometer"));
 
     function JavaScriptFunctionWithoutParameters()
     {
@@ -42,32 +39,66 @@
 
     function doLoad()
     {
-
-
-    //console.log("OnLoad");
-
-
     console.log("document.addEventListener = " + document.addEventListener);
-
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // this will become PhoneGap.exec, I have been working in place to keep the number of moving parts down. -jm
+
+    // every native call gets a new callbackId
     var NextcallbackId = 0;
+
+    // callbacks is a map of callbackId->{successHandler,errorHandler}
     var callbacks = {};
+
+    // soon to be PhoneGap.exec ..
     var exec = function(success, fail, service, action, args)
     {
-
+    // get the next callbackId for this service call
     var callbackId = service + NextcallbackId++;
+
+    // add it to the map if success OR fail is passed in and not null
     if (typeof success == "Function" || typeof fail == "Function")
     {
     callbacks[callbackId] = {success:success, fail:fail};
     }
-
+    // generate a new command string, ex. DebugConsole/log/DebugConsole23/{"message":"wtf dude?"}
     var command = service + "/" + action + "/" + callbackId + "/" + JSON.stringify(args);
 
+    // pass it on to Notify
     window.external.Notify(command);
     }
 
+    // soon to be PhoneGap.CommandResult or something similar
+    // called from native, dependent on CS implementation in MainPage.xaml.cs
 
+    var commandResult = function(callBackId,args)
+    {
+    if(typeof callbacks[callbackId] != "undefined")
+    {
+    if(typeof callbacks[callbackId].success == "Function")
+    {
+    callbacks[callbackId].success(args);
+    }
+    callbacks[callbackId] = null;
+
+    }
+    };
+
+    var commandError = function(callbackId,args)
+    {
+    if(typeof callbacks[callbackId] != "undefined")
+    {
+    if(typeof callbacks[callbackId].fail == "Function")
+    {
+    callbacks[callbackId].fail(args);
+    }
+    callbacks[callbackId] = null;
+    }
+    };
+
+
+    // Here are some sample calls to exec
     exec(null,null,"DebugConsole","log",{message:"This is message 1"});
     exec(null,null,"DebugConsole","log",{message:"This is message 2"});
     exec(null,null,"DebugConsole","log",{message:"This is message 3"});
