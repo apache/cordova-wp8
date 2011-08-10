@@ -1,27 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="mobileoptimized" content="800" />
-    <meta name="viewport" content="user-scalable=no" />
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=9" />
+  <meta name="Viewport" content="width=480" />
+  <meta http-equiv="Expires" content="0" />
+  
     <title>PhoneGap - WP7 : Proof of concept</title>
     <link rel="stylesheet" type="text/css" href="master.css"/>
 
+  <script type="text/javascript" charset="utf-8" src="phonegap-base.js"></script>
+  <script type="text/javascript" charset="utf-8">
 
-    <script>
-        
-        function onLoad()
-        {
-            console.log("loaded");
-        }
-    </script>
+    if(typeof window.console == "undefined")
+    {
+       window.console = {log:function(str){window.external.Notify(str);}};
+    }
+
+    window.onerror=function(e){console.log("Error ::" + e);};
+
+    console.log("Installed console ! ");
+    
+    //forceError();
+    
+
+    //document.writeln(getScript("Accelerometer"));
+
+    function JavaScriptFunctionWithoutParameters()
+    {
+    outputID.innerHTML = "JavaScript function called!";
+    return "hey";
+    }
+
+    function makeError()
+    {
+    forceError(); // forceError does not exist
+    }
+
+    //console.log("JSON = " + JSON);
+
+    function doLoad()
+    {
+
+
+    //console.log("OnLoad");
+
+
+    console.log("document.addEventListener = " + document.addEventListener);
+
+    }
+
+    var NextcallbackId = 0;
+    var callbacks = {};
+    var exec = function(success, fail, service, action, args)
+    {
+
+    var callbackId = service + NextcallbackId++;
+    if (typeof success == "Function" || typeof fail == "Function")
+    {
+    callbacks[callbackId] = {success:success, fail:fail};
+    }
+
+    var command = service + "/" + action + "/" + callbackId + "/" + JSON.stringify(args);
+
+    window.external.Notify(command);
+    }
+
+
+    exec(null,null,"DebugConsole","log",{message:"This is message 1"});
+    exec(null,null,"DebugConsole","log",{message:"This is message 2"});
+    exec(null,null,"DebugConsole","log",{message:"This is message 3"});
+
+    exec(null,null,"Notification","alert","here is a freakin message");
+    exec(null,null,"Notification","confirm","here is a freakin message");
+
+  </script>
     
 </head>
-<body onload="onLoad">
-
-
-    <div>Hmmm</div>
+<body onload="doLoad()">
+    <div id="dude">Hmmm</div>
 
     <!-- This image has been included to prove it can be done -->
-    <img alt="PhoneGap" src="pg_logo.png" />
+    <img alt="PhoneGap" src="pg_logo.png" id="gapImage" />
+
+    <div id="outputID" style="color:Orange; font-size:16">
+      Hello from HTML document pre script!
+    </div>
+
+  
 </body>
 </html>

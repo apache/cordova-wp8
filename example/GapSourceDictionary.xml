@@ -3,6 +3,10 @@
 
     <FilePath Value="www/index.html"/>
 
+    <FilePath Value="www/phonegap-base.js"/>
+
+    <FilePath Value="www/debugconsole.js"/>
+
     <FilePath Value="www/master.css"/>
 
     <FilePath Value="www/pg_logo.png"/>
