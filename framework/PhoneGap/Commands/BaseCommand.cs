@@ -12,16 +12,18 @@ using System.Reflection;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
-    public class BaseCommand
+    public class BaseCommand : EventArgs
     {
         /*
          *  All commands + plugins must extend BaseCommand, because they are dealt with as BaseCommands in PGView.xaml.cs
          *  
          **/
 
+        public event EventHandler<BaseCommand> OnCommandResult;
+
         public BaseCommand()
         {
-
+             
         }
 
         /*
@@ -38,6 +40,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 return mInfo.Invoke(this, args);
             }
             return null;
+        }
+
+        public void DispatchCommandResult()
+        {
+            if (this.OnCommandResult != null)
+            {
+                this.OnCommandResult(null, this);
+                this.OnCommandResult = null;
+            }
         }
     }
 }
