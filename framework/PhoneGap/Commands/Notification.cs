@@ -18,11 +18,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
         public void alert(string msg)
         {
             MessageBoxResult res = MessageBox.Show(msg, "Alert", MessageBoxButton.OK);
+            DispatchCommandResult();
         }
 
         public void confirm(string msg)
         {
             MessageBoxResult res = MessageBox.Show(msg, "Confirm", MessageBoxButton.OKCancel);
+            DispatchCommandResult();
         }
     }
 }

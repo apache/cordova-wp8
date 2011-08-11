@@ -176,6 +176,7 @@ namespace WP7GapClassLib
                     BaseCommand bc = (BaseCommand)Activator.CreateInstance(t);
                     if (bc != null)
                     {
+                        bc.OnCommandResult += new EventHandler<BaseCommand>(OnCommandResult);
                         commandMap[service] = bc;
                         bc.InvokeMethodNamed(action, args);
                     }
@@ -201,6 +202,11 @@ namespace WP7GapClassLib
         private void GapBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
 
+        }
+
+        private void OnCommandResult(object sender, BaseCommand e)
+        {
+            // Work in progress, BaseCommand needs to provide a way to get the data to post back into the webview
         }
     }
 }
