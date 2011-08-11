@@ -14,10 +14,19 @@ namespace WP7GapClassLib.PhoneGap.Commands
 {
     public class BaseCommand
     {
+        /*
+         *  All commands + plugins must extend BaseCommand, because they are dealt with as BaseCommands in MainPage.xaml.cs
+         *  
+         **/
+
         public BaseCommand()
         {
 
         }
+
+        /*
+         *  InvokeMethodNamed will call the named method of a BaseCommand subclass if it exists and pass the variable arguments list along.
+         **/
 
         public object InvokeMethodNamed(string methodName, params object[] args)
         {
