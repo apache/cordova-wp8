@@ -15,7 +15,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
     public class BaseCommand
     {
         /*
-         *  All commands + plugins must extend BaseCommand, because they are dealt with as BaseCommands in MainPage.xaml.cs
+         *  All commands + plugins must extend BaseCommand, because they are dealt with as BaseCommands in PGView.xaml.cs
          *  
          **/
 
