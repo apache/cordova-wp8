@@ -138,6 +138,15 @@ namespace WP7GapClassLib
             //throw new NotImplementedException();
         }
 
+        /*
+         *  This method does the work of routing commands
+         *  NotifyEventArgs.Value contains a string passed from JS 
+         *  If the command already exists in our map, we will just attempt to call the method(action) specified, and pass the args along
+         *  Otherwise, we create a new instance of the command, add it to the map, and call it ...
+         *  This method may also receive JS error messages caught by window.onerror, in any case where the commandStr does not appear to be a valid command
+         *  it is simply output to the debugger output, and the method returns.
+         * 
+         **/
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
             //{"action":"log","service":"Debug","params":"This is a message","callbackId":"Debug0"}
