@@ -56,6 +56,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PhoneGap\PhoneGapCommandCall.cs" />
+    <Compile Include="PhoneGap\CommandFactory.cs" />
     <Compile Include="PhoneGap\Commands\Accelerometer.cs" />
     <Compile Include="PhoneGap\Commands\BaseCommand.cs" />
     <Compile Include="PhoneGap\Commands\Camera.cs" />

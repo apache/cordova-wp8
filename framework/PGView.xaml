@@ -16,7 +16,7 @@
                           HorizontalAlignment="Stretch"  
                           VerticalAlignment="Stretch" 
                           IsScriptEnabled="True" 
-                          Foreground="Black" 
+                          Foreground="Black"
                           Navigated="GapBrowser_Navigated" 
                           Loaded="GapBrowser_Loaded" 
                           Unloaded="GapBrowser_Unloaded" 

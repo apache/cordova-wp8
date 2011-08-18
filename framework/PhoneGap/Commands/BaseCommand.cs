@@ -12,7 +12,7 @@ using System.Reflection;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
-    public class BaseCommand : EventArgs
+    public abstract class BaseCommand : EventArgs
     {
         /*
          *  All commands + plugins must extend BaseCommand, because they are dealt with as BaseCommands in PGView.xaml.cs
@@ -20,6 +20,16 @@ namespace WP7GapClassLib.PhoneGap.Commands
          **/
 
         public event EventHandler<BaseCommand> OnCommandResult;
+
+        public string JSCallackId { get; set; }
+
+        public bool IsJSCallbackAttached
+        {
+            get 
+            {
+                return !string.IsNullOrEmpty(JSCallackId);
+            }
+        }
 
         public BaseCommand()
         {
@@ -46,7 +56,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 PropertyInfo pInfo = this.GetType().GetProperty(methodName);
                 if (pInfo != null)
                 {
-                    return pInfo.GetValue(this , null);
+                    pInfo.GetValue(this , null);
+                    DispatchCommandResult();
                 }
             }
 
