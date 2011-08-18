@@ -21,18 +21,18 @@ using WP7GapClassLib.PhoneGap.Commands;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Xna.Framework;
+using WP7GapClassLib.PhoneGap;
+
 
 namespace WP7GapClassLib
 {
     public partial class PGView : UserControl
     {
-        Dictionary<string, BaseCommand> commandMap;
+        
 
         public PGView()
         {
             InitializeComponent();
-
-            commandMap = new Dictionary<string, BaseCommand>();
 
             //Device device = new Device();
             //device.InvokeMethodNamed("Get");
@@ -132,10 +132,10 @@ namespace WP7GapClassLib
         {
             try
             {
-                string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithoutParameters");
-                //string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithParameters", "1");     
-                res += (string)GapBrowser.InvokeScript("JavaScriptFunctionWithParameters", "1");
-                System.Diagnostics.Debug.WriteLine("Called JS with result :: " + res);
+                //string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithoutParameters");
+                //string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithParameters", "1");
+                //System.Diagnostics.Debug.WriteLine("Called JS with result :: " + res);
+
             }
             catch (Exception ex)
             {
@@ -165,8 +165,9 @@ namespace WP7GapClassLib
 
             string commandStr = e.Value;
 
-            string[] split = commandStr.Split('/');
-            if (split.Length < 3)
+            PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
+
+            if (commandCallParams == null)
             {
                 // ERROR
 
@@ -174,31 +175,28 @@ namespace WP7GapClassLib
 
                 return;
             }
-            string service = split[0];
-            string action = split[1];
-            string callbackId = split[2];
-            string args = split[3];
 
-            if (!commandMap.ContainsKey(service))
+            BaseCommand bc = CommandFactory.CreateUsingServiceName(commandCallParams.Service);
+
+            bc.OnCommandResult += new EventHandler<BaseCommand>(OnCommandResult);
+            bc.JSCallackId = commandCallParams.CallbackId;
+           
+            if (bc == null)
             {
-                // TODO: if we do not find the command with that name, handle the error, somehow ...
-                Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
-                if (t != null)
-                {
-                    BaseCommand bc = (BaseCommand)Activator.CreateInstance(t);
-                    if (bc != null)
-                    {
-                        bc.OnCommandResult += new EventHandler<BaseCommand>(OnCommandResult);
-                        commandMap[service] = bc;
-                        bc.InvokeMethodNamed(action, args);
-                    }
-                }
+                // todo throw unknown service
             }
-            else
+
+            try
             {
-                BaseCommand bc = commandMap[service];
-                bc.InvokeMethodNamed(action, args);
+                bc.InvokeMethodNamed(commandCallParams.Action, commandCallParams.Args);
             }
+            catch(Exception ex)
+            {
+                // TODO log somehow
+                // return unknown action
+            }
+
+            // Javascript can only work in a single thread
         }
 
         private void GapBrowser_Unloaded(object sender, RoutedEventArgs e)
@@ -218,6 +216,18 @@ namespace WP7GapClassLib
 
         private void OnCommandResult(object sender, BaseCommand e)
         {
+            if (e == null)
+            {
+                Debug.WriteLine("OnCommandResult missing argument");
+                return;
+            }
+
+            if (e.IsJSCallbackAttached)
+            {
+                this.GapBrowser.InvokeScript("nativeExecutionCallback", new string[] { e.JSCallackId, "It is working" });
+            }
+
+
             // Work in progress, BaseCommand needs to provide a way to get the data to post back into the webview
         }
     }

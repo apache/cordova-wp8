@@ -8,14 +8,14 @@ using System;
 
 namespace PhoneGap
 {
-    public abstract class PhoneGapCommand : EventArgs
-    {
-        public abstract void Execute(params string[] args);
+    //public abstract class PhoneGapCommand : EventArgs
+    //{
+    //    public abstract void Execute(params string[] args);
 
-        public bool HasCallback { get; set; }
+    //    public bool HasCallback { get; set; }
 
-        public string CallbackName { get; set; }
+    //    public string CallbackName { get; set; }
 
-        public string[] CallbackArgs { get; set; }
-    }
+    //    public string[] CallbackArgs { get; set; }
+    //}
 }
