@@ -49,17 +49,23 @@
         console.log("document.addEventListener = " + document.addEventListener);
     }
 
-    function nativeExecutionCallback(callBackId, args) 
+    function commandResult(callBackId, args) 
     {
 
-        console.log("nativeExecutionCallback, id = " + callBackId + "; res = " + args);
-//        var element = document.getElementById('deviceProperties');
+        var message = "commandResult, callbackid = " + callBackId + "; res = " + args;
+        console.log(message);
 
-//        element.innerHTML = 'Device Name: ' + device.name + '<br />' +
-//                                'Device PhoneGap: ' + device.phonegap + '<br />' +
-//                                'Device Platform: ' + device.platform + '<br />' +
-//                                'Device UUID: ' + device.uuid + '<br />' +
-//                                'Device Version: ' + device.version + '<br />';
+        divProperties.innerHTML = message;
+
+    }
+
+    function commandError(callBackId, args) {
+
+        var message = "commandError, callbackid = " + callBackId + "; res = " + args;
+        console.log(message);
+
+        divProperties.innerHTML = message;
+
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,30 +98,30 @@
     // soon to be PhoneGap.CommandResult or something similar
     // called from native, dependent on CS implementation in MainPage.xaml.cs
 
-    var commandResult = function(callBackId,args)
-    {
-    if(typeof callbacks[callbackId] != "undefined")
-    {
-    if(typeof callbacks[callbackId].success == "Function")
-    {
-    callbacks[callbackId].success(args);
-    }
-    callbacks[callbackId] = null;
+//    var commandResult = function(callBackId,args)
+//    {
+//    if(typeof callbacks[callbackId] != "undefined")
+//    {
+//    if(typeof callbacks[callbackId].success == "Function")
+//    {
+//    callbacks[callbackId].success(args);
+//    }
+//    callbacks[callbackId] = null;
 
-    }
-    };
+//    }
+//    };
 
-    var commandError = function(callbackId,args)
-    {
-    if(typeof callbacks[callbackId] != "undefined")
-    {
-    if(typeof callbacks[callbackId].fail == "Function")
-    {
-    callbacks[callbackId].fail(args);
-    }
-    callbacks[callbackId] = null;
-    }
-    };
+//    var commandError = function(callbackId,args)
+//    {
+//    if(typeof callbacks[callbackId] != "undefined")
+//    {
+//    if(typeof callbacks[callbackId].fail == "Function")
+//    {
+//    callbacks[callbackId].fail(args);
+//    }
+//    callbacks[callbackId] = null;
+//    }
+//    };
 
     // Here are some sample calls to exec
     //exec(null,null,"DebugConsole","log",{message:"This is message 1"});
@@ -125,7 +131,9 @@
     //exec(null,null,"Notification","alert","here is a freakin message");
     //exec(null,null,"Notification","confirm","here is another freakin message");
 
+
     //exec(null,null,"Notification","vibrate","2");
+
     //exec(null,null,"Device","name");
 
   </script>
@@ -141,10 +149,13 @@
       Hello from HTML document pre script!
     </div
 
-    <p id="deviceProperties">Loading device properties...</p>
+    
     <ul>
         <li onclick="exec(null,null,'Device','name');">Device Platform</li>
+        <li onclick="exec(null,null,'Dummy','somemethod');">Unknown Service</li>
+        <li onclick="exec(null,null,'Device','somemethod');">Unknown Method</li>
     </ul>
+
 <!--    <script type="text/javascript" language="javascript">
         alert('Device properties');
         var element = document.getElementById('deviceProperties');
@@ -160,6 +171,9 @@
     <a href="index.html">reload the page</a>
     <button onclick="exec(null,null,'Contacts','create', 'herm');">save a contact</button>
     <button onclick="exec(null,null,'Contacts','find', 'herm');">find a contact</button>
+
+    <div id="divProperties" style="color:Orange;">Loading device properties...</div>
+
   
 </body>
 </html>

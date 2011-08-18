@@ -11,8 +11,14 @@ using System.Windows.Shapes;
 
 namespace WP7GapClassLib.PhoneGap
 {
-    public class PluginResult
+    /// <summary>
+    /// Represents command execution result
+    /// </summary>
+    public class PluginResult : EventArgs
     {
+        /// <summary>
+        /// Predefined resultant messages
+        /// </summary>
         public static string[] StatusMessages = new string[] 
         {
 		    "No result",
@@ -27,6 +33,9 @@ namespace WP7GapClassLib.PhoneGap
 		    "Error"
 	    };
 
+        /// <summary>
+        /// Possible command results status codes
+        /// </summary>
         public enum Status :int
         {
             NO_RESULT = 0,
@@ -41,70 +50,43 @@ namespace WP7GapClassLib.PhoneGap
             ERROR
         };
 
-	    private Status status;
-	    private string message;
-	    private bool keepCallback = false;
-	    private string cast = null;
-	
-	    public PluginResult(Status status) 
+	    public Status Result {get; private set;}
+	    public string Message {get; private set;}
+        public object CallBackArgs {get; private set;}
+
+        /// <summary>
+        /// Whether command succeded or not
+        /// </summary>
+        public bool IsSuccess
         {
-		    this.status = status;
-		    this.message = PluginResult.StatusMessages[(int)this.status];
-	    }
-	
-	    public PluginResult(Status status, Object message, string cast=null) 
+            get
+            {
+                return this.Result == Status.OK || this.Result == Status.NO_RESULT;
+            }
+        }
+
+        /// <summary>
+        /// Creates new instance of the PluginResult class.
+        /// </summary>
+        /// <param name="status">Execution result</param>
+        public PluginResult(Status status) 
         {
-		    this.status = status;
-            this.message = message.ToString();
-            this.cast = cast;
+		    this.Result = status;
+            this.Message = PluginResult.StatusMessages[(int)this.Result];
 	    }
 
-	    public void setKeepCallback(bool b) 
+        /// <summary>
+        /// Creates new instance of the PluginResult class.
+        /// </summary>
+        /// <param name="status">Execution result</param>
+        /// <param name="callBackArgs">Callback parameters</param>
+        public PluginResult(Status status, object callBackArgs) 
         {
-		    this.keepCallback = b;
-	    }
-	
-	    public Status getStatus() 
-        {
-		    return status;
+            this.Result = status;
+            this.Message = PluginResult.StatusMessages[(int)this.Result];
+            this.CallBackArgs = callBackArgs;
 	    }
 
-	    public string getMessage() 
-        {
-		    return message;
-	    }
-	
-	    public bool getKeepCallback() 
-        {
-		    return this.keepCallback;
-	    }
-	
-	    public string getJSONString() 
-        {
-		    return "{status:" + this.status + ",message:" + this.message + ",keepCallback:" + this.keepCallback + "}";
-	    }
-	
-	    public string toSuccessCallbackString(string callbackId) 
-        {
-            return "";
-            //StringBuffer buf = new StringBuffer("");
-            //if (cast != null) 
-            //{
-            //    buf.append("var temp = "+cast+"("+this.getJSONString() + ");\n");
-            //    buf.append("PhoneGap.callbackSuccess('"+callbackId+"',temp);");
-            //}
-            //else 
-            //{
-            //    buf.append("PhoneGap.callbackSuccess('"+callbackId+"',"+this.getJSONString()+");");			
-            //}
-            //return buf.toString();
-	    }
-	
-	    public string toErrorCallbackString(string callbackId) 
-        {
-            return "";
-		    //return "PhoneGap.callbackError('"+callbackId+"', " + this.getJSONString()+ ");";
-	    }
     }
     
 }
