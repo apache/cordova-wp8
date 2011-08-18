@@ -34,11 +34,24 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             MethodInfo mInfo = this.GetType().GetMethod(methodName);
 
-            // TODO: Throw MethodNotFound exception if mInfo is null
             if (mInfo != null)
             {
                 return mInfo.Invoke(this, args);
             }
+
+            // actually methodName could refer to a property
+            if (args == null || args.Length == 0 ||
+               (args.Length == 1 && "undefined".Equals(args[0])))
+            {
+                PropertyInfo pInfo = this.GetType().GetProperty(methodName);
+                if (pInfo != null)
+                {
+                    return pInfo.GetValue(this , null);
+                }
+            }
+
+            // TODO: Throw MethodNotFound exception
+
             return null;
         }
 
