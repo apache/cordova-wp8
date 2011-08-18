@@ -13,10 +13,22 @@ using WP7GapClassLib.PhoneGap.Commands;
 
 namespace WP7GapClassLib.PhoneGap
 {
+    /// <summary>
+    /// Provides functionality to create phone gap command by name,
+    /// Each command is created only once and stored in commands pool.
+    /// </summary>
     public static class CommandFactory
     {
+        /// <summary>
+        /// Performance optimization allowing more faster create already known commands.
+        /// </summary>
         private static Dictionary<string, BaseCommand> commandMap = new Dictionary<string,BaseCommand>();
  
+        /// <summary>
+        /// Creates command using command class name. Returns null for unknown commands.
+        /// </summary>
+        /// <param name="service">Command class name, for example Device or Notification</param>
+        /// <returns>Command class instance or null</returns>
         public static BaseCommand CreateUsingServiceName(string service)
         {
 
@@ -27,17 +39,20 @@ namespace WP7GapClassLib.PhoneGap
 
             if (!commandMap.ContainsKey(service))
             {
-                // TODO: if we do not find the command with that name, handle the error, somehow ...
+            
                 Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
                 if (t != null)
                 {
                     BaseCommand bc = (BaseCommand)Activator.CreateInstance(t);
 
-                    if (bc == null) return null;
-
-                    commandMap[service] = bc;                        
-                    
+                    if (bc != null)
+                    {
+                        commandMap[service] = bc;
+                        return bc;
+                    }
                 }
+
+                commandMap[service] = null;
             }
 
             //TODO: we should clone the class instance to allow async callbacks

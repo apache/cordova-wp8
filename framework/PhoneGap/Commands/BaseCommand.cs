@@ -12,14 +12,14 @@ using System.Reflection;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
-    public abstract class BaseCommand : EventArgs
+    public abstract class BaseCommand
     {
         /*
          *  All commands + plugins must extend BaseCommand, because they are dealt with as BaseCommands in PGView.xaml.cs
          *  
          **/
 
-        public event EventHandler<BaseCommand> OnCommandResult;
+        public event EventHandler<PluginResult> OnCommandResult;
 
         public string JSCallackId { get; set; }
 
@@ -47,6 +47,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             if (mInfo != null)
             {
                 return mInfo.Invoke(this, args);
+                // every function handles DispatchCommandResult by itself
             }
 
             // actually methodName could refer to a property
@@ -56,22 +57,30 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 PropertyInfo pInfo = this.GetType().GetProperty(methodName);
                 if (pInfo != null)
                 {
-                    pInfo.GetValue(this , null);
-                    DispatchCommandResult();
+                    
+                    object res = pInfo.GetValue(this , null);
+
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, res));
+                    
+                    return res;
                 }
             }
 
-            // TODO: Throw MethodNotFound exception
+            throw new MissingMethodException(methodName);            
 
             return null;
         }
 
         public void DispatchCommandResult()
         {
+            this.DispatchCommandResult(new PluginResult(PluginResult.Status.NO_RESULT));
+        }
+
+        public void DispatchCommandResult(PluginResult result)
+        {
             if (this.OnCommandResult != null)
             {
-                this.OnCommandResult(null, this);
-                this.OnCommandResult = null;
+                this.OnCommandResult(this, result);                
             }
         }
     }

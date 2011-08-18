@@ -177,14 +177,15 @@ namespace WP7GapClassLib
             }
 
             BaseCommand bc = CommandFactory.CreateUsingServiceName(commandCallParams.Service);
-
-            bc.OnCommandResult += new EventHandler<BaseCommand>(OnCommandResult);
-            bc.JSCallackId = commandCallParams.CallbackId;
            
             if (bc == null)
             {
-                // todo throw unknown service
+                this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION));
+                return;
             }
+
+            bc.OnCommandResult += new EventHandler<PluginResult>(OnCommandResult);
+            bc.JSCallackId = commandCallParams.CallbackId;
 
             try
             {
@@ -193,7 +194,8 @@ namespace WP7GapClassLib
             catch(Exception ex)
             {
                 // TODO log somehow
-                // return unknown action
+                this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
+                return;
             }
 
             // Javascript can only work in a single thread
@@ -214,21 +216,40 @@ namespace WP7GapClassLib
 
         }
 
-        private void OnCommandResult(object sender, BaseCommand e)
+        private void OnCommandResult(object sender, PluginResult result)
         {
-            if (e == null)
+            BaseCommand command  = sender as BaseCommand;
+            
+            if (command == null)
             {
                 Debug.WriteLine("OnCommandResult missing argument");
                 return;
             }
 
-            if (e.IsJSCallbackAttached)
+            if (result == null)
             {
-                this.GapBrowser.InvokeScript("nativeExecutionCallback", new string[] { e.JSCallackId, "It is working" });
+                Debug.WriteLine("OnCommandResult missing argument");
+                return;
             }
 
+            // no callback requied
+            if (!command.IsJSCallbackAttached) return;
 
-            // Work in progress, BaseCommand needs to provide a way to get the data to post back into the webview
+            this.InvokeJSSCallback(command.JSCallackId, result);
+
+        }
+
+        private void InvokeJSSCallback(String callbackId, PluginResult result)
+        {
+            if (result.IsSuccess)
+            {
+                this.GapBrowser.InvokeScript("commandResult", 
+                    new string[] {callbackId, Convert.ToString(result.CallBackArgs)});
+            }
+            else
+            {
+                this.GapBrowser.InvokeScript("commandError", new string[] {callbackId, result.Message});
+            }
         }
     }
 }

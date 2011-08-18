@@ -11,6 +11,9 @@ using System.Windows.Shapes;
 
 namespace WP7GapClassLib.PhoneGap
 {
+    /// <summary>
+    /// Represents PhoneGap native command call: action callback, etc
+    /// </summary>
     public class PhoneGapCommandCall
     {
         public String Service {get; private set;}
@@ -18,6 +21,11 @@ namespace WP7GapClassLib.PhoneGap
         public String CallbackId {get; private set;}
         public String Args {get; private set;}
         
+        /// <summary>
+        /// Retrieves command call parameters and creates wrapper for them
+        /// </summary>
+        /// <param name="commandStr">Command string in the form 'service/action/callback/args'</param>
+        /// <returns>New class instance or null of string does not represent PhoneGap command</returns>
         public static PhoneGapCommandCall Parse(string commandStr)
         {
             if (string.IsNullOrEmpty(commandStr))
@@ -42,6 +50,10 @@ namespace WP7GapClassLib.PhoneGap
         }
 
 
+        /// <summary>
+        /// Private ctr to disable class creation.
+        /// New class instance must be initialized via PhoneGapCommandCall.Parse static method.
+        /// </summary>
         private PhoneGapCommandCall() { }
             
 
