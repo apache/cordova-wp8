@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft.Xna.Framework;
 using WP7GapClassLib.PhoneGap;
+using System.Threading;
 
 
 namespace WP7GapClassLib
@@ -48,6 +49,7 @@ namespace WP7GapClassLib
             }
             try
             {
+                Thread.Sleep(1000);
 
                 StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("GapSourceDictionary.xml", UriKind.Relative));
 
