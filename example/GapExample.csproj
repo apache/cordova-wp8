@@ -81,7 +81,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="www\debugconsole.js" />
-    <Content Include="www\device.js" />
     <Content Include="www\phonegap-base.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
