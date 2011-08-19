@@ -26,10 +26,16 @@
 
     function JavaScriptFunctionWithoutParameters()
     {
-    outputID.innerHTML = "JavaScript function called!";
+    outputID.innerHTML += "JavaScript function called!";
     return "hey";
     }
 
+    function JavaScriptFunctionWithParameters(param)
+    {
+    outputID.innerHTML += "JavaScript function with parameters called! With param = " + param;
+    return "hey this is the param: " + param;
+    }
+    
     function makeError()
     {
     forceError(); // forceError does not exist
@@ -104,9 +110,9 @@
 
     exec(null,null,"Notification","alert","here is a freakin message");
     //exec(null,null,"Notification","confirm","here is another freakin message");
-    
+
     //exec(null,null,"Notification","vibrate","2");
-    
+
     //exec(null,null,"Device","name");
 
   </script>
@@ -122,6 +128,9 @@
       Hello from HTML document pre script!
     </div>
 
+    <a href="index.html">reload the page</a>
+    <button onclick="exec(null,null,'Contacts','create', 'herm');">save a contact</button>
+    <button onclick="exec(null,null,'Contacts','find', 'herm');">find a contact</button>
   
 </body>
 </html>

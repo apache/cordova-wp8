@@ -58,6 +58,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
             alarm.Sound = new Uri(soundFilePath, UriKind.RelativeOrAbsolute);
             ScheduledActionService.Add(alarm);
 
+            // TODO: may need a listener to trigger DispatchCommandResult after the alarm has finished executing...
+            DispatchCommandResult();
         }
 
         public void vibrate(string vibrateDuration)
@@ -77,6 +79,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
            
             ts = new TimeSpan(0, 0, seconds);
             vc.Start(ts);
+
+            // TODO: may need to add listener to trigger DispatchCommandResult when the vibration ends...
+            DispatchCommandResult();
         }
     }
 }

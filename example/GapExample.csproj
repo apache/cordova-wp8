@@ -76,6 +76,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="www\splash.html">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="www\debugconsole.js" />
     <Content Include="www\phonegap-base.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
