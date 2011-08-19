@@ -80,7 +80,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             if (this.OnCommandResult != null)
             {
-                this.OnCommandResult(this, result);                
+                this.OnCommandResult(this, result);
+                this.OnCommandResult = null;
+
             }
         }
     }

@@ -11,24 +11,24 @@ using System.Windows.Shapes;
 
 namespace WP7GapClassLib.PhoneGap
 {
-    public enum CommandStatusMessage
-    {
+    //public enum CommandStatusMessage
+    //{
 
-    };
+    //};
 
 
-    public enum CommandStatus
-    {
-        NORESULT = 0,
-        OK,
-        CLASSNOTFOUND, 
-        ILLEGALACCESS,
-        INSTANTIATIONERROR,
-        MALFORMEDURL,
-        IOERROR,
-        INVALIDACTION,
-        JSONERROR,
-        ERROR
-    };
+    //public enum CommandStatus
+    //{
+    //    NORESULT = 0,
+    //    OK,
+    //    CLASSNOTFOUND, 
+    //    ILLEGALACCESS,
+    //    INSTANTIATIONERROR,
+    //    MALFORMEDURL,
+    //    IOERROR,
+    //    INVALIDACTION,
+    //    JSONERROR,
+    //    ERROR
+    //};
 
 }
