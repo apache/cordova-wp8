@@ -241,14 +241,23 @@ namespace WP7GapClassLib
 
         private void InvokeJSSCallback(String callbackId, PluginResult result)
         {
+            if (String.IsNullOrEmpty(callbackId))
+            {
+                throw new ArgumentNullException("callbackId");
+            }
+            
+            if (result == null)
+            {
+                throw new ArgumentNullException("result");
+            }
+
             if (result.IsSuccess)
             {
-                this.GapBrowser.InvokeScript("commandResult", 
-                    new string[] {callbackId, Convert.ToString(result.CallBackArgs)});
+                this.GapBrowser.InvokeScript("commandResult", new string[] {callbackId, result.ToJSONString()});
             }
             else
             {
-                this.GapBrowser.InvokeScript("commandError", new string[] {callbackId, result.Message});
+                this.GapBrowser.InvokeScript("commandError", new string[] {callbackId, result.ToJSONString()});
             }
         }
     }
