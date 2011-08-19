@@ -150,7 +150,7 @@
       Hello from HTML document pre script!
     </div>
 
-    
+
     <ul>
         <li onclick="exec(successCallback, failureCallback,'Device','name');">Device Platform</li>
         <li onclick="exec(successCallback, failureCallback,'Dummy','somemethod');">Unknown Service</li>
@@ -161,6 +161,12 @@
     </ul>
 
     <div id="divProperties" style="color:Orange;">Placeholder for app messages</div>
+
+
+
+    <button onclick="exec(null,null,'Contacts','create', 'herm');">save a contact</button>
+    <button onclick="exec(null,null,'Contacts','find', 'herm');">find a contact</button>
+
 
   
 </body>

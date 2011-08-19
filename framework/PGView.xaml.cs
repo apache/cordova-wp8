@@ -23,7 +23,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using WP7GapClassLib.PhoneGap;
 using System.Threading;
-
+using Microsoft.Xna.Framework;
 
 namespace WP7GapClassLib
 {
