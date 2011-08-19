@@ -20,7 +20,7 @@ using System.Xml.Linq;
 using WP7GapClassLib.PhoneGap.Commands;
 using System.Diagnostics;
 using System.Text;
-
+using Microsoft.Xna.Framework;
 
 namespace WP7GapClassLib
 {
@@ -38,7 +38,6 @@ namespace WP7GapClassLib
             //device.InvokeMethodNamed("Get");
 
             //Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands.Camera");
-
         }
 
         void GapBrowser_Loaded(object sender, RoutedEventArgs e)
@@ -108,8 +107,20 @@ namespace WP7GapClassLib
                 // todo: this should be a start page param passed in via a getter/setter
                 // aka StartPage
                 //Uri indexUri = new Uri("http://www.google.com", UriKind.Absolute);
-                Uri indexUri = new Uri("www/index.html", UriKind.Relative);
-                this.GapBrowser.Navigate(indexUri);
+                //Uri indexUri = new Uri("www/index.html", UriKind.Relative);
+                //this.GapBrowser.Navigate(indexUri);
+
+                StreamReader reader = new StreamReader(TitleContainer.OpenStream("www\\index.html"));
+                string str = reader.ReadToEnd();
+
+                this.GapBrowser.NavigateToString(str);
+
+
+                /*
+                string htmlString = "<html><head><script>var myMsg='blah';function test(msg){alert(msg);}</script></head>";
+                htmlString += "<body onload='test(myMsg);'><a href='#'>hello</a></body></html>";
+                this.GapBrowser.NavigateToString(htmlString);
+                */
             }
             catch (Exception ex)
             {
@@ -121,8 +132,9 @@ namespace WP7GapClassLib
         {
             try
             {
-                //string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithoutParameters");
-                string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithParameters", "1");
+                string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithoutParameters");
+                //string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithParameters", "1");     
+                res += (string)GapBrowser.InvokeScript("JavaScriptFunctionWithParameters", "1");
                 System.Diagnostics.Debug.WriteLine("Called JS with result :: " + res);
             }
             catch (Exception ex)
