@@ -195,6 +195,7 @@ namespace WP7GapClassLib
             }
             catch(Exception ex)
             {
+                bc.OnCommandResult -= this.OnCommandResult;
                 // TODO log somehow
                 this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
                 return;
