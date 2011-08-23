@@ -8,11 +8,23 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Collections.Generic;
+using Microsoft.Phone.Tasks;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
     public class Camera : BaseCommand
     {
+        public void getPicture(string options)
+        {
+            var photoChooserTask = new PhotoChooserTask();
+            photoChooserTask.Completed += onComplited;
+            photoChooserTask.Show();
+        }
 
+        public void onComplited(object sender,PhotoResult e) {
+            string name = e.OriginalFileName;
+            DispatchCommandResult();
+        }
     }
 }
