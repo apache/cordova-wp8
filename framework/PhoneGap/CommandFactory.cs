@@ -55,8 +55,12 @@ namespace WP7GapClassLib.PhoneGap
                 commandMap[service] = null;
             }
 
-            //TODO: we should clone the class instance to allow async callbacks
-            return commandMap[service];
+            if (commandMap[service] != null)
+            {
+                return (BaseCommand) Activator.CreateInstance (commandMap[service].GetType());
+            }
+
+            return null;
             
         }
     }

@@ -155,6 +155,9 @@
         <li onclick="exec(successCallback, failureCallback,'Device','name');">Device Platform</li>
         <li onclick="exec(successCallback, failureCallback,'Dummy','somemethod');">Unknown Service</li>
         <li onclick="exec(successCallback, failureCallback,'Device','somemethod');">Unknown Method</li>
+        <li onclick="exec(successCallback, failureCallback,'Capture','captureImage',{limit: 2});">captureImage</li>
+        <li onclick="exec(successCallback, failureCallback,'Camera','getPicture');">ChoosePictureFromAlbom</li>
+        <li onclick="exec(successCallback, failureCallback,'Capture','getFormatData',{filePath: 'somePath', mimeType: 'image/jpeg'});">getMediaData</li>
     </ul>
 
     <div id="divProperties" style="color:Orange;">Placeholder for app messages</div>

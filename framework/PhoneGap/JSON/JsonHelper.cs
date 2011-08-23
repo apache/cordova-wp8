@@ -10,6 +10,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using System.Collections.Generic;
+using System.Text;
 
 namespace WP7GapClassLib.PhoneGap.JSON
 {
@@ -47,6 +49,23 @@ namespace WP7GapClassLib.PhoneGap.JSON
             ms.Close();
 
             return json;
+
+        }
+
+        /// <summary>
+        /// Parses json string to object instance
+        /// </summary>
+        /// <typeparam name="T">type of the object</typeparam>
+        /// <param name="json">json string representation of the object</param>
+        /// <returns>Deserialized object instance</returns>
+        public static T Deserialize<T>(string json)
+        {
+           DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(T));
+
+           using (MemoryStream mem = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+           {
+               return (T)deserializer.ReadObject(mem);
+           }
 
         }
     }
