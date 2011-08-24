@@ -45,6 +45,23 @@ namespace WP7GapClassLib.PhoneGap.Commands
         }
 
         /// <summary>
+        /// Represents getFormatData action options.
+        /// </summary>
+        [DataContract]
+        public class MediaFormatOptions
+        {
+            /// <summary>
+            /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+            /// </summary>
+            [DataMember]
+            public string fullPath { get; set; }
+
+            [DataMember]
+            public string type { get; set; }
+            
+        }
+
+        /// <summary>
         /// Stores image info
         /// </summary>
         [DataContract]
@@ -70,8 +87,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             {
                 this.filePath = filePath;
                 this.fileName = System.IO.Path.GetFileName(this.filePath);
-                // TODO find internal func
-                this.type = "image/jpeg";
+                this.type = MimeTypeMapper.GetMimeType(fileName);
                 this.size = image.GetImage().Length;
                 this.lastModifiedDate = image.Date.ToString();
 
@@ -166,32 +182,41 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// Retrieves the format information of the media file.
         /// </summary>
         /// <param name="options"></param>
-        public void getFormatData(Dictionary<string, object> options)
+        public void getFormatData(string options)
         {
-
+            if(String.IsNullOrEmpty(options)){
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+            
             try
-            {
-                string filePath = string.Empty;
-                string mimeType = string.Empty;
-
-                if (options.ContainsKey("filePath"))
+            {                                
+                MediaFormatOptions mediaFormatOptions;
+                try
                 {
-                    filePath = (string)options["filePath"];
+                   mediaFormatOptions = JSON.JsonHelper.Deserialize<MediaFormatOptions>(options);
+                }
+                catch (Exception ex)
+                {
+                    this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                    return;
                 }
 
-                if (options.ContainsKey("mimeType"))
+                if (string.IsNullOrEmpty(mediaFormatOptions.fullPath))
                 {
-                    mimeType = (string)options["mimeType"];
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                 }
 
-                if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(mimeType))
+                string mimeType = mediaFormatOptions.type;
+
+                if (string.IsNullOrEmpty(mimeType))
                 {
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
+                    mimeType = MimeTypeMapper.GetMimeType(mediaFormatOptions.fullPath);
                 }
 
-                if (mimeType.Equals("image/jpeg") || filePath.EndsWith(".jpeg"))
+                if (mimeType.Equals("image/jpeg"))
                 {
-                    WriteableBitmap image = ExtractImageFromLocalStorage(filePath);
+                    WriteableBitmap image = ExtractImageFromLocalStorage(mediaFormatOptions.fullPath);
 
                     if (image == null)
                     {
@@ -206,8 +231,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
                 }
-
-
             }
             catch (Exception e)
             {
@@ -259,32 +282,41 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         }
                         else
                         {
-                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                             files.Clear();
                         }
                     }
                     catch(Exception ex) 
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR,"Error capturing image."));
                     }
                     break;
 
                 case TaskResult.Cancel:
                     if (files.Count > 0)
                     {
-                        // User canceled operation, but some images were made 
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        // User canceled operation, but some images were made
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                         files.Clear();
                     }
                     else
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Canceled."));
                     }
                     break;
-            }
-
             
-            
+                default:
+                    if (files.Count > 0)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
+                        files.Clear();
+                    }
+                    else
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Did not complete!"));
+                    }
+                    break;               
+            }         
         }
 
         /// <summary>

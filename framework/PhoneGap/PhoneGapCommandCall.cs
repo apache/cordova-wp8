@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Linq;
 
 namespace WP7GapClassLib.PhoneGap
 {
@@ -44,7 +45,7 @@ namespace WP7GapClassLib.PhoneGap
             commandCallParameters.Service = split[0];
             commandCallParameters.Action = split[1];
             commandCallParameters.CallbackId = split[2];
-            commandCallParameters.Args = split.Length > 3 ? split[3] : String.Empty;
+            commandCallParameters.Args = split.Length <= 3 ? String.Empty : String.Join("/", split.Skip(3));
 
             return commandCallParameters;
         }

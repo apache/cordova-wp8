@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Text;
 
 namespace WP7GapClassLib.PhoneGap
 {
@@ -52,7 +53,9 @@ namespace WP7GapClassLib.PhoneGap
 
 		public Status Result {get; private set;}
 		public string Message {get; private set;}
-		public bool KeepCallback { get; set; }
+		public String Cast { get; private set; }
+
+		public bool KeepCallback { get; set; }        
 
 		/// <summary>
 		/// Whether command succeded or not
@@ -69,25 +72,63 @@ namespace WP7GapClassLib.PhoneGap
 		/// Creates new instance of the PluginResult class.
 		/// </summary>
 		/// <param name="status">Execution result</param>
-        public PluginResult(Status status)
-            : this(status, PluginResult.StatusMessages[(int)status])
+		public PluginResult(Status status)
+			: this(status, PluginResult.StatusMessages[(int)status])
 		{
-        }
+		}
 
 		/// <summary>
 		/// Creates new instance of the PluginResult class.
 		/// </summary>
 		/// <param name="status">Execution result</param>
-		/// <param name="callBackArgs">Callback parameters</param>
-		public PluginResult(Status status, object message) 
+		/// <param name="message">The message</param>
+		public PluginResult(Status status, object message)
+			: this(status, message, null)
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance of the PluginResult class.
+		/// </summary>
+		/// <param name="status">Execution result</param>
+		/// <param name="message">The message</param>
+		/// <param name="cast">The cast parameter</param>
+		public PluginResult(Status status, object message, string cast)
 		{
 			this.Result = status;
 			this.Message = JSON.JsonHelper.Serialize(message);
+			this.Cast = cast;
 		}
 
 		public string ToJSONString()
 		{
-               return "{status:" + (int)this.Result + ",message:" + this.Message + ",keepCallback:" + this.KeepCallback + "}";
+			   
+			return "'{status:" + (int)this.Result + ",message:" + this.Message + ",keepCallback:" + this.KeepCallback + "}'";
+
+		}
+
+		public string ToCallbackString(string callbackId, string successCallback, string errorCallback)
+		{
+			//return String.Format("{0}('{1}',{2});", successCallback, callbackId, this.ToJSONString());
+
+			if (this.IsSuccess)
+			{
+				StringBuilder buf = new StringBuilder("");
+				if (this.Cast != null)
+				{
+					buf.Append("var temp = " + this.Cast + "(" + this.ToJSONString() + ");\n");
+					buf.Append(String.Format("{0}('{1}',temp);", successCallback, callbackId));
+				}
+				else
+				{
+					buf.Append(String.Format("{0}('{1}',{2});", successCallback, callbackId, this.ToJSONString()));
+				}
+				return buf.ToString();
+			}
+			else
+			{
+				return String.Format("{0}('{1}',{2});", errorCallback, callbackId, this.ToJSONString());
+			}
 		}
 
 		public override String ToString()

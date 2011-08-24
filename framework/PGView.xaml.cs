@@ -254,13 +254,20 @@ namespace WP7GapClassLib
                 throw new ArgumentNullException("result");
             }
 
+            string callBackScript = result.ToCallbackString(callbackId, "commandResult", "commandError");
+
+            // TODO: this is correct invokation method
+            //this.GapBrowser.InvokeScript("eval", new string[] {callBackScript });
+
+
+            /// But we temporary use this version because C#<->JS bridge is on fully ready
             if (result.IsSuccess)
             {
-                this.GapBrowser.InvokeScript("commandResult", new string[] {callbackId, result.ToJSONString()});
+                this.GapBrowser.InvokeScript("commandResult", new string[] { callbackId, result.ToJSONString() });
             }
             else
             {
-                this.GapBrowser.InvokeScript("commandError", new string[] {callbackId, result.ToJSONString()});
+                this.GapBrowser.InvokeScript("commandError", new string[] { callbackId, result.ToJSONString() });
             }
         }
     }
