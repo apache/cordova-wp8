@@ -136,7 +136,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             if (cameraOptions.PictureSourceType == CAMERA)
             {
                 cameraTask = new CameraCaptureTask();
-                cameraTask.Completed += onComplited;
+                cameraTask.Completed += onTaskCompleted;
                 cameraTask.Show();
             }
             else
@@ -144,7 +144,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 if ((cameraOptions.PictureSourceType == PHOTOLIBRARY) || (cameraOptions.PictureSourceType == SAVEDPHOTOALBUM))
                 {
                     photoChooserTask = new PhotoChooserTask();
-                    photoChooserTask.Completed += onComplited;
+                    photoChooserTask.Completed += onTaskCompleted;
                     photoChooserTask.Show();
                 }
                 else
@@ -155,7 +155,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
             
         }
 
-        public void onComplited(object sender,PhotoResult e) {
+        public void onTaskCompleted(object sender,PhotoResult e) 
+        {
             if (e.Error != null)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));

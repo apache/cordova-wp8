@@ -84,7 +84,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             throw new MissingMethodException(methodName);            
 
-            return null;
+            //return null;
         }
 
         public void DispatchCommandResult()
