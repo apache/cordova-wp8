@@ -41,23 +41,22 @@
     forceError(); // forceError does not exist
     }
 
-    //console.log("JSON = " + JSON);
+    console.log("JSON = " + JSON);
+	console.log("JSON.parse = " + JSON.parse);
+	
+	document.addEventListener("DOMContentLoaded", 
+	function() {
+    	console.log("DOMContentLoaded");
+	}, false);
+
 
     function doLoad()
     {
         console.log("document.addEventListener = " + document.addEventListener);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // this will become PhoneGap.exec, I have been working in place to keep the number of moving parts down. -jm
 
-    // every native call gets a new callbackId
-    var NextcallbackId = 0;
-
-    // callbacks is a map of callbackId->{successHandler,errorHandler}
-    var callbacks = {};
-
-   successCallback = function (result) {
+    var successCallback = function (result) {
 
        var message = result;
        console.log(message);
@@ -65,11 +64,12 @@
        divProperties.innerHTML += message + "<br/>";
 
        //exec(null, null, 'Notification', 'alert', '{"message":"' + result + '"}');
-
+		
+	   return message;
        
     }
 
-    failureCallback = function (error) {
+    var failureCallback = function (error) {
 
         var message = error;
         console.log(message);
@@ -79,49 +79,32 @@
         //exec(null, null, 'Notification', 'alert', '{"message":"' + error + '"}');
 
     }
+	
+	var onGetPictureSuccess = function(result)
+	{
+		gapImage.src = "../" + result;
+	}
 
-    function commandResult(callbackId, args) {
 
+	
+	
+	
 
-        if (typeof callbacks[callbackId] != "undefined") {
-
-            if (typeof callbacks[callbackId].success == "function") {
-                callbacks[callbackId].success(args);                
-            }
-
-            callbacks[callbackId] = null;
-
-        }
-    };
-
-    function commandError(callbackId, args)
-    { 
-        if(typeof callbacks[callbackId] != "undefined")
-        {
-            if(typeof callbacks[callbackId].fail == "function")
-            {
-                callbacks[callbackId].fail(args);
-            }
-
-            callbacks[callbackId] = null;
-        }
-    };
-
-    // soon to be PhoneGap.exec ..
-    var exec = function (success, fail, service, action, args) {
-        // get the next callbackId for this service call
-        var callbackId = service + NextcallbackId++;
-
-        // add it to the map if success OR fail is passed in and not null
-        if (typeof success == "function" || typeof fail == "function") {
-            callbacks[callbackId] = { success: success, fail: fail };
-            console.log("added callback");
-        }
-        // generate a new command string, ex. DebugConsole/log/DebugConsole23/{"message":"wtf dude?"}
-        var command = service + "/" + action + "/" + callbackId + "/" + JSON.stringify(args);
-        // pass it on to Notify
-        window.external.Notify(command);
-    }
+//    // soon to be PhoneGap.exec ..
+//    var exec = function (success, fail, service, action, args) {
+//        // get the next callbackId for this service call
+//        var callbackId = service + NextcallbackId++;
+//
+//        // add it to the map if success OR fail is passed in and not null
+//        if (typeof success == "function" || typeof fail == "function") {
+//            callbacks[callbackId] = { success: success, fail: fail };
+//            console.log("added callback");
+//        }
+//        // generate a new command string, ex. DebugConsole/log/DebugConsole23/{"message":"wtf dude?"}
+//        var command = service + "/" + action + "/" + callbackId + "/" + JSON.stringify(args);
+//        // pass it on to Notify
+//        window.external.Notify(command);
+//    }
 
     // Here are some sample calls to exec
     //exec(null,null,"DebugConsole","log",{message:"This is message 1"});
@@ -139,11 +122,11 @@
   </script>
     
 </head>
-<body onload="doLoad()">
+<body onLoad="doLoad()">
     <div id="dude">Hmmm</div>
 
     <!-- This image has been included to prove it can be done -->
-    <img alt="PhoneGap" src="pg_logo.png" id="gapImage" />
+    <img alt="PhoneGap" src="pg_logo.png" id="gapImage" style="width:200px;height:auto;" />
 
     <div id="outputID" style="color:Orange; font-size:16">
       Hello from HTML document pre script!
@@ -151,20 +134,22 @@
 
 
     <ul>
-        <li onclick="exec(successCallback, failureCallback,'Device','name');">Device Platform</li>
-        <li onclick="exec(successCallback, failureCallback,'Dummy','somemethod');">Unknown Service</li>
-        <li onclick="exec(successCallback, failureCallback,'Device','somemethod');">Unknown Method</li>
-        <li onclick="exec(successCallback, failureCallback,'Capture','captureImage',{limit: 2});">Capture.captureImage</li>
-        <li onclick="exec(successCallback, failureCallback,'Camera','getPicture',{ PictureSourceType: 1, DestinationType: 1});">Camera.getPicture</li>
-        <li onclick="exec(successCallback, failureCallback,'Capture','getFormatData',{fullPath: 'CapturedImagesCache\\CameraCapture-f3b7730b-ff17-46b7-809a-59c179d08fd8.jpg'});">Capture.getMediaData</li>
+    	<li onClick="PhoneGap.exec(successCallback, failureCallback,'Notification','alert','Here be monsters!');">Alert</li>
+        <li onClick="PhoneGap.exec(successCallback, failureCallback,'Notification','alert',{message:'Here be monsters!',title:'RAWR',buttonLabel:'MKay'});">Alert RAWR</li>
+        <li onClick="PhoneGap.exec(successCallback, failureCallback,'Device','name');">Device Platform</li>
+        <li onClick="PhoneGap.exec(successCallback, failureCallback,'Dummy','somemethod');">Unknown Service</li>
+        <li onClick="PhoneGap.exec(successCallback, failureCallback,'Device','somemethod');">Unknown Method</li>
+        <li onClick="PhoneGap.exec(successCallback, failureCallback,'Capture','captureImage',{limit: 2});">Capture.captureImage</li>
+        <li onClick="PhoneGap.exec(onGetPictureSuccess, failureCallback,'Camera','getPicture',{ PictureSourceType: 2, DestinationType: 1});">Camera.getPicture</li>
+        <li onClick="PhoneGap.exec(successCallback, failureCallback,'Capture','getFormatData',{fullPath: 'CapturedImagesCache\\CameraCapture-f3b7730b-ff17-46b7-809a-59c179d08fd8.jpg'});">Capture.getMediaData</li>
     </ul>
 
     <div id="divProperties" style="color:Orange;">Placeholder for app messages</div>
 
 
 
-    <button onclick="exec(null,null,'Contacts','create', 'herm');">save a contact</button>
-    <button onclick="exec(null,null,'Contacts','find', 'herm');">find a contact</button>
+    <button onClick="exec(null,null,'Contacts','create', 'herm');">save a contact</button>
+    <button onClick="exec(null,null,'Contacts','find', 'herm');">find a contact</button>
 
 
   
