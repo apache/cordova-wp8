@@ -42,29 +42,104 @@ var PhoneGap = {
         ready: true,
         commands: [],
         timer: null
-    }
+    },
+	available:false,
+	callbackId:0,
+	callbacks:{}
 };
 
-PhoneGap.available = false;
+PhoneGap.callbackStatus = {
+    NO_RESULT: 0,
+    OK: 1,
+    CLASS_NOT_FOUND_EXCEPTION: 2,
+    ILLEGAL_ACCESS_EXCEPTION: 3,
+    INSTANTIATION_EXCEPTION: 4,
+    MALFORMED_URL_EXCEPTION: 5,
+    IO_EXCEPTION: 6,
+    INVALID_ACTION: 7,
+    JSON_EXCEPTION: 8,
+    ERROR: 9
+};
 
 PhoneGap.exec = function(success, fail, service, action, args)
 {
 	
 	var callbackId = service + PhoneGap.callbackId++;
-    if (success || fail) 
+    if (typeof success == "function" || typeof fail == "function") 
 	{
         PhoneGap.callbacks[callbackId] = {success:success, fail:fail};
+		console.log("added callback for " + callbackId);
     }
 
-	var commandObj = {
-		action:action,
-		service:service,
-		params:args,
-		callbackId:callbackId
-	};
+	 // generate a new command string, ex. DebugConsole/log/DebugConsole23/{"message":"wtf dude?"}
+     var command = service + "/" + action + "/" + callbackId + "/" + JSON.stringify(args);
+        // pass it on to Notify
+     window.external.Notify(command);
+};
 
+/**
+ * Called by native code when returning successful result from an action.
+ *
+ * @param callbackId
+ * @param args
+ */
+PhoneGapCallbackSuccess = function(callbackId, args) 
+{
+	var result = "result::" + (typeof PhoneGap.callbacks[callbackId]);
+	var commandResult;
+	try
+	{
+		commandResult  = JSON.parse(args);
+	}
+	catch(exception)
+	{
+		return exception.message;
+	}
+	
+    if (PhoneGap.callbacks[callbackId] ) {
 
-	window.external.Notify(JSON.stringify(commandObj));
+        // If result is to be sent to callback
+        if (commandResult.status === PhoneGap.callbackStatus.OK) {
+            try {
+                if (PhoneGap.callbacks[callbackId].success) {
+                    result = PhoneGap.callbacks[callbackId].success(commandResult.message);
+                }
+            }
+            catch (e) {
+                console.log("Error in success callback: "+callbackId+" = " + e.message);
+            }
+        }
+
+        // Clear callback if not expecting any more results
+        if (!commandResult.keepCallback) {
+            delete PhoneGap.callbacks[callbackId];
+        }
+    }
+	return result;
+};
+
+/**
+ * Called by native code when returning error result from an action.
+ *
+ * @param callbackId
+ * @param args
+ */
+PhoneGapCallbackError = function (callbackId, args) {
+    if (PhoneGap.callbacks[callbackId]) {
+        try {
+            if (PhoneGap.callbacks[callbackId].fail) {
+                PhoneGap.callbacks[callbackId].fail(args.message);
+            }
+        }
+        catch (e) {
+            console.log("Error in error callback: "+callbackId+" = "+e);
+        }
+
+        // Clear callback if not expecting any more results
+        if (!args.keepCallback) {
+            delete PhoneGap.callbacks[callbackId];
+        }
+    }
 };
 
 /**

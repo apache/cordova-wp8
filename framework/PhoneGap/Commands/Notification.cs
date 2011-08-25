@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 
 using Microsoft.Devices;
 using Microsoft.Phone.Scheduler;
+using System.Runtime.Serialization;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -25,10 +26,36 @@ namespace WP7GapClassLib.PhoneGap.Commands
         //          - examples of alarm class http://mkdot.net/blogs/filip/archive/2011/06/06/windows-phone-multitasking-part-2-2.aspx
 
         //MessageBoxResult res = MessageBox.Show("Could not call script: " + ex.Message, "caption", MessageBoxButton.OKCancel);
-        public void alert(string msg)
+
+        [DataContract]
+        public class AlertOptions
         {
-            MessageBoxResult res = MessageBox.Show(msg, "Alert", MessageBoxButton.OK);
-            DispatchCommandResult();
+            /// <summary>
+            /// 
+            /// </summary>
+            [DataMember]
+            public string message { get; set; }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            [DataMember]
+            public string title { get; set; }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            [DataMember]
+            public string buttonLabel { get; set; }
+        }
+
+        public void alert(string options)
+        {
+            AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
+            MessageBoxResult res = MessageBox.Show(alertOpts.message, alertOpts.title,MessageBoxButton.OK);
+
+            
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK,(int)res));
         }
 
         public void confirm(string msg)
