@@ -30,31 +30,46 @@ namespace WP7GapClassLib.PhoneGap.Commands
         [DataContract]
         public class AlertOptions
         {
-            /// <summary>
-            /// 
-            /// </summary>
-            [DataMember]
-            public string message { get; set; }
+
+            public AlertOptions()
+            {
+
+            }
+
+            [OnDeserializing]
+            public void OnDeserializing(StreamingContext context)
+            {
+                // set defaults
+                this.message = "message";
+                this.title = "Alert";
+                this.buttonLabel = "ok";
+            }
 
             /// <summary>
             /// 
             /// </summary>
             [DataMember]
-            public string title { get; set; }
+            public string message;
 
             /// <summary>
             /// 
             /// </summary>
             [DataMember]
-            public string buttonLabel { get; set; }
+            public string title;
+
+            /// <summary>
+            /// 
+            /// </summary>
+            [DataMember]
+            public string buttonLabel;
         }
 
         public void alert(string options)
         {
             AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
+
             MessageBoxResult res = MessageBox.Show(alertOpts.message, alertOpts.title,MessageBoxButton.OK);
 
-            
             DispatchCommandResult(new PluginResult(PluginResult.Status.OK,(int)res));
         }
 
