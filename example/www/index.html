@@ -134,13 +134,14 @@
 
 
     <ul>
-    	<li onClick="PhoneGap.exec(successCallback, failureCallback,'Notification','alert','Here be monsters!');">Alert</li>
+    	<li onClick="PhoneGap.exec(successCallback, failureCallback,'Notification','alert',{message:'Here be monsters!'});">Alert</li>
         <li onClick="PhoneGap.exec(successCallback, failureCallback,'Notification','alert',{message:'Here be monsters!',title:'RAWR',buttonLabel:'MKay'});">Alert RAWR</li>
         <li onClick="PhoneGap.exec(successCallback, failureCallback,'Device','name');">Device Platform</li>
         <li onClick="PhoneGap.exec(successCallback, failureCallback,'Dummy','somemethod');">Unknown Service</li>
         <li onClick="PhoneGap.exec(successCallback, failureCallback,'Device','somemethod');">Unknown Method</li>
         <li onClick="PhoneGap.exec(successCallback, failureCallback,'Capture','captureImage',{limit: 2});">Capture.captureImage</li>
-        <li onClick="PhoneGap.exec(onGetPictureSuccess, failureCallback,'Camera','getPicture',{ PictureSourceType: 2, DestinationType: 1});">Camera.getPicture</li>
+        <li onClick="PhoneGap.exec(onGetPictureSuccess, failureCallback,'Camera','getPicture',{ PictureSourceType:1, DestinationType: 1});">Camera.getPicture</li>
+        <li onClick="PhoneGap.exec(onGetPictureSuccess, failureCallback,'Camera','getPicture',{ PictureSourceType:0, DestinationType: 1});">Camera.getPicture(PhotoRoll)</li>
         <li onClick="PhoneGap.exec(successCallback, failureCallback,'Capture','getFormatData',{fullPath: 'CapturedImagesCache\\CameraCapture-f3b7730b-ff17-46b7-809a-59c179d08fd8.jpg'});">Capture.getMediaData</li>
     </ul>
 
