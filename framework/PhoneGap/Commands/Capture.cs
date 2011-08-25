@@ -35,12 +35,12 @@ namespace WP7GapClassLib.PhoneGap.Commands
             /// <summary>
             /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
             /// </summary>
-            [DataMember]
-            public int limit { get; set; }
+            [DataMember(IsRequired = false, Name="limit")]
+            public int Limit { get; set; }
 
             public static CaptureImageOptions Default
             {
-                get { return new CaptureImageOptions() { limit = 1 }; }
+                get { return new CaptureImageOptions() { Limit = 1 }; }
             }
         }
 
@@ -53,11 +53,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
             /// <summary>
             /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
             /// </summary>
-            [DataMember]
-            public string fullPath { get; set; }
+            [DataMember(IsRequired=true,Name="fullPath")]
+            public string FullPath { get; set; }
 
-            [DataMember]
-            public string type { get; set; }
+            [DataMember(Name="type")]
+            public string Type { get; set; }
             
         }
 
@@ -68,28 +68,28 @@ namespace WP7GapClassLib.PhoneGap.Commands
         public class MediaFile
         {
 
-            [DataMember]
-            public string fileName;
+            [DataMember(Name = "fileName")]
+            public string FileName { get; set; }
 
-            [DataMember]
-            public string filePath;
+            [DataMember(Name = "filePath")]
+            public string FilePath { get; set; }
 
-            [DataMember]
-            public string type;
+            [DataMember(Name = "type")]
+            public string Type { get; set; }
 
-            [DataMember]
-            public string lastModifiedDate;
+            [DataMember(Name = "lastModifiedDate")]
+            public string LastModifiedDate { get; set; }
 
-            [DataMember]
-            public long size;
+            [DataMember(Name = "size")]
+            public long Size { get; set; }
 
             public MediaFile(string filePath, Picture image)
             {
-                this.filePath = filePath;
-                this.fileName = System.IO.Path.GetFileName(this.filePath);
-                this.type = MimeTypeMapper.GetMimeType(fileName);
-                this.size = image.GetImage().Length;
-                this.lastModifiedDate = image.Date.ToString();
+                this.FilePath = filePath;
+                this.FileName = System.IO.Path.GetFileName(this.FilePath);
+                this.Type = MimeTypeMapper.GetMimeType(FileName);
+                this.Size = image.GetImage().Length;
+                this.LastModifiedDate = image.Date.ToString();
 
             }
         }
@@ -100,28 +100,28 @@ namespace WP7GapClassLib.PhoneGap.Commands
         [DataContract]
         public class MediaFileData
         {
-            [DataMember]
-            public int height;
+            [DataMember(Name = "height")]
+            public int Height { get; set; }
 
-            [DataMember]
-            public int width;
+            [DataMember(Name = "width")]
+            public int Width { get; set; }
 
-            [DataMember]
-            public int bitrate;
+            [DataMember(Name = "bitrate")]
+            public int Bitrate { get; set; }
 
-            [DataMember]
-            public int duration;
+            [DataMember(Name = "duration")]
+            public int Duration { get; set; }
 
-            [DataMember]
-            public string codecs;
+            [DataMember(Name = "codecs")]
+            public string Codecs { get; set; }
 
             public MediaFileData(WriteableBitmap image)
             {
-                this.height = image.PixelHeight;
-                this.width = image.PixelWidth;
-                this.bitrate = 0;
-                this.duration = 0;
-                this.codecs = "";
+                this.Height = image.PixelHeight;
+                this.Width = image.PixelWidth;
+                this.Bitrate = 0;
+                this.Duration = 0;
+                this.Codecs = "";
             }
         }
 
@@ -202,21 +202,21 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-                if (string.IsNullOrEmpty(mediaFormatOptions.fullPath))
+                if (string.IsNullOrEmpty(mediaFormatOptions.FullPath))
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                 }
 
-                string mimeType = mediaFormatOptions.type;
+                string mimeType = mediaFormatOptions.Type;
 
                 if (string.IsNullOrEmpty(mimeType))
                 {
-                    mimeType = MimeTypeMapper.GetMimeType(mediaFormatOptions.fullPath);
+                    mimeType = MimeTypeMapper.GetMimeType(mediaFormatOptions.FullPath);
                 }
 
                 if (mimeType.Equals("image/jpeg"))
                 {
-                    WriteableBitmap image = ExtractImageFromLocalStorage(mediaFormatOptions.fullPath);
+                    WriteableBitmap image = ExtractImageFromLocalStorage(mediaFormatOptions.FullPath);
 
                     if (image == null)
                     {
@@ -276,7 +276,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                         this.files.Add(data);
 
-                        if (files.Count < this.captureImageOptions.limit)
+                        if (files.Count < this.captureImageOptions.Limit)
                         {
                             cameraTask.Show();
                         }
