@@ -23,7 +23,6 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using WP7GapClassLib.PhoneGap;
 using System.Threading;
-using Microsoft.Xna.Framework;
 
 namespace WP7GapClassLib
 {
@@ -49,7 +48,7 @@ namespace WP7GapClassLib
             }
             try
             {
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
 
                 StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("GapSourceDictionary.xml", UriKind.Relative));
 
@@ -68,9 +67,9 @@ namespace WP7GapClassLib
                     StreamResourceInfo fileResourceStreamInfo;
 
                     // always overwrite it if we are in debug mode.
-                    //#if DEBUG
-                    //IsolatedStorageFile.GetUserStoreForApplication().Remove();
-                    //#endif 
+#if DEBUG
+                    IsolatedStorageFile.GetUserStoreForApplication().Remove();
+#endif 
 
                     using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
@@ -108,21 +107,10 @@ namespace WP7GapClassLib
 
                 // todo: this should be a start page param passed in via a getter/setter
                 // aka StartPage
-                //Uri indexUri = new Uri("http://www.google.com", UriKind.Absolute);
-                //Uri indexUri = new Uri("www/index.html", UriKind.Relative);
-                //this.GapBrowser.Navigate(indexUri);
 
-                StreamReader reader = new StreamReader(TitleContainer.OpenStream("www\\index.html"));
-                string str = reader.ReadToEnd();
+                Uri indexUri = new Uri("www/index.html", UriKind.Relative);
+                this.GapBrowser.Navigate(indexUri);
 
-                this.GapBrowser.NavigateToString(str);
-
-
-                /*
-                string htmlString = "<html><head><script>var myMsg='blah';function test(msg){alert(msg);}</script></head>";
-                htmlString += "<body onload='test(myMsg);'><a href='#'>hello</a></body></html>";
-                this.GapBrowser.NavigateToString(htmlString);
-                */
             }
             catch (Exception ex)
             {
@@ -254,20 +242,30 @@ namespace WP7GapClassLib
                 throw new ArgumentNullException("result");
             }
 
-            string callBackScript = result.ToCallbackString(callbackId, "commandResult", "commandError");
+            //string callBackScript = result.ToCallbackString(callbackId, "commandResult", "commandError");
 
             // TODO: this is correct invokation method
             //this.GapBrowser.InvokeScript("eval", new string[] {callBackScript });
 
 
             /// But we temporary use this version because C#<->JS bridge is on fully ready
-            if (result.IsSuccess)
+            /// 
+            try
             {
-                this.GapBrowser.InvokeScript("commandResult", new string[] { callbackId, result.ToJSONString() });
+                if (result.IsSuccess)
+                {
+                    //
+                    var res = this.GapBrowser.InvokeScript("PhoneGapCallbackSuccess", new string[] { callbackId, result.ToJSONString() });
+                    Debug.WriteLine("InvokeScript returned :: " + res.ToString());
+                }
+                else
+                {
+                    this.GapBrowser.InvokeScript("PhoneGapCallbackError", new string[] { callbackId, result.ToJSONString() });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                this.GapBrowser.InvokeScript("commandError", new string[] { callbackId, result.ToJSONString() });
+                Debug.WriteLine("Exception in InvokeJSSCallback :: " + ex.Message);
             }
         }
     }

@@ -192,6 +192,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             else
                             {
                                 //TODO Set default value or return base64 or something else
+                                byte[] imageBytes = new byte[e.ChosenPhoto.Length];
+                                e.ChosenPhoto.Read(imageBytes, 0, imageBytes.Length);
+                                imageData = this.SaveImageToLocalStorage(Path.GetFileName(e.OriginalFileName), isoFolder, imageBytes);
                             }
                         }
                                                                        

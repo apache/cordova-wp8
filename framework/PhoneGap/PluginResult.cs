@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Text;
+using System.Diagnostics;
 
 namespace WP7GapClassLib.PhoneGap
 {
@@ -102,8 +103,14 @@ namespace WP7GapClassLib.PhoneGap
 
 		public string ToJSONString()
 		{
-			   
-			return "'{status:" + (int)this.Result + ",message:" + this.Message + ",keepCallback:" + this.KeepCallback + "}'";
+            string res = String.Format("\"status\":{0},\"message\":{1},\"keepCallback\":{2}", 
+                (int)this.Result, 
+                this.Message, 
+                this.KeepCallback.ToString().ToLower() );
+
+            res = "{" + res + "}";
+            Debug.WriteLine("ToJSONString returning :: " + res);
+            return res;
 
 		}
 
