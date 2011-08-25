@@ -47,23 +47,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             if (mInfo != null)
             {
-
-                //if (methodName.Equals("captureImage"))
-                //{
-                //    var options = new Dictionary<string, object>();
-                //    options.Add("limit",2);
-                //    args[0] = options;
-                //}
-                //if (methodName.Equals("getFormatData"))
-                //{
-                //    var options = new Dictionary<string, object>();
-                //    options.Add("filePath", "CapturedImagesCache\\CameraCapture-3768793c-1c66-424a-9e55-a941cbc158610.jpg");
-                //   options.Add("mimeType", "image/jpeg");
-                //    args[0] = options;
-                //}
-
-                return mInfo.Invoke(this, args);
                 // every function handles DispatchCommandResult by itself
+                return mInfo.Invoke(this, args);
             }
 
             // actually methodName could refer to a property
@@ -84,7 +69,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             throw new MissingMethodException(methodName);            
 
-            //return null;
         }
 
         public void DispatchCommandResult()
