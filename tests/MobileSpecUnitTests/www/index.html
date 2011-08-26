@@ -5,11 +5,83 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>PhoneGap</title>
 	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
-	  <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-	  <script type="text/javascript" charset="utf-8" src="main.js"></script>
+      
+	<script type="text/javascript">
+		// provide our own console if it does not exist, huge dev aid!
+		if(typeof window.console == "undefined")
+		{
+		window.console = {log:function(str){window.external.Notify(str);}};
+		}
+		
+		// output any errors to console log, created above.
+		window.onerror=function(e)
+		{
+			console.log("window.onerror ::" + JSON.stringify(e));
+		};
+		
+		console.log("Installed console ! ");
+    </script>
+      
+      <script type="text/javascript" charset="utf-8" src="main.js"></script>
+      <!--<script type="text/javascript" src="thumbs.js"></script>-->
+      <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+       
+      <script type="text/javascript">
+			// provide our own console if it does not exist, huge dev aid!
+			if(typeof window.console == "undefined")
+			{
+			window.console = {log:function(str){window.external.Notify(str);}};
+			}
+			
+			// output any errors to console log, created above.
+			window.onerror=function(e)
+			{
+				console.log("window.onerror ::" + JSON.stringify(e));
+			};
+			
+			console.log("Installed console ! ");
+
+			
+			
+			function init()
+			{
+				document.addEventListener("deviceready",onDeviceReady,false);
+				
+				//PhoneGap.fireEvent(document,"deviceready");
+			}
+			
+			function onDeviceReady(e)
+			{
+				updateDeviceInfo();
+				console.log("deviceready event fired!");
+			}
+			
+			function updateDeviceInfo() 
+			{
+				document.getElementById("platform").innerHTML = device.platform;
+				document.getElementById("version").innerHTML = device.version;
+				document.getElementById("uuid").innerHTML = device.uuid;
+				document.getElementById("name").innerHTML = device.name;
+				document.getElementById("width").innerHTML = screen.width;
+				document.getElementById("height").innerHTML = screen.height;
+				document.getElementById("colorDepth").innerHTML = screen.colorDepth;
+			};
+			
+			PhoneGap.addConstructor(function()
+			{
+				console.log("PhoneGap.addConstructor is working");
+			});
+			
+			
+			
+			
+	  </script>
+      
+	 
+	  
 
   </head>
-  <body onload="init();" id="stage" class="theme">
+  <body onLoad="init();" id="stage" class="theme">
     <h1>PhoneGap Tests</h1>
     <div id="info">
         <h4>Platform: <span id="platform"> &nbsp;</span></h4>
@@ -19,6 +91,8 @@
         <h4>Width: <span id="width"> &nbsp;</span>,   Height: <span id="height">&nbsp;
                    </span>, Color Depth: <span id="colorDepth"></span></h4>
      </div>
+     
+     
     <a href="autotest/index.html" class="btn large">Automatic Test</a>
     <a href="accelerometer/index.html" class="btn large">Accelerometer</a>
     <a href="audio/index.html" class="btn large">Audio Play/Record</a>

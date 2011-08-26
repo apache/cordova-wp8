@@ -121,6 +121,7 @@
     <Content Include="www\misc\index.html" />
     <Content Include="www\misc\page2.html" />
     <Content Include="www\notification\index.html" />
+    <Content Include="www\phonegap.js" />
     <Content Include="www\sql\index.html" />
     <Content Include="www\storage\index.html" />
   </ItemGroup>
