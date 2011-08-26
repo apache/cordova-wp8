@@ -6,8 +6,12 @@
 <FilePath Value="www/index.html"/>
 <FilePath Value="www/main.js"/>
 <FilePath Value="www/master.css"/>
+
+<FilePath Value="www/phonegap.js"/>
+  
 <FilePath Value="www/accelerometer/index.html"/>
 <FilePath Value="www/audio/index.html"/>
+  
 <FilePath Value="www/autotest/index.html"/>
 <FilePath Value="www/autotest/qunit.css"/>
 <FilePath Value="www/autotest/qunit.js"/>
@@ -25,6 +29,7 @@
 <FilePath Value="www/autotest/tests/orientation.tests.js"/>
 <FilePath Value="www/autotest/tests/storage.tests.js"/>
 <FilePath Value="www/autotest/tests/system.tests.js"/>
+  
 <FilePath Value="www/camera/index.html"/>
 <FilePath Value="www/compass/index.html"/>
 <FilePath Value="www/contacts/index.html"/>
@@ -35,4 +40,6 @@
 <FilePath Value="www/notification/index.html"/>
 <FilePath Value="www/sql/index.html"/>
 <FilePath Value="www/storage/index.html"/>
+  
+  
 </GapSourceDictionary>
