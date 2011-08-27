@@ -8,9 +8,22 @@
 <FilePath Value="www/master.css"/>
 
 <FilePath Value="www/phonegap.js"/>
-  
-<FilePath Value="www/accelerometer/index.html"/>
-<FilePath Value="www/audio/index.html"/>
+
+<FilePath Value="www/accelerometer.js"/>
+    
+   
+<FilePath Value="www/accelerometer.html"/>
+<FilePath Value="www/audio.html"/>
+<FilePath Value="www/camera.html"/>
+<FilePath Value="www/compass.html"/>
+<FilePath Value="www/contacts.html"/>
+<FilePath Value="www/events.html"/>
+<FilePath Value="www/location.html"/>
+<FilePath Value="www/misc/index.html"/>
+<FilePath Value="www/misc/page2.html"/>
+<FilePath Value="www/notification.html"/>
+<FilePath Value="www/sql.html"/>
+<FilePath Value="www/storage.html"/>    
   
 <FilePath Value="www/autotest/index.html"/>
 <FilePath Value="www/autotest/qunit.css"/>
@@ -30,16 +43,7 @@
 <FilePath Value="www/autotest/tests/storage.tests.js"/>
 <FilePath Value="www/autotest/tests/system.tests.js"/>
   
-<FilePath Value="www/camera/index.html"/>
-<FilePath Value="www/compass/index.html"/>
-<FilePath Value="www/contacts/index.html"/>
-<FilePath Value="www/events/index.html"/>
-<FilePath Value="www/location/index.html"/>
-<FilePath Value="www/misc/index.html"/>
-<FilePath Value="www/misc/page2.html"/>
-<FilePath Value="www/notification/index.html"/>
-<FilePath Value="www/sql/index.html"/>
-<FilePath Value="www/storage/index.html"/>
+
   
   
 </GapSourceDictionary>

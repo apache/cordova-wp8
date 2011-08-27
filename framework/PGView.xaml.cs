@@ -123,6 +123,10 @@ namespace WP7GapClassLib
 
                                 }
                             }
+                            else
+                            {
+                                Debug.WriteLine("Failed to write file :: " + file.path + " did you forget to add it to the project?");
+                            }
                         }
                     }
                 }
@@ -241,32 +245,36 @@ namespace WP7GapClassLib
 
         private void InvokeJSSCallback(String callbackId, PluginResult result)
         {
-            if (String.IsNullOrEmpty(callbackId))
+            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
             {
-                throw new ArgumentNullException("callbackId");
-            }
+
+                if (String.IsNullOrEmpty(callbackId))
+                {
+                    throw new ArgumentNullException("callbackId");
+                }
             
-            if (result == null)
-            {
-                throw new ArgumentNullException("result");
-            }
+                if (result == null)
+                {
+                    throw new ArgumentNullException("result");
+                }
 
-            //string callBackScript = result.ToCallbackString(callbackId, "commandResult", "commandError");
+                //string callBackScript = result.ToCallbackString(callbackId, "commandResult", "commandError");
 
-            // TODO: this is correct invokation method
-            //this.GapBrowser.InvokeScript("eval", new string[] {callBackScript });
+                // TODO: this is correct invokation method
+                //this.GapBrowser.InvokeScript("eval", new string[] {callBackScript });
 
-            /// But we temporary use this version because C#<->JS bridge is on fully ready
-            /// 
-            try
-            {
-                string status = ((int)result.Result).ToString();
-                this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, result.ToJSONString() });
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Exception in InvokeJSSCallback :: " + ex.Message);
-            }
+                /// But we temporary use this version because C#<->JS bridge is on fully ready
+                /// 
+                try
+                {
+                    string status = ((int)result.Result).ToString();
+                    this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, result.ToJSONString() });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Exception in InvokeJSSCallback :: " + ex.Message);
+                }
+            });
         }
 
     }

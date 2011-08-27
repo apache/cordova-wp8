@@ -91,8 +91,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="SplashScreenImage.jpg" />
-    <Content Include="www\accelerometer\index.html" />
-    <Content Include="www\audio\index.html" />
+    <Content Include="www\accelerometer.html" />
+    <Content Include="www\accelerometer.js" />
+    <Content Include="www\audio.html" />
     <Content Include="www\autotest\index.html" />
     <Content Include="www\autotest\qunit.css" />
     <Content Include="www\autotest\qunit.js" />
@@ -110,20 +111,20 @@
     <Content Include="www\autotest\tests\orientation.tests.js" />
     <Content Include="www\autotest\tests\storage.tests.js" />
     <Content Include="www\autotest\tests\system.tests.js" />
-    <Content Include="www\camera\index.html" />
-    <Content Include="www\compass\index.html" />
-    <Content Include="www\contacts\index.html" />
-    <Content Include="www\events\index.html" />
+    <Content Include="www\camera.html" />
+    <Content Include="www\compass.html" />
+    <Content Include="www\contacts.html" />
+    <Content Include="www\events.html" />
     <Content Include="www\index.html" />
-    <Content Include="www\location\index.html" />
+    <Content Include="www\location.html" />
     <Content Include="www\main.js" />
     <Content Include="www\master.css" />
     <Content Include="www\misc\index.html" />
     <Content Include="www\misc\page2.html" />
-    <Content Include="www\notification\index.html" />
+    <Content Include="www\notification.html" />
     <Content Include="www\phonegap.js" />
-    <Content Include="www\sql\index.html" />
-    <Content Include="www\storage\index.html" />
+    <Content Include="www\sql.html" />
+    <Content Include="www\storage.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\framework\WP7GapClassLib.csproj">
