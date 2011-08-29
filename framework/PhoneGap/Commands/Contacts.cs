@@ -248,15 +248,46 @@ namespace WP7GapClassLib.PhoneGap.Commands
         private void contacts_SearchCompleted(object sender, ContactsSearchEventArgs e)
         {
             // TODO: needs to be modified to take dynamic search param
+
+
+            string firstName = contactTask.FirstName.Trim();
+            string lastName = contactTask.LastName.Trim();
+            string middleName = contactTask.MiddleName.Trim();
+
+            if (firstName.Length > 0 || lastName.Length > 0)
+            {
+                string displayName = formatDisplayName(firstName, lastName, middleName);
+                searchByDisplayName(e, displayName);
+            }
+
+        }
+
+        private string formatDisplayName(string firstName, string lastName, string middleName)
+        {
+            string displayName = firstName + " " + lastName;
+
+            if (middleName.Length > 0)
+            {
+                displayName = firstName + " " + middleName + " " + lastName;
+            }
+
+            return displayName;
+        }
+
+        private Contact searchByDisplayName(ContactsSearchEventArgs e, string displayName)
+        {
             foreach (var result in e.Results)
             {
-                if (result.DisplayName.Contains(contactTask.FirstName) && result.DisplayName.Contains(contactTask.LastName))
+                if (result.DisplayName.Contains(displayName))
                 {
                     // TODO: need to be able to return the matching contact(s) to the JS instead of using this MessageBox
-                    MessageBoxResult res = MessageBox.Show("contact: " + result.DisplayName + " found", "Alert", MessageBoxButton.OK);                   
-                    break;
+                    MessageBoxResult res = MessageBox.Show("contact: " + result.DisplayName + " found", "Alert", MessageBoxButton.OK);
+                    return result;
                 }
             }
+
+            // nothing found return null
+            return null;
         }
 
         // TODO: just use firstName for testing purpose to see if I could create a contact
