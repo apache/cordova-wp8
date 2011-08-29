@@ -8,10 +8,10 @@ using System;
 
 namespace PhoneGap
 {
-    public interface IAsyncCommand
-    {
-        void SendAsyncResponse();
+    //public interface IAsyncCommand
+    //{
+    //    void SendAsyncResponse();
 
-        event EventHandler<PhoneGapCommand> OnCommandCompleted;
-    }
+    //    event EventHandler<PhoneGapCommand> OnCommandCompleted;
+    //}
 }

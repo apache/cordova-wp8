@@ -11,11 +11,20 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone">
     
     <Grid x:Name="LayoutRoot" Background="{StaticResource PhoneChromeBrush}">
+        
         <phone:WebBrowser x:Name="GapBrowser" 
                           HorizontalAlignment="Stretch"  
                           VerticalAlignment="Stretch" 
                           IsScriptEnabled="True" 
-                          Foreground="Black" Navigated="GapBrowser_Navigated" Loaded="GapBrowser_Loaded" Unloaded="GapBrowser_Unloaded" ScriptNotify="GapBrowser_ScriptNotify" LoadCompleted="GapBrowser_LoadCompleted" Navigating="GapBrowser_Navigating" NavigationFailed="GapBrowser_NavigationFailed" />
+                          Foreground="Black"
+                          Navigated="GapBrowser_Navigated" 
+                          Loaded="GapBrowser_Loaded" 
+                          Unloaded="GapBrowser_Unloaded" 
+                          ScriptNotify="GapBrowser_ScriptNotify" 
+                          LoadCompleted="GapBrowser_LoadCompleted" 
+                          Navigating="GapBrowser_Navigating" 
+                          NavigationFailed="GapBrowser_NavigationFailed" />
+        
     </Grid>
 </UserControl>
 

@@ -13,6 +13,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
 {
     public class File : BaseCommand
     {
-
+        // http://www.windowsphonegeek.com/tips/all-about-wp7-isolated-storage-read-and-save-text-files
     }
 }

@@ -41,8 +41,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Devices.Sensors" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Servicemodel" />
     <Reference Include="System.Servicemodel.Web" />
@@ -54,6 +57,10 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PhoneGap\JSON\JsonHelper.cs" />
+    <Compile Include="PhoneGap\Commands\MimeTypeMapper.cs" />
+    <Compile Include="PhoneGap\PhoneGapCommandCall.cs" />
+    <Compile Include="PhoneGap\CommandFactory.cs" />
     <Compile Include="PhoneGap\Commands\Accelerometer.cs" />
     <Compile Include="PhoneGap\Commands\BaseCommand.cs" />
     <Compile Include="PhoneGap\Commands\Camera.cs" />

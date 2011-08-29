@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -20,25 +20,19 @@ using System.Xml.Linq;
 using WP7GapClassLib.PhoneGap.Commands;
 using System.Diagnostics;
 using System.Text;
-
+using Microsoft.Xna.Framework;
+using WP7GapClassLib.PhoneGap;
+using System.Threading;
 
 namespace WP7GapClassLib
 {
     public partial class PGView : UserControl
     {
-        Dictionary<string, BaseCommand> commandMap;
+        
 
         public PGView()
         {
             InitializeComponent();
-
-            commandMap = new Dictionary<string, BaseCommand>();
-
-            //Device device = new Device();
-            //device.InvokeMethodNamed("Get");
-
-            //Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands.Camera");
-
         }
 
         void GapBrowser_Loaded(object sender, RoutedEventArgs e)
@@ -49,6 +43,39 @@ namespace WP7GapClassLib
             }
             try
             {
+
+                // Before we possibly clean the ISO-Store, we need to grab our generated UUID, so we can rewrite it after.
+                string deviceUUID = "";
+                using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    try
+                    {
+                        IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream("appUUID.txt", FileMode.Open, FileAccess.Read, appStorage);
+
+                        using (StreamReader reader = new StreamReader(fileStream))
+                        {
+                            deviceUUID = reader.ReadLine();
+                        }
+                    }
+                    catch (Exception /*ex*/)
+                    {
+                        deviceUUID = Guid.NewGuid().ToString();
+                    }
+
+                    // always overwrite user-iso-store if we are in debug mode.
+#if DEBUG
+                    appStorage.Remove();
+#endif 
+
+                    IsolatedStorageFileStream file = new IsolatedStorageFileStream("appUUID.txt", FileMode.Create, FileAccess.Write, appStorage);
+                    using (StreamWriter writeFile = new StreamWriter(file))
+                    {
+                        writeFile.WriteLine(deviceUUID);
+                        writeFile.Close();
+                    }
+                }
+
+
 
                 StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("GapSourceDictionary.xml", UriKind.Relative));
 
@@ -66,10 +93,7 @@ namespace WP7GapClassLib
                                  };
                     StreamResourceInfo fileResourceStreamInfo;
 
-                    // always overwrite it if we are in debug mode.
-                    //#if DEBUG
-                    //IsolatedStorageFile.GetUserStoreForApplication().Remove();
-                    //#endif 
+
 
                     using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
@@ -94,12 +118,14 @@ namespace WP7GapClassLib
                                         using (var writer = new BinaryWriter(outFile))
                                         {
                                             writer.Write(data);
-                                            writer.Flush();
-                                            writer.Close();
                                         }
                                     }
 
                                 }
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Failed to write file :: " + file.path + " did you forget to add it to the project?");
                             }
                         }
                     }
@@ -107,9 +133,10 @@ namespace WP7GapClassLib
 
                 // todo: this should be a start page param passed in via a getter/setter
                 // aka StartPage
-                //Uri indexUri = new Uri("http://www.google.com", UriKind.Absolute);
+
                 Uri indexUri = new Uri("www/index.html", UriKind.Relative);
                 this.GapBrowser.Navigate(indexUri);
+
             }
             catch (Exception ex)
             {
@@ -119,23 +146,15 @@ namespace WP7GapClassLib
 
         void GapBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            try
-            {
-                //string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithoutParameters");
-                string res = (string)GapBrowser.InvokeScript("JavaScriptFunctionWithParameters", "1");
-                System.Diagnostics.Debug.WriteLine("Called JS with result :: " + res);
-            }
-            catch (Exception ex)
-            {
-
-                MessageBoxResult res = MessageBox.Show("Could not call script: " + ex.Message, "caption", MessageBoxButton.OKCancel);
-
-            }
+            Debug.WriteLine("GapBrowser_LoadCompleted");
         }
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
-            //throw new NotImplementedException();
+            Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
+            // TODO: tell any running plugins to stop doing what they are doing.
+            // TODO: check whitelist / blacklist
+            // NOTE: Navigation can be cancelled by setting :        e.Cancel = true;
         }
 
         /*
@@ -149,43 +168,43 @@ namespace WP7GapClassLib
          **/
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
-            //{"action":"log","service":"Debug","params":"This is a message","callbackId":"Debug0"}
-
             string commandStr = e.Value;
+            Debug.WriteLine("GapBrowser_ScriptNotify :: " + commandStr);
+            PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
 
-            string[] split = commandStr.Split('/');
-            if (split.Length < 3)
+            if (commandCallParams == null)
             {
                 // ERROR
 
-                Debug.WriteLine(commandStr); // this is the case of window.error messages
+                //Debug.WriteLine(commandStr); // this is the case of window.error messages
 
                 return;
             }
-            string service = split[0];
-            string action = split[1];
-            string callbackId = split[2];
-            string args = split[3];
 
-            if (!commandMap.ContainsKey(service))
+            BaseCommand bc = CommandFactory.CreateUsingServiceName(commandCallParams.Service);
+           
+            if (bc == null)
             {
-                // TODO: if we do not find the command with that name, handle the error, somehow ...
-                Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
-                if (t != null)
-                {
-                    BaseCommand bc = (BaseCommand)Activator.CreateInstance(t);
-                    if (bc != null)
-                    {
-                        commandMap[service] = bc;
-                        bc.InvokeMethodNamed(action, args);
-                    }
-                }
+                this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION));
+                return;
             }
-            else
+
+            bc.OnCommandResult += new EventHandler<PluginResult>(OnCommandResult);
+            bc.JSCallackId = commandCallParams.CallbackId;
+
+            try
             {
-                BaseCommand bc = commandMap[service];
-                bc.InvokeMethodNamed(action, args);
+                bc.InvokeMethodNamed(commandCallParams.Action, commandCallParams.Args);
             }
+            catch(Exception)
+            {
+                bc.OnCommandResult -= this.OnCommandResult;
+                // TODO log somehow
+                this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
+                return;
+            }
+
+            // Javascript can only work in a single thread
         }
 
         private void GapBrowser_Unloaded(object sender, RoutedEventArgs e)
@@ -195,12 +214,68 @@ namespace WP7GapClassLib
 
         private void GapBrowser_NavigationFailed(object sender, System.Windows.Navigation.NavigationFailedEventArgs e)
         {
-            //throw new NotImplementedException();
+            Debug.WriteLine("GapBrowser_NavigationFailed :: " + e.Uri.ToString());
         }
 
         private void GapBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
+            Debug.WriteLine("GapBrowser_Navigated");
+        }
+
+        private void OnCommandResult(object sender, PluginResult result)
+        {
+            BaseCommand command = sender as BaseCommand;
+
+            if (command == null)
+            {
+                Debug.WriteLine("OnCommandResult missing argument");
+            }
+            else if (result == null)
+            {
+                Debug.WriteLine("OnCommandResult missing argument");
+            }
+            else if (command.IsJSCallbackAttached)
+            {
+                this.InvokeJSSCallback(command.JSCallackId, result);
+            }
+
+            // else // no callback required
 
         }
+
+        private void InvokeJSSCallback(String callbackId, PluginResult result)
+        {
+            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+
+                if (String.IsNullOrEmpty(callbackId))
+                {
+                    throw new ArgumentNullException("callbackId");
+                }
+            
+                if (result == null)
+                {
+                    throw new ArgumentNullException("result");
+                }
+
+                //string callBackScript = result.ToCallbackString(callbackId, "commandResult", "commandError");
+
+                // TODO: this is correct invokation method
+                //this.GapBrowser.InvokeScript("eval", new string[] {callBackScript });
+
+                /// But we temporary use this version because C#<->JS bridge is on fully ready
+                /// 
+                try
+                {
+                    string status = ((int)result.Result).ToString();
+                    this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, result.ToJSONString() });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Exception in InvokeJSSCallback :: " + ex.Message);
+                }
+            });
+        }
+
     }
 }

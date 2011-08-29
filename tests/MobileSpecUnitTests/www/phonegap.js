@@ -45,7 +45,8 @@ var PhoneGap = {
     },
 	available:false,
 	callbackId:0,
-	callbacks:{}
+	callbacks:{},
+	resources:{}
 };
 
 PhoneGap.callbackStatus = {
@@ -59,6 +60,25 @@ PhoneGap.callbackStatus = {
     INVALID_ACTION: 7,
     JSON_EXCEPTION: 8,
     ERROR: 9
+};
+
+/**
+ * Determine if resource has been loaded by PhoneGap
+ *
+ * @param name
+ * @return
+ */
+PhoneGap.hasResource = function(name) {
+    return PhoneGap.resources[name];
+};
+
+/**
+ * Add a resource to list of loaded resources by PhoneGap
+ *
+ * @param name
+ */
+PhoneGap.addResource = function(name) {
+    PhoneGap.resources[name] = true;
 };
 
 PhoneGap.exec = function(success, fail, service, action, args)
