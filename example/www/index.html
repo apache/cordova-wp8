@@ -149,8 +149,9 @@
 
 
 
-    <button onClick="exec(null,null,'Contacts','create', 'herm');">save a contact</button>
-    <button onClick="exec(null,null,'Contacts','find', 'herm');">find a contact</button>
+    
+    <button onClick="PhoneGap.exec(successCallback, failureCallback, 'Contacts', 'create', {FirstName:'herm',LastName:'wong'});">save a contact</button>
+    <button onClick="PhoneGap.exec(successCallback, failureCallback, 'Contacts', 'find', {FirstName:'herm',LastName:'wong'});">find a contact</button>
 
 
   
