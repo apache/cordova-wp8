@@ -121,10 +121,12 @@
     <Content Include="js\sms.js" />
     <Content Include="js\storage.js" />
     <Content Include="js\telephony.js" />
+    <Resource Include="resources\notification-beep.wav" />
   </ItemGroup>
   <ItemGroup>
     <None Include="js\build_phonegap.js.cmd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions />

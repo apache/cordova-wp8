@@ -10,6 +10,8 @@
 <FilePath Value="www/phonegap.js"/>
 
 <FilePath Value="www/accelerometer.js"/>
+
+<FilePath Value="www/notification.js"/>
     
    
 <FilePath Value="www/accelerometer.html"/>
