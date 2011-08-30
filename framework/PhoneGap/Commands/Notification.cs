@@ -12,6 +12,10 @@ using System.Windows.Shapes;
 using Microsoft.Devices;
 using Microsoft.Phone.Scheduler;
 using System.Runtime.Serialization;
+using System.Threading;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using System.Windows.Resources;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -67,38 +71,39 @@ namespace WP7GapClassLib.PhoneGap.Commands
         public void alert(string options)
         {
             AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
-
             MessageBoxResult res = MessageBox.Show(alertOpts.message, alertOpts.title,MessageBoxButton.OK);
 
             DispatchCommandResult(new PluginResult(PluginResult.Status.OK,(int)res));
         }
 
-        public void confirm(string msg)
+        public void confirm(string options)
         {
-            MessageBoxResult res = MessageBox.Show(msg, "Confirm", MessageBoxButton.OKCancel);
-            DispatchCommandResult();
+            AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
+
+            MessageBoxResult res = MessageBox.Show(alertOpts.message, alertOpts.title, MessageBoxButton.OKCancel);
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, (int)res));
         }
 
-        public void beep(string beepDuration, string msg, string soundFilePath)
+        public void beep(string count)
         {
-            Alarm alarm = new Alarm("notificationBeep");
-            int seconds;
 
-            try
+            int times = int.Parse(count);
+
+            StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WP7GapClassLib;component/resources/notification-beep.wav", UriKind.Relative));
+            if (sri != null)
             {
-                seconds = int.Parse(beepDuration);
+                SoundEffect effect = SoundEffect.FromStream(sri.Stream);
+                SoundEffectInstance inst = effect.CreateInstance();
+                while (times-- > 0)
+                {
+                    
+                    inst.Play();
+                    // This will pause while the beep plays but as it also blocks!
+                    // Could do with finding a better solution if users want lots of beeps (or sound effect is changed to something longer)
+                    Thread.Sleep(effect.Duration);
+                }
             }
-            catch (FormatException)
-            {
-                seconds = DEFAULT_DURATION;
-            }
-            
-            alarm.BeginTime = DateTime.Now;
-            alarm.ExpirationTime = DateTime.Now.AddSeconds(seconds);
-            alarm.Content = msg;
-            alarm.RecurrenceType = RecurrenceInterval.None;
-            alarm.Sound = new Uri(soundFilePath, UriKind.RelativeOrAbsolute);
-            ScheduledActionService.Add(alarm);
+          
 
             // TODO: may need a listener to trigger DispatchCommandResult after the alarm has finished executing...
             DispatchCommandResult();
@@ -106,21 +111,22 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public void vibrate(string vibrateDuration)
         {
-            VibrateController vc = VibrateController.Default;
-            TimeSpan ts;
-            int seconds;
+            int msecs = 200; // set default
 
             try
             {
-                seconds = int.Parse(vibrateDuration);
+                msecs = int.Parse(vibrateDuration);
+                if (msecs < 1)
+                {
+                    msecs = 1;
+                }
             }
-            catch(FormatException)
+            catch (FormatException)
             {
-                seconds = DEFAULT_DURATION;
+
             }
-           
-            ts = new TimeSpan(0, 0, seconds);
-            vc.Start(ts);
+
+            VibrateController.Default.Start(TimeSpan.FromMilliseconds(msecs));
 
             // TODO: may need to add listener to trigger DispatchCommandResult when the vibration ends...
             DispatchCommandResult();

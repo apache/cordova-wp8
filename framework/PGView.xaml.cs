@@ -43,7 +43,19 @@ namespace WP7GapClassLib
             }
             try
             {
-
+                /*
+                 * 
+                 * //if you have previously created a unique id, use it, otherwise create a new one
+if (IsolatedStorageSettings.ApplicationSettings.Contains("DeviceId")){
+    //retrieve the unique id saved in the isolated storage
+    _deviceId = (Guid)IsolatedStorageSettings.ApplicationSettings["DeviceId"];
+}else{
+    //create a new guid and save it in the isolated storage
+    _deviceId = Guid.NewGuid();
+    IsolatedStorageSettings.ApplicationSettings["DeviceId"] = _deviceId;
+}
+                 *
+                 * */
                 // Before we possibly clean the ISO-Store, we need to grab our generated UUID, so we can rewrite it after.
                 string deviceUUID = "";
                 using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
@@ -148,6 +160,7 @@ namespace WP7GapClassLib
         {
             Debug.WriteLine("GapBrowser_LoadCompleted");
         }
+
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
