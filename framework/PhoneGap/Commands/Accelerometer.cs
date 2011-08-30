@@ -39,17 +39,16 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             if (this.accelerometer != null)
             {
-                var state = this.accelerometer.State;
+                SensorState state = this.accelerometer.State;
 
+                // TODO: switch on sensor state
                 if (state == SensorState.Ready)
                 {
-                    //this.CallbackName = this.successCallback;
 
-                    string messageResult = String.Format("x:{0},y:{1},z:{2},timeStamp:{3}",
-                                                e.SensorReading.Acceleration.X.ToString("0.00"),
-                                                e.SensorReading.Acceleration.Y.ToString("0.00"),
-                                                e.SensorReading.Acceleration.Z.ToString("0.00"),
-                                                e.SensorReading.Timestamp.ToString());
+                    string messageResult = String.Format("\"x\":{0},\"y\":{1},\"z\":{2}",
+                                                e.SensorReading.Acceleration.X.ToString("0.00000"),
+                                                e.SensorReading.Acceleration.Y.ToString("0.00000"),
+                                                e.SensorReading.Acceleration.Z.ToString("0.00000"));
 
                     messageResult = "{" + messageResult + "}";
 

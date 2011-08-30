@@ -121,10 +121,16 @@
     <Content Include="www\master.css" />
     <Content Include="www\misc\index.html" />
     <Content Include="www\misc\page2.html" />
-    <Content Include="www\notification.html" />
+    <Content Include="www\notification.html">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="www\phonegap.js" />
-    <Content Include="www\sql.html" />
-    <Content Include="www\storage.html" />
+    <Content Include="www\sql.html">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="www\storage.html">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\framework\WP7GapClassLib.csproj">
