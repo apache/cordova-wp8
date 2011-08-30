@@ -181,6 +181,7 @@ if (IsolatedStorageSettings.ApplicationSettings.Contains("DeviceId")){
          **/
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
+
             string commandStr = e.Value;
             Debug.WriteLine("GapBrowser_ScriptNotify :: " + commandStr);
             PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);

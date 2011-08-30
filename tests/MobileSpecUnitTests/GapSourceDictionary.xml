@@ -12,8 +12,10 @@
 <FilePath Value="www/accelerometer.js"/>
 
 <FilePath Value="www/notification.js"/>
-    
-   
+
+<FilePath Value="www/network.html"/>
+<FilePath Value="www/network.js"/>
+
 <FilePath Value="www/accelerometer.html"/>
 <FilePath Value="www/audio.html"/>
 <FilePath Value="www/camera.html"/>
