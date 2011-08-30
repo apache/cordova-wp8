@@ -34,24 +34,26 @@ Tests.prototype.GeoLocationTests = function() {
 	// TODO: Need to test watchPosition success callback, test that makes sure clearPosition works (how to test that a timer is getting cleared?)
 	// TODO: Need to test options object passed in. Members that need to be tested so far include:
 	//				- options.frequency: this is also labelled differently on some implementations (internval on iPhone/BlackBerry currently). 
-	module('Geolocation model');
-	test("should be able to define a Position object with coords and timestamp properties", function() {
-		expect(3);
-		var pos = new Position({}, new Date());
-		ok(pos != null, "new Position() should not be null.");
-		ok(typeof pos.coords != 'undefined' && pos.coords != null, "new Position() should include a 'coords' property.");
-		ok(typeof pos.timestamp != 'undefined' && pos.timestamp != null, "new Position() should include a 'timestamp' property.");
-	});
-	test("should be able to define a Coordinates object with latitude, longitude, accuracy, altitude, heading, speed and altitudeAccuracy properties", function() {
-		expect(8);
-		var coords = new Coordinates(1,2,3,4,5,6,7);
-		ok(coords != null, "new Coordinates() should not be null.");
-		ok(typeof coords.latitude != 'undefined' && coords.latitude != null, "new Coordinates() should include a 'latitude' property.");
-		ok(typeof coords.longitude != 'undefined' && coords.longitude != null, "new Coordinates() should include a 'longitude' property.");
-		ok(typeof coords.accuracy != 'undefined' && coords.accuracy != null, "new Coordinates() should include a 'accuracy' property.");
-		ok(typeof coords.altitude != 'undefined' && coords.altitude != null, "new Coordinates() should include a 'altitude' property.");
-		ok(typeof coords.heading != 'undefined' && coords.heading != null, "new Coordinates() should include a 'heading' property.");
-		ok(typeof coords.speed != 'undefined' && coords.speed != null, "new Coordinates() should include a 'speed' property.");
-		ok(typeof coords.altitudeAccuracy != 'undefined' && coords.altitudeAccuracy != null, "new Coordinates() should include a 'altitudeAccuracy' property.");
-	});
+	
+	
+//	module('Geolocation model');
+//	test("should be able to define a Position object with coords and timestamp properties", function() {
+//		expect(3);
+//		var pos = new Position({}, new Date());
+//		ok(pos != null, "new Position() should not be null.");
+//		ok(typeof pos.coords != 'undefined' && pos.coords != null, "new Position() should include a 'coords' property.");
+//		ok(typeof pos.timestamp != 'undefined' && pos.timestamp != null, "new Position() should include a 'timestamp' property.");
+//	});
+//	test("should be able to define a Coordinates object with latitude, longitude, accuracy, altitude, heading, speed and altitudeAccuracy properties", function() {
+//		expect(8);
+//		var coords = new Coordinates(1,2,3,4,5,6,7);
+//		ok(coords != null, "new Coordinates() should not be null.");
+//		ok(typeof coords.latitude != 'undefined' && coords.latitude != null, "new Coordinates() should include a 'latitude' property.");
+//		ok(typeof coords.longitude != 'undefined' && coords.longitude != null, "new Coordinates() should include a 'longitude' property.");
+//		ok(typeof coords.accuracy != 'undefined' && coords.accuracy != null, "new Coordinates() should include a 'accuracy' property.");
+//		ok(typeof coords.altitude != 'undefined' && coords.altitude != null, "new Coordinates() should include a 'altitude' property.");
+//		ok(typeof coords.heading != 'undefined' && coords.heading != null, "new Coordinates() should include a 'heading' property.");
+//		ok(typeof coords.speed != 'undefined' && coords.speed != null, "new Coordinates() should include a 'speed' property.");
+//		ok(typeof coords.altitudeAccuracy != 'undefined' && coords.altitudeAccuracy != null, "new Coordinates() should include a 'altitudeAccuracy' property.");
+//	});
 };
