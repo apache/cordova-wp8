@@ -71,7 +71,6 @@
     <Compile Include="PhoneGap\Commands\Device.cs" />
     <Compile Include="PhoneGap\Commands\File.cs" />
     <Compile Include="PhoneGap\Commands\FileTransfer.cs" />
-    <Compile Include="PhoneGap\Commands\Location.cs" />
     <Compile Include="PhoneGap\Commands\Motion.cs" />
     <Compile Include="PhoneGap\Commands\Notification.cs" />
     <Compile Include="PhoneGap\Commands\Reachability.cs" />
