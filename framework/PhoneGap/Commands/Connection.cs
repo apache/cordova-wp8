@@ -18,25 +18,32 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
     public class Connection : BaseCommand
     {
-        const string UNKNOWN = "Unknown connection";
-        const string ETHERNET = "Ethernet connection";
-        const string WIFI = "WiFi connection";
-        const string CELL_2G = "Cell 2G connection";
-        const string CELL_3G = "Cell 3G connection";
-        const string CELL_4G = "Cell 4G connection";
-        const string NONE = "No network connection";
-        const string CELL = "Cell connection";
+        const string UNKNOWN = "unknown";
+        const string ETHERNET = "ethernet";
+        const string WIFI = "wifi";
+        const string CELL_2G = "2g";
+        const string CELL_3G = "3g";
+        const string CELL_4G = "4g";
+        const string NONE = "none";
+        const string CELL = "cellular";
 
-        public string type
+
+        public void getConnectionInfo(string empty)
         {
-            get
-            {
-                return checkConnectionType();
-            }
+
+            //DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(DeviceNetworkInformation_NetworkAvailabilityChanged);
+
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, checkConnectionType()));
         }
+
+        //void DeviceNetworkInformation_NetworkAvailabilityChanged(object sender, NetworkNotificationEventArgs e)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         private string checkConnectionType()
         {
+
             if (DeviceNetworkInformation.IsNetworkAvailable)
             {
                 if (DeviceNetworkInformation.IsWiFiEnabled)
@@ -48,6 +55,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     if (DeviceNetworkInformation.IsCellularDataEnabled)
                     {
                         // WP7 doesn't let us determine which type of cell data network
+                        // DeviceNetworkInformation.CellularMobileOperator
                         return CELL;
                     }
                     else

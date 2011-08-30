@@ -121,6 +121,8 @@
     <Content Include="www\master.css" />
     <Content Include="www\misc\index.html" />
     <Content Include="www\misc\page2.html" />
+    <Content Include="www\network.html" />
+    <Content Include="www\network.js" />
     <Content Include="www\notification.html">
       <SubType>Designer</SubType>
     </Content>
