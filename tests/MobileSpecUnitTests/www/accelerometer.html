@@ -66,7 +66,7 @@
 
         // Update acceleration every 1 sec
         var opt = {};
-        opt.frequency = 1000;
+        opt.frequency = 5000;
         watchAccelId = navigator.accelerometer.watchAcceleration(success, fail, opt);
 
         setAccelStatus("Running");
