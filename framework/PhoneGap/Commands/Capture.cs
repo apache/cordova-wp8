@@ -19,7 +19,7 @@ using System.Windows.Media.Imaging;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
-/// <summary>
+    /// <summary>
     /// Provides access to the audio, image, and video capture capabilities of the device
     /// </summary>
     public class Capture : BaseCommand
@@ -35,7 +35,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             /// <summary>
             /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
             /// </summary>
-            [DataMember(IsRequired = false, Name="limit")]
+            [DataMember(IsRequired = false, Name = "limit")]
             public int Limit { get; set; }
 
             public static CaptureImageOptions Default
@@ -53,12 +53,12 @@ namespace WP7GapClassLib.PhoneGap.Commands
             /// <summary>
             /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
             /// </summary>
-            [DataMember(IsRequired=true,Name="fullPath")]
+            [DataMember(IsRequired = true, Name = "fullPath")]
             public string FullPath { get; set; }
 
-            [DataMember(Name="type")]
+            [DataMember(Name = "type")]
             public string Type { get; set; }
-            
+
         }
 
         /// <summary>
@@ -68,10 +68,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
         public class MediaFile
         {
 
-            [DataMember(Name = "fileName")]
+            [DataMember(Name = "name")]
             public string FileName { get; set; }
 
-            [DataMember(Name = "filePath")]
+            [DataMember(Name = "fullPath")]
             public string FilePath { get; set; }
 
             [DataMember(Name = "type")]
@@ -89,7 +89,21 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 this.FileName = System.IO.Path.GetFileName(this.FilePath);
                 this.Type = MimeTypeMapper.GetMimeType(FileName);
                 this.Size = image.GetImage().Length;
-                this.LastModifiedDate = image.Date.ToString();
+
+                using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    this.LastModifiedDate = storage.GetLastWriteTime(filePath).DateTime.ToString();
+                }
+
+            }
+
+            public MediaFile(string filePath, Stream stream)
+            {
+                this.FilePath = filePath;
+                this.FileName = System.IO.Path.GetFileName(this.FilePath);
+                this.Type = MimeTypeMapper.GetMimeType(FileName);
+                this.Size = stream.Length;
+                this.LastModifiedDate = IsolatedStorageFile.GetUserStoreForApplication().GetLastWriteTime(filePath).DateTime.ToString();
 
             }
         }
@@ -146,7 +160,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// Stores informaton about captured files
         /// </summary>
         List<MediaFile> files = new List<MediaFile>();
-        
+
         /// <summary>
         /// Launches default camera application to capture image
         /// </summary>
@@ -167,7 +181,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-    
+
                 cameraTask = new CameraCaptureTask();
                 cameraTask.Completed += this.cameraTask_Completed;
                 cameraTask.Show();
@@ -184,17 +198,18 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// <param name="options"></param>
         public void getFormatData(string options)
         {
-            if(String.IsNullOrEmpty(options)){
+            if (String.IsNullOrEmpty(options))
+            {
                 this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                 return;
             }
-            
+
             try
-            {                                
+            {
                 MediaFormatOptions mediaFormatOptions;
                 try
                 {
-                   mediaFormatOptions = JSON.JsonHelper.Deserialize<MediaFormatOptions>(options);
+                    mediaFormatOptions = JSON.JsonHelper.Deserialize<MediaFormatOptions>(options);
                 }
                 catch (Exception ex)
                 {
@@ -242,10 +257,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// Handles result of capture to save image information 
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e">stores inforamation about currrent captured image</param>
+        /// <param name="e">stores information about current captured image</param>
         private void cameraTask_Completed(object sender, PhotoResult e)
         {
-            
+
             if (e.Error != null)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
@@ -264,13 +279,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         Picture image = library.SavePicture(fileName, e.ChosenPhoto);
 
                         // Save image in isolated storage    
-                    
+
                         // we should return stream position back after saving stream to media library
                         e.ChosenPhoto.Seek(0, SeekOrigin.Begin);
                         byte[] imageBytes = new byte[e.ChosenPhoto.Length];
                         e.ChosenPhoto.Read(imageBytes, 0, imageBytes.Length);
-                        string pathLocalStorage = this.SaveImageToLocalStorage(fileName, isoFolder, imageBytes);                                              
-                        
+                        string pathLocalStorage = this.SaveImageToLocalStorage(fileName, isoFolder, imageBytes);
+
                         // Get image data
                         MediaFile data = new MediaFile(pathLocalStorage, image);
 
@@ -286,9 +301,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             files.Clear();
                         }
                     }
-                    catch(Exception ex) 
+                    catch (Exception ex)
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR,"Error capturing image."));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error capturing image."));
                     }
                     break;
 
@@ -304,7 +319,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Canceled."));
                     }
                     break;
-            
+
                 default:
                     if (files.Count > 0)
                     {
@@ -315,8 +330,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     {
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Did not complete!"));
                     }
-                    break;               
-            }         
+                    break;
+            }
         }
 
         /// <summary>
@@ -336,7 +351,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     var imageSource = PictureDecoder.DecodeJpeg(imageStream);
                     return imageSource;
                 }
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 return null;
             }
         }
@@ -356,13 +373,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
             }
             try
             {
-                var isoFile = IsolatedStorageFile.GetUserStoreForApplication();     
-                
+                var isoFile = IsolatedStorageFile.GetUserStoreForApplication();
+
                 if (!isoFile.DirectoryExists(imageFolder))
                 {
                     isoFile.CreateDirectory(imageFolder);
                 }
-                string filePath = System.IO.Path.Combine(imageFolder, imageFileName);
+                string filePath = System.IO.Path.Combine("/" + imageFolder + "/", imageFileName);
 
                 using (var stream = isoFile.CreateFile(filePath))
                 {
@@ -371,13 +388,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 return filePath;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 //TODO: log or do something else
                 throw;
             }
-        }  
-        
+        }
+
 
     }
 }
