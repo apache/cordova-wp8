@@ -79,7 +79,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     {
                         try
                         {
-                            IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream("appUUID.txt", FileMode.Open, FileAccess.Read, appStorage);
+                            IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream("DeviceID.txt", FileMode.Open, FileAccess.Read, appStorage);
 
                             using (StreamReader reader = new StreamReader(fileStream))
                             {
