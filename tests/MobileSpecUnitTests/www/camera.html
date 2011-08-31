@@ -1,12 +1,28 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
   <head>
     <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <!-- ISO-8859-1 -->
     <title>PhoneGap</title>
-    <link rel="stylesheet" href="master.css" type="text/css" media="screen">
-    <script type="text/javascript" charset="utf-8" src="../phonegap.js"></script>      
+    <link rel="stylesheet" href="master.css" type="text/css" media="screen"/>
+   
+    <script type="text/javascript">
+        // provide our own console if it does not exist, huge dev aid!
+        if (typeof window.console == "undefined") {
+            window.console = { log: function (str) { window.external.Notify(str); } };
+        }
+
+        // output any errors to console log, created above.
+        window.onerror = function (e) {
+            console.log("window.onerror ::" + JSON.stringify(e));
+        };
+
+        console.log("Installed console ! ");
+    </script>
+   
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>     
+    <script type="text/javascript" charset="utf-8" src="camera.js"></script>    
 
       
 <script type="text/javascript" charset="utf-8">
@@ -30,15 +46,15 @@
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
-                //img.src = "data:image/jpeg;base64," + data;
-                img.src = data;
+                img.src = "data:image/jpeg;base64," + data;
+                //img.src = data;
                 document.getElementById('camera_status').innerHTML = "Success";
             },
             function(e) {
                 console.log("Error getting picture: " + e);
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             },
-            { quality: 50, destinationType: navigator.camera.DestinationType.FILE_URI, sourceType : navigator.camera.PictureSourceType.CAMERA});
+            { quality: 50, destinationType: navigator.camera.DestinationType.DATA_URL, sourceType : navigator.camera.PictureSourceType.CAMERA});
     };
 
     /**
@@ -58,7 +74,7 @@
                 console.log("Error getting picture: " + e);
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             },
-            { quality: 50, destinationType: navigator.camera.DestinationType.FILE_URI, sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY});
+            { quality: 50, destinationType: navigator.camera.DestinationType.FILE_URI, sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY });
     };
 
     
@@ -88,8 +104,8 @@
         <img style="width:120px;height:120px;visibility:hidden;display:none;" id="camera_image" src="" />
     </div>
     <h2>Action</h2>
-    <a href="javascript:" class="btn large" onClick="getPicture();">Take Picture</a>
-    <a href="javascript:" class="btn large" onClick="getImage();">Select Image from Library</a>
+    <a href="#" class="btn large" onclick="getPicture();">Take Picture</a>
+    <a href="#" class="btn large" onclick="getImage();">Select Image from Library</a>
     <h2>&nbsp;</h2><a href="index.html" class="backBtn">Back</a>
   </body>
 </html>      
