@@ -125,11 +125,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
             [OnDeserializing()]
             public void SetDefaultValues(StreamingContext context)
             {
-                PictureSourceType = 1;
-                DestinationType = 0;
-                Quality = 100;
-                TargetHeight = 0;
-                TargetWidth = 0;
+                PictureSourceType = CAMERA;
+                DestinationType = DATA_URL;
+                Quality = 80;
+                TargetHeight = -1;
+                TargetWidth = -1;
             }
 
         }
@@ -276,12 +276,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     isoFile.CreateDirectory(isoFolder);
                 }
-                string filePath = System.IO.Path.Combine(isoFolder, imageFileName);
+
+                string filePath = System.IO.Path.Combine("/" + isoFolder + "/", imageFileName);
 
                 using (var stream = isoFile.CreateFile(filePath))
                 {
                     // resize image if Height and Width defined via options 
-                    if (cameraOptions.TargetHeight != 0 && cameraOptions.TargetWidth != 0)
+                    if (cameraOptions.TargetHeight > 0 && cameraOptions.TargetWidth > 0)
                     {
                         image.SaveJpeg(stream, cameraOptions.TargetWidth, cameraOptions.TargetHeight, 0, cameraOptions.Quality);
                     }
@@ -290,7 +291,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         image.SaveJpeg(stream, image.PixelWidth, image.PixelHeight, 0, cameraOptions.Quality);
                     }
                 }
-                return filePath;
+
+                return new Uri(filePath, UriKind.Relative).ToString();
             }
             catch (Exception e)
             {

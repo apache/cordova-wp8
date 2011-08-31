@@ -112,6 +112,7 @@
     <Content Include="www\autotest\tests\storage.tests.js" />
     <Content Include="www\autotest\tests\system.tests.js" />
     <Content Include="www\camera.html" />
+    <Content Include="www\camera.js" />
     <Content Include="www\compass.html" />
     <Content Include="www\contacts.html" />
     <Content Include="www\events.html" />
