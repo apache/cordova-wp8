@@ -8,10 +8,12 @@
 <FilePath Value="www/master.css"/>
 
 <FilePath Value="www/phonegap.js"/>
+<FilePath Value="www/device.js"/>
 
 <FilePath Value="www/accelerometer.js"/>
 
 <FilePath Value="www/camera.js"/>
+<FilePath Value="www/capture.js"/>
 
 <FilePath Value="www/notification.js"/>
 
@@ -21,6 +23,7 @@
 <FilePath Value="www/accelerometer.html"/>
 <FilePath Value="www/audio.html"/>
 <FilePath Value="www/camera.html"/>
+<FilePath Value="www/capture.html"/>
 <FilePath Value="www/compass.html"/>
 <FilePath Value="www/contacts.html"/>
 <FilePath Value="www/events.html"/>
