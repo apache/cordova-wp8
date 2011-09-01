@@ -101,6 +101,7 @@
     <Content Include="www\autotest\tests\accelerometer.tests.js" />
     <Content Include="www\autotest\tests\camera.tests.js" />
     <Content Include="www\autotest\tests\capture.tests.js" />
+    <Content Include="www\autotest\tests\compass.tests.js" />
     <Content Include="www\autotest\tests\contacts.tests.js" />
     <Content Include="www\autotest\tests\device.tests.js" />
     <Content Include="www\autotest\tests\file.tests.js" />
@@ -116,6 +117,7 @@
     <Content Include="www\capture.html" />
     <Content Include="www\capture.js" />
     <Content Include="www\compass.html" />
+    <Content Include="www\compass.js" />
     <Content Include="www\contacts.html" />
     <Content Include="www\device.js" />
     <Content Include="www\events.html" />

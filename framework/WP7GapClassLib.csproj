@@ -57,6 +57,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PhoneGap\Commands\Compass.cs" />
     <Compile Include="PhoneGap\JSON\JsonHelper.cs" />
     <Compile Include="PhoneGap\Commands\MimeTypeMapper.cs" />
     <Compile Include="PhoneGap\PhoneGapCommandCall.cs" />

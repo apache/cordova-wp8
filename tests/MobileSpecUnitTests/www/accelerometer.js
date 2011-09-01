@@ -89,7 +89,6 @@ Accelerometer.prototype.getCurrentAcceleration = function(successCallback, error
  */
 Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallback, options) 
 {
-
     // Default interval (10 sec)
     var frequency = (options && options.frequency)? options.frequency : 10000;
 	var timeout = (options != options.timeout) ? options.timeout : 15000;
@@ -131,8 +130,6 @@ Accelerometer.prototype.clearWatch = function(id) {
 PhoneGap.addConstructor(
 function()
 {
-	
-	
     if (!navigator.accelerometer) 
 	{
 		console.log("Installing accelerometer");
@@ -140,6 +137,3 @@ function()
     }
 });
 }
-
-
-console.log("EOF: accelerometer.js");

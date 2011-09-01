@@ -321,7 +321,8 @@ namespace WP7GapClassLib
                 try
                 {
                     string status = ((int)result.Result).ToString();
-                    this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, result.ToJSONString() });
+                    string jsonResult = result.ToJSONString();
+                    this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult });
                 }
                 catch (Exception ex)
                 {
