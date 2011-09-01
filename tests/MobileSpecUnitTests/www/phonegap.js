@@ -99,6 +99,7 @@ PhoneGap.exec = function(success, fail, service, action, args)
 
 PhoneGapCommandResult = function(status,callbackId,args)
 {
+	console.log("PhoneGapCommandResult :: " + status + ", " + callbackId + ", " + args);
 	var safeStatus = parseInt(status);
 	if(safeStatus === PhoneGap.callbackStatus.NO_RESULT ||
 	   safeStatus === PhoneGap.callbackStatus.OK)
@@ -161,10 +162,23 @@ PhoneGap.CallbackSuccess = function(callbackId, args)
  * @param args
  */
 PhoneGap.CallbackError = function (callbackId, args) {
+	
+	console.log("PhoneGap.CallbackError::" + callbackId + "::" + args);
+	
+	var commandResult;
+	try
+	{
+		commandResult  = JSON.parse(args);
+	}
+	catch(exception)
+	{
+		return exception.message;
+	}
+	
     if (PhoneGap.callbacks[callbackId]) {
         try {
             if (PhoneGap.callbacks[callbackId].fail) {
-                PhoneGap.callbacks[callbackId].fail(args.message);
+                PhoneGap.callbacks[callbackId].fail(commandResult.message);
             }
         }
         catch (e) {
