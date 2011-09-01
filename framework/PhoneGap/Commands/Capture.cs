@@ -125,7 +125,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 this.FileName = System.IO.Path.GetFileName(this.FilePath);
                 this.Type = MimeTypeMapper.GetMimeType(FileName);
                 this.Size = stream.Length;
-                this.LastModifiedDate = IsolatedStorageFile.GetUserStoreForApplication().GetLastWriteTime(filePath).DateTime.ToString();
+
+                using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    this.LastModifiedDate = storage.GetLastWriteTime(filePath).DateTime.ToString();
+                }
 
             }
         }
