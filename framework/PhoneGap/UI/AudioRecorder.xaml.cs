@@ -59,6 +59,11 @@ namespace WP7GapClassLib.PhoneGap.UI
         private MemoryStream memoryStream;
 
         /// <summary>
+        /// Xna game loop dispatcher
+        /// </summary>
+        DispatcherTimer dtXna;
+
+        /// <summary>
         /// Recording result, dispatched back when recording page is closed
         /// </summary>
         private AudioResult result = new AudioResult(TaskResult.Cancel);
@@ -70,7 +75,7 @@ namespace WP7GapClassLib.PhoneGap.UI
         {
             get
             {
-                return this.microphone.State == MicrophoneState.Started;
+                return (this.microphone != null && this.microphone.State == MicrophoneState.Started);
             }
         }
 
@@ -82,13 +87,6 @@ namespace WP7GapClassLib.PhoneGap.UI
         public AudioRecorder()
         {
                        
-            this.microphone = Microphone.Default;
-            this.microphone.BufferDuration = TimeSpan.FromMilliseconds(500);
-
-            this.buffer = new byte[microphone.GetSampleSizeInBytes(this.microphone.BufferDuration)];
-
-            this.microphone.BufferReady += new EventHandler<EventArgs>(MicrophoneBufferReady);
-
             this.InitializeXnaGameLoop();
 
             // microphone requires special XNA initialization to work
@@ -100,8 +98,14 @@ namespace WP7GapClassLib.PhoneGap.UI
         /// </summary>
         private void StartRecording()
         {
+            this.microphone = Microphone.Default;
+            this.microphone.BufferDuration = TimeSpan.FromMilliseconds(500);
+
             this.btnTake.IsEnabled = false;
             this.btnStartStop.Content = RecordingStopCaption;
+
+            this.buffer = new byte[microphone.GetSampleSizeInBytes(this.microphone.BufferDuration)];
+            this.microphone.BufferReady += new EventHandler<EventArgs>(MicrophoneBufferReady);
 
             this.memoryStream = new MemoryStream();
             this.WriteWavHeader(this.memoryStream, this.microphone.SampleRate);
@@ -117,8 +121,11 @@ namespace WP7GapClassLib.PhoneGap.UI
         private void StopRecording()
         {
             this.microphone.Stop();
-            this.UpdateWavHeader(this.memoryStream);
 
+            this.microphone.BufferReady -= MicrophoneBufferReady;
+
+            this.microphone = null;
+            
             btnStartStop.Content = RecordingStartCaption;
 
             // check there is some data
@@ -169,6 +176,8 @@ namespace WP7GapClassLib.PhoneGap.UI
                 StopRecording();
             }
 
+            this.FinalizeXnaGameLoop();
+
             if (this.Completed != null)
             {
                 this.Completed(this, result);
@@ -209,6 +218,8 @@ namespace WP7GapClassLib.PhoneGap.UI
             {
                 return new AudioResult(TaskResult.Cancel);
             }
+
+            this.UpdateWavHeader(this.memoryStream);
             
             // save audio data to local isolated storage
 
@@ -216,29 +227,34 @@ namespace WP7GapClassLib.PhoneGap.UI
 
             try
             {
-                var isoFile = IsolatedStorageFile.GetUserStoreForApplication();
-
-                if (!isoFile.DirectoryExists(LocalFolderName))
+                using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    isoFile.CreateDirectory(LocalFolderName);
+
+                    if (!isoFile.DirectoryExists(LocalFolderName))
+                    {
+                        isoFile.CreateDirectory(LocalFolderName);
+                    }
+
+                    string filePath = System.IO.Path.Combine("/" + LocalFolderName + "/", filename);
+
+                    this.memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    using (IsolatedStorageFileStream fileStream = isoFile.CreateFile(filePath))
+                    {
+
+                        this.memoryStream.CopyTo(fileStream);
+                    }
+
+                    AudioResult result = new AudioResult(TaskResult.OK);
+                    result.AudioFileName = filePath;
+
+                    result.AudioFile = this.memoryStream;
+                    result.AudioFile.Seek(0, SeekOrigin.Begin);
+
+                    return result;
                 }
 
-                string filePath = System.IO.Path.Combine("/" + LocalFolderName + "/", filename);
-
-                this.memoryStream.Seek(0, SeekOrigin.Begin);
-
-                var fileStream = isoFile.CreateFile(filePath);
-
-                this.memoryStream.CopyTo(fileStream);
-
-                AudioResult result = new AudioResult(TaskResult.OK);
-                result.AudioFileName = filePath;
-                result.AudioFile = fileStream;
-
-                // set position to beginning when returning it
-                result.AudioFile.Seek(0, SeekOrigin.Begin);
-
-                return result;
+                
                 
             }
             catch (Exception e)
@@ -254,11 +270,21 @@ namespace WP7GapClassLib.PhoneGap.UI
         private void InitializeXnaGameLoop()
         {
             // Timer to simulate the XNA game loop (Microphone is from XNA)
-            DispatcherTimer dt = new DispatcherTimer();
-            dt.Interval = TimeSpan.FromMilliseconds(33);
-            dt.Tick += delegate { try { FrameworkDispatcher.Update(); } catch { } };
-            dt.Start();
+            this.dtXna = new DispatcherTimer();
+            this.dtXna.Interval = TimeSpan.FromMilliseconds(33);
+            this.dtXna.Tick += delegate { try { FrameworkDispatcher.Update(); } catch { } };
+            this.dtXna.Start();
         }
+        /// <summary>
+        /// Finalizes XNA game loop for microphone
+        /// </summary>
+        private void FinalizeXnaGameLoop()
+        {
+            // Timer to simulate the XNA game loop (Microphone is from XNA)
+            this.dtXna.Stop();
+            this.dtXna = null;
+        }
+
 
         #region Wav format
         // Original source http://damianblog.com/2011/02/07/storing-wp7-recorded-audio-as-wav-format-streams/
