@@ -30,6 +30,12 @@ namespace WP7GapClassLib
     public partial class PGView : UserControl
     {
 
+        /// <summary>
+        /// Indicates whether web control has been loaded and no additional initialization is needed.
+        /// Prevents data clearing during page transitions.
+        /// </summary>
+        private bool IsBrowserInitialized = false;
+
         public PGView()
         {
 
@@ -81,6 +87,10 @@ namespace WP7GapClassLib
             {
                 return;
             }
+
+            // prevents refreshing web control to initial state during pages transitions
+            if (this.IsBrowserInitialized) return;
+
             try
             {
 
@@ -177,6 +187,8 @@ namespace WP7GapClassLib
 
                 Uri indexUri = new Uri("www/index.html", UriKind.Relative);
                 this.GapBrowser.Navigate(indexUri);
+
+                this.IsBrowserInitialized = true;
 
             }
             catch (Exception ex)
