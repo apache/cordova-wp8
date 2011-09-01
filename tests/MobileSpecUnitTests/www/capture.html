@@ -73,23 +73,35 @@
     };
 
     /**
-    * Select image from library
+    * Capture Audio
     */
-    function getImage() {
-        navigator.camera.getPicture(
-            function (data) {
+    function captureAudio() {
+
+        navigator.device.capture.captureAudio(
+            function (mediaFiles) {
+
+                document.getElementById('camera_status').innerHTML = "Success. Captured " + mediaFiles.length + " media file(s).";
+
+                if (mediaFiles.length <= 0) return;
+
+                var mediaFile = mediaFiles[0];
+
+                document.getElementById('name').innerHTML = mediaFile.name;
+                document.getElementById('fullPath').innerHTML = mediaFile.fullPath;
+                document.getElementById('size').innerHTML = mediaFile.size;
+                document.getElementById('lastModifiedDate').innerHTML = mediaFile.lastModifiedDate;
+                document.getElementById('type').innerHTML = mediaFile.type;
+
                 var img = document.getElementById('camera_image');
-                img.style.visibility = "visible";
-                img.style.display = "block";
-                //img.src = "data:image/jpeg;base64," + data;
-                img.src = data;
-                document.getElementById('camera_status').innerHTML = "Success";
+                img.style.visibility = "none";
+                img.style.display = "hidden";
+                img.src = "";
             },
             function (e) {
-                console.log("Error getting picture: " + e);
+                console.log("Error getting audio: " + e);
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             },
-            { quality: 50, destinationType: navigator.camera.DestinationType.FILE_URI, sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY });
+            { limit: 1 });
     };
 
 
@@ -125,8 +137,10 @@
             <tr><td width="20%">Modified:</td><td id="lastModifiedDate">&nbsp;</td></tr>            
         </table></div>
     </div>
-    <h2>Action</h2>
+    <h2>Image</h2>
     <a href="#" class="btn large" onclick="captureImage();">Capture Image</a>
+    <h2>Audio</h2>
+    <a href="#" class="btn large" onclick="captureAudio();">Capture Audio</a>
     <h2>&nbsp;</h2><a href="index.html" class="backBtn">Back</a>
   </body>
 </html>      
