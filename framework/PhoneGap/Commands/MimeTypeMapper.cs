@@ -37,6 +37,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                                                                                  {"mpg", "video/mpeg"},
                                                                                  {"mpga", "audio/mpeg"},                                                                                
                                                                                  {"pbm", "image/x-portable-bitmap"},
+                                                                                 {"pcm", "audio/x-pcm"},
                                                                                  {"pct", "image/pict"},
                                                                                  {"pgm", "image/x-portable-graymap"},
                                                                                  {"pic", "image/pict"},

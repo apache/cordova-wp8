@@ -16,6 +16,10 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Phone;
 using System.Windows.Media.Imaging;
+using WP7GapClassLib.PhoneGap.UI;
+using System.Windows.Navigation;
+using Microsoft.Phone.Controls;
+using AudioResult = WP7GapClassLib.PhoneGap.UI.AudioCaptureTask.AudioResult;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -41,6 +45,24 @@ namespace WP7GapClassLib.PhoneGap.Commands
             public static CaptureImageOptions Default
             {
                 get { return new CaptureImageOptions() { Limit = 1 }; }
+            }
+        }
+
+        /// <summary>
+        /// Represents captureAudio action options.
+        /// </summary>
+        [DataContract]
+        public class CaptureAudioOptions
+        {
+            /// <summary>
+            /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "limit")]
+            public int Limit { get; set; }
+
+            public static CaptureAudioOptions Default
+            {
+                get { return new CaptureAudioOptions() { Limit = 1 }; }
             }
         }
 
@@ -152,12 +174,22 @@ namespace WP7GapClassLib.PhoneGap.Commands
         protected CaptureImageOptions captureImageOptions;
 
         /// <summary>
+        /// Capture Audio options
+        /// </summary>
+        protected CaptureAudioOptions captureAudioOptions;
+
+        /// <summary>
         /// Used to open camera application
         /// </summary>
         private CameraCaptureTask cameraTask;
 
         /// <summary>
-        /// Stores informaton about captured files
+        /// Used for audio recording
+        /// </summary>
+        private AudioCaptureTask audioCaptureTask;
+
+        /// <summary>
+        /// Stores information about captured files
         /// </summary>
         List<MediaFile> files = new List<MediaFile>();
 
@@ -185,6 +217,37 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 cameraTask = new CameraCaptureTask();
                 cameraTask.Completed += this.cameraTask_Completed;
                 cameraTask.Show();
+            }
+            catch (Exception e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+            }
+        }
+
+        /// <summary>
+        /// Launches our own audio recording control to capture audio
+        /// </summary>
+        /// <param name="options">may contains additional parameters</param>
+        public void captureAudio(string options)
+        {
+            try
+            {
+                try
+                {
+                    this.captureAudioOptions = String.IsNullOrEmpty(options) ?
+                        CaptureAudioOptions.Default : JSON.JsonHelper.Deserialize<CaptureAudioOptions>(options);
+
+                }
+                catch (Exception ex)
+                {
+                    this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                    return;
+                }
+
+                audioCaptureTask = new AudioCaptureTask();
+                audioCaptureTask.Completed += audioRecordingTask_Completed;
+                audioCaptureTask.Show();
+
             }
             catch (Exception e)
             {
@@ -311,6 +374,73 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     if (files.Count > 0)
                     {
                         // User canceled operation, but some images were made
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
+                        files.Clear();
+                    }
+                    else
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Canceled."));
+                    }
+                    break;
+
+                default:
+                    if (files.Count > 0)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
+                        files.Clear();
+                    }
+                    else
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Did not complete!"));
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handles result of audio recording tasks 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">stores information about current captured audio</param>
+        private void audioRecordingTask_Completed(object sender, AudioResult e)
+        {
+
+            if (e.Error != null)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
+                return;
+            }
+
+            switch (e.TaskResult)
+            {
+                case TaskResult.OK:
+                    try
+                    {
+                        // Get image data
+                        MediaFile data = new MediaFile(e.AudioFileName, e.AudioFile);
+
+                        this.files.Add(data);
+
+                        if (files.Count < this.captureAudioOptions.Limit)
+                        {
+                            audioCaptureTask.Show();
+                        }
+                        else
+                        {
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
+                            files.Clear();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error capturing audio."));
+                    }
+                    break;
+
+                case TaskResult.Cancel:
+                    if (files.Count > 0)
+                    {
+                        // User canceled operation, but some audio clips were made
                         DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                         files.Clear();
                     }
