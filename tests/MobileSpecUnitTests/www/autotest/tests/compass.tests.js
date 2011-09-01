@@ -15,7 +15,7 @@ Tests.prototype.CompassTests = function()
 		ok(typeof navigator.compass.getCurrentHeading == 'function', "navigator.compass.getCurrentHeading should be a function.");
 	});
 	
-	test("getCurrentAcceleration success callback should be called with an Acceleration object", 
+	test("getCurrentHeading success callback should be called with an heading (string)", 
 	function() {
 		expect(1);
 		QUnit.stop(Tests.TEST_TIMEOUT);
