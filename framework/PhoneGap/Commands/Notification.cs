@@ -94,14 +94,18 @@ namespace WP7GapClassLib.PhoneGap.Commands
             {
                 SoundEffect effect = SoundEffect.FromStream(sri.Stream);
                 SoundEffectInstance inst = effect.CreateInstance();
-                while (times-- > 0)
+                ThreadPool.QueueUserWorkItem((o) =>
                 {
-                    
-                    inst.Play();
-                    // This will pause while the beep plays but as it also blocks!
-                    // Could do with finding a better solution if users want lots of beeps (or sound effect is changed to something longer)
-                    Thread.Sleep(effect.Duration);
-                }
+                    // cannot interact with UI !!
+                    do
+                    {
+                        inst.Play();
+                        Thread.Sleep(effect.Duration + TimeSpan.FromMilliseconds(100));
+                    }
+                    while (--times > 0);
+
+               });
+
             }
           
 

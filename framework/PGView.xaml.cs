@@ -23,16 +23,56 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using WP7GapClassLib.PhoneGap;
 using System.Threading;
+using Microsoft.Phone.Shell;
 
 namespace WP7GapClassLib
 {
     public partial class PGView : UserControl
     {
-        
 
         public PGView()
         {
+
             InitializeComponent();
+
+            PhoneApplicationService.Current.Activated += new EventHandler<Microsoft.Phone.Shell.ActivatedEventArgs>(AppActivated);
+            PhoneApplicationService.Current.Launching += new EventHandler<LaunchingEventArgs>(AppLaunching);
+            PhoneApplicationService.Current.Deactivated += new EventHandler<DeactivatedEventArgs>(AppDeactivated);
+            PhoneApplicationService.Current.Closing += new EventHandler<ClosingEventArgs>(AppClosing);
+
+            StartupMode mode = PhoneApplicationService.Current.StartupMode;
+            Debug.WriteLine("StartupMode mode =" + mode.ToString());
+
+            if (mode == StartupMode.Activate)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        
+
+        void AppClosing(object sender, ClosingEventArgs e)
+        {
+            Debug.WriteLine("AppClosing");
+        }
+
+        void AppDeactivated(object sender, DeactivatedEventArgs e)
+        {
+            Debug.WriteLine("AppDeactivated");
+        }
+
+        void AppLaunching(object sender, LaunchingEventArgs e)
+        {
+            Debug.WriteLine("AppLaunching");
+        }
+
+        void AppActivated(object sender, Microsoft.Phone.Shell.ActivatedEventArgs e)
+        {
+            Debug.WriteLine("AppActivated");
         }
 
         void GapBrowser_Loaded(object sender, RoutedEventArgs e)
@@ -43,26 +83,15 @@ namespace WP7GapClassLib
             }
             try
             {
-                /*
-                 * 
-                 * //if you have previously created a unique id, use it, otherwise create a new one
-if (IsolatedStorageSettings.ApplicationSettings.Contains("DeviceId")){
-    //retrieve the unique id saved in the isolated storage
-    _deviceId = (Guid)IsolatedStorageSettings.ApplicationSettings["DeviceId"];
-}else{
-    //create a new guid and save it in the isolated storage
-    _deviceId = Guid.NewGuid();
-    IsolatedStorageSettings.ApplicationSettings["DeviceId"] = _deviceId;
-}
-                 *
-                 * */
+
                 // Before we possibly clean the ISO-Store, we need to grab our generated UUID, so we can rewrite it after.
                 string deviceUUID = "";
+
                 using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     try
                     {
-                        IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream("appUUID.txt", FileMode.Open, FileAccess.Read, appStorage);
+                        IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream("DeviceID.txt", FileMode.Open, FileAccess.Read, appStorage);
 
                         using (StreamReader reader = new StreamReader(fileStream))
                         {
@@ -74,20 +103,20 @@ if (IsolatedStorageSettings.ApplicationSettings.Contains("DeviceId")){
                         deviceUUID = Guid.NewGuid().ToString();
                     }
 
+                    Debug.WriteLine("Updating IsolatedStorage for APP:DeviceID :: " + deviceUUID);
                     // always overwrite user-iso-store if we are in debug mode.
 #if DEBUG
                     appStorage.Remove();
 #endif 
 
-                    IsolatedStorageFileStream file = new IsolatedStorageFileStream("appUUID.txt", FileMode.Create, FileAccess.Write, appStorage);
+                    IsolatedStorageFileStream file = new IsolatedStorageFileStream("DeviceID.txt", FileMode.Create, FileAccess.Write, appStorage);
                     using (StreamWriter writeFile = new StreamWriter(file))
                     {
                         writeFile.WriteLine(deviceUUID);
                         writeFile.Close();
                     }
+   
                 }
-
-
 
                 StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("GapSourceDictionary.xml", UriKind.Relative));
 
@@ -217,8 +246,6 @@ if (IsolatedStorageSettings.ApplicationSettings.Contains("DeviceId")){
                 this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
                 return;
             }
-
-            // Javascript can only work in a single thread
         }
 
         private void GapBrowser_Unloaded(object sender, RoutedEventArgs e)
