@@ -118,6 +118,7 @@
     <Content Include="www\capture.js" />
     <Content Include="www\compass.html" />
     <Content Include="www\compass.js" />
+    <Content Include="www\contact.js" />
     <Content Include="www\contacts.html" />
     <Content Include="www\device.js" />
     <Content Include="www\events.html" />
