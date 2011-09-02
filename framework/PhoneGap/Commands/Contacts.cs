@@ -13,24 +13,46 @@ using Microsoft.Phone.UserData;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using DeviceContacts = Microsoft.Phone.UserData.Contacts;
+using System.Diagnostics;
 
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
+    [DataContract]
+    public class SearchOptions
+    {
+        [DataMember]
+        public string filter { get; set; }
+        [DataMember]
+        public bool multiple { get; set; }
+    }
+
+    [DataContract]
+    public class ContactSearchParams
+    {
+        [DataMember]
+        public string[] fields { get; set; }
+        [DataMember]
+        public SearchOptions options { get; set; }
+    }
+
     public class Contacts : BaseCommand
     {
-        private SaveContactTask _contactTask;
-        private Microsoft.Phone.UserData.Contacts _contacts;
+        private SaveContactTask contactTask;
+        //private DeviceContacts deviceContacts;
         private IEnumerable<Contact> _searchResults;
 
         public Contacts()
         {
-            _contactTask = new SaveContactTask();
-            _contactTask.Completed += new EventHandler<SaveContactResult>(saveContactTask_Completed);
-
-            _contacts = new Microsoft.Phone.UserData.Contacts();
-            _contacts.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(contacts_SearchCompleted);
+            //contactTask = new SaveContactTask();
+            //contactTask.Completed += new EventHandler<SaveContactResult>(saveContactTask_Completed);
+            
+            //deviceContacts = new Microsoft.Phone.UserData.Contacts();
+            //deviceContacts.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(contacts_SearchCompleted);
         }
+
+
 
         [DataContract]
         public class NewContact
@@ -249,8 +271,17 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         private void contacts_SearchCompleted(object sender, ContactsSearchEventArgs e)
         {
-            // TODO: needs to be return results to the JS
-            _searchResults = e.Results;
+            string contactFormat = "\"displayName\":\"{0}\"";
+
+            List<string> contactList = new List<string>();
+
+            foreach (Contact contact in e.Results)
+            {
+                contactList.Add("{" + String.Format(contactFormat, contact.DisplayName) + "}");
+                
+            }
+
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, contactList.ToArray()));
 
         }
 
@@ -260,32 +291,32 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             if (newContact != null)
             {
-                _contactTask.Company = newContact.Company;
-                _contactTask.FirstName = newContact.FirstName;
-                _contactTask.HomeAddressCity = newContact.HomeAddressCity;
-                _contactTask.HomeAddressCountry = newContact.HomeAddressCountry;
-                _contactTask.HomeAddressState = newContact.HomeAddressState;
-                _contactTask.HomeAddressStreet = newContact.HomeAddressStreet;
-                _contactTask.HomeAddressZipCode = newContact.HomeAddressZipCode;
-                _contactTask.HomePhone = newContact.HomePhone;
-                _contactTask.JobTitle = newContact.JobTitle;
-                _contactTask.LastName = newContact.LastName;
-                _contactTask.MiddleName = newContact.MiddleName;
-                _contactTask.MobilePhone = newContact.MobilePhone;
-                _contactTask.Nickname = newContact.Nickname;
-                _contactTask.Notes = newContact.Notes;
-                _contactTask.OtherEmail = newContact.OtherEmail;
-                _contactTask.PersonalEmail = newContact.PersonalEmail;
-                _contactTask.Suffix = newContact.Suffix;
-                _contactTask.Title = newContact.Title;
-                _contactTask.Website = newContact.Title;
-                _contactTask.WorkAddressCity = newContact.WorkAddressCity;
-                _contactTask.WorkAddressCountry = newContact.WorkAddressCountry;
-                _contactTask.WorkAddressState = newContact.WorkAddressState;
-                _contactTask.WorkAddressStreet = newContact.WorkAddressStreet;
-                _contactTask.WorkAddressZipCode = newContact.WorkAddressZipCode;
-                _contactTask.WorkEmail = newContact.WorkEmail;
-                _contactTask.WorkPhone = newContact.WorkPhone;
+                contactTask.Company = newContact.Company;
+                contactTask.FirstName = newContact.FirstName;
+                contactTask.HomeAddressCity = newContact.HomeAddressCity;
+                contactTask.HomeAddressCountry = newContact.HomeAddressCountry;
+                contactTask.HomeAddressState = newContact.HomeAddressState;
+                contactTask.HomeAddressStreet = newContact.HomeAddressStreet;
+                contactTask.HomeAddressZipCode = newContact.HomeAddressZipCode;
+                contactTask.HomePhone = newContact.HomePhone;
+                contactTask.JobTitle = newContact.JobTitle;
+                contactTask.LastName = newContact.LastName;
+                contactTask.MiddleName = newContact.MiddleName;
+                contactTask.MobilePhone = newContact.MobilePhone;
+                contactTask.Nickname = newContact.Nickname;
+                contactTask.Notes = newContact.Notes;
+                contactTask.OtherEmail = newContact.OtherEmail;
+                contactTask.PersonalEmail = newContact.PersonalEmail;
+                contactTask.Suffix = newContact.Suffix;
+                contactTask.Title = newContact.Title;
+                contactTask.Website = newContact.Title;
+                contactTask.WorkAddressCity = newContact.WorkAddressCity;
+                contactTask.WorkAddressCountry = newContact.WorkAddressCountry;
+                contactTask.WorkAddressState = newContact.WorkAddressState;
+                contactTask.WorkAddressStreet = newContact.WorkAddressStreet;
+                contactTask.WorkAddressZipCode = newContact.WorkAddressZipCode;
+                contactTask.WorkEmail = newContact.WorkEmail;
+                contactTask.WorkPhone = newContact.WorkPhone;
             }
         }
 
@@ -316,25 +347,42 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             setContactTask(contact);
 
-            _contactTask.Show();
+            contactTask.Show();
 
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, "blah"));
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, new string[]{}));
         }
 
+
+
         // TODO: we need to be able to pass a search param in.
-        public void find(string contact)
+        public void search(string searchCriteria)
         {
+            ContactSearchParams searchParams = JSON.JsonHelper.Deserialize<ContactSearchParams>(searchCriteria);
+
+            DeviceContacts deviceContacts = new DeviceContacts();
+            deviceContacts.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(contacts_SearchCompleted);
+
+            try
+            {
+                deviceContacts.SearchAsync(searchParams.options.filter, FilterKind.None, searchParams);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("search contacts exception :: " + ex.Message);
+            }
+
+           /*
             setContactTask(contact);
 
-            string firstName = _contactTask.FirstName;
-            string lastName = _contactTask.LastName;
-            string middleName = _contactTask.MiddleName;
+            string firstName = contactTask.FirstName;
+            string lastName = contactTask.LastName;
+            string middleName = contactTask.MiddleName;
 
-            string personalEmail = _contactTask.PersonalEmail;
-            string workEmail = _contactTask.WorkEmail;
+            string personalEmail = contactTask.PersonalEmail;
+            string workEmail = contactTask.WorkEmail;
 
-            string homePhone = _contactTask.HomePhone;
-            string workPhone = _contactTask.WorkPhone;
+            string homePhone = contactTask.HomePhone;
+            string workPhone = contactTask.WorkPhone;
 
             string displayName = formatDisplayName(firstName, lastName, middleName);
 
@@ -342,33 +390,33 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             if (displayName != null)
             {
-                _contacts.SearchAsync(displayName, FilterKind.DisplayName, null);
+                deviceContacts.SearchAsync(displayName, FilterKind.DisplayName, null);
             }
 
             // TODO: need to find a way to combine the personalEmail & workEmail search results.
             if (personalEmail != null)
             {
-                _contacts.SearchAsync(personalEmail, FilterKind.EmailAddress, null);
+                deviceContacts.SearchAsync(personalEmail, FilterKind.EmailAddress, null);
             }
 
             if (workEmail != null)
             {
-                _contacts.SearchAsync(workEmail, FilterKind.EmailAddress, null);
+                deviceContacts.SearchAsync(workEmail, FilterKind.EmailAddress, null);
             }
 
             // TODO: need to find a way to combine homePhone & workPhone search results.
             if (homePhone != null)
             {
-                _contacts.SearchAsync(homePhone, FilterKind.PhoneNumber, null);
+                deviceContacts.SearchAsync(homePhone, FilterKind.PhoneNumber, null);
             }
 
             if (workPhone != null)
             {
-                _contacts.SearchAsync(workPhone, FilterKind.PhoneNumber, null);
+                deviceContacts.SearchAsync(workPhone, FilterKind.PhoneNumber, null);
             }
+            */
 
-
-            //_contacts.SearchAsync(string.Empty, FilterKind.None, null);
+            //deviceContacts.SearchAsync(string.Empty, FilterKind.None, null);
         }
     }
 }

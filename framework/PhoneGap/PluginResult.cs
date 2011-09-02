@@ -109,7 +109,7 @@ namespace WP7GapClassLib.PhoneGap
                 this.KeepCallback.ToString().ToLower() );
 
             res = "{" + res + "}";
-            Debug.WriteLine("ToJSONString returning :: " + res);
+            //Debug.WriteLine("ToJSONString returning :: " + res);
             return res;
 
 		}

@@ -34,11 +34,14 @@
     //-------------------------------------------------------------------------
     function getContacts() {
         obj = new ContactFindOptions();
-        obj.filter = "D"; //Brooks";
+        obj.filter = ""; //Brooks";
         obj.multiple = true;
         navigator.contacts.find(
             ["displayName", "name", "phoneNumbers", "emails", "urls", "note"],
             function(contacts) {
+				console.log("received contacts :: " + contacts.length);
+				console.log("contacts[0] = " + contacts[0]);
+				return;
                 var s = "";
                 if (contacts.length == 0) {
                     s = "No contacts found";
