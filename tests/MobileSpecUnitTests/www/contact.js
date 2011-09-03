@@ -119,8 +119,17 @@ Contact.prototype.clone = function() {
 * @param successCB success callback
 * @param errorCB error callback
 */
-Contact.prototype.save = function(successCB, errorCB) {
-    PhoneGap.exec(successCB, errorCB, "Contacts", "save", this);
+Contact.prototype.save = function(successCB, errorCB) 
+{
+	var self = this;
+	function onSuccess(res)
+	{
+		setTimeout(function()
+		{
+			successCB(self);
+		},0);
+	}
+    PhoneGap.exec(onSuccess, errorCB, "Contacts", "save", this);
 };
 
 /**
@@ -233,7 +242,14 @@ Contacts.prototype.find = function(fields, successCB, errorCB, options) {
     } 
 	else 
 	{
-        PhoneGap.exec(successCB, errorCB, "Contacts", "search", {"fields":fields,"options":options});        
+		var onSuccess = function(res)
+		{
+			setTimeout(function()
+			{
+				successCB(res);
+			},0);
+		}
+        PhoneGap.exec(onSuccess, errorCB, "Contacts", "search", {"fields":fields,"options":options});        
     }
 };
 
