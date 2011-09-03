@@ -193,6 +193,62 @@ PhoneGap.CallbackError = function (callbackId, args) {
 };
 
 /**
+ * Does a deep clone of the object.
+ *
+ * @param obj
+ * @return {Object}
+ */
+PhoneGap.clone = function(obj) {
+    var i, retVal;
+    if(!obj) { 
+        return obj;
+    }
+    
+    if(obj instanceof Array){
+        retVal = [];
+        for(i = 0; i < obj.length; ++i){
+            retVal.push(PhoneGap.clone(obj[i]));
+        }
+        return retVal;
+    }
+    
+    if (typeof obj === "function") {
+        return obj;
+    }
+    
+    if(!(obj instanceof Object)){
+        return obj;
+    }
+    
+    if (obj instanceof Date) {
+        return obj;
+    }
+    
+    retVal = {};
+    for(i in obj){
+        if(!(i in retVal) || retVal[i] !== obj[i]) {
+            retVal[i] = PhoneGap.clone(obj[i]);
+        }
+    }
+    return retVal;
+};
+
+/*Clones object, but catches exception*/
+PhoneGap.safeClone = function(obj)
+{
+	try
+	{
+		return PhoneGap.clone(obj);
+	}
+	catch(e)
+	{
+		console.log("CloneError::" + e.message);
+	}
+	return null;
+};
+
+
+/**
  * Custom pub-sub channel that can have functions subscribed to it
  * @constructor
  */	
