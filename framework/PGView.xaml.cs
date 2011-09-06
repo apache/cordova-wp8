@@ -233,7 +233,7 @@ namespace WP7GapClassLib
             }
 
             bc.OnCommandResult += new EventHandler<PluginResult>(OnCommandResult);
-            bc.JSCallackId = commandCallParams.CallbackId;
+            bc.JSCallbackId = commandCallParams.CallbackId;
 
             try
             {
@@ -277,7 +277,7 @@ namespace WP7GapClassLib
             }
             else if (command.IsJSCallbackAttached)
             {
-                this.InvokeJSSCallback(command.JSCallackId, result);
+                this.InvokeJSSCallback(command.JSCallbackId, result);
             }
 
             // else // no callback required
