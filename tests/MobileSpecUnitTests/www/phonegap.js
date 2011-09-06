@@ -88,7 +88,6 @@ PhoneGap.exec = function(success, fail, service, action, args)
     if (typeof success == "function" || typeof fail == "function") 
 	{
         PhoneGap.callbacks[callbackId] = {success:success, fail:fail};
-		console.log("added callback for " + callbackId);
     }
 
 	 // generate a new command string, ex. DebugConsole/log/DebugConsole23/{"message":"wtf dude?"}
@@ -97,18 +96,17 @@ PhoneGap.exec = function(success, fail, service, action, args)
      window.external.Notify(command);
 };
 
-PhoneGapCommandResult = function(status,callbackId,args)
+PhoneGapCommandResult = function(status,callbackId,args,cast)
 {
-	console.log("PhoneGapCommandResult :: " + status + ", " + callbackId + ", " + args);
+    console.log("PhoneGapCommandResult :: " + status + ", " + callbackId + ", " + args + ", " + cast);
 	var safeStatus = parseInt(status);
 	if(safeStatus === PhoneGap.callbackStatus.NO_RESULT ||
-	   safeStatus === PhoneGap.callbackStatus.OK)
-	{
-		PhoneGap.CallbackSuccess(callbackId,args);
+	   safeStatus === PhoneGap.callbackStatus.OK) {
+		PhoneGap.CallbackSuccess(callbackId,args,cast);
 	}
 	else
 	{
-		PhoneGap.CallbackError(callbackId,args);
+		PhoneGap.CallbackError(callbackId,args,cast);
 	}
 };
 
@@ -117,20 +115,27 @@ PhoneGapCommandResult = function(status,callbackId,args)
  *
  * @param callbackId
  * @param args
+ * @param cast
  */
-PhoneGap.CallbackSuccess = function(callbackId, args) 
+PhoneGap.CallbackSuccess = function(callbackId, args, cast) 
 {
-	console.log("PhoneGapCallbackSuccess::" + callbackId + "::" + args);
+    console.log("PhoneGapCallbackSuccess::" + callbackId + "::" + args + "::" + cast);
 
 	var commandResult;
 	try
 	{
-		commandResult  = JSON.parse(args);
+	    commandResult = JSON.parse(args);
+
+	    if (typeof cast !== 'undefined') 
+        {
+	        eval('commandResult = ' + cast + '(commandResult);');
+        }
+
 	}
 	catch(exception)
 	{
 		return exception.message;
-	}
+    }
 	
     if (PhoneGap.callbacks[callbackId] ) {
 
@@ -160,8 +165,9 @@ PhoneGap.CallbackSuccess = function(callbackId, args)
  *
  * @param callbackId
  * @param args
+ * @param cast - not supported
  */
-PhoneGap.CallbackError = function (callbackId, args) {
+PhoneGap.CallbackError = function (callbackId, args, cast) {
 	
 	console.log("PhoneGap.CallbackError::" + callbackId + "::" + args);
 	
