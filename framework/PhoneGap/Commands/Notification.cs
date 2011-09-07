@@ -16,11 +16,14 @@ using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using System.Windows.Resources;
+using Microsoft.Phone.Shell;
+using Microsoft.Phone.Controls;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
     public class Notification : BaseCommand
     {
+        ProgressBar progressBar = null;
         const int DEFAULT_DURATION = 5;
 
         // alert, confirm, blink, vibrate, beep
@@ -34,12 +37,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
         [DataContract]
         public class AlertOptions
         {
-
-            public AlertOptions()
-            {
-
-            }
-
             [OnDeserializing]
             public void OnDeserializing(StreamingContext context)
             {
@@ -50,19 +47,19 @@ namespace WP7GapClassLib.PhoneGap.Commands
             }
 
             /// <summary>
-            /// 
+            /// message to display in the alert box
             /// </summary>
             [DataMember]
             public string message;
 
             /// <summary>
-            /// 
+            /// title displayed on the alert window
             /// </summary>
             [DataMember]
             public string title;
 
             /// <summary>
-            /// 
+            /// text to display on the button
             /// </summary>
             [DataMember]
             public string buttonLabel;
@@ -86,7 +83,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public void beep(string count)
         {
-
             int times = int.Parse(count);
 
             StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WP7GapClassLib;component/resources/notification-beep.wav", UriKind.Relative));
@@ -111,6 +107,57 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             // TODO: may need a listener to trigger DispatchCommandResult after the alarm has finished executing...
             DispatchCommandResult();
+        }
+
+        // Display an inderminate progress indicator
+        public void activityStart(string unused)
+        {
+            PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+            if (frame != null)
+            {
+                PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
+
+                if (page != null)
+                {
+                    Grid grid = page.FindName("LayoutRoot") as Grid;
+                    if (grid != null)
+                    {
+                        if (this.progressBar != null)
+                        {
+                            grid.Children.Remove(progressBar);
+                        }
+                        progressBar = new ProgressBar();
+                        progressBar.IsIndeterminate = true;
+                        progressBar.IsEnabled = true;
+
+                        grid.Children.Add(progressBar);
+                    }
+                }
+            }
+        }
+
+
+        // Remove our inderminate progress indicator
+        public void activityStop(string unused)
+        {
+            if (progressBar != null)
+            {
+                progressBar.IsEnabled = false;
+                PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+                if (frame != null)
+                {
+                    PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
+                    if (page != null)
+                    {
+                        Grid grid = page.FindName("LayoutRoot") as Grid;
+                        if (grid != null)
+                        {
+                            grid.Children.Remove(progressBar);
+                        }
+                    }
+                }
+                progressBar = null;
+            }
         }
 
         public void vibrate(string vibrateDuration)

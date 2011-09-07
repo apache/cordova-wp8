@@ -19,22 +19,21 @@ namespace WP7GapClassLib.PhoneGap.Commands
          *  All commands + plugins must extend BaseCommand, because they are dealt with as BaseCommands in PGView.xaml.cs
          *  
          **/
-
         public event EventHandler<PluginResult> OnCommandResult;
 
-        public string JSCallackId { get; set; }
+        public string JSCallbackId { get; set; }
 
         public bool IsJSCallbackAttached
         {
             get 
             {
-                return !string.IsNullOrEmpty(JSCallackId);
+                return !string.IsNullOrEmpty(JSCallbackId);
             }
         }
 
         public BaseCommand()
         {
-             
+            
         }
 
         /*
