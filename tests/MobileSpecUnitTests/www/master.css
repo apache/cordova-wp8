@@ -1,7 +1,7 @@
   body {
     background:#222 none repeat scroll 0 0;
     color:#666;
-    font-family:Helvetica;
+    font-family:Helvetica, Verdana, Geneva, sans-serif;
     font-size:72%;
     line-height:1.5em;
     margin:0;
@@ -74,7 +74,7 @@
   }
 
   /* Stage Buttons */
-  #stage.theme a.btn{
+  #stage.theme .btn{
   	border: 1px solid #555;
   	-webkit-border-radius: 5px;
   	border-radius: 5px;
@@ -89,11 +89,11 @@
   	padding:1.2em 0;
   	margin:3px 0px 3px 5px;
   }
-  #stage.theme a.btn.large{
+  #stage.theme .btn.large{
   	width:308px;
   	padding:1.2em 0;
   }
-  #stage.theme a.backBtn{
+  #stage.theme .backBtn{
    border: 1px solid #555;
    -webkit-border-radius: 5px;
    border-radius: 5px;

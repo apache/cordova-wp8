@@ -99,6 +99,20 @@ PhoneGap.exec = function(success, fail, service, action, args)
 PhoneGapCommandResult = function(status,callbackId,args,cast)
 {
     console.log("PhoneGapCommandResult :: " + status + ", " + callbackId + ", " + args + ", " + cast);
+	if(status === "backbutton")
+	{
+		PhoneGap.fireEvent(document,"backbutton");
+		return "true";
+	}
+	else if(status === "resume")
+	{
+		PhoneGap.onResume.fire();
+	}
+	else if(status === "pause")
+	{
+		PhoneGap.onPause.fire();	
+	}
+	
 	var safeStatus = parseInt(status);
 	if(safeStatus === PhoneGap.callbackStatus.NO_RESULT ||
 	   safeStatus === PhoneGap.callbackStatus.OK) {
@@ -560,6 +574,8 @@ document.addEventListener('DOMContentLoaded', function() {
 PhoneGap.m_document_addEventListener = document.addEventListener;
 document.addEventListener = function(evt, handler, capture) 
 {
+	console.log("document.addEventListener event named " + evt);
+	
     var e = evt.toLowerCase();
     if (e === 'deviceready') 
 	{
@@ -579,13 +595,29 @@ document.addEventListener = function(evt, handler, capture)
 	}
     else 
 	{
+		
         if (e === 'backbutton') 
 		{
-			PhoneGap.exec(null, null, "App", "overrideBackbutton", [true]);
+			PhoneGap.exec(null, null, "CoreEvents", "overrideBackbutton", [true]);
 		}
         PhoneGap.m_document_addEventListener.call(document, evt, handler, capture);
     }
 };
+
+PhoneGap.m_document_removeEventListener = document.removeEventListener;
+document.removeEventListener = function(evt, handler, capture) 
+{
+	console.log("document.removeEventListener event named " + evt);
+	
+    var e = evt.toLowerCase();
+	
+	if (e === 'backbutton') 
+	{
+		PhoneGap.exec(null, null, "CoreEvents", "overrideBackbutton", [false]);
+	}
+	PhoneGap.m_document_removeEventListener.call(document, evt, handler, capture);
+	
+}
 
 
 PhoneGap.fireEvent = function(_targ,evtName)
