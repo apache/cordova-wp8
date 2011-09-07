@@ -122,6 +122,7 @@
     <Content Include="www\contacts.html" />
     <Content Include="www\device.js" />
     <Content Include="www\events.html" />
+    <Content Include="www\file.js" />
     <Content Include="www\index.html" />
     <Content Include="www\location.html" />
     <Content Include="www\main.js" />

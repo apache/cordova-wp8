@@ -196,10 +196,11 @@ namespace WP7GapClassLib.PhoneGap.UI
         {
             this.microphone.GetData(this.buffer);
             this.memoryStream.Write(this.buffer, 0, this.buffer.Length);
+            TimeSpan bufferDuration = this.microphone.BufferDuration;
 
             this.Dispatcher.BeginInvoke(() =>
             {
-                this.duration += this.microphone.BufferDuration;
+                this.duration += bufferDuration;
 
                 this.txtDuration.Text = "Duration: " + 
                     this.duration.Minutes.ToString().PadLeft(2, '0') + ":" +
