@@ -28,7 +28,7 @@ Notification.prototype.alert = function(message, completeCallback, title, button
 {
     var _title = (title || "Alert");
     var _buttonLabels = (buttonLabel || "OK");
-    PhoneGap.exec(completeCallback, null, "Notification", "alert", {"message":message,"title":_title,"buttonLabels":_buttonLabels});
+    PhoneGap.exec(completeCallback, null, "Notification", "alert",{"message":message,"title":_title,"buttonLabels":_buttonLabels});
 };
 
 /**

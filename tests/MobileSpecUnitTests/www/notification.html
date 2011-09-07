@@ -28,68 +28,78 @@
 
     <script type="text/javascript" charset="utf-8">
 
-    var deviceReady = false;
+      var deviceReady = false;
 
-    //-------------------------------------------------------------------------
-    // Notifications
-    //-------------------------------------------------------------------------
+      //-------------------------------------------------------------------------
+      // Notifications
+      //-------------------------------------------------------------------------
 
-    function doBeep(x)
-	{
-		
-        navigator.notification.beep(x);
-    };
+      function doBeep(x)
+      {
 
-    function doVibrate()
-	{
+      navigator.notification.beep(x);
+      };
+
+      function doVibrate()
+      {
       navigator.notification.vibrate(0);
-    };
+      };
 
-    function doAlert() 
-	{
-       	var message = "This is an Alert dialog";
-		var title = "Attention!";
-		
-        navigator.notification.alert(message,
-            function()
-			{
-                console.log("Alert dismissed.");
-            },
-            title);
-			
-        console.log("After alert");
-    };
+      function doAlert()
+      {
+      var message = "This is an Alert dialog";
+      var title = "Attention!";
 
-    function doConfirm() 
-	{
-		var message = "This is a confirm dialog";
-		var title = "Please Confirm";
-		var buttons = "OK,Cancel";
-        navigator.notification.confirm(message,
-            function(r) {
-                console.log("You selected " + r);
-              
-            },
-            title,
-            buttons);
-    };
-    
-    /**
-     * Function called when page has finished loading.
-     */
-    function init() {
-        document.addEventListener("deviceready", function() {
-                deviceReady = true;
-                console.log("Device="+device.platform+" "+device.version);
-            }, false);
-        window.setTimeout(function() {
-        	if (!deviceReady) {
-        		console.log("Error: PhoneGap did not initialize.  Demo will not run correctly.");
-        	}
-        },1000);
-    }
+      navigator.notification.alert(message,
+      function()
+      {
+      console.log("Alert dismissed.");
+      },
+      title);
 
-</script>
+      console.log("After alert");
+      };
+
+      function doConfirm()
+      {
+      var message = "This is a confirm dialog";
+      var title = "Please Confirm";
+      var buttons = "OK,Cancel";
+      navigator.notification.confirm(message,
+      function(r) {
+      console.log("You selected " + r);
+
+      },
+      title,
+      buttons);
+      }
+
+      function startActivity()
+      {
+      navigator.notification.activityStart();
+      }
+
+      function stopActivity()
+      {
+      navigator.notification.activityStop();
+      }
+
+      /**
+      * Function called when page has finished loading.
+      */
+      function init() {
+      document.addEventListener("deviceready", function() {
+      deviceReady = true;
+      console.log("Device="+device.platform+" "+device.version);
+      }, false);
+      window.setTimeout(function() {
+      if (!deviceReady) {
+      console.log("Error: PhoneGap did not initialize.  Demo will not run correctly.");
+      }
+      },1000);
+      }
+
+    </script>
 
   </head>
   <body onLoad="init();" id="stage" class="theme">
@@ -104,6 +114,8 @@
     <a href="#" class="btn large" onClick="doVibrate();">Vibrate</a>
     <a href="#" class="btn large" onClick="doAlert();">Show Alert Dialog</a>
     <a href="#" class="btn large" onClick="doConfirm();">Show Confirm Dialog</a>
+    <a href="#" class="btn large" onClick="startActivity();">startActivity</a>
+    <a href="#" class="btn large" onClick="stopActivity();">stopActivity</a>
     <h2>&nbsp;</h2><a href="index.html" class="backBtn">Back</a>
   </body>
 </html>      
