@@ -22,16 +22,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public event EventHandler<PluginResult> OnCommandResult;
 
-        public string JSCallbackId { get; set; }
-
-        public bool IsJSCallbackAttached
-        {
-            get 
-            {
-                return !string.IsNullOrEmpty(JSCallbackId);
-            }
-        }
-         
         public BaseCommand()
         {
              

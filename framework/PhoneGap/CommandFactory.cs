@@ -43,27 +43,16 @@ namespace WP7GapClassLib.PhoneGap
                 Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
                 if (t != null)
                 {
-                    BaseCommand bc = (BaseCommand)Activator.CreateInstance(t);
+                    BaseCommand bc = Activator.CreateInstance(t) as BaseCommand;
 
                     if (bc != null)
                     {
                         commandMap[service] = bc;
-                        return bc;
                     }
                 }
-
-                commandMap[service] = null;
             }
 
-            if (commandMap[service] != null)
-            {
-                // commands should be reused, ... 
-                return (BaseCommand)commandMap[service];
-                //return (BaseCommand)Activator.CreateInstance(commandMap[service].GetType());
-            }
-
-            return null;
-            
+            return commandMap[service];
         }
     }
 }
