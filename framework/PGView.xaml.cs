@@ -244,8 +244,11 @@ namespace WP7GapClassLib
                 return;
             }
 
-            bc.OnCommandResult += new EventHandler<PluginResult>(OnCommandResult);
-            bc.JSCallbackId = commandCallParams.CallbackId;
+             bc.OnCommandResult += new EventHandler<PluginResult>(
+                delegate(object o, PluginResult res) {
+                    OnCommandResult(o, res, commandCallParams.CallbackId);
+                }
+            );
 
             try
             {
@@ -253,7 +256,10 @@ namespace WP7GapClassLib
             }
             catch(Exception)
             {
-                bc.OnCommandResult -= this.OnCommandResult;
+                bc.OnCommandResult -= delegate(object o, PluginResult res) {
+                    OnCommandResult(o, res, null);
+                }
+;
                 // TODO log somehow
                 this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
                 return;
@@ -275,7 +281,7 @@ namespace WP7GapClassLib
             Debug.WriteLine("GapBrowser_Navigated");
         }
 
-        private void OnCommandResult(object sender, PluginResult result)
+        private void OnCommandResult(object sender, PluginResult result, string callbackId)
         {
             BaseCommand command = sender as BaseCommand;
 
@@ -287,12 +293,17 @@ namespace WP7GapClassLib
             {
                 Debug.WriteLine("OnCommandResult missing argument");
             }
-            else if (command.IsJSCallbackAttached)
+            else if (!String.IsNullOrEmpty(callbackId))
             {
-                this.InvokeJSSCallback(command.JSCallbackId, result);
-            }
+               this.InvokeJSSCallback(callbackId, result);
+           }
 
             // else // no callback required
+
+            // remove listener
+            command.OnCommandResult -= delegate(object o, PluginResult res) {
+                OnCommandResult(sender, result, callbackId);
+            };
 
         }
 
