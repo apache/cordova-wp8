@@ -31,7 +31,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 return !string.IsNullOrEmpty(JSCallbackId);
             }
         }
-
+         
         public BaseCommand()
         {
              
