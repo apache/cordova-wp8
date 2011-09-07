@@ -37,7 +37,6 @@ var Device = function() {
         function(e) {
             me.available = false;
             console.log("Error initializing PhoneGap: " + e);
-            alert("Error initializing PhoneGap: "+e);
         });
 };
 
@@ -63,39 +62,6 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
 
     // Get info
     PhoneGap.exec(successCallback, errorCallback, "Device", "Get");
-};
-
-/*
- * DEPRECATED
- * This is only for Android.
- *
- * You must explicitly override the back button.
- */
-Device.prototype.overrideBackButton = function() {
-	console.log("Device.overrideBackButton() is deprecated.  Use App.overrideBackbutton(true).");
-	navigator.app.overrideBackbutton(true);
-};
-
-/*
- * DEPRECATED
- * This is only for Android.
- *
- * This resets the back button to the default behaviour
- */
-Device.prototype.resetBackButton = function() {
-	console.log("Device.resetBackButton() is deprecated.  Use App.overrideBackbutton(false).");
-	navigator.app.overrideBackbutton(false);
-};
-
-/*
- * DEPRECATED
- * This is only for Android.
- *
- * This terminates the activity!
- */
-Device.prototype.exitApp = function() {
-	console.log("Device.exitApp() is deprecated.  Use App.exitApp().");
-	navigator.app.exitApp();
 };
 
 PhoneGap.addConstructor(function() {

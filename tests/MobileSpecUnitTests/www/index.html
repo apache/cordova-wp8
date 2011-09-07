@@ -35,9 +35,25 @@
 			function init()
 			{
 				document.addEventListener("deviceready",onDeviceReady,false);
-				
-				
-				
+				document.addEventListener("backbutton",onBackButton,false);
+				document.addEventListener("pause",onPause,false);
+				document.addEventListener("resume",onResume,false);
+
+			}
+			
+			function onPause()
+			{
+				console.log("onPause");
+			}
+			
+			function onResume()
+			{
+				console.log("onResume");
+			}
+			
+			function onBackButton()
+			{
+				console.log("onBackButton");	
 			}
 			
 			function onDeviceReady(e)
@@ -95,7 +111,6 @@
     <a href="location.html" class="btn large">Location</a>
     <a href="misc/index.html" class="btn large">Misc Content</a>
     <a href="notification.html" class="btn large">Notification</a>
-    <a href="sql.html" class="btn large">Web SQL</a>
     <a href="storage.html" class="btn large">Local Storage</a>
   </body>
 </html>
