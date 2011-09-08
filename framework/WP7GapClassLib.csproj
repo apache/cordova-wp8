@@ -103,32 +103,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="js\.disclaimer.js" />
-    <Content Include="js\acceleration.js" />
-    <Content Include="js\accelerometer.js" />
-    <Content Include="js\app.js" />
-    <Content Include="js\camera.js" />
-    <Content Include="js\capture.js" />
-    <Content Include="js\compass.js" />
-    <Content Include="js\contact.js" />
-    <Content Include="js\crypto.js" />
-    <Content Include="js\debugconsole.js" />
-    <Content Include="js\device.js" />
-    <Content Include="js\file.js" />
-    <Content Include="js\filetransfer.js" />
-    <Content Include="js\geolocation.js" />
-    <Content Include="js\media.js" />
-    <Content Include="js\network.js" />
-    <Content Include="js\notification.js" />
-    <Content Include="js\orientation.js" />
     <Content Include="js\phonegap-1.0.0.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="js\phonegap-base.js" />
-    <Content Include="js\position.js" />
-    <Content Include="js\sms.js" />
-    <Content Include="js\storage.js" />
-    <Content Include="js\telephony.js" />
     <Resource Include="resources\notification-beep.wav" />
   </ItemGroup>
   <ItemGroup>

@@ -16,9 +16,6 @@
 <#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
 
 <#
-// NOTE: By convention the first item in the directory listing is the header
-// So the file should be prefixed by a ".", in our case, it is ".disclaimer.js"
-
 // if you update the version, update the included phonegap-{VER}.js file in the js folder
 // and make sure it is set as "Content" and "Copy if newer"
 var VERSION = @"1.0.0"; 
