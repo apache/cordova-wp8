@@ -164,7 +164,7 @@ namespace WP7GapClassLib
                                 {
                                     byte[] data = br.ReadBytes((int)fileResourceStreamInfo.Stream.Length);
 
-                                    string strBaseDir = file.path.Substring(0, file.path.LastIndexOf('/'));
+                                    string strBaseDir = file.path.Substring(0, file.path.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
                                     appStorage.CreateDirectory(strBaseDir);
 
                                     // This will truncate/overwrite an existing file, or 

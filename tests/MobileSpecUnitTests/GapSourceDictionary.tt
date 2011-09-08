@@ -1,0 +1,35 @@
+﻿<#@ template language="C#" hostspecific="True" #>
+<#@ Output Extension=".xml" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.CodeDom" #>
+<#@ import namespace="System.CodeDom.Compiler" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<?xml version="1.0" encoding="utf-8"?>
+<GapSourceDictionary>
+<#
+var currentDirectory = Path.GetDirectoryName(Host.TemplateFile);
+var jsFiles = Directory.GetFiles(String.Format(@"{0}{1}www", currentDirectory, System.IO.Path.DirectorySeparatorChar), "*", SearchOption.AllDirectories);
+#>
+<# foreach(var jsFile in jsFiles) { #>
+    <FilePath Value="<#= GetRelativeFilePath(jsFile) #>"/> 
+<# } #>
+</GapSourceDictionary>
+
+<#+
+public string GetRelativeFilePath(string path) {
+	var currentDirectory = Path.GetDirectoryName(Host.TemplateFile) + System.IO.Path.DirectorySeparatorChar;
+	if (path.IndexOf(currentDirectory) == 0) {
+		return path.Substring(currentDirectory.Length);
+	}
+	return path;
+}
+#>
