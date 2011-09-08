@@ -2,7 +2,7 @@
 <GapSourceDictionary>
 
     <FilePath Value="www/index.html"/>
-    <FilePath Value="www/phonegap.js"/>
+    <FilePath Value="www/phonegap.1.0.js"/>
     <FilePath Value="www/master.css"/>
   
 </GapSourceDictionary>
