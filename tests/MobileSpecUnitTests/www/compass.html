@@ -1,12 +1,30 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
   <head>
     <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <!-- ISO-8859-1 -->
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>PhoneGap</title>
-    <link rel="stylesheet" href="master.css" type="text/css" media="screen">
-    <script type="text/javascript" charset="utf-8" src="../phonegap.js"></script>      
+    <link rel="stylesheet" href="master.css" type="text/css" media="screen"/>
+
+      <script type="text/javascript">
+        // provide our own console if it does not exist, huge dev aid!
+        if(typeof window.console == "undefined")
+        {
+        window.console = {log:function(str){window.external.Notify(str);}};
+        }
+
+        // output any errors to console log, created above.
+        window.onerror=function(e)
+        {
+        console.log("window.onerror ::" + JSON.stringify(e));
+        };
+
+        console.log("Installed console ! ");
+      </script>
+      
+      
+    <script type="text/javascript" charset="utf-8" src="phonegap.1.0.js"></script>
 
       
 <script type="text/javascript" charset="utf-8">
@@ -39,7 +57,7 @@
         var fail = function(e){
             console.log("watchCompass fail callback with error code "+e);
             stopCompass();
-            setCompassStatus(navigator.compass.ERROR_MSG[e]);
+            setCompassStatus(Compass.ERROR_MSG[e]);
         };
 
         // Update heading every 1 sec
@@ -78,7 +96,7 @@
         // Fail callback
         var fail = function(e){
             console.log("getCompass fail callback with error code "+e);
-            setCompassStatus(navigator.compass.ERROR_MSG[e]);
+            setCompassStatus(Compass.ERROR_MSG[e]);
         };
 
         // Make call
@@ -121,9 +139,9 @@
         </tr></table>
     </div>
     <h2>Action</h2>
-    <a href="javascript:" class="btn large" onClick="getCompass();">Get Compass</a>
-    <a href="javascript:" class="btn large" onClick="watchCompass();">Start Watching Compass</a>
-    <a href="javascript:" class="btn large" onClick="stopCompass();">Stop Watching Compass</a>
+    <a href="#" class="btn large" onClick="getCompass();">Get Compass</a>
+    <a href="#" class="btn large" onClick="watchCompass();">Start Watching Compass</a>
+    <a href="#" class="btn large" onClick="stopCompass();">Stop Watching Compass</a>
     <h2>&nbsp;</h2><a href="index.html" class="backBtn">Back</a>
   </body>
 </html>      

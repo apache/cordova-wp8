@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
   <head>
     <meta name="viewport" content="width=320; user-scalable=no" />
@@ -22,9 +22,7 @@
 		console.log("Installed console ! ");
     </script>
       
-      <script type="text/javascript" charset="utf-8" src="main.js"></script>
-      <!--<script type="text/javascript" src="thumbs.js"></script>-->
-      <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+      <script type="text/javascript" charset="utf-8" src="phonegap.1.0.js"></script> 
        
       <script type="text/javascript">
 
@@ -35,9 +33,14 @@
 			function init()
 			{
 				document.addEventListener("deviceready",onDeviceReady,false);
-				
-				
-				
+				document.addEventListener("backbutton",onBackButton,false);
+
+			}
+		
+			
+			function onBackButton()
+			{
+				console.log("onBackButton");	
 			}
 			
 			function onDeviceReady(e)
@@ -87,6 +90,7 @@
     <a href="accelerometer.html" class="btn large">Accelerometer</a>
     <a href="audio.html" class="btn large">Audio Play/Record</a>
     <a href="camera.html" class="btn large">Camera</a>
+    <a href="capture.html" class="btn large">Capture</a>
     <a href="compass.html" class="btn large">Compass</a>
     <a href="network.html" class="btn large">Connection</a>
     <a href="contacts.html" class="btn large">Contacts</a>
@@ -94,7 +98,6 @@
     <a href="location.html" class="btn large">Location</a>
     <a href="misc/index.html" class="btn large">Misc Content</a>
     <a href="notification.html" class="btn large">Notification</a>
-    <a href="sql.html" class="btn large">Web SQL</a>
     <a href="storage.html" class="btn large">Local Storage</a>
   </body>
 </html>

@@ -77,7 +77,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
-    <None Include="Properties\WMAppManifest.xml" />
+    <None Include="Properties\WMAppManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
@@ -91,9 +93,12 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="SplashScreenImage.jpg" />
-    <Content Include="www\accelerometer.html" />
-    <Content Include="www\accelerometer.js" />
-    <Content Include="www\audio.html" />
+    <Content Include="www\accelerometer.html">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="www\audio.html">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="www\autotest\index.html" />
     <Content Include="www\autotest\qunit.css" />
     <Content Include="www\autotest\qunit.js" />
@@ -101,6 +106,7 @@
     <Content Include="www\autotest\tests\accelerometer.tests.js" />
     <Content Include="www\autotest\tests\camera.tests.js" />
     <Content Include="www\autotest\tests\capture.tests.js" />
+    <Content Include="www\autotest\tests\compass.tests.js" />
     <Content Include="www\autotest\tests\contacts.tests.js" />
     <Content Include="www\autotest\tests\device.tests.js" />
     <Content Include="www\autotest\tests\file.tests.js" />
@@ -112,25 +118,19 @@
     <Content Include="www\autotest\tests\storage.tests.js" />
     <Content Include="www\autotest\tests\system.tests.js" />
     <Content Include="www\camera.html" />
+    <Content Include="www\capture.html" />
     <Content Include="www\compass.html" />
     <Content Include="www\contacts.html" />
     <Content Include="www\events.html" />
     <Content Include="www\index.html" />
     <Content Include="www\location.html" />
-    <Content Include="www\main.js" />
     <Content Include="www\master.css" />
     <Content Include="www\misc\index.html" />
-    <Content Include="www\misc\page2.html" />
     <Content Include="www\network.html" />
-    <Content Include="www\network.js" />
     <Content Include="www\notification.html">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="www\notification.js" />
-    <Content Include="www\phonegap.js" />
-    <Content Include="www\sql.html">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="www\phonegap.1.0.js" />
     <Content Include="www\storage.html">
       <SubType>Designer</SubType>
     </Content>

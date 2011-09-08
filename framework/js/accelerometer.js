@@ -2,11 +2,13 @@
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
- * Copyright (c) 2005-2010, Nitobi Software Inc.
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
-if (!PhoneGap.hasResource("accelerometer")) {
+if (!PhoneGap.hasResource("accelerometer")) 
+{
 PhoneGap.addResource("accelerometer");
 
 /** @constructor */
@@ -56,10 +58,26 @@ Accelerometer.prototype.getCurrentAcceleration = function(successCallback, error
         console.log("Accelerometer Error: errorCallback is not a function");
         return;
     }
+	
+	var self = this;
+	
+	var onSuccess = function(result)
+	{
+		var accResult = JSON.parse(result);
+		console.log("Accel x = " + accResult.x);
+		self.lastAcceleration = new Acceleration(accResult.x,accResult.y,accResult.z);
+		successCallback(self.lastAcceleration);
+	}
+	
+	var onError = function(err)
+	{
+		errorCallback(err);
+	}
 
     // Get acceleration
-    PhoneGap.exec(successCallback, errorCallback, "Accelerometer", "getAcceleration", []);
+    PhoneGap.exec(onSuccess, onError, "Accelerometer", "getAcceleration",options);
 };
+
 
 /**
  * Asynchronously aquires the acceleration repeatedly at a given interval.
@@ -69,10 +87,11 @@ Accelerometer.prototype.getCurrentAcceleration = function(successCallback, error
  * @param {AccelerationOptions} options The options for getting the accelerometer data such as timeout. (OPTIONAL)
  * @return String                       The watch id that must be passed to #clearWatch to stop watching.
  */
-Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallback, options) {
-
+Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallback, options) 
+{
     // Default interval (10 sec)
-    var frequency = (options !== undefined)? options.frequency : 10000;
+    var frequency = (options && options.frequency)? options.frequency : 10000;
+	var timeout = (options != options.timeout) ? options.timeout : 15000;
 
     // successCallback required
     if (typeof successCallback !== "function") {
@@ -85,23 +104,17 @@ Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallb
         console.log("Accelerometer Error: errorCallback is not a function");
         return;
     }
+	
+	var self = this;
+	
+	var onInterval = function()
+	{
+		self.getCurrentAcceleration(successCallback,errorCallback,options);
+	}
 
-    // Make sure accelerometer timeout > frequency + 10 sec
-    PhoneGap.exec(
-        function(timeout) {
-            if (timeout < (frequency + 10000)) {
-                PhoneGap.exec(null, null, "Accelerometer", "setTimeout", [frequency + 10000]);
-            }
-        },
-        function(e) { }, "Accelerometer", "getTimeout", []);
+	
 
-    // Start watch timer
-    var id = PhoneGap.createUUID();
-    navigator.accelerometer.timers[id] = setInterval(function() {
-        PhoneGap.exec(successCallback, errorCallback, "Accelerometer", "getAcceleration", []);
-    }, (frequency ? frequency : 1));
-
-    return id;
+    return window.setInterval(onInterval,frequency);
 };
 
 /**
@@ -111,15 +124,15 @@ Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallb
  */
 Accelerometer.prototype.clearWatch = function(id) {
 
-    // Stop javascript timer & remove from timer list
-    if (id && navigator.accelerometer.timers[id] !== undefined) {
-        clearInterval(navigator.accelerometer.timers[id]);
-        delete navigator.accelerometer.timers[id];
-    }
+	clearInterval(id);
 };
 
-PhoneGap.addConstructor(function() {
-    if (typeof navigator.accelerometer === "undefined") {
+PhoneGap.addConstructor(
+function()
+{
+    if (!navigator.accelerometer) 
+	{
+		console.log("Installing accelerometer");
         navigator.accelerometer = new Accelerometer();
     }
 });

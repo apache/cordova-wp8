@@ -76,7 +76,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="www\splash.html">
+    <Content Include="www\contacts.html">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

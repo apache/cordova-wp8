@@ -106,7 +106,7 @@ Tests.prototype.FileTests = function() {
 
         var failFS = function(error) {
             ok(error !== null, "error should not be null.");
-            equal(error.code, FileError.QUOTA_EXCEEDED_ERR, "Shoud receive error code FileError.QUOTA_EXCEEDED_ERR");
+            equal(error.code, FileError.QUOTA_EXCEEDED_ERR, "Should receive error code FileError.QUOTA_EXCEEDED_ERR");
             QUnit.start();
         };
         
@@ -119,7 +119,7 @@ Tests.prototype.FileTests = function() {
 
         var failFS = function(error) {
             ok(typeof error !== 'undefined' && error !== null, "error should not be null.");
-            equal(error.code, FileError.SYNTAX_ERR, "Shoud receive error code FileError.SYNTAX_ERR");
+            equal(error.code, FileError.SYNTAX_ERR, "Should receive error code FileError.SYNTAX_ERR");
             QUnit.start();
         };
         
@@ -132,7 +132,7 @@ Tests.prototype.FileTests = function() {
 
         var failURI = function(error) {
             ok(typeof error !== 'undefined' && error !== null, "error should not be null.");
-            equal(error.code, FileError.NOT_FOUND_ERR, "Shoud receive error code FileError.NOT_FOUND_ERR");
+            equal(error.code, FileError.NOT_FOUND_ERR, "Should receive error code FileError.NOT_FOUND_ERR");
             QUnit.start();
         };
         
@@ -145,12 +145,12 @@ Tests.prototype.FileTests = function() {
 
         var failURI = function(error) {
             ok(typeof error !== 'undefined' && error !== null, "error should not be null.");
-            equal(error.code, FileError.ENCODING_ERR, "Shoud receive an error code FileError.ENCODING_ERR");
+            equal(error.code, FileError.ENCODING_ERR, "Should receive an error code FileError.ENCODING_ERR");
             QUnit.start();
         };
         
         // lookup file system entry
-        window.resolveLocalFileSystemURI("/this.is.not.a.valid.url", null, failURI);
+        window.resolveLocalFileSystemURI("file://c:/directory:/this.is.not.a.valid.url", null, failURI);
     });
     module('Metadata interface');
     test("Metadata constructor should exist", function() {
@@ -352,7 +352,7 @@ Tests.prototype.FileTests = function() {
         QUnit.stop(Tests.TEST_TIMEOUT);
         expect(2);
         
-        var fileName = "de:invalid:path",
+        var fileName = "de/\invalid:path<>",
             that = this,
             testFile = function(error) {
                 ok(typeof error !== 'undefined' && error !== null, "retrieving a file using an invalid path is an error");

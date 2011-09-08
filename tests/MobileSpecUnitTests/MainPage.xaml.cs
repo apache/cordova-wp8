@@ -20,11 +20,6 @@ namespace MobileSpecUnitTests
         {
             InitializeComponent();
         }
-
-
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-        }  
+ 
     }
 }

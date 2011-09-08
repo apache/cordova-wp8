@@ -35,6 +35,7 @@ Tests.prototype.ContactsTests = function() {
             ok(true, "Trying to find with a null success call back should throw TypeError.");
         }
     }); 
+	
     test("contacts.find error callback should be called when no fields are specified", function() {
         expect(2);
         QUnit.stop(Tests.TEST_TIMEOUT);
@@ -186,6 +187,8 @@ Tests.prototype.ContactsTests = function() {
 		var rmContact = new Contact();
 		rmContact.remove(win, fail);
 	});
+	
+	
 	test("calling remove on a contact that does not exist should return ContactError.UNKNOWN_ERROR", function() {
         QUnit.stop(Tests.TEST_TIMEOUT);
 		expect(2);
@@ -196,9 +199,11 @@ Tests.prototype.ContactsTests = function() {
 			ok(result.code == ContactError.UNKNOWN_ERROR, "Object returned in contacts.remove failure callback has a code property which equal to ContactError.UNKNOWN_ERROR.");
 			QUnit.start();
 		};
-		var contact = new Contact(99);
+		var contact = new Contact(null);
 		contact.remove(win, fail);		
 	});
+	
+	
 	test("should contain a save function", function() {
 		expect(2);
 		var contact = new Contact();

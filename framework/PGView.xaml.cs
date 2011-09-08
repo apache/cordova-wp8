@@ -30,22 +30,33 @@ namespace WP7GapClassLib
     public partial class PGView : UserControl
     {
 
+        /// <summary>
+        /// Indicates whether web control has been loaded and no additional initialization is needed.
+        /// Prevents data clearing during page transitions.
+        /// </summary>
+        private bool IsBrowserInitialized = false;
+        private bool OverrideBackButton = false;
+
         public PGView()
         {
 
             InitializeComponent();
 
-            PhoneApplicationService.Current.Activated += new EventHandler<Microsoft.Phone.Shell.ActivatedEventArgs>(AppActivated);
-            PhoneApplicationService.Current.Launching += new EventHandler<LaunchingEventArgs>(AppLaunching);
-            PhoneApplicationService.Current.Deactivated += new EventHandler<DeactivatedEventArgs>(AppDeactivated);
-            PhoneApplicationService.Current.Closing += new EventHandler<ClosingEventArgs>(AppClosing);
+            if (DesignerProperties.IsInDesignTool)
+            {
+                return;
+            }
 
             StartupMode mode = PhoneApplicationService.Current.StartupMode;
             Debug.WriteLine("StartupMode mode =" + mode.ToString());
 
             if (mode == StartupMode.Activate)
             {
-
+                PhoneApplicationService service = PhoneApplicationService.Current;
+                service.Activated += new EventHandler<Microsoft.Phone.Shell.ActivatedEventArgs>(AppActivated);
+                service.Launching += new EventHandler<LaunchingEventArgs>(AppLaunching);
+                service.Deactivated += new EventHandler<DeactivatedEventArgs>(AppDeactivated);
+                service.Closing += new EventHandler<ClosingEventArgs>(AppClosing);
             }
             else
             {
@@ -81,6 +92,10 @@ namespace WP7GapClassLib
             {
                 return;
             }
+
+            // prevents refreshing web control to initial state during pages transitions
+            if (this.IsBrowserInitialized) return;
+
             try
             {
 
@@ -178,10 +193,50 @@ namespace WP7GapClassLib
                 Uri indexUri = new Uri("www/index.html", UriKind.Relative);
                 this.GapBrowser.Navigate(indexUri);
 
+                this.IsBrowserInitialized = true;
+
+                AttachHardwareButtonHandlers();
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Exception in GapBrowser_Loaded :: {0}", ex.Message);
+            }
+        }
+
+        void AttachHardwareButtonHandlers()
+        {
+            PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+            if (frame != null)
+            {
+                PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
+
+                if (page != null)
+                {
+                    page.BackKeyPress += new EventHandler<CancelEventArgs>(page_BackKeyPress);
+                    page.OrientationChanged += new EventHandler<OrientationChangedEventArgs>(page_OrientationChanged);
+                }
+            }
+        }
+
+        void page_OrientationChanged(object sender, OrientationChangedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        void page_BackKeyPress(object sender, CancelEventArgs e)
+        {
+            if (OverrideBackButton)
+            {
+                try
+                {
+                    GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { "backbutton" });
+                    e.Cancel = true;
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
 
@@ -194,6 +249,7 @@ namespace WP7GapClassLib
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
             Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
+
             // TODO: tell any running plugins to stop doing what they are doing.
             // TODO: check whitelist / blacklist
             // NOTE: Navigation can be cancelled by setting :        e.Cancel = true;
@@ -210,17 +266,25 @@ namespace WP7GapClassLib
          **/
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
-
             string commandStr = e.Value;
-            Debug.WriteLine("GapBrowser_ScriptNotify :: " + commandStr);
+            
             PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
 
             if (commandCallParams == null)
             {
                 // ERROR
-
-                //Debug.WriteLine(commandStr); // this is the case of window.error messages
-
+                Debug.WriteLine("ScriptNotify :: " + commandStr);
+                return;
+            }
+            else if (commandCallParams.Service == "CoreEvents")
+            {
+                switch (commandCallParams.Action.ToLower())
+                {
+                    case "overridebackbutton":
+                        string[] args = PhoneGap.JSON.JsonHelper.Deserialize<string[]>(commandCallParams.Args);
+                        this.OverrideBackButton = (args != null && args.Length > 0 && args[0] == "true");
+                        break;
+                }
                 return;
             }
 
@@ -232,8 +296,11 @@ namespace WP7GapClassLib
                 return;
             }
 
-            bc.OnCommandResult += new EventHandler<PluginResult>(OnCommandResult);
-            bc.JSCallackId = commandCallParams.CallbackId;
+             bc.OnCommandResult += new EventHandler<PluginResult>(
+                delegate(object o, PluginResult res) {
+                    OnCommandResult(o, res, commandCallParams.CallbackId);
+                }
+            );
 
             try
             {
@@ -241,8 +308,10 @@ namespace WP7GapClassLib
             }
             catch(Exception)
             {
-                bc.OnCommandResult -= this.OnCommandResult;
-                // TODO log somehow
+                bc.OnCommandResult -= delegate(object o, PluginResult res) {
+                    OnCommandResult(o, res, null);
+                };
+                Debug.WriteLine("failed to InvokeMethodNamed :: " + commandCallParams.Action + " on Object :: " + commandCallParams.Service);
                 this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
                 return;
             }
@@ -263,7 +332,7 @@ namespace WP7GapClassLib
             Debug.WriteLine("GapBrowser_Navigated");
         }
 
-        private void OnCommandResult(object sender, PluginResult result)
+        private void OnCommandResult(object sender, PluginResult result, string callbackId)
         {
             BaseCommand command = sender as BaseCommand;
 
@@ -275,12 +344,17 @@ namespace WP7GapClassLib
             {
                 Debug.WriteLine("OnCommandResult missing argument");
             }
-            else if (command.IsJSCallbackAttached)
+            else if (!String.IsNullOrEmpty(callbackId))
             {
-                this.InvokeJSSCallback(command.JSCallackId, result);
-            }
+               this.InvokeJSSCallback(callbackId, result);
+           }
 
             // else // no callback required
+
+            // remove listener
+            command.OnCommandResult -= delegate(object o, PluginResult res) {
+                OnCommandResult(sender, result, callbackId);
+            };
 
         }
 
@@ -309,7 +383,15 @@ namespace WP7GapClassLib
                 try
                 {
                     string status = ((int)result.Result).ToString();
-                    this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, result.ToJSONString() });
+                    string jsonResult = result.ToJSONString();
+                    if (String.IsNullOrEmpty(result.Cast))
+                    {
+                        this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult });
+                    }
+                    else
+                    {
+                        this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult, result.Cast });
+                    }
                 }
                 catch (Exception ex)
                 {

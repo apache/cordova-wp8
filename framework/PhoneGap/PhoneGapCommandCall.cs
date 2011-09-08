@@ -47,6 +47,15 @@ namespace WP7GapClassLib.PhoneGap
             commandCallParameters.CallbackId = split[2];
             commandCallParameters.Args = split.Length <= 3 ? String.Empty : String.Join("/", split.Skip(3));
 
+            // sanity check for illegal names
+            // was failing with ::
+            // PhoneGapCommandResult :: 1, Device1, {"status":1,"message":"{\"name\":\"XD.....
+            if (commandCallParameters.Service.IndexOfAny(new char[] { '@', '.', ',', '!', ' ' }) > -1)
+            {
+                return null;
+            }
+
+
             return commandCallParameters;
         }
 

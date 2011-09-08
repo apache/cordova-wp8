@@ -16,10 +16,14 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Phone;
 using System.Windows.Media.Imaging;
+using WP7GapClassLib.PhoneGap.UI;
+using System.Windows.Navigation;
+using Microsoft.Phone.Controls;
+using AudioResult = WP7GapClassLib.PhoneGap.UI.AudioCaptureTask.AudioResult;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
-/// <summary>
+    /// <summary>
     /// Provides access to the audio, image, and video capture capabilities of the device
     /// </summary>
     public class Capture : BaseCommand
@@ -35,12 +39,30 @@ namespace WP7GapClassLib.PhoneGap.Commands
             /// <summary>
             /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
             /// </summary>
-            [DataMember(IsRequired = false, Name="limit")]
+            [DataMember(IsRequired = false, Name = "limit")]
             public int Limit { get; set; }
 
             public static CaptureImageOptions Default
             {
                 get { return new CaptureImageOptions() { Limit = 1 }; }
+            }
+        }
+
+        /// <summary>
+        /// Represents captureAudio action options.
+        /// </summary>
+        [DataContract]
+        public class CaptureAudioOptions
+        {
+            /// <summary>
+            /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "limit")]
+            public int Limit { get; set; }
+
+            public static CaptureAudioOptions Default
+            {
+                get { return new CaptureAudioOptions() { Limit = 1 }; }
             }
         }
 
@@ -53,12 +75,12 @@ namespace WP7GapClassLib.PhoneGap.Commands
             /// <summary>
             /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
             /// </summary>
-            [DataMember(IsRequired=true,Name="fullPath")]
+            [DataMember(IsRequired = true, Name = "fullPath")]
             public string FullPath { get; set; }
 
-            [DataMember(Name="type")]
+            [DataMember(Name = "type")]
             public string Type { get; set; }
-            
+
         }
 
         /// <summary>
@@ -68,10 +90,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
         public class MediaFile
         {
 
-            [DataMember(Name = "fileName")]
+            [DataMember(Name = "name")]
             public string FileName { get; set; }
 
-            [DataMember(Name = "filePath")]
+            [DataMember(Name = "fullPath")]
             public string FilePath { get; set; }
 
             [DataMember(Name = "type")]
@@ -89,7 +111,25 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 this.FileName = System.IO.Path.GetFileName(this.FilePath);
                 this.Type = MimeTypeMapper.GetMimeType(FileName);
                 this.Size = image.GetImage().Length;
-                this.LastModifiedDate = image.Date.ToString();
+
+                using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    this.LastModifiedDate = storage.GetLastWriteTime(filePath).DateTime.ToString();
+                }
+
+            }
+
+            public MediaFile(string filePath, Stream stream)
+            {
+                this.FilePath = filePath;
+                this.FileName = System.IO.Path.GetFileName(this.FilePath);
+                this.Type = MimeTypeMapper.GetMimeType(FileName);
+                this.Size = stream.Length;
+
+                using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    this.LastModifiedDate = storage.GetLastWriteTime(filePath).DateTime.ToString();
+                }
 
             }
         }
@@ -138,15 +178,25 @@ namespace WP7GapClassLib.PhoneGap.Commands
         protected CaptureImageOptions captureImageOptions;
 
         /// <summary>
+        /// Capture Audio options
+        /// </summary>
+        protected CaptureAudioOptions captureAudioOptions;
+
+        /// <summary>
         /// Used to open camera application
         /// </summary>
         private CameraCaptureTask cameraTask;
 
         /// <summary>
-        /// Stores informaton about captured files
+        /// Used for audio recording
+        /// </summary>
+        private AudioCaptureTask audioCaptureTask;
+
+        /// <summary>
+        /// Stores information about captured files
         /// </summary>
         List<MediaFile> files = new List<MediaFile>();
-        
+
         /// <summary>
         /// Launches default camera application to capture image
         /// </summary>
@@ -167,10 +217,41 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-    
+
                 cameraTask = new CameraCaptureTask();
                 cameraTask.Completed += this.cameraTask_Completed;
                 cameraTask.Show();
+            }
+            catch (Exception e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+            }
+        }
+
+        /// <summary>
+        /// Launches our own audio recording control to capture audio
+        /// </summary>
+        /// <param name="options">may contains additional parameters</param>
+        public void captureAudio(string options)
+        {
+            try
+            {
+                try
+                {
+                    this.captureAudioOptions = String.IsNullOrEmpty(options) ?
+                        CaptureAudioOptions.Default : JSON.JsonHelper.Deserialize<CaptureAudioOptions>(options);
+
+                }
+                catch (Exception ex)
+                {
+                    this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                    return;
+                }
+
+                audioCaptureTask = new AudioCaptureTask();
+                audioCaptureTask.Completed += audioRecordingTask_Completed;
+                audioCaptureTask.Show();
+
             }
             catch (Exception e)
             {
@@ -184,17 +265,18 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// <param name="options"></param>
         public void getFormatData(string options)
         {
-            if(String.IsNullOrEmpty(options)){
+            if (String.IsNullOrEmpty(options))
+            {
                 this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                 return;
             }
-            
+
             try
-            {                                
+            {
                 MediaFormatOptions mediaFormatOptions;
                 try
                 {
-                   mediaFormatOptions = JSON.JsonHelper.Deserialize<MediaFormatOptions>(options);
+                    mediaFormatOptions = JSON.JsonHelper.Deserialize<MediaFormatOptions>(options);
                 }
                 catch (Exception ex)
                 {
@@ -242,10 +324,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// Handles result of capture to save image information 
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e">stores inforamation about currrent captured image</param>
+        /// <param name="e">stores information about current captured image</param>
         private void cameraTask_Completed(object sender, PhotoResult e)
         {
-            
+
             if (e.Error != null)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
@@ -264,13 +346,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         Picture image = library.SavePicture(fileName, e.ChosenPhoto);
 
                         // Save image in isolated storage    
-                    
+
                         // we should return stream position back after saving stream to media library
                         e.ChosenPhoto.Seek(0, SeekOrigin.Begin);
                         byte[] imageBytes = new byte[e.ChosenPhoto.Length];
                         e.ChosenPhoto.Read(imageBytes, 0, imageBytes.Length);
-                        string pathLocalStorage = this.SaveImageToLocalStorage(fileName, isoFolder, imageBytes);                                              
-                        
+                        string pathLocalStorage = this.SaveImageToLocalStorage(fileName, isoFolder, imageBytes);
+
                         // Get image data
                         MediaFile data = new MediaFile(pathLocalStorage, image);
 
@@ -282,13 +364,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         }
                         else
                         {
-                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
                             files.Clear();
                         }
                     }
-                    catch(Exception ex) 
+                    catch (Exception ex)
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR,"Error capturing image."));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error capturing image."));
                     }
                     break;
 
@@ -296,7 +378,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     if (files.Count > 0)
                     {
                         // User canceled operation, but some images were made
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
                         files.Clear();
                     }
                     else
@@ -304,19 +386,86 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Canceled."));
                     }
                     break;
-            
+
                 default:
                     if (files.Count > 0)
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
                         files.Clear();
                     }
                     else
                     {
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Did not complete!"));
                     }
-                    break;               
-            }         
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handles result of audio recording tasks 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">stores information about current captured audio</param>
+        private void audioRecordingTask_Completed(object sender, AudioResult e)
+        {
+
+            if (e.Error != null)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
+                return;
+            }
+
+            switch (e.TaskResult)
+            {
+                case TaskResult.OK:
+                    try
+                    {
+                        // Get image data
+                        MediaFile data = new MediaFile(e.AudioFileName, e.AudioFile);
+
+                        this.files.Add(data);
+
+                        if (files.Count < this.captureAudioOptions.Limit)
+                        {
+                            audioCaptureTask.Show();
+                        }
+                        else
+                        {
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                            files.Clear();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error capturing audio."));
+                    }
+                    break;
+
+                case TaskResult.Cancel:
+                    if (files.Count > 0)
+                    {
+                        // User canceled operation, but some audio clips were made
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        files.Clear();
+                    }
+                    else
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Canceled."));
+                    }
+                    break;
+
+                default:
+                    if (files.Count > 0)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        files.Clear();
+                    }
+                    else
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Did not complete!"));
+                    }
+                    break;
+            }
         }
 
         /// <summary>
@@ -336,7 +485,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     var imageSource = PictureDecoder.DecodeJpeg(imageStream);
                     return imageSource;
                 }
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 return null;
             }
         }
@@ -356,13 +507,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
             }
             try
             {
-                var isoFile = IsolatedStorageFile.GetUserStoreForApplication();     
-                
+                var isoFile = IsolatedStorageFile.GetUserStoreForApplication();
+
                 if (!isoFile.DirectoryExists(imageFolder))
                 {
                     isoFile.CreateDirectory(imageFolder);
                 }
-                string filePath = System.IO.Path.Combine(imageFolder, imageFileName);
+                string filePath = System.IO.Path.Combine("/" + imageFolder + "/", imageFileName);
 
                 using (var stream = isoFile.CreateFile(filePath))
                 {
@@ -371,13 +522,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 return filePath;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 //TODO: log or do something else
                 throw;
             }
-        }  
-        
+        }
+
 
     }
 }
