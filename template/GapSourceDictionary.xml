@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<GapSourceDictionary>
+
+    <FilePath Value="www/index.html"/>
+    <FilePath Value="www/phonegap.js"/>
+    <FilePath Value="www/master.css"/>
+  
+</GapSourceDictionary>
