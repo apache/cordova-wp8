@@ -76,7 +76,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="www\index.html" />
+    <Content Include="www\index.html">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="www\master.css" />
     <Content Include="www\phonegap.1.0.js" />
     <None Include="Properties\AppManifest.xml">
