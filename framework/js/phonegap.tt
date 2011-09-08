@@ -39,6 +39,11 @@ Converting:
   * <#= jsFile #> 
 <# }
 
+// write the disclaimer
+File.WriteAllText(outputFile, ReadFile(GetJsFilePath(@"disclaimer.txt")));
+// write the phonegap base code
+File.AppendAllText(outputFile, ReadFile(GetJsFilePath(@"phonegap.js.base")));
+
 foreach(var jsFile in jsFiles) 
 {
 	File.AppendAllText(outputFile, ReadFile(jsFile));
