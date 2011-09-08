@@ -9,6 +9,22 @@ Requires
 
 - Windows Phone SDK 7.1 [http://create.msdn.com/en-us/home/getting_started]
 
+Getting Started
+---
+
+- make sure you have the 7.1 SDK installed
+- fork/git or download/unzip the repo to your harddrive
+- copy the file GapAppStarter.zip to the folder : \My Documents\Visual Studio 2010\Templates\ProjectTemplates\
+- Launch Visual Studio 2010 and select to create a new project
+-- PhoneGapAppStarter should be listed as an option, give it a name
+- Right-Click on the solution and select Add->Existing Project, and add the project :
+ framework\WP7GapClassLib.csproj from the downloaded repo
+- Right-Click your main project and "Add Reference" to the WP7GapClassLib project
+- build and run!
+
+  
+
+
 
 BUGS?
 -----
