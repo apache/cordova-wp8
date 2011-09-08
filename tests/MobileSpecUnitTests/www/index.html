@@ -22,9 +22,7 @@
 		console.log("Installed console ! ");
     </script>
       
-      <script type="text/javascript" charset="utf-8" src="main.js"></script>
-      <!--<script type="text/javascript" src="thumbs.js"></script>-->
-      <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+      <script type="text/javascript" charset="utf-8" src="phonegap.1.0.js"></script> 
        
       <script type="text/javascript">
 
@@ -36,20 +34,9 @@
 			{
 				document.addEventListener("deviceready",onDeviceReady,false);
 				document.addEventListener("backbutton",onBackButton,false);
-				document.addEventListener("pause",onPause,false);
-				document.addEventListener("resume",onResume,false);
 
 			}
-			
-			function onPause()
-			{
-				console.log("onPause");
-			}
-			
-			function onResume()
-			{
-				console.log("onResume");
-			}
+		
 			
 			function onBackButton()
 			{

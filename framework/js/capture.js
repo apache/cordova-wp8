@@ -84,7 +84,7 @@ var Capture = function(){
  * @param {CaptureAudioOptions} options
  */
 Capture.prototype.captureAudio = function(successCallback, errorCallback, options){
-	PhoneGap.exec(successCallback, errorCallback, "Capture", "captureAudio", [options]);
+	PhoneGap.exec(successCallback, errorCallback, "Capture", "captureAudio", options);
 };
 
 /**
@@ -94,31 +94,8 @@ Capture.prototype.captureAudio = function(successCallback, errorCallback, option
  * @param {Function} errorCB
  * @param {CaptureImageOptions} options
  */
-Capture.prototype.captureImage = function(successCallback, errorCallback, options){
-	PhoneGap.exec(successCallback, errorCallback, "Capture", "captureImage", [options]);
-};
-
-/**
- * Launch camera application for taking image(s).
- *
- * @param {Function} successCB
- * @param {Function} errorCB
- * @param {CaptureImageOptions} options
- */
-Capture.prototype._castMediaFile = function(pluginResult){
-	var mediaFiles = [];
-	var i;
-	for (i = 0; i < pluginResult.message.length; i++) {
-		var mediaFile = new MediaFile();
-		mediaFile.name = pluginResult.message[i].name;
-		mediaFile.fullPath = pluginResult.message[i].fullPath;
-		mediaFile.type = pluginResult.message[i].type;
-		mediaFile.lastModifiedDate = pluginResult.message[i].lastModifiedDate;
-		mediaFile.size = pluginResult.message[i].size;
-		mediaFiles.push(mediaFile);
-	}
-	pluginResult.message = mediaFiles;
-	return pluginResult;
+Capture.prototype.captureImage = function (successCallback, errorCallback, options) {
+    PhoneGap.exec(successCallback, errorCallback, "Capture", "captureImage", options);
 };
 
 /**
@@ -179,12 +156,12 @@ var CaptureAudioOptions = function(){
 	// The selected audio mode. Must match with one of the elements in supportedAudioModes array.
 	this.mode = null;
 };
-
-PhoneGap.addConstructor(function(){
+PhoneGap.addConstructor(function () {
 	if (typeof navigator.device === "undefined") {
 		navigator.device = window.device = new Device();
 	}
-	if (typeof navigator.device.capture === "undefined") {
+    if (typeof navigator.device.capture === "undefined") {
+        console.log("Installing capture");
 		navigator.device.capture = window.device.capture = new Capture();
 	}
 });

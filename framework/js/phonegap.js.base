@@ -98,7 +98,6 @@ PhoneGap.exec = function(success, fail, service, action, args)
 
 PhoneGapCommandResult = function(status,callbackId,args,cast)
 {
-    console.log("PhoneGapCommandResult :: " + status + ", " + callbackId + ", " + args + ", " + cast);
 	if(status === "backbutton")
 	{
 		PhoneGap.fireEvent(document,"backbutton");
@@ -133,7 +132,6 @@ PhoneGapCommandResult = function(status,callbackId,args,cast)
  */
 PhoneGap.CallbackSuccess = function(callbackId, args, cast) 
 {
-    console.log("PhoneGapCallbackSuccess::" + callbackId + "::" + args + "::" + cast);
 
 	var commandResult;
 	try
@@ -182,8 +180,6 @@ PhoneGap.CallbackSuccess = function(callbackId, args, cast)
  * @param cast - not supported
  */
 PhoneGap.CallbackError = function (callbackId, args, cast) {
-	
-	console.log("PhoneGap.CallbackError::" + callbackId + "::" + args);
 	
 	var commandResult;
 	try
@@ -565,12 +561,7 @@ PhoneGap.Channel.join(
 document.addEventListener('DOMContentLoaded', function() {
     PhoneGap.onDOMContentLoaded.fire();
 }, false);
-    
 
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
 PhoneGap.m_document_addEventListener = document.addEventListener;
 document.addEventListener = function(evt, handler, capture) 
 {

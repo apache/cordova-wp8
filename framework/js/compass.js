@@ -18,14 +18,10 @@ var Compass = function() {
      * The last known Compass position.
      */
     this.lastHeading = null;
-
-    /**
-     * List of compass watch timers
-     */
-    this.timers = {};
+	this.isCompassSupported = true; // default assumption
 };
 
-Compass.ERROR_MSG = ["Not running", "Starting", "", "Failed to start"];
+Compass.ERROR_MSG = ["Not running", "Starting", "", "Failed to start", "Not Supported"];
 
 /**
  * Asynchronously aquires the current heading.
@@ -45,11 +41,42 @@ Compass.prototype.getCurrentHeading = function(successCallback, errorCallback, o
     // errorCallback optional
     if (errorCallback && (typeof errorCallback !== "function")) {
         console.log("Compass Error: errorCallback is not a function");
-        return;
+        //return;
+		
+		errorCallback = function(){};
     }
-
-    // Get heading
-    PhoneGap.exec(successCallback, errorCallback, "Compass", "getHeading", []);
+	
+	if(this.isCompassSupported)
+	{	
+		var self = this;
+		var onSuccess = function(result)
+		{
+			//var compassResult = JSON.parse(result);
+			console.log("compassResult = " + result);
+			self.lastHeading = result;
+			successCallback(self.lastHeading);
+		}
+		
+		var onError = function(err)
+		{
+			if(err == 4)
+			{
+				self.isCompassSupported = false;	
+			}
+			errorCallback(err);
+		}
+	
+		// Get heading
+		PhoneGap.exec(onSuccess, onError, "Compass", "getHeading", []);
+	}
+	else
+	{
+		var funk = function()
+		{
+			errorCallback(4);
+		};
+		window.setTimeout(funk,0);
+	}
 };
 
 /**
@@ -68,32 +95,33 @@ Compass.prototype.watchHeading= function(successCallback, errorCallback, options
     // successCallback required
     if (typeof successCallback !== "function") {
         console.log("Compass Error: successCallback is not a function");
-        return;
+        return -1; // in case caller later calls clearWatch with this id
     }
 
     // errorCallback optional
     if (errorCallback && (typeof errorCallback !== "function")) {
         console.log("Compass Error: errorCallback is not a function");
-        return;
+        return -1; // in case caller later calls clearWatch with this id
     }
-
-    // Make sure compass timeout > frequency + 10 sec
-    PhoneGap.exec(
-        function(timeout) {
-            if (timeout < (frequency + 10000)) {
-                PhoneGap.exec(null, null, "Compass", "setTimeout", [frequency + 10000]);
-            }
-        },
-        function(e) { }, "Compass", "getTimeout", []);
-
-    // Start watch timer to get headings
-    var id = PhoneGap.createUUID();
-    navigator.compass.timers[id] = setInterval(
-        function() {
-            PhoneGap.exec(successCallback, errorCallback, "Compass", "getHeading", []);
-        }, (frequency ? frequency : 1));
-
-    return id;
+	
+	if(this.isCompassSupported)
+	{	
+		var self = this;
+		var onInterval = function()
+		{
+			self.getCurrentHeading(successCallback,errorCallback,options);
+		}
+		return window.setInterval(onInterval,frequency);
+	}
+	else
+	{
+		var funk = function()
+		{
+			errorCallback(4);
+		};
+		window.setTimeout(funk,0);
+		return -1;
+	}
 };
 
 
@@ -104,15 +132,16 @@ Compass.prototype.watchHeading= function(successCallback, errorCallback, options
  */
 Compass.prototype.clearWatch = function(id) {
 
-    // Stop javascript timer & remove from timer list
-    if (id && navigator.compass.timers[id]) {
-        clearInterval(navigator.compass.timers[id]);
-        delete navigator.compass.timers[id];
-    }
+    // Stop javascript timer
+	clearInterval(id);
+
 };
 
-PhoneGap.addConstructor(function() {
-    if (typeof navigator.compass === "undefined") {
+PhoneGap.addConstructor(
+function()
+{
+    if (!navigator.compass) 
+	{
         navigator.compass = new Compass();
     }
 });

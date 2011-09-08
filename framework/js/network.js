@@ -13,7 +13,8 @@ PhoneGap.addResource("network");
  * This class contains information about the current network Connection.
  * @constructor
  */
-var Connection = function() {
+var Connection = function() 
+{
     this.type = null;
     this._firstRun = true;
     this._timer = null;
@@ -22,12 +23,14 @@ var Connection = function() {
     var me = this;
     this.getInfo(
         function(type) {
+			console.log("getInfo result" + type);
             // Need to send events if we are on or offline
             if (type == "none") {
                 // set a timer if still offline at the end of timer send the offline event
                 me._timer = setTimeout(function(){
                     me.type = type;
-                    PhoneGap.fireEvent('offline');
+					console.log("PhoneGap.fireEvent::offline");
+                    PhoneGap.fireEvent(document,'offline');
                     me._timer = null;
                     }, me.timeout);
             } else {
@@ -37,12 +40,15 @@ var Connection = function() {
                     me._timer = null;
                 }
                 me.type = type;
-                PhoneGap.fireEvent('online');
+				console.log("PhoneGap.fireEvent::online " + me.type);
+                PhoneGap.fireEvent(document,'online');
             }
             
             // should only fire this once
-            if (me._firstRun) {
+            if (me._firstRun) 
+			{
                 me._firstRun = false;
+				console.log("onPhoneGapConnectionReady");
                 PhoneGap.onPhoneGapConnectionReady.fire();
             }            
         },
@@ -67,7 +73,7 @@ Connection.NONE = "none";
  */
 Connection.prototype.getInfo = function(successCallback, errorCallback) {
     // Get info
-    PhoneGap.exec(successCallback, errorCallback, "Network Status", "getConnectionInfo", []);
+    PhoneGap.exec(successCallback, errorCallback, "Connection", "getConnectionInfo", []);
 };
 
 

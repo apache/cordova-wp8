@@ -267,15 +267,13 @@ namespace WP7GapClassLib
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
             string commandStr = e.Value;
-            Debug.WriteLine("GapBrowser_ScriptNotify :: " + commandStr);
+            
             PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
 
             if (commandCallParams == null)
             {
                 // ERROR
-
-                //Debug.WriteLine(commandStr); // this is the case of window.error messages
-
+                Debug.WriteLine("ScriptNotify :: " + commandStr);
                 return;
             }
             else if (commandCallParams.Service == "CoreEvents")
@@ -312,9 +310,8 @@ namespace WP7GapClassLib
             {
                 bc.OnCommandResult -= delegate(object o, PluginResult res) {
                     OnCommandResult(o, res, null);
-                }
-;
-                // TODO log somehow
+                };
+                Debug.WriteLine("failed to InvokeMethodNamed :: " + commandCallParams.Action + " on Object :: " + commandCallParams.Service);
                 this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
                 return;
             }

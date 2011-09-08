@@ -75,7 +75,7 @@ Camera.prototype.PictureSourceType = Camera.PictureSourceType;
  * @param {Object} options
  */
 Camera.prototype.getPicture = function(successCallback, errorCallback, options) {
-
+    console.log("Camera.prototype.getPicture");
     // successCallback required
     if (typeof successCallback !== "function") {
         console.log("Camera Error: successCallback is not a function");
@@ -89,50 +89,52 @@ Camera.prototype.getPicture = function(successCallback, errorCallback, options) 
     }
 
     this.options = options;
-    var quality = 80;
-    if (options.quality) {
-        quality = this.options.quality;
-    }
-    
-    var maxResolution = 0;
-    if (options.maxResolution) {
-    	maxResolution = this.options.maxResolution;
-    }
-    
-    var destinationType = Camera.DestinationType.DATA_URL;
-    if (this.options.destinationType) {
-        destinationType = this.options.destinationType;
-    }
-    var sourceType = Camera.PictureSourceType.CAMERA;
-    if (typeof this.options.sourceType === "number") {
-        sourceType = this.options.sourceType;
-    }
-    var encodingType = Camera.EncodingType.JPEG;
-    if (typeof options.encodingType == "number") {
-        encodingType = this.options.encodingType;
-    }
-    
-    var targetWidth = -1;
-    if (typeof options.targetWidth == "number") {
-        targetWidth = options.targetWidth;
-    } else if (typeof options.targetWidth == "string") {
-        var width = new Number(options.targetWidth);
-        if (isNaN(width) === false) {
-            targetWidth = width.valueOf();
-        }
-    }
 
-    var targetHeight = -1;
-    if (typeof options.targetHeight == "number") {
-        targetHeight = options.targetHeight;
-    } else if (typeof options.targetHeight == "string") {
-        var height = new Number(options.targetHeight);
-        if (isNaN(height) === false) {
-            targetHeight = height.valueOf();
-        }
-    }
-    
-    PhoneGap.exec(successCallback, errorCallback, "Camera", "takePicture", [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType]);
+// TODO: This is duplicate - default values initialization exists in native C# code
+//    var quality = 80;
+//    if (options.quality) {
+//        quality = this.options.quality;
+//    }
+//    
+//    var maxResolution = 0;
+//    if (options.maxResolution) {
+//    	maxResolution = this.options.maxResolution;
+//    }
+//    
+//    var destinationType = Camera.DestinationType.DATA_URL;
+//    if (this.options.destinationType) {
+//        destinationType = this.options.destinationType;
+//    }
+//    var sourceType = Camera.PictureSourceType.CAMERA;
+//    if (typeof this.options.sourceType === "number") {
+//        sourceType = this.options.sourceType;
+//    }
+//    var encodingType = Camera.EncodingType.JPEG;
+//    if (typeof options.encodingType == "number") {
+//        encodingType = this.options.encodingType;
+//    }
+//    
+//    var targetWidth = -1;
+//    if (typeof options.targetWidth == "number") {
+//        targetWidth = options.targetWidth;
+//    } else if (typeof options.targetWidth == "string") {
+//        var width = new Number(options.targetWidth);
+//        if (isNaN(width) === false) {
+//            targetWidth = width.valueOf();
+//        }
+//    }
+
+//    var targetHeight = -1;
+//    if (typeof options.targetHeight == "number") {
+//        targetHeight = options.targetHeight;
+//    } else if (typeof options.targetHeight == "string") {
+//        var height = new Number(options.targetHeight);
+//        if (isNaN(height) === false) {
+//            targetHeight = height.valueOf();
+//        }
+//    }
+
+    PhoneGap.exec(successCallback, errorCallback, "Camera", "getPicture", this.options);
 };
 
 PhoneGap.addConstructor(function() {

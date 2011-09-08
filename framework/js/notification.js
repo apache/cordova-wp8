@@ -2,7 +2,7 @@
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
- * Copyright (c) 2005-2010, Nitobi Software Inc.
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
  */
 
@@ -24,10 +24,11 @@ var Notification = function() {
  * @param {String} title                Title of the alert dialog (default: Alert)
  * @param {String} buttonLabel          Label of the close button (default: OK)
  */
-Notification.prototype.alert = function(message, completeCallback, title, buttonLabel) {
+Notification.prototype.alert = function(message, completeCallback, title, buttonLabel) 
+{
     var _title = (title || "Alert");
-    var _buttonLabel = (buttonLabel || "OK");
-    PhoneGap.exec(completeCallback, null, "Notification", "alert", [message,_title,_buttonLabel]);
+    var _buttonLabels = (buttonLabel || "OK");
+    PhoneGap.exec(completeCallback, null, "Notification", "alert",{"message":message,"title":_title,"buttonLabels":_buttonLabels});
 };
 
 /**
@@ -39,10 +40,11 @@ Notification.prototype.alert = function(message, completeCallback, title, button
  * @param {String} title                Title of the alert dialog (default: Confirm)
  * @param {String} buttonLabels         Comma separated list of the labels of the buttons (default: 'OK,Cancel')
  */
-Notification.prototype.confirm = function(message, resultCallback, title, buttonLabels) {
+Notification.prototype.confirm = function(message, resultCallback, title, buttonLabels) 
+{
     var _title = (title || "Confirm");
     var _buttonLabels = (buttonLabels || "OK,Cancel");
-    PhoneGap.exec(resultCallback, null, "Notification", "confirm", [message,_title,_buttonLabels]);
+    PhoneGap.exec(resultCallback, null, "Notification", "confirm", {'message':message,"title":_title,"buttonLabels":_buttonLabels});
 };
 
 /**
@@ -100,18 +102,21 @@ Notification.prototype.blink = function(count, colour) {
  *
  * @param {Integer} mills       The number of milliseconds to vibrate for.
  */
-Notification.prototype.vibrate = function(mills) {
-    PhoneGap.exec(null, null, "Notification", "vibrate", [mills]);
+Notification.prototype.vibrate = function(mills) 
+{
+    PhoneGap.exec(null, null, "Notification", "vibrate", {duration:mills});
 };
 
 /**
  * Causes the device to beep.
- * On Android, the default notification ringtone is played "count" times.
+ * A packaged resource is played "repeatCount" times.
  *
- * @param {Integer} count       The number of beeps.
+ * @param {Integer} repeatCount       The number of beeps. default 1
  */
-Notification.prototype.beep = function(count) {
-    PhoneGap.exec(null, null, "Notification", "beep", [count]);
+Notification.prototype.beep = function(repeatCount) 
+{
+	var count = repeatCount|| 1;
+    PhoneGap.exec(null, null, "Notification", "beep", count);
 };
 
 PhoneGap.addConstructor(function() {

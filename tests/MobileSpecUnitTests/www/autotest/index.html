@@ -23,27 +23,29 @@
 			};
 			
 			console.log("Installed console ! ");
+			
+			function onBodyLoad()
+			{
+				document.addEventListener("backbutton",onBackButton,false);	
+			}
+			
+			function onBackButton()
+			{
+				window.history.go(-1);
+			}
+			
 	</script>
     
     <script type="text/javascript" src="qunit.js"></script>
 
     
     <!-- Source -->
-    <script type="text/javascript" src="../phonegap.js"></script>
-    <script type="text/javascript" src="../device.js"></script>
-    <script type="text/javascript" src="../accelerometer.js"></script>
-    <script type="text/javascript" src="../camera.js"></script>
-
-    <script type="text/javascript" src="../capture.js"></script>
-
-    <script type="text/javascript" src="../notification.js"></script>
-    <script type="text/javascript" src="../network.js"></script>
-    <script type="text/javascript" src="../compass.js"></script>
-    <script type="text/javascript" src="../contact.js"></script>
+    <script type="text/javascript" src="../phonegap.1.0.js"></script>
     
     <!-- Load Test Runner -->
     <script type="text/javascript" src="test-runner.js"></script>
 
+   
     
     <!-- Individual Tests -->
 
@@ -61,9 +63,14 @@
 
     <script type="text/javascript" src="tests/contacts.tests.js"></script>
     
+    
+    
+    
     <!--
-    <script type="text/javascript" src="tests/device.tests.js"></script>
     <script type="text/javascript" src="tests/file.tests.js"></script>
+     
+    <script type="text/javascript" src="tests/device.tests.js"></script>
+    
 
     <script type="text/javascript" src="tests/orientation.tests.js"></script>
     
@@ -72,7 +79,7 @@
     -->
 
   </head>
-    <body>
+    <body onload="onBodyLoad()">
         <h1 id="qunit-header">PhoneGap API Spec</h1>
         <h2 id="qunit-banner"></h2>
         <h2 id="qunit-userAgent"></h2>

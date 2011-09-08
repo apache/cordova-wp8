@@ -51,8 +51,8 @@ var Contact = function (id, displayName, name, nickname, phoneNumbers, emails, a
  *  An error code assigned by an implementation when an error has occurreds
  * @constructor
  */
-var ContactError = function() {
-    this.code=null;
+var ContactError = function(errCode) {
+    this.code=errCode;
 };
 
 /**
@@ -71,14 +71,19 @@ ContactError.PERMISSION_DENIED_ERROR = 20;
 * @param successCB success callback
 * @param errorCB error callback
 */
-Contact.prototype.remove = function(successCB, errorCB) {
-    if (this.id === null) {
-        var errorObj = new ContactError();
-        errorObj.code = ContactError.UNKNOWN_ERROR;
+Contact.prototype.remove = function(successCB, errorCB) 
+{
+    if (!this.id) 
+	{
+        var errorObj = new ContactError(ContactError.UNKNOWN_ERROR);
+		setTimeout(function(){
         errorCB(errorObj);
+		},0);
+		return ContactError.UNKNOWN_ERROR;
     }
-    else {
-        PhoneGap.exec(successCB, errorCB, "Contacts", "remove", [this.id]);
+    else 
+	{
+        PhoneGap.exec(successCB, errorCB, "Contacts", "remove",this.id);
     }
 };
 
@@ -88,51 +93,24 @@ Contact.prototype.remove = function(successCB, errorCB) {
 * @return copy of this Contact
 */
 Contact.prototype.clone = function() {
-    var clonedContact = PhoneGap.clone(this);
+    var clonedContact = PhoneGap.safeClone(this);
     var i;
     clonedContact.id = null;
     clonedContact.rawId = null;
     // Loop through and clear out any id's in phones, emails, etc.
-    if (clonedContact.phoneNumbers) {
-        for (i = 0; i < clonedContact.phoneNumbers.length; i++) {
-            clonedContact.phoneNumbers[i].id = null;
-        }
-    }
-    if (clonedContact.emails) {
-        for (i = 0; i < clonedContact.emails.length; i++) {
-            clonedContact.emails[i].id = null;
-        }
-    }
-    if (clonedContact.addresses) {
-        for (i = 0; i < clonedContact.addresses.length; i++) {
-            clonedContact.addresses[i].id = null;
-        }
-    }
-    if (clonedContact.ims) {
-        for (i = 0; i < clonedContact.ims.length; i++) {
-            clonedContact.ims[i].id = null;
-        }
-    }
-    if (clonedContact.organizations) {
-        for (i = 0; i < clonedContact.organizations.length; i++) {
-            clonedContact.organizations[i].id = null;
-        }
-    }
-    if (clonedContact.tags) {
-        for (i = 0; i < clonedContact.tags.length; i++) {
-            clonedContact.tags[i].id = null;
-        }
-    }
-    if (clonedContact.photos) {
-        for (i = 0; i < clonedContact.photos.length; i++) {
-            clonedContact.photos[i].id = null;
-        }
-    }
-    if (clonedContact.urls) {
-        for (i = 0; i < clonedContact.urls.length; i++) {
-            clonedContact.urls[i].id = null;
-        }
-    }
+	var myArrayProps = ["phoneNumbers","emails","addresses","ims","organizations","tags","photos","urls"];
+	
+	for(var n=0, pLen=myArrayProps.length;n < pLen; n++)
+	{
+		var arr = clonedContact[myArrayProps[n]];
+		if (arr && arr.length)
+		{
+			for(var i=0,len=arr.length; i<len;i++)
+			{
+				arr[i].id = null;
+			}
+		}
+	}
     return clonedContact;
 };
 
@@ -141,8 +119,17 @@ Contact.prototype.clone = function() {
 * @param successCB success callback
 * @param errorCB error callback
 */
-Contact.prototype.save = function(successCB, errorCB) {
-    PhoneGap.exec(successCB, errorCB, "Contacts", "save", [this]);
+Contact.prototype.save = function(successCB, errorCB) 
+{
+	var self = this;
+	function onSuccess(res)
+	{
+		setTimeout(function()
+		{
+			successCB(self);
+		},0);
+	}
+    PhoneGap.exec(onSuccess, errorCB, "Contacts", "save", this);
 };
 
 /**
@@ -244,11 +231,25 @@ Contacts.prototype.find = function(fields, successCB, errorCB, options) {
         throw new TypeError("You must specify a success callback for the find command.");
     }
     if (fields === null || fields === "undefined" || fields.length === "undefined" || fields.length <= 0) {
-        if (typeof errorCB === "function") {
+        if (typeof errorCB === "function") 
+		{
+			// escape this scope before we call the errorCB
+			setTimeout(function() {
             errorCB({"code": ContactError.INVALID_ARGUMENT_ERROR});
+			},0);
         }
-    } else {
-        PhoneGap.exec(successCB, errorCB, "Contacts", "search", [fields, options]);        
+		console.log("Contacts.find::ContactError::INVALID_ARGUMENT_ERROR");
+    } 
+	else 
+	{
+		var onSuccess = function(res)
+		{
+			setTimeout(function()
+			{
+				successCB(res);
+			},0);
+		}
+        PhoneGap.exec(onSuccess, errorCB, "Contacts", "search", {"fields":fields,"options":options});        
     }
 };
 

@@ -4,26 +4,13 @@
 <FilePath Value="www/master.css"/>
 <FilePath Value="www/main.js"/>
 <FilePath Value="www/index.html"/>
-<FilePath Value="www/main.js"/>
 <FilePath Value="www/master.css"/>
 
-<FilePath Value="www/phonegap.js"/>
-<FilePath Value="www/device.js"/>
-
-<FilePath Value="www/accelerometer.js"/>
-
-<FilePath Value="www/camera.js"/>
-<FilePath Value="www/capture.js"/>
-
-<FilePath Value="www/contact.js"/>
-
-<FilePath Value="www/notification.js"/>
+<FilePath Value="www/phonegap.1.0.js"/>
 
 <FilePath Value="www/network.html"/>
-<FilePath Value="www/network.js"/>
 
-  <FilePath Value="www/compass.html"/>
-  <FilePath Value="www/compass.js"/>
+<FilePath Value="www/compass.html"/>
 
 <FilePath Value="www/accelerometer.html"/>
 <FilePath Value="www/audio.html"/>
