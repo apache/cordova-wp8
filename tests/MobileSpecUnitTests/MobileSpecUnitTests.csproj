@@ -127,6 +127,7 @@
     <Content Include="www\compass.html" />
     <Content Include="www\contacts.html" />
     <Content Include="www\events.html" />
+    <Content Include="www\file.html" />
     <Content Include="www\index.html" />
     <Content Include="www\location.html" />
     <Content Include="www\master.css" />
