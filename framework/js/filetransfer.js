@@ -52,13 +52,26 @@ FileTransfer.prototype.upload = function(filePath, server, successCallback, erro
     var params = null;
     if (options) {
         if (options.params) {
-            	// TODO params are not supported
-		options.params = null
+            var dict=new Array(); 
+            var idx = 0;
+
+            for (var key in options.params) {
+                if (options.params.hasOwnProperty(key)) {
+                    var value = options.params[key];
+                    var item = new Object();
+                    item.Key = key;
+                    item.Value = value;
+                    dict[idx] = item;    
+                    idx++;
+                }
+            }
+
+            options.params = dict;
         }
     } else {
         options = new FileUploadOptions();
-    }	
-    
+    }    
+
     options.filePath = filePath;
     options.server = server;
 
