@@ -115,6 +115,7 @@
     <Content Include="www\autotest\tests\contacts.tests.js" />
     <Content Include="www\autotest\tests\device.tests.js" />
     <Content Include="www\autotest\tests\file.tests.js" />
+    <Content Include="www\autotest\tests\filetransfer.tests.js" />
     <Content Include="www\autotest\tests\geolocation.tests.js" />
     <Content Include="www\autotest\tests\media.tests.js" />
     <Content Include="www\autotest\tests\network.tests.js" />
