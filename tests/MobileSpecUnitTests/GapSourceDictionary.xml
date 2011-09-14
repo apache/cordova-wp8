@@ -26,6 +26,7 @@
     <FilePath Value="www\autotest\tests\contacts.tests.js"/> 
     <FilePath Value="www\autotest\tests\device.tests.js"/> 
     <FilePath Value="www\autotest\tests\file.tests.js"/> 
+    <FilePath Value="www\autotest\tests\filetransfer.tests.js"/> 
     <FilePath Value="www\autotest\tests\geolocation.tests.js"/> 
     <FilePath Value="www\autotest\tests\media.tests.js"/> 
     <FilePath Value="www\autotest\tests\network.tests.js"/> 

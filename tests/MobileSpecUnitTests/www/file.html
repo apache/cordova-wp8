@@ -178,21 +178,56 @@
     * Reads file as base64 string
     */
     function readAsBase64() {
-    var onSuccess = function (fileEntry) {
-    var reader = new FileReader();
-    reader.onloadend = function (evt) {
-    console.log("read success");
-    document.getElementById('file_status').innerHTML = evt.target.result;
-    };
-    reader.onerror = function (evt) {
-    console.log("read error");
-    document.getElementById('file_status').innerHTML = "read error: " + evt.target.error;
+        var onSuccess = function (fileEntry) {
+            var reader = new FileReader();
+            reader.onloadend = function (evt) {
+                console.log("read success");
+                document.getElementById('file_status').innerHTML = evt.target.result;
+            };
+            reader.onerror = function (evt) {
+                console.log("read error");
+                document.getElementById('file_status').innerHTML = "read error: " + evt.target.error;
+            };
+
+            reader.readAsDataURL(fileEntry);
+        };
+
+        console.log("Start getting entry");
+        getEntry(true, onSuccess, { create: false });
+
     };
 
-    reader.readAsDataURL(fileEntry);
-    };
-    console.log("Start getting entry");
-    getEntry(true, onSuccess, { create: false });
+    /**
+    * Uploads selected file to specified server
+    */
+    function uploadFile() {
+
+        var onSuccess = function (fileUploadResult) {
+            console.log("Upload success");
+            document.getElementById('file_status').innerHTML = "Code: " + fileUploadResult.responseCode + "; Sent = " + fileUploadResult.bytesSent + "; Response:  " + fileUploadResult.response;
+        };
+
+        var onError = function (error) {
+            document.getElementById('file_status').innerHTML = "Upload error: " + error.code;
+        };
+
+        console.log("Set upload parameters");
+        var options = new FileUploadOptions();
+
+        options.fileKey = "file";
+        options.fileName = "newFile.txt";
+        options.mimeType = "text/plain";
+        var filePath = document.getElementById('filePath').value;
+        var server = document.getElementById('server').value;
+
+        var params = new Object();
+        params.key1 = "value1";
+        params.key2 = "value2";
+        options.params = params;
+
+        var fileTransfer = new FileTransfer();
+
+        fileTransfer.upload(filePath, server, onSuccess, onError, options);
     };
 
     /**
@@ -219,10 +254,13 @@
     <h1>File</h1>
     <div id="info">        
         <b>Enter file/directory name here:</b> <span id="Span1"></span><br/>
-        <input type="text" id="filePath" style="width:250px;height:20px;">
+        <input type="text" id="filePath" style="width:250px;height:20px;"/>
         <br/>
         <b>Enter text to write in file :</b> <span id="Span2"></span><br/>
-        <input type="text" id="textToWrite" style="width:250px;height:20px;">        
+        <input type="text" id="textToWrite" style="width:250px;height:20px;"/>        
+        <br/>
+        <b>Enter URL to upload file to: </b> <span id="Span3"></span><br/>
+        <input type="text" id="server" value='http://posttestserver.com/post.php?dir=phonegapTest' style="width:250px;height:20px;"/>        
         <br/>
         <b>Result:</b> <span id="file_status"></span>
     </div>
@@ -235,6 +273,7 @@
     <a href="#" class="btn large" onclick="remove(false);">Remove directory</a>  
     <a href="#" class="btn large" onclick="writeInFile();">Write in file (type text in the second field)</a>
     <a href="#" class="btn large" onclick="readAsBase64();">Read file as base64</a>
+    <a href="#" class="btn large" onclick="uploadFile();">Upload file</a>
     <h2>&nbsp;</h2><a href="index.html" class="backBtn">Back</a>
   </body>
 </html>      

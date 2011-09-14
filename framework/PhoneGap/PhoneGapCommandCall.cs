@@ -31,7 +31,8 @@ namespace WP7GapClassLib.PhoneGap
         {
             if (string.IsNullOrEmpty(commandStr))
             {
-                throw new ArgumentNullException("commandStr");
+                return null;
+                //throw new ArgumentNullException("commandStr");
             }
 
             string[] split = commandStr.Split('/');
