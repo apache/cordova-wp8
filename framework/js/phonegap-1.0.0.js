@@ -1628,18 +1628,6 @@ if (!PhoneGap.hasResource("file")) {
 PhoneGap.addResource("file");
 
 /**
- * This class provides some useful information about a file.
- * This is the fields returned when navigator.fileMgr.getFileProperties()
- * is called.
- * @constructor
- */
-var FileProperties = function(filePath) {
-    this.filePath = filePath;
-    this.size = 0;
-    this.lastModifiedDate = null;
-};
-
-/**
  * Represents a single file.
  *
  * @constructor
@@ -1687,15 +1675,7 @@ FileError.PATH_EXISTS_ERR = 12;
 var FileMgr = function() {
 };
 
-FileMgr.prototype.getFileProperties = function(filePath) {
-    return PhoneGap.exec(null, null, "File", "getFileProperties", {filePath: filePath});
-};
-
 FileMgr.prototype.getFileBasePaths = function() {
-};
-
-FileMgr.prototype.testSaveLocationExists = function(successCallback, errorCallback) {
-    return PhoneGap.exec(successCallback, errorCallback, "File", "testSaveLocationExists");
 };
 
 FileMgr.prototype.testFileExists = function(fileName, successCallback, errorCallback) {
@@ -1998,13 +1978,13 @@ FileReader.prototype.readAsArrayBuffer = function(file) {
  * @param file {File} File object containing file properties
  * @param append if true write to the end of the file, otherwise overwrite the file
  */
-var FileWriter = function(file) {
+var FileWriter = function (file) {
     this.fileName = "";
     this.length = 0;
-	if (file) {
-	    this.fileName = file.fullPath || file;
-	    this.length = file.size || 0;
-	}
+    if (file) {
+        this.fileName = file.fullPath || file;
+        this.length = file.size || 0;
+    }
     // default is to write at the beginning of the file
     this.position = 0;
 
@@ -2016,12 +1996,12 @@ var FileWriter = function(file) {
     this.error = null;
 
     // Event handlers
-    this.onwritestart = null;	// When writing starts
-    this.onprogress = null;		// While writing the file, and reporting partial file data
-    this.onwrite = null;		// When the write has successfully completed.
-    this.onwriteend = null;		// When the request has completed (either in success or failure).
-    this.onabort = null;		// When the write has been aborted. For instance, by invoking the abort() method.
-    this.onerror = null;		// When the write has failed (see errors).
+    this.onwritestart = null; // When writing starts
+    this.onprogress = null; 	// While writing the file, and reporting partial file data
+    this.onwrite = null; 	// When the write has successfully completed.
+    this.onwriteend = null; 	// When the request has completed (either in success or failure).
+    this.onabort = null; 	// When the write has been aborted. For instance, by invoking the abort() method.
+    this.onerror = null; 	// When the write has failed (see errors).
 };
 
 // States
@@ -2065,11 +2045,11 @@ FileWriter.prototype.abort = function() {
  *
  * @param text to be written
  */
-FileWriter.prototype.write = function(text) {
-	// Throw an exception if we are already writing a file
-	if (this.readyState === FileWriter.WRITING) {
-		throw FileError.INVALID_STATE_ERR;
-	}
+FileWriter.prototype.write = function (text) {
+    // Throw an exception if we are already writing a file
+    if (this.readyState === FileWriter.WRITING) {
+        throw FileError.INVALID_STATE_ERR;
+    }
 
     // WRITING state
     this.readyState = FileWriter.WRITING;
@@ -2078,14 +2058,14 @@ FileWriter.prototype.write = function(text) {
 
     // If onwritestart callback
     if (typeof me.onwritestart === "function") {
-        me.onwritestart({"type":"writestart", "target":me});
+        me.onwritestart({ "type": "writestart", "target": me });
     }
 
     // Write file
     navigator.fileMgr.write(this.fileName, text, this.position,
 
-        // Success callback
-        function(r) {
+    // Success callback
+        function (r) {
             var evt;
             // If DONE (cancelled), then don't do anything
             if (me.readyState === FileWriter.DONE) {
@@ -2099,7 +2079,7 @@ FileWriter.prototype.write = function(text) {
 
             // If onwrite callback
             if (typeof me.onwrite === "function") {
-                me.onwrite({"type":"write", "target":me});
+                me.onwrite({ "type": "write", "target": me });
             }
 
             // DONE state
@@ -2107,12 +2087,12 @@ FileWriter.prototype.write = function(text) {
 
             // If onwriteend callback
             if (typeof me.onwriteend === "function") {
-                me.onwriteend({"type":"writeend", "target":me});
+                me.onwriteend({ "type": "writeend", "target": me });
             }
         },
 
-        // Error callback
-        function(e) {
+    // Error callback
+        function (e) {
             var evt;
 
             // If DONE (cancelled), then don't do anything
@@ -2125,7 +2105,7 @@ FileWriter.prototype.write = function(text) {
 
             // If onerror callback
             if (typeof me.onerror === "function") {
-                me.onerror({"type":"error", "target":me});
+                me.onerror({ "type": "error", "target": me });
             }
 
             // DONE state
@@ -2133,7 +2113,7 @@ FileWriter.prototype.write = function(text) {
 
             // If onwriteend callback
             if (typeof me.onwriteend === "function") {
-                me.onwriteend({"type":"writeend", "target":me});
+                me.onwriteend({ "type": "writeend", "target": me });
             }
         }
         );
@@ -2383,7 +2363,8 @@ DirectoryEntry.prototype.remove = function(successCallback, errorCallback) {
  * @return uri
  */
 DirectoryEntry.prototype.toURI = function(mimeType) {
-    return "file://" + this.fullPath;
+    
+    return encodeURI("file://" + this.fullPath);
 };
 
 /**
@@ -2414,13 +2395,7 @@ DirectoryEntry.prototype.getDirectory = function (path, options, successCallback
  * @param {Function} errorCallback is called with a FileError
  */
 DirectoryEntry.prototype.getFile = function (path, options, successCallback, errorCallback) {
-    // TODO IMPORTANT FIXME
     PhoneGap.exec(successCallback, errorCallback, "File", "getFile", { fullPath: this.fullPath, path: path, options: options });
-    // combine options
-//    options.fullPath = this.fullPath;
-//    options.path = path;
-
-//    PhoneGap.exec(successCallback, errorCallback, "File", "getFile", options);
 };
 
 /**
@@ -2492,7 +2467,7 @@ FileEntry.prototype.getParent = function(successCallback, errorCallback) {
  * @param {Function} errorCallback is called with a FileError
  */
 FileEntry.prototype.moveTo = function(parent, newName, successCallback, errorCallback) {
-    PhoneGap.exec(successCallback, errorCallback, "File", "moveTo", {fullPath: this.fullPath, parent: parent, newName: newname});
+    PhoneGap.exec(successCallback, errorCallback, "File", "moveTo", {fullPath: this.fullPath, parent: parent, newName: newName});
 };
 
 /**
@@ -2512,7 +2487,7 @@ FileEntry.prototype.remove = function(successCallback, errorCallback) {
  * @return uri
  */
 FileEntry.prototype.toURI = function(mimeType) {
-    return "file://" + this.fullPath;
+    return encodeURI("file://" + this.fullPath);
 };
 
 /**
@@ -2521,10 +2496,10 @@ FileEntry.prototype.toURI = function(mimeType) {
  * @param {Function} successCallback is called with the new FileWriter
  * @param {Function} errorCallback is called with a FileError
  */
-FileEntry.prototype.createWriter = function(successCallback, errorCallback) {
-    this.file(function(filePointer) {
+FileEntry.prototype.createWriter = function (successCallback, errorCallback) {
+    this.file(function (filePointer) {
         var writer = new FileWriter(filePointer);
-    
+
         if (writer.fileName === null || writer.fileName === "") {
             if (typeof errorCallback == "function") {
                 errorCallback({
@@ -2532,10 +2507,10 @@ FileEntry.prototype.createWriter = function(successCallback, errorCallback) {
                 });
             }
         }
-    
+
         if (typeof successCallback == "function") {
             successCallback(writer);
-        }       
+        }
     }, errorCallback);
 };
 
@@ -2653,7 +2628,7 @@ LocalFileSystem.prototype._createEntry = function(castMe) {
     return entry;
 };
 
-LocalFileSystem.prototype._castDate = function(pluginResult) {
+LocalFileSystem.prototype._castDate = function (pluginResult) {
     if (pluginResult.message.modificationTime) {
         var modTime = new Date(pluginResult.message.modificationTime);
         pluginResult.message.modificationTime = modTime;
