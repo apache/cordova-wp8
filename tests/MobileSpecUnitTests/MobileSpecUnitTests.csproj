@@ -159,4 +159,7 @@
   </Target>
   -->
   <ProjectExtensions />
+  <PropertyGroup>
+    <PreBuildEvent>"%25ProgramFiles(x86)%25\Common Files\microsoft shared\TextTemplating\10.0\TextTransform.exe" $(ProjectDir)\GapSourceDictionary.tt</PreBuildEvent>
+  </PropertyGroup>
 </Project>
