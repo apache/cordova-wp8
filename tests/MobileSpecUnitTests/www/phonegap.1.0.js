@@ -953,7 +953,7 @@ var MediaFile = function(name, fullPath, type, lastModifiedDate, size){
  * @param {Function} errorCB
  */
 MediaFile.prototype.getFormatData = function(successCallback, errorCallback){
-	PhoneGap.exec(successCallback, errorCallback, "Capture", "getFormatData", [this.fullPath, this.type]);
+	PhoneGap.exec(successCallback, errorCallback, "Capture", "getFormatData", {fullPath: this.fullPath, type: this.type});
 };
 
 /**
@@ -1026,7 +1026,7 @@ Capture.prototype.captureImage = function (successCallback, errorCallback, optio
  * @param {CaptureVideoOptions} options
  */
 Capture.prototype.captureVideo = function(successCallback, errorCallback, options){
-	PhoneGap.exec(successCallback, errorCallback, "Capture", "captureVideo", [options]);
+	PhoneGap.exec(successCallback, errorCallback, "Capture", "captureVideo", options);
 };
 
 /**

@@ -1,25 +1,15 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using Microsoft.Phone.Tasks;
 using System.Collections.Generic;
-using System.IO.IsolatedStorage;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework.Media;
-using Microsoft.Phone;
 using System.Windows.Media.Imaging;
+using Microsoft.Phone;
+using Microsoft.Phone.Tasks;
+using Microsoft.Xna.Framework.Media;
 using WP7GapClassLib.PhoneGap.UI;
-using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
 using AudioResult = WP7GapClassLib.PhoneGap.UI.AudioCaptureTask.AudioResult;
+using VideoResult = WP7GapClassLib.PhoneGap.UI.VideoCaptureTask.VideoResult;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -63,6 +53,24 @@ namespace WP7GapClassLib.PhoneGap.Commands
             public static CaptureAudioOptions Default
             {
                 get { return new CaptureAudioOptions() { Limit = 1 }; }
+            }
+        }
+
+        /// <summary>
+        /// Represents captureVideo action options.
+        /// </summary>
+        [DataContract]
+        public class CaptureVideoOptions
+        {
+            /// <summary>
+            /// The maximum number of video files the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "limit")]
+            public int Limit { get; set; }
+
+            public static CaptureVideoOptions Default
+            {
+                get { return new CaptureVideoOptions() { Limit = 1 }; }
             }
         }
 
@@ -130,7 +138,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     this.LastModifiedDate = storage.GetLastWriteTime(filePath).DateTime.ToString();
                 }
-
             }
         }
 
@@ -183,6 +190,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
         protected CaptureAudioOptions captureAudioOptions;
 
         /// <summary>
+        /// Capture Video options
+        /// </summary>
+        protected CaptureVideoOptions captureVideoOptions;
+
+        /// <summary>
         /// Used to open camera application
         /// </summary>
         private CameraCaptureTask cameraTask;
@@ -191,6 +203,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// Used for audio recording
         /// </summary>
         private AudioCaptureTask audioCaptureTask;
+
+        /// <summary>
+        /// Used for video recording
+        /// </summary>
+        private VideoCaptureTask videoCaptureTask;
 
         /// <summary>
         /// Stores information about captured files
@@ -251,6 +268,37 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 audioCaptureTask = new AudioCaptureTask();
                 audioCaptureTask.Completed += audioRecordingTask_Completed;
                 audioCaptureTask.Show();
+
+            }
+            catch (Exception e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+            }
+        }
+
+        /// <summary>
+        /// Launches our own video recording control to capture video
+        /// </summary>
+        /// <param name="options">may contains additional parameters</param>
+        public void captureVideo(string options)
+        {
+            try
+            {
+                try
+                {
+                    this.captureVideoOptions = String.IsNullOrEmpty(options) ?
+                        CaptureVideoOptions.Default : JSON.JsonHelper.Deserialize<CaptureVideoOptions>(options);
+
+                }
+                catch (Exception ex)
+                {
+                    this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                    return;
+                }
+
+               videoCaptureTask = new VideoCaptureTask();
+               videoCaptureTask.Completed += videoRecordingTask_Completed;
+               videoCaptureTask.Show();
 
             }
             catch (Exception e)
@@ -445,6 +493,73 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     if (files.Count > 0)
                     {
                         // User canceled operation, but some audio clips were made
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        files.Clear();
+                    }
+                    else
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Canceled."));
+                    }
+                    break;
+
+                default:
+                    if (files.Count > 0)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        files.Clear();
+                    }
+                    else
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Did not complete!"));
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handles result of video recording tasks 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">stores information about current captured video</param>
+        private void videoRecordingTask_Completed(object sender, VideoResult e)
+        {
+
+            if (e.Error != null)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
+                return;
+            }
+
+            switch (e.TaskResult)
+            {
+                case TaskResult.OK:
+                    try
+                    {
+                        // Get image data
+                        MediaFile data = new MediaFile(e.VideoFileName, e.VideoFile);
+
+                        this.files.Add(data);
+
+                        if (files.Count < this.captureVideoOptions.Limit)
+                        {
+                            videoCaptureTask.Show();
+                        }
+                        else
+                        {
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                            files.Clear();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error capturing video."));
+                    }
+                    break;
+
+                case TaskResult.Cancel:
+                    if (files.Count > 0)
+                    {
+                        // User canceled operation, but some video clips were made
                         DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
                         files.Clear();
                     }
