@@ -28,6 +28,9 @@
 
     var deviceReady = false;
 
+    // last captured media file
+    var mediaFile = null;
+
     function clearMediaPlaceholder() {
         document.getElementById('audio_player').setAttribute('style', 'visibility:hidden;display:none;');
 
@@ -53,7 +56,7 @@
 
                 if (mediaFiles.length <= 0) return;
 
-                var mediaFile = mediaFiles[0];
+                mediaFile = mediaFiles[0];
 
                 document.getElementById('name').innerHTML = mediaFile.name;
                 document.getElementById('fullPath').innerHTML = mediaFile.fullPath;
@@ -87,7 +90,7 @@
 
                 if (mediaFiles.length <= 0) return;
 
-                var mediaFile = mediaFiles[0];
+                mediaFile = mediaFiles[0];
 
                 document.getElementById('name').innerHTML = mediaFile.name;
                 document.getElementById('fullPath').innerHTML = mediaFile.fullPath;
@@ -104,11 +107,44 @@
             },
             function (e) {
                 console.log("Error getting audio: " + e);
-                document.getElementById('capture_status').innerHTML = "Error getting picture.";
+                document.getElementById('capture_status').innerHTML = "Error getting audio.";
             },
             { limit: 1 });
     };
 
+    /**
+    * Capture Video
+    */
+    function captureVideo() {
+
+        navigator.device.capture.captureVideo(
+            function (mediaFiles) {
+
+                document.getElementById('capture_status').innerHTML = "Success. Captured " + mediaFiles.length + " media file(s).";
+
+                if (mediaFiles.length <= 0) return;
+
+                mediaFile = mediaFiles[0];
+
+                document.getElementById('name').innerHTML = mediaFile.name;
+                document.getElementById('fullPath').innerHTML = mediaFile.fullPath;
+                document.getElementById('size').innerHTML = mediaFile.size;
+                document.getElementById('lastModifiedDate').innerHTML = mediaFile.lastModifiedDate;
+                document.getElementById('type').innerHTML = mediaFile.type;
+
+                clearMediaPlaceholder();
+
+                var player = document.getElementById('video_player');
+                player.setAttribute('style', 'visibility:visible;');
+                player.src = mediaFile.fullPath;
+                console.log("src: " + mediaFile.fullPath);
+            },
+            function (e) {
+                console.log("Error getting video: " + e);
+                document.getElementById('capture_status').innerHTML = "Error getting video.";
+            },
+            { limit: 1 });
+    };
 
     /**
     * Function called when page has finished loading.
@@ -125,6 +161,20 @@
         }, 1000);
     }
 
+    /**
+    * Function to play last captured media.
+    */
+    function playMedia() {
+        if (typeof mediaFile !== 'undefined') {
+            mediaFile.play(
+                null,
+                function (e) {
+                    console.log("Error playing media: " + e);
+                    document.getElementById('capture_status').innerHTML = "Error playing media.";
+                });
+        }
+    }
+
 </script>
 
   </head>
@@ -132,9 +182,14 @@
   
     <h1>Capture</h1>
     <div id="info">
-        <b>Status:</b> <span id="capture_status"></span><br>
+        <b>Status:</b> <span id="capture_status"></span><br/>
         <img style="width:120px;height:120px;visibility:hidden;display:none;" id="camera_image" src="" />
         <audio style="visibility:hidden;display:none;" id="audio_player" src="" controls />
+        <video style="visibility:hidden;display:none;"  width="150" height="150" id="video_player" src=""
+            onclick="playMedia();" >
+            Browser does not support the video tag.
+        </video>
+
 
         <div><table width="100%">
             <tr><td width="20%">Name:</td><td id="name">&nbsp;</td></tr>
@@ -148,6 +203,7 @@
     <h2>Actions</h2>
     <a href="#" class="btn large" onclick="captureImage();">Capture Image</a>
     <a href="#" class="btn large" onclick="captureAudio();">Capture Audio</a>
+    <a href="#" class="btn large" onclick="captureVideo();">Capture Video</a>
     <h2>&nbsp;</h2><a href="index.html" class="backBtn">Back</a>
   </body>
 </html>      
