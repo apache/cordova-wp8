@@ -28,6 +28,9 @@
 
     var deviceReady = false;
 
+    // last captured media file
+    var mediaFile = null;
+
     function clearMediaPlaceholder() {
         document.getElementById('audio_player').setAttribute('style', 'visibility:hidden;display:none;');
 
@@ -53,7 +56,7 @@
 
                 if (mediaFiles.length <= 0) return;
 
-                var mediaFile = mediaFiles[0];
+                mediaFile = mediaFiles[0];
 
                 document.getElementById('name').innerHTML = mediaFile.name;
                 document.getElementById('fullPath').innerHTML = mediaFile.fullPath;
@@ -87,7 +90,7 @@
 
                 if (mediaFiles.length <= 0) return;
 
-                var mediaFile = mediaFiles[0];
+                mediaFile = mediaFiles[0];
 
                 document.getElementById('name').innerHTML = mediaFile.name;
                 document.getElementById('fullPath').innerHTML = mediaFile.fullPath;
@@ -121,7 +124,7 @@
 
                 if (mediaFiles.length <= 0) return;
 
-                var mediaFile = mediaFiles[0];
+                mediaFile = mediaFiles[0];
 
                 document.getElementById('name').innerHTML = mediaFile.name;
                 document.getElementById('fullPath').innerHTML = mediaFile.fullPath;
@@ -158,6 +161,20 @@
         }, 1000);
     }
 
+    /**
+    * Function to play last captured media.
+    */
+    function playMedia() {
+        if (typeof mediaFile !== 'undefined') {
+            mediaFile.play(
+                null,
+                function (e) {
+                    console.log("Error playing media: " + e);
+                    document.getElementById('capture_status').innerHTML = "Error playing media.";
+                });
+        }
+    }
+
 </script>
 
   </head>
@@ -168,7 +185,8 @@
         <b>Status:</b> <span id="capture_status"></span><br/>
         <img style="width:120px;height:120px;visibility:hidden;display:none;" id="camera_image" src="" />
         <audio style="visibility:hidden;display:none;" id="audio_player" src="" controls />
-        <video style="visibility:hidden;display:none;"  width="150" height="150" controls="controls" id="video_player" src="" >
+        <video style="visibility:hidden;display:none;"  width="150" height="150" id="video_player" src=""
+            onclick="playMedia();" >
             Browser does not support the video tag.
         </video>
 

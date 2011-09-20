@@ -81,11 +81,14 @@ namespace WP7GapClassLib.PhoneGap.Commands
         public class MediaFormatOptions
         {
             /// <summary>
-            /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+            /// File path
             /// </summary>
             [DataMember(IsRequired = true, Name = "fullPath")]
             public string FullPath { get; set; }
 
+            /// <summary>
+            /// File mime type
+            /// </summary>
             [DataMember(Name = "type")]
             public string Type { get; set; }
 
@@ -369,6 +372,50 @@ namespace WP7GapClassLib.PhoneGap.Commands
         }
 
         /// <summary>
+        /// Opens specified file in media player
+        /// </summary>
+        /// <param name="options">MediaFile to play</param>
+        public void play(string options)
+        {
+            try
+            {
+                MediaFile file;
+
+                try
+                {
+                   file = String.IsNullOrEmpty(options) ? null : JSON.JsonHelper.Deserialize<MediaFile>(options);
+
+                }
+                catch (Exception ex)
+                {
+                    this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                    return;
+                }
+
+                if (file == null || String.IsNullOrEmpty(file.FilePath))
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "File path is missing"));
+                    return;
+                }
+
+                // if url starts with '/' media player throws FileNotFound exception
+                Uri fileUri = new Uri(file.FilePath.TrimStart(new char[] { '/', '\\' }), UriKind.Relative);
+
+                MediaPlayerLauncher player = new MediaPlayerLauncher();
+                player.Media = fileUri;
+                player.Location = MediaLocationType.Data;
+                player.Show();
+
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                
+            }
+            catch (Exception e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+            }
+        }
+
+        /// <summary>
         /// Handles result of capture to save image information 
         /// </summary>
         /// <param name="sender"></param>
@@ -412,7 +459,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         }
                         else
                         {
-                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                             files.Clear();
                         }
                     }
@@ -426,7 +473,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     if (files.Count > 0)
                     {
                         // User canceled operation, but some images were made
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                         files.Clear();
                     }
                     else
@@ -438,7 +485,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 default:
                     if (files.Count > 0)
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                         files.Clear();
                     }
                     else
@@ -479,7 +526,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         }
                         else
                         {
-                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                             files.Clear();
                         }
                     }
@@ -493,7 +540,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     if (files.Count > 0)
                     {
                         // User canceled operation, but some audio clips were made
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                         files.Clear();
                     }
                     else
@@ -505,7 +552,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 default:
                     if (files.Count > 0)
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                         files.Clear();
                     }
                     else
@@ -546,7 +593,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         }
                         else
                         {
-                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                             files.Clear();
                         }
                     }
@@ -572,7 +619,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 default:
                     if (files.Count > 0)
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, files, "navigator.device.capture._castMediaFile"));
                         files.Clear();
                     }
                     else
