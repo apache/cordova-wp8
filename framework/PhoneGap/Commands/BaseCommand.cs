@@ -85,9 +85,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 this.OnCommandResult = null;
 
             }
-
-            // after command result is dispatched there is no reason to invoke custom scripts anymore
-            this.OnCustomScript = null;
         }
     }
 }

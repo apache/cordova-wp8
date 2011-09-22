@@ -214,7 +214,7 @@ PhoneGap.Media.onStatus = function(id, msg, value) {
 
 // TODO
 PhoneGapMediaonStatus = function(id, msg, value) {
-	PhoneGap.Media.onStatus(id, msg, value); 
+	PhoneGap.Media.onStatus(id, parseInt(msg), value); 
 }
 
 }

@@ -47,9 +47,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         private const int MediaErrorPauseState = 7;
         private const int MediaErrorStopState = 8;
 
-        private const string LocalFolderName = "AudioCache";
-        private const string CallbackFunction = "PhoneGap.Media.onStatus";
-        private const string FileNameFormat = "Audio-{0}.wav";
+        private const string CallbackFunction = "PhoneGapMediaonStatus";
 
         #endregion
 
@@ -205,12 +203,17 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// Starts or resume playing audio file
         /// </summary>
         /// <param name="filePath">The name of the audio file</param>
+        /// <summary>
+        /// Starts or resume playing audio file
+        /// </summary>
+        /// <param name="filePath">The name of the audio file</param>
         public void startPlaying(string filePath)
         {
             if (this.recorder != null)
             {
                 this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorRecordModeSet.ToString()));
-            } else if ((this.player == null) || (this.state == MediaStopped))
+            }
+            else if ((this.player == null) || (this.state == MediaStopped))
             {
                 try
                 {
@@ -220,11 +223,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         if (isMediaExist)
                         {
                             this.player = Application.Current.Resources["PhoneGapMediaPlayer"] as MediaElement;
-                        } else
-                        {
-                            throw new Exception("PhoneGapMediaPlayer element does not exist in application resource ");
                         }
-
+                        else
+                        {
+                            throw new Exception("PhoneGapMediaPlayer wasn't found in application resources");
+                        }
                         //this.mPlayer = new MediaElement();
                         this.player.MediaOpened += MediaOpened;
                         this.player.MediaEnded += MediaEnded;
@@ -233,11 +236,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     this.audioFile = filePath;
                     this.player.Source = new Uri(filePath);
                     this.player.AutoPlay = false;
-
-                    if (filePath.StartsWith("http://"))
+                    Uri uri = new Uri(filePath, UriKind.RelativeOrAbsolute);
+                    if (uri.IsAbsoluteUri)
                     {
-                        Uri u = new Uri(filePath, UriKind.RelativeOrAbsolute);
-                        this.player.Source = u;
+                        this.player.Source = uri;
                     }
                     else
                     {
@@ -252,7 +254,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             }
                         }
                     }
-
                     this.SetState(MediaStarting);
                 }
                 catch (Exception e)
