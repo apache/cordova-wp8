@@ -298,9 +298,15 @@ namespace WP7GapClassLib
 
              bc.OnCommandResult += new EventHandler<PluginResult>(
                 delegate(object o, PluginResult res) {
-                    OnCommandResult(o, res, commandCallParams.CallbackId);
-                }
-            );
+                    this.OnCommandResult(o, res, commandCallParams.CallbackId);
+                });
+
+
+             bc.OnCustomScript += new EventHandler<ScriptCallback>(
+                delegate(object o, ScriptCallback script)
+                {
+                    this.InvokeCustomScript(script);
+                });
 
             try
             {
@@ -396,6 +402,31 @@ namespace WP7GapClassLib
                 catch (Exception ex)
                 {
                     Debug.WriteLine("Exception in InvokeJSSCallback :: " + ex.Message);
+                }
+            });
+        }
+
+        private void InvokeCustomScript(ScriptCallback script)
+        {
+            if (script == null)
+            {
+                throw new ArgumentNullException("script");
+            }
+
+            if (String.IsNullOrEmpty(script.ScriptName))
+            {
+                throw new ArgumentNullException("ScriptName");
+            }
+            
+            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+                try
+                {
+                    this.GapBrowser.InvokeScript(script.ScriptName, script.Args);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Exception in InvokeCustomScript :: " + ex.Message);
                 }
             });
         }

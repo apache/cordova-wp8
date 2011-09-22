@@ -22,6 +22,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public event EventHandler<PluginResult> OnCommandResult;
 
+        public event EventHandler<ScriptCallback> OnCustomScript;
+
         public BaseCommand()
         {
              
@@ -61,6 +63,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         }
 
+
+        public void InvokeCustomScript(ScriptCallback script)
+        {
+            if (this.OnCustomScript != null)
+            {
+                this.OnCustomScript(this, script);               
+            }
+        }
+
         public void DispatchCommandResult()
         {
             this.DispatchCommandResult(new PluginResult(PluginResult.Status.NO_RESULT));
@@ -74,6 +85,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 this.OnCommandResult = null;
 
             }
+
+            // after command result is dispatched there is no reason to invoke custom scripts anymore
+            this.OnCustomScript = null;
         }
     }
 }
