@@ -234,7 +234,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         this.player.MediaFailed += MediaFailed;
                     }
                     this.audioFile = filePath;
-                    this.player.Source = new Uri(filePath);
                     this.player.AutoPlay = false;
                     Uri uri = new Uri(filePath, UriKind.RelativeOrAbsolute);
                     if (uri.IsAbsoluteUri)
@@ -251,6 +250,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
                                 {
                                     this.player.SetSource(stream);
                                 }
+                            }
+                            else
+                            {
+                               throw new ArgumentException("Source doesn't exist");
                             }
                         }
                     }

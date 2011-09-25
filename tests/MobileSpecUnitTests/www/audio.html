@@ -78,7 +78,7 @@
         document.getElementById('audio_duration').innerHTML = "";
         // Play audio
         media1.play();
-
+        
         document.getElementById('play_caption').innerHTML = "<b>Now playing:</b> ";
         document.getElementById('file_name').innerHTML = path;
         
@@ -198,7 +198,7 @@
         var recInterval = setInterval(function() {
             recTime = recTime + 1;
             setAudioPosition(recTime+" sec");
-            if (recTime >= 6) {
+            if (recTime >= 10) {
                 clearInterval(recInterval);
                 if (mediaRec.stopAudioRecord){
                     console.log("stopAudioRecord");

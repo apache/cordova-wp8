@@ -84,10 +84,14 @@ var MediaError = function() {
     this.message = "";
 };
 
-MediaError.MEDIA_ERR_ABORTED        = 1;
-MediaError.MEDIA_ERR_NETWORK        = 2;
-MediaError.MEDIA_ERR_DECODE         = 3;
-MediaError.MEDIA_ERR_NONE_SUPPORTED = 4;
+MediaError.MEDIA_ERR_PLAY_MODE_SET = 1;
+MediaError.MEDIA_ERR_ALREADY_RECORDING = 2;
+MediaError.MEDIA_ERR_STARTING_RECORDING = 3;
+MediaError.MEDIA_ERR_RECORD_MODE_SET = 4;
+MediaError.MEDIA_ERR_STARTING_PLAYBACK = 5;
+MediaError.MEDIA_ERR_RESUME_STATE = 6;
+MediaError.MEDIA_ERR_PAUSE_STATE = 7;
+MediaError.MEDIA_ERR_STOP_STATE = 8;
 
 /**
  * Start or resume playing audio file.
