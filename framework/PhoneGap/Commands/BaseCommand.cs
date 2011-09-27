@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -81,6 +82,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             if (this.OnCommandResult != null)
             {
+                // TODO
+                //Thread.Sleep(5000);
                 this.OnCommandResult(this, result);
                 this.OnCommandResult = null;
 

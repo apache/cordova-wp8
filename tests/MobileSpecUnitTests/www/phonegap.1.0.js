@@ -3027,9 +3027,11 @@ PhoneGap.Media.onStatus = function(id, msg, value) {
     }
 };
 
-// TODO
-PhoneGapMediaonStatus = function(id, msg, value) {
-	PhoneGap.Media.onStatus(id, parseInt(msg), value); 
+// We need special proxy to invoke PhoneGap.Media.onStatus (method is not visible in other case)
+// http://stackoverflow.com/questions/7322420/calling-javascript-object-method-using-webbrowser-document-invokescript
+PhoneGapMediaonStatus = function (args) {
+    var res = JSON.parse(args);
+    PhoneGap.Media.onStatus(res.id, res.msg, res.value);
 }
 
 }

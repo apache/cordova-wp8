@@ -78,11 +78,7 @@
     <Compile Include="PhoneGap\Commands\Notification.cs" />
     <Compile Include="PhoneGap\Commands\Reachability.cs" />
     <Compile Include="PhoneGap\Commands\Sound.cs" />
-    <Compile Include="PhoneGap\Common.cs" />
-    <Compile Include="PhoneGap\IAsyncCommand.cs" />
-    <Compile Include="PhoneGap\IWatcherCommand.cs" />
     <Compile Include="PhoneGap\NativeExecution.cs" />
-    <Compile Include="PhoneGap\PhoneGapCommand.cs" />
     <Compile Include="PhoneGap\PluginResult.cs" />
     <Compile Include="PhoneGap\ScriptCallback.cs" />
     <Compile Include="PhoneGap\UI\AudioCaptureTask.cs" />
@@ -93,7 +89,6 @@
     <Compile Include="PhoneGap\UI\VideoRecorder.xaml.cs">
       <DependentUpon>VideoRecorder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PhoneGap\Watchers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PGView.xaml.cs">
       <DependentUpon>PGView.xaml</DependentUpon>
