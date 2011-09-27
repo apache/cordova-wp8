@@ -751,9 +751,6 @@ Accelerometer.prototype.getCurrentAcceleration = function(successCallback, error
  */
 Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallback, options) 
 {
-    // Default interval (10 sec)
-    var frequency = (options && options.frequency)? options.frequency : 10000;
-	var timeout = (options != options.timeout) ? options.timeout : 15000;
 
     // successCallback required
     if (typeof successCallback !== "function") {
@@ -767,16 +764,27 @@ Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallb
         return;
     }
 	
-	var self = this;
-	
-	var onInterval = function()
-	{
-		self.getCurrentAcceleration(successCallback,errorCallback,options);
-	}
+    var onSuccess = function (result) {
+        var accResult = JSON.parse(result);
+        console.log("Accel x = " + accResult.x);
+        self.lastAcceleration = new Acceleration(accResult.x, accResult.y, accResult.z);
+        successCallback(self.lastAcceleration);
+    }
 
-	
+    var onError = function (err) {
+        errorCallback(err);
+    }
 
-    return window.setInterval(onInterval,frequency);
+    var id = PhoneGap.createUUID();
+
+    var params = new Object();
+    params.id = id;
+    // Default interval (10 sec)
+    params.frequency = (options && options.frequency) ? options.frequency : 10000;
+
+    PhoneGap.exec(onSuccess, onError, "Accelerometer", "startWatch", params);
+
+    return id; 
 };
 
 /**
@@ -786,7 +794,7 @@ Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallb
  */
 Accelerometer.prototype.clearWatch = function(id) {
 
-	clearInterval(id);
+    PhoneGap.exec(null, null, "Accelerometer", "stopWatch", { id: id });
 };
 
 PhoneGap.addConstructor(
