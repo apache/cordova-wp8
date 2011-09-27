@@ -144,7 +144,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             if (this.player != null)
             {
-                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorPlayModeSet.ToString()));
+                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorPlayModeSet));
             }
             else if (this.recorder == null)
             {
@@ -164,12 +164,12 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 }
                 catch (Exception e)
                 {
-                        this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorStartingRecording.ToString()));
+                        this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorStartingRecording));
                 }
             } else 
             {
 
-                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorAlreadyRecording.ToString()));
+                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorAlreadyRecording));
             }
         }
 
@@ -211,27 +211,29 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             if (this.recorder != null)
             {
-                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorRecordModeSet.ToString()));
+                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorRecordModeSet));
+                return;
             }
-            else if ((this.player == null) || (this.state == MediaStopped))
+
+
+            if ((this.player == null) || (this.state == MediaStopped))
             {
                 try
                 {
                     if (this.player == null)
                     {
-                        bool isMediaExist = Application.Current.Resources.Contains("PhoneGapMediaPlayer");
-                        if (isMediaExist)
-                        {
-                            this.player = Application.Current.Resources["PhoneGapMediaPlayer"] as MediaElement;
-                        }
-                        else
+
+                        if (!Application.Current.Resources.Contains("PhoneGapMediaPlayer"))
                         {
                             throw new Exception("PhoneGapMediaPlayer wasn't found in application resources");
                         }
-                        //this.mPlayer = new MediaElement();
+
+                        this.player = Application.Current.Resources["PhoneGapMediaPlayer"] as MediaElement;
+
                         this.player.MediaOpened += MediaOpened;
                         this.player.MediaEnded += MediaEnded;
                         this.player.MediaFailed += MediaFailed;
+
                     }
                     this.audioFile = filePath;
                     this.player.AutoPlay = false;
@@ -253,7 +255,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             }
                             else
                             {
-                               throw new ArgumentException("Source doesn't exist");
+                                throw new ArgumentException("Source doesn't exist");
                             }
                         }
                     }
@@ -262,7 +264,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 catch (Exception e)
                 {
                     string s = e.Message;
-                    this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorStartingPlayback.ToString()));
+                    this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorStartingPlayback));
                 }
             }
             else
@@ -274,7 +276,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 }
                 else
                 {
-                    this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorResumeState.ToString()));
+                    this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorResumeState));
                 }
             }
         }
@@ -292,7 +294,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             this.duration = this.player.NaturalDuration.TimeSpan.TotalSeconds;
             this.prepareOnly = false;
-            this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaDuration.ToString(), this.duration.ToString()));
+            this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaDuration, this.duration));
         }
 
         /// <summary>
@@ -322,7 +324,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             {
                 TimeSpan timeSpen = new TimeSpan(0, 0, 0, 0, milliseconds);
                 this.player.Position = timeSpen;
-                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaPosition.ToString(), (milliseconds / 1000.0f).ToString()));
+                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaPosition, milliseconds / 1000.0f));
             }
         }
 
@@ -337,7 +339,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 this.SetState(MediaPaused);
             } else
             {
-                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorPauseState.ToString()));
+                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorPauseState));
             }
         }
 
@@ -353,7 +355,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 this.SetState(MediaStopped);
             } else
             {
-                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError.ToString(), MediaErrorStopState.ToString()));
+                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorStopState));
             }             
         }
 
@@ -366,7 +368,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             if ((this.state == MediaRunning) || (this.state == MediaPaused))
             {
                 double currentPosition = this.player.Position.TotalSeconds;
-                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaPosition.ToString(), currentPosition.ToString()));                
+                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaPosition, currentPosition));                
                 return currentPosition;
             }
             else
@@ -407,7 +409,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             if (this.state != state)
             {
-                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaState.ToString(), state.ToString()));
+                this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaState, state));
             }
 
             this.state = state;

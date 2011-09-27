@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Windows;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -70,10 +71,21 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     DispatchCommandResult(new PluginResult(PluginResult.Status.OK, false));
                     return;
                 }
-                AudioPlayer audio = Media.players[mediaOptions.Id];
-                Media.players.Remove(mediaOptions.Id);
-                audio.Dispose();
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, true));
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        AudioPlayer audio = Media.players[mediaOptions.Id];
+                        Media.players.Remove(mediaOptions.Id);
+                        audio.Dispose();
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, true));
+                    }
+                    catch (Exception e)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+                    }  
+                });
             }
             catch (Exception e)
             {
@@ -100,13 +112,24 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-                if (!Media.players.ContainsKey(mediaOptions.Id))
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AudioPlayer audio = new AudioPlayer(this, mediaOptions.Id);
-                    Media.players.Add(mediaOptions.Id, audio);
-                    audio.startRecording(mediaOptions.Src);
-                }
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    try
+                    {
+                        if (!Media.players.ContainsKey(mediaOptions.Id))
+                        {
+                            AudioPlayer audio = new AudioPlayer(this, mediaOptions.Id);
+                            Media.players.Add(mediaOptions.Id, audio);
+                            audio.startRecording(mediaOptions.Src);
+                        }
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    }
+                    catch (Exception e)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+                    }
+
+                });
             }
             catch (Exception e)
             {
@@ -133,13 +156,23 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-                if (Media.players.ContainsKey(mediaOptions.Id))
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AudioPlayer audio = Media.players[mediaOptions.Id];
-                    audio.stopRecording();
-                    Media.players.Remove(mediaOptions.Id);
-                }
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    try
+                    {
+                        if (Media.players.ContainsKey(mediaOptions.Id))
+                        {
+                            AudioPlayer audio = Media.players[mediaOptions.Id];
+                            audio.stopRecording();
+                            Media.players.Remove(mediaOptions.Id);
+                        }
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    }
+                    catch (Exception e)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+                    }
+                });
             }
             catch(Exception e)
             {
@@ -178,9 +211,19 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     audio = Media.players[mediaOptions.Id];
                 }
 
-                audio.startPlaying(mediaOptions.Src);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        audio.startPlaying(mediaOptions.Src);
 
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    }
+                    catch (Exception e)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+                    }
+                });
             }
             catch(Exception e)
             {
@@ -208,13 +251,23 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-                if (Media.players.ContainsKey(mediaOptions.Id))
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AudioPlayer audio = Media.players[mediaOptions.Id];
-                    audio.seekToPlaying(mediaOptions.Milliseconds);
-                }
+                    try
+                    {
+                        if (Media.players.ContainsKey(mediaOptions.Id))
+                        {
+                            AudioPlayer audio = Media.players[mediaOptions.Id];
+                            audio.seekToPlaying(mediaOptions.Milliseconds);
+                        }
 
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    }
+                    catch (Exception e)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+                    }
+                });
             }
             catch (Exception e)
             {
@@ -227,8 +280,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// </summary>
         public void pausePlayingAudio(string options)
         {
-            try
-            {
+
                 MediaOptions mediaOptions;
 
                 try
@@ -241,18 +293,23 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-                if (Media.players.ContainsKey(mediaOptions.Id))
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AudioPlayer audio = Media.players[mediaOptions.Id];
-                    audio.pausePlaying();
-                }
+                    try
+                    {
+                        if (Media.players.ContainsKey(mediaOptions.Id))
+                        {
+                            AudioPlayer audio = Media.players[mediaOptions.Id];
+                            audio.pausePlaying();
+                        }
 
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
-            }
-            catch(Exception e)
-            {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
-            }
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    }
+                    catch (Exception e)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+                    }
+                });
         }
 
 
@@ -275,13 +332,23 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-                if (Media.players.ContainsKey(mediaOptions.Id))
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AudioPlayer audio = Media.players[mediaOptions.Id];
-                    audio.stopPlaying();
-                }
-                
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    try
+                    {
+                        if (Media.players.ContainsKey(mediaOptions.Id))
+                        {
+                            AudioPlayer audio = Media.players[mediaOptions.Id];
+                            audio.stopPlaying();
+                        }
+
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    }
+                    catch(Exception e)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+                    }
+                });
             }
             catch(Exception e)
             {
@@ -312,7 +379,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 if (Media.players.ContainsKey(mediaOptions.Id))
                 {
                     AudioPlayer audio = Media.players[mediaOptions.Id];
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, audio.getCurrentPosition()));
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, audio.getCurrentPosition()));
+                    });
                     return;
                 }
                 else
@@ -355,10 +426,12 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     audio = new AudioPlayer(this, mediaOptions.Id);
                     Media.players.Add(mediaOptions.Id, audio);
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, audio.getDuration(mediaOptions.Src)));
                 }
 
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, audio.getDuration(mediaOptions.Src)));
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, audio.getDuration(mediaOptions.Src)));
+                });
             }
             catch(Exception e)
             {

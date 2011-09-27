@@ -14,8 +14,7 @@ using WP7GapClassLib.PhoneGap.Commands;
 namespace WP7GapClassLib.PhoneGap
 {
     /// <summary>
-    /// Provides functionality to create phone gap command by name,
-    /// Each command is created only once and stored in commands pool.
+    /// Provides functionality to create phone gap command by name.
     /// </summary>
     public static class CommandFactory
     {
@@ -29,7 +28,7 @@ namespace WP7GapClassLib.PhoneGap
         /// </summary>
         /// <param name="service">Command class name, for example Device or Notification</param>
         /// <returns>Command class instance or null</returns>
-        public static BaseCommand CreateUsingServiceName(string service)
+        public static BaseCommand CreateByServiceName(string service)
         {
 
             if (string.IsNullOrEmpty(service))

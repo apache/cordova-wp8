@@ -112,7 +112,6 @@ Tests.prototype.MediaTests = function () {
                     QUnit.start();
                 },
                 function (status) {
-                    var status = parseInt(status);
                     ok(status !== null, "status should not be null.");
 
                     if (typeof (media2.statusFlag) == 'undefined') {
@@ -144,7 +143,6 @@ Tests.prototype.MediaTests = function () {
         var media3 = new Media(src,
             null,
             function (err) {
-                var err = parseInt(err);
                 ok(err !== null, "error should not be null.");
                 equal(err, MediaError.MEDIA_ERR_STARTING_PLAYBACK, "Should receive error code MEDIA_ERR_STARTING_PLAYBACK");
                 QUnit.start();
@@ -163,8 +161,6 @@ Tests.prototype.MediaTests = function () {
                     QUnit.start();
                 },
                 function (status) {
-                    console.log(status);
-                    var status = parseInt(status);
                     ok(status !== null, "status should not be null.");
 
                     if (typeof (media2a.statusFlag) == 'undefined') {

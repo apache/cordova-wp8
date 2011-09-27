@@ -1,110 +1,184 @@
-﻿//-----------------------------------------------------------------------
+﻿
+//-----------------------------------------------------------------------
 // <copyright file="NativeExecution.cs">
 //     Copyright © 2010. All rights reserved.
 // </copyright>
 // <author>Matt Lacey</author>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using System;
+using System.Diagnostics;
+using System.Threading;
 using Microsoft.Devices;
 using Microsoft.Phone.Controls;
+using WP7GapClassLib.PhoneGap.Commands;
 
-namespace PhoneGap
+namespace WP7GapClassLib.PhoneGap
 {
-    //public class NativeExecution
-    //{
-    //    private readonly WebBrowser webBrowser;
+    /// <summary>
+    /// Implements logic to execute native command and return result back.
+    /// All commands are executed asynchronous.
+    /// </summary>
+    public class NativeExecution
+    {
+        /// <summary>
+        /// Reference to web part where application is hosted
+        /// </summary>
+        private readonly WebBrowser webBrowser;
 
-    //    private readonly Dictionary<string, PhoneGapCommand> commands;
+        /// <summary>
+        /// Creates new instance of a NativeExecution class. 
+        /// </summary>
+        /// <param name="browser">Reference to web part where application is hosted</param>
+        public NativeExecution(ref WebBrowser browser)
+        {
+            if (browser == null)
+            {
+                throw new ArgumentNullException("browser");
+            }
 
-    //    [SuppressMessage("Microsoft.StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. Suppression is OK here as this needs to be public to get passed as a ref.")]
-    //    public Watchers watchers;
+            this.webBrowser = browser;
+        }
 
-    //    public NativeExecution(ref WebBrowser browser)
-    //    {
-    //        this.webBrowser = browser;
+        /// <summary>
+        /// Returns where application is running on emulator
+        /// </summary>
+        /// <returns>True if running on emulator, otherwise False</returns>
+        public static bool IsRunningOnEmulator()
+        {
+            return Microsoft.Devices.Environment.DeviceType == DeviceType.Emulator;
+        }
 
-    //        this.commands = new Dictionary<string, PhoneGapCommand>();
-    //                            //{
-    //                            //    // TODO: These need to be included based on plugin configuration
-    //                            //    { "Accelerometer.GetCurrentAcceleration", new Plugins.Accelerometer.GetCurrentAccelerationCommand() },
-    //                            //    { "Camera.GetPicture", new Plugins.Camera.GetPictureCommand() },
-    //                            //    { "DebugConsole.debug", new Plugins.DebugConsole.DebugCommand() },
-    //                            //    { "Device.GetAll", new Plugins.Device.GetAllCommand() },
-    //                            //    { "Geolocation.GetCurrentPosition", new Plugins.Geolocation.GetCurrentPositionCommand() },
-    //                            //    { "Network.IsReachable", new Plugins.Network.IsReachableCommand() },
-    //                            //    { "Notification.Alert", new Plugins.Notification.AlertCommand() },
-    //                            //    { "Notification.Beep", new Plugins.Notification.BeepCommand() },
-    //                            //    { "Notification.Vibrate", new Plugins.Notification.VibrateCommand() },
-    //                            //    { "Orientation.GetCurrentOrientation", new Plugins.Orientation.GetCurrentOrientationCommand() },
-    //                            //    { "Orientation.ClearWatch", new Plugins.Orientation.ClearWatchCommmand() },
-    //                            //    { "Orientation.WatchOrientation", new Plugins.Orientation.WatchOrientationCommmand() },
-    //                            //    { "Send.Sms", new Plugins.Sms.SendCommand() },
-    //                            //    { "Telephony.CallNumber", new Plugins.Telephony.CallCommand() }
-    //                            //};
+        /// <summary>
+        /// Executes command and returns result back.
+        /// </summary>
+        /// <param name="commandCallParams">Command to execute</param>
+        public void ProcessCommand(PhoneGapCommandCall commandCallParams)
+        {
 
-    //        this.watchers = new Watchers();
-    //    }
+            if (commandCallParams == null)
+            {
+                throw new ArgumentNullException("commandCallParams");
+            }
+            
+            BaseCommand bc = CommandFactory.CreateByServiceName(commandCallParams.Service);
 
-    //    public void ProcessJavascriptCommand(string javascriptDetails)
-    //    {
-    //        // TODO: process JSON rep of command
-    //        //
-    //        var jsParams = javascriptDetails.Split(';');
+            if (bc == null)
+            {
+                this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION));
+                return;
+            }
 
-    //        var commandName = jsParams[0];
-    //        var commandArgs = jsParams.Skip(1).Take(jsParams.Count() - 1).ToArray();
+            EventHandler<PluginResult> OnCommandResultHandler = delegate(object o, PluginResult res)
+            {
+                this.OnCommandResult(commandCallParams.CallbackId, res);
+            };
 
-    //        if (this.commands.ContainsKey(commandName))
-    //        {
-    //            var cmd = this.commands[commandName];
+            bc.OnCommandResult += OnCommandResultHandler;
 
-    //            if (cmd is IAsyncCommand)
-    //            {
-    //                (cmd as IAsyncCommand).OnCommandCompleted += this.ProcessAsyncCallback;
+            EventHandler<ScriptCallback> OnCustomScriptHandler = delegate(object o, ScriptCallback script)
+            {
+                this.InvokeScriptCallback(script);
+            };
 
-    //                cmd.Execute(commandArgs);
-    //            }
-    //            else if (cmd is IWatcherCommand)
-    //            {
-    //                (cmd as IWatcherCommand).WatcherExecute(ref this.watchers, commandArgs);
-    //            }
-    //            else
-    //            {
-    //                cmd.Execute(commandArgs);
 
-    //                if (cmd.HasCallback)
-    //                {
-    //                    this.webBrowser.InvokeScript(cmd.CallbackName, cmd.CallbackArgs);
-    //                }
-    //            }
-    //        }
-    //    }
+            bc.OnCustomScript += OnCustomScriptHandler;
 
-    //    private void ProcessAsyncCallback(object sender, PhoneGapCommand command)
-    //    {
-    //        this.webBrowser.InvokeScript(command.CallbackName, command.CallbackArgs);
-    //    }
+            // TODO: alternative way is using thread pool (ThreadPool.QueueUserWorkItem) instead of 
+            // new thread for every command call; but num threads are not sufficient - 2 threads per CPU core
 
-    //    public static bool IsRunningOnEmulator()
-    //    {
-    //        return Environment.DeviceType == DeviceType.Emulator;
-    //    }
+            
+            Thread thread = new Thread(func =>
+            {
 
-    //    // TODO: This needs to be included based on plugin configuration
-    //    public void OrientationChanged(string newOrientation)
-    //    {
-    //        foreach (var watcher in this.watchers.OrientationChangedWatchers)
-    //        {
-    //            //this.ProcessAsyncCallback(
-    //            //    null,
-    //            //    new Plugins.Orientation.ChangedWatcherCallbackCommand
-    //            //        {
-    //            //            CallbackName = watcher.Value,
-    //            //            CallbackArgs = new[] { watcher.Key, newOrientation }
-    //            //        });
-    //        }
-    //    }
-    //}
+                try
+                {
+                    bc.InvokeMethodNamed(commandCallParams.Action, commandCallParams.Args);
+                }
+                catch (Exception)
+                {
+                    bc.OnCommandResult -= OnCommandResultHandler;
+                    bc.OnCustomScript -= OnCustomScriptHandler;
+
+                    Debug.WriteLine("failed to InvokeMethodNamed :: " + commandCallParams.Action + " on Object :: " + commandCallParams.Service);
+
+                    this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
+
+                    return;
+                }
+            });
+
+            thread.Start();
+        }
+
+        /// <summary>
+        /// Handles command execution result.
+        /// </summary>
+        /// <param name="callbackId">Command callback identifier on client side</param>
+        /// <param name="result">Execution result</param>
+        private void OnCommandResult(string callbackId, PluginResult result)
+        {
+            #region  args checking
+            
+            if (result == null)
+            {
+                Debug.WriteLine("OnCommandResult missing result argument");
+                return;
+            }
+
+            if (String.IsNullOrEmpty(callbackId))
+            {
+                Debug.WriteLine("OnCommandResult missing callbackId argument");
+                return;
+            }
+
+            #endregion
+
+            string status = ((int)result.Result).ToString();
+            string jsonResult = result.ToJSONString();
+
+            ScriptCallback scriptCallback = null;
+
+            if (String.IsNullOrEmpty(result.Cast))
+            {
+                scriptCallback = new ScriptCallback("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult });
+            }
+            else
+            {
+                scriptCallback = new ScriptCallback("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult, result.Cast });
+            }
+
+            this.InvokeScriptCallback(scriptCallback);
+
+        }
+
+        /// <summary>
+        /// Executes client java script
+        /// </summary>
+        /// <param name="script">Script to execute on client side</param>
+        private void InvokeScriptCallback(ScriptCallback script)
+        {
+            if (script == null)
+            {
+                throw new ArgumentNullException("script");
+            }
+
+            if (String.IsNullOrEmpty(script.ScriptName))
+            {
+                throw new ArgumentNullException("ScriptName");
+            }
+
+            this.webBrowser.Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+                try
+                {
+                    this.webBrowser.InvokeScript(script.ScriptName, script.Args);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Exception in InvokeScriptCallback :: " + ex.Message);
+                }
+            });
+        }
+
+    }
 }
