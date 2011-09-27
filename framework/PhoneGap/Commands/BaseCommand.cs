@@ -22,6 +22,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public event EventHandler<PluginResult> OnCommandResult;
 
+        public event EventHandler<ScriptCallback> OnCustomScript;
+
         public BaseCommand()
         {
              
@@ -59,6 +61,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             throw new MissingMethodException(methodName);            
 
+        }
+
+
+        public void InvokeCustomScript(ScriptCallback script)
+        {
+            if (this.OnCustomScript != null)
+            {
+                this.OnCustomScript(this, script);               
+            }
         }
 
         public void DispatchCommandResult()

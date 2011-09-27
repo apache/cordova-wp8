@@ -52,7 +52,7 @@ namespace WP7GapClassLib.PhoneGap
                 }
             }
 
-            return commandMap[service];
+            return Activator.CreateInstance(commandMap[service].GetType()) as BaseCommand;
         }
     }
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
   <head>
     <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
@@ -6,7 +6,22 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <!-- ISO-8859-1 -->
     <title>PhoneGap</title>
     <link rel="stylesheet" href="master.css" type="text/css" media="screen">
-    <script type="text/javascript" charset="utf-8" src="../phonegap.js"></script>      
+
+    <script type="text/javascript">
+        // provide our own console if it does not exist, huge dev aid!
+        if (typeof window.console == "undefined") {
+            window.console = { log: function (str) { window.external.Notify(str); } };
+        }
+
+        // output any errors to console log, created above.
+        window.onerror = function (e) {
+            console.log("window.onerror ::" + JSON.stringify(e));
+        };
+
+        console.log("Installed console ! ");
+    </script>
+
+    <script type="text/javascript" charset="utf-8" src="phonegap.1.0.js"></script>      
 
       
 <script type="text/javascript" charset="utf-8">
@@ -19,23 +34,15 @@
     var media1 = null;
     var media1Timer = null;
     var audioSrc = null;
-    var recordSrc = "myRecording.mp3";
+    var recordSrc = "/folder/1.wav";
 
     /**
      * Play audio
      */
-    function playAudio(url) {
+    function playAudio(path) {
         console.log("playAudio()");
         console.log(" -- media="+media1);
-
-        //var src = "http://neuga.s3.amazonaws.com/onclassical/strings-organ.mp3";
-        var src = "http://audio.ibeat.org/content/p1rj1s/p1rj1s_-_rockGuitar.mp3";
-        //var src = "/android_asset/www/Jet_Sledding.mp4"; // no work
-        //var src = "http://vprbbc.streamguys.net/vprbbc24.mp3"; // mp3 streaming
-        
-        if (url) {
-            src = url;
-        }
+        var src = path; 
 
         // Stop playing if src is different from currently playing source
         if (src != audioSrc) {
@@ -46,17 +53,7 @@
         }
 
         if (media1 == null) {
-
-
-            // TEST STREAMING AUDIO PLAYBACK
-            //var src = "http://nunzioweb.com/misc/Bon_Jovi-Crush_Mystery_Train.mp3";   // works
-            //var src = "http://nunzioweb.com/misc/Bon_Jovi-Crush_Mystery_Train.m3u"; // doesn't work
-            //var src = "http://www.wav-sounds.com/cartoon/bugsbunny1.wav"; // works
-            //var src = "http://www.angelfire.com/fl5/html-tutorial/a/couldyou.mid"; // doesn't work
-            //var src = "MusicSearch/mp3/train.mp3";    // works
-            //var src = "bryce.mp3";  // works
-            //var src = "/android_asset/www/bryce.mp3"; // works
-
+            console.log("Start creating media...");
             media1 = new Media(src,
                 function() {
                     console.log("playAudio():Audio Success");
@@ -76,10 +73,15 @@
                     }
                 });
         }
+        console.log("Start play audio...");
         audioSrc = src;
         document.getElementById('audio_duration').innerHTML = "";
         // Play audio
         media1.play();
+        
+        document.getElementById('play_caption').innerHTML = "<b>Now playing:</b> ";
+        document.getElementById('file_name').innerHTML = path;
+        
         if (media1Timer == null && media1.getCurrentPosition) {
             media1Timer = setInterval(
                 function() {
@@ -114,7 +116,8 @@
                     document.getElementById('audio_duration').innerHTML = dur + " sec";
                 }
             }, 100);
-    }
+            
+    }    
 
     /**
      * Pause audio playback
@@ -184,8 +187,11 @@
 
         navigator.notification.beep(1);
 
-        // Record audio
+        console.log("Start recording...");
         mediaRec.startRecord();
+
+        document.getElementById('play_caption').innerHTML = "<b>Recording in:<b>";
+        document.getElementById('file_name').innerHTML = recordSrc;
 
         // Stop recording after 10 sec
         recTime = 0;
@@ -195,8 +201,10 @@
             if (recTime >= 10) {
                 clearInterval(recInterval);
                 if (mediaRec.stopAudioRecord){
+                    console.log("stopAudioRecord");
                     mediaRec.stopAudioRecord();
                 } else {
+                    console.log("stopRecord");
                     mediaRec.stopRecord();
                 }
                 console.log("recordAudio(): stop");
@@ -211,34 +219,20 @@
     function playRecording() {
         playAudio(recordSrc);
     }
-    
-    /**
-     * Function to create a file for iOS recording
-     */
-    function getRecordSrc() {
-        var fsFail = function(error) {
-            console.log("error creating file for iOS recording");
-        };
-        var gotFile = function(file) {
-            recordSrc = file.fullPath;
-            //console.log("recording Src: " + recordSrc);
-        };
-        var gotFS = function(fileSystem) {
-            fileSystem.root.getFile("iOSRecording.wav", {create: true}, gotFile, fsFail);
-        };
-        window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, gotFS, fsFail);
+
+    function seekTo() {
+        console.log("seekTo()");
+        if (media1) {
+            media1.seekTo(15000);
+        }
     }
-    
+
     /**
      * Function called when page has finished loading.
      */
     function init() {
         document.addEventListener("deviceready", function() {
                 deviceReady = true;
-                if (device.platform.indexOf("iPhone") !=-1 || device.platform.indexOf("iPad") !=-1)
-                {
-                     getRecordSrc();
-                }
                 console.log("Device="+device.platform+" "+device.version);
             }, false);
         window.setTimeout(function() {
@@ -254,19 +248,21 @@
   <body onLoad="init();" id="stage" class="theme">
   
     <h1>Audio</h1>  
-    <div id="info">
+    <div id="info">    
         <table width="100%">
+        <tr><td id="play_caption"><b>Now playing:</b></td><td id="file_name">&nbsp;</td></tr>
         <tr><td><b>Status:</b></td><td id="audio_status">&nbsp;</td></tr>
         <tr><td><b>Duration:</b></td><td id="audio_duration"></td></tr>
         <tr><td><b>Position:</b></td><td id="audio_position"></td></tr>
         </table>
     </div>
     <h2>Action</h2>
-    <a href="#" class="btn large" onClick="playAudio();">Play/Unpause Audio</a>
+    <a href="#" class="btn large" onClick="playAudio('http://audio.ibeat.org/content/p1rj1s/p1rj1s_-_rockGuitar.mp3');">Play/Unpause Audio</a>
     <a href="#" class="btn large" onClick="pauseAudio();">Pause Playing Audio</a>
     <a href="#" class="btn large" onClick="stopAudio();">Stop Playing Audio</a>
     <a href="#" class="btn large" onClick="recordAudio();">Record Audio for 10 sec</a>
     <a href="#" class="btn large" onClick="playRecording();">Play/Unpause Recording</a>
+    <a href="#" class="btn large" onClick="seekTo();">Seek To 15 sec</a>
       <h2>&nbsp;</h2><a href="index.html" class="backBtn">Back</a>
     
   </body>
