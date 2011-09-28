@@ -54,13 +54,15 @@ namespace WP7GapClassLib.PhoneGap.UI
         /// </summary>
         public void Show()
         {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                var root = Application.Current.RootVisual as PhoneApplicationFrame;
 
-            var root = Application.Current.RootVisual as PhoneApplicationFrame;
+                root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
-            root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
-            
-            // dummy parameter is used to always open a fresh version
-            root.Navigate(new System.Uri("/WP7GapClassLib;component/PhoneGap/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString() , UriKind.Relative));
+                // dummy parameter is used to always open a fresh version
+                root.Navigate(new System.Uri("/WP7GapClassLib;component/PhoneGap/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+            });
         }
 
         /// <summary>
