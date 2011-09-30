@@ -9,7 +9,9 @@
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
+
 
 
 
@@ -813,6 +815,7 @@ function()
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("camera")) {
@@ -958,6 +961,7 @@ PhoneGap.addConstructor(function() {
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("capture")) {
@@ -1157,6 +1161,7 @@ PhoneGap.addConstructor(function () {
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("compass")) {
@@ -1305,6 +1310,7 @@ function()
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("contact")) {
@@ -1616,6 +1622,7 @@ PhoneGap.addConstructor(function() {
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("device")) {
@@ -1688,6 +1695,7 @@ PhoneGap.addConstructor(function() {
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("file")) {
@@ -2728,6 +2736,7 @@ PhoneGap.addConstructor(function () {
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("filetransfer")) {
@@ -2823,6 +2832,7 @@ var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("media")) {
@@ -3049,6 +3059,7 @@ PhoneGapMediaonStatus = function (args) {
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("network")) {
@@ -3137,6 +3148,7 @@ PhoneGap.addConstructor(function() {
  *
  * Copyright (c) 2005-2011, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("notification")) {
