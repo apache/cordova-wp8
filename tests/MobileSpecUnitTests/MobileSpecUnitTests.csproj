@@ -137,7 +137,7 @@
     <Content Include="www\notification.html">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="www\phonegap.1.0.js" />
+    <Content Include="www\phonegap-1.1.0.js" />
     <Content Include="www\storage.html">
       <SubType>Designer</SubType>
     </Content>
