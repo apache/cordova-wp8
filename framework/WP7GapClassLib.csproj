@@ -141,7 +141,8 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>"%25ProgramFiles(x86)%25\Common Files\microsoft shared\TextTemplating\10.0\TextTransform.exe" $(ProjectDir)\js\phonegap.tt</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
