@@ -23,6 +23,7 @@ Note!!!
 ---
 
 When you add or remove files/folders in the www folder you will need to do the following
+
 - ensure the new item is included in the project ( Content )
 - In Solution Explorer, Right-Click 'GapSourceDictionary.tt' and select 'Run Custom Tool'
 -- this will generate the GapSourceDictionary.xml file which is included in the project.
