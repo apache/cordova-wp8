@@ -24,7 +24,7 @@
 	</script>
     
     
-    <script type="text/javascript" charset="utf-8" src="phonegap.1.0.js"></script>      
+    <script type="text/javascript" charset="utf-8" src="phonegap-1.1.0.js"></script>      
 
       
 <script type="text/javascript" charset="utf-8">
@@ -49,7 +49,7 @@
         console.log("watchAccel()");
 
         // Success callback
-        var success = function(a){
+        var success = function (a) {
             document.getElementById('x').innerHTML = roundNumber(a.x);
             document.getElementById('y').innerHTML = roundNumber(a.y);
             document.getElementById('z').innerHTML = roundNumber(a.z);
@@ -90,10 +90,10 @@
         console.log("getAccel()");
 
         // Stop accel if running
-        stopAccel();
+        //stopAccel();
 
         // Success callback
-        var success = function(a){
+        var success = function (a) {
             document.getElementById('x').innerHTML = roundNumber(a.x);
             document.getElementById('y').innerHTML = roundNumber(a.y);
             document.getElementById('z').innerHTML = roundNumber(a.z);
@@ -113,7 +113,8 @@
     /**
      * Set accelerometer status
      */
-    var setAccelStatus = function(status) {
+    var setAccelStatus = function (status) {
+
         document.getElementById('accel_status').innerHTML = status;
     };
     

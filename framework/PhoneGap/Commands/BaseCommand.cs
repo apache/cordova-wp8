@@ -1,15 +1,15 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+﻿/*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
+ * Copyright (c) 2011, Microsoft Corporation
+ * Copyright (c) 2011, Sergey Grebnov.
+ * Copyright (c) 2011, Jesse MacFadyen.
+ */
+
+using System;
 using System.Reflection;
-using System.Collections.Generic;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -21,6 +21,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
          **/
 
         public event EventHandler<PluginResult> OnCommandResult;
+
+        public event EventHandler<ScriptCallback> OnCustomScript;
 
         public BaseCommand()
         {
@@ -61,6 +63,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         }
 
+
+        public void InvokeCustomScript(ScriptCallback script)
+        {
+            if (this.OnCustomScript != null)
+            {
+                this.OnCustomScript(this, script);               
+            }
+        }
+
         public void DispatchCommandResult()
         {
             this.DispatchCommandResult(new PluginResult(PluginResult.Status.NO_RESULT));
@@ -71,7 +82,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
             if (this.OnCommandResult != null)
             {
                 this.OnCommandResult(this, result);
-                this.OnCommandResult = null;
+
+                if (!result.KeepCallback)
+                {
+                    this.OnCommandResult = null;
+                }
 
             }
         }

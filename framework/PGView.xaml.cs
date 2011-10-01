@@ -1,3 +1,13 @@
+/*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
+ * Copyright (c) 2011, Microsoft Corporation
+ * Copyright (c) 2011, Sergey Grebnov.
+ * Copyright (c) 2011, Jesse MacFadyen.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +35,7 @@ using WP7GapClassLib.PhoneGap;
 using System.Threading;
 using Microsoft.Phone.Shell;
 
+
 namespace WP7GapClassLib
 {
     public partial class PGView : UserControl
@@ -36,6 +47,11 @@ namespace WP7GapClassLib
         /// </summary>
         private bool IsBrowserInitialized = false;
         private bool OverrideBackButton = false;
+
+        /// <summary>
+        /// Handles native api calls
+        /// </summary>
+        private NativeExecution nativeExecution;
 
         public PGView()
         {
@@ -62,6 +78,9 @@ namespace WP7GapClassLib
             {
 
             }
+
+            // initializes native execution logic
+            this.nativeExecution = new NativeExecution(ref this.GapBrowser);
         }
 
         
@@ -164,7 +183,7 @@ namespace WP7GapClassLib
                                 {
                                     byte[] data = br.ReadBytes((int)fileResourceStreamInfo.Stream.Length);
 
-                                    string strBaseDir = file.path.Substring(0, file.path.LastIndexOf('/'));
+                                    string strBaseDir = file.path.Substring(0, file.path.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
                                     appStorage.CreateDirectory(strBaseDir);
 
                                     // This will truncate/overwrite an existing file, or 
@@ -288,33 +307,7 @@ namespace WP7GapClassLib
                 return;
             }
 
-            BaseCommand bc = CommandFactory.CreateUsingServiceName(commandCallParams.Service);
-           
-            if (bc == null)
-            {
-                this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION));
-                return;
-            }
-
-             bc.OnCommandResult += new EventHandler<PluginResult>(
-                delegate(object o, PluginResult res) {
-                    OnCommandResult(o, res, commandCallParams.CallbackId);
-                }
-            );
-
-            try
-            {
-                bc.InvokeMethodNamed(commandCallParams.Action, commandCallParams.Args);
-            }
-            catch(Exception)
-            {
-                bc.OnCommandResult -= delegate(object o, PluginResult res) {
-                    OnCommandResult(o, res, null);
-                };
-                Debug.WriteLine("failed to InvokeMethodNamed :: " + commandCallParams.Action + " on Object :: " + commandCallParams.Service);
-                this.InvokeJSSCallback(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
-                return;
-            }
+            this.nativeExecution.ProcessCommand(commandCallParams);
         }
 
         private void GapBrowser_Unloaded(object sender, RoutedEventArgs e)
@@ -332,73 +325,6 @@ namespace WP7GapClassLib
             Debug.WriteLine("GapBrowser_Navigated");
         }
 
-        private void OnCommandResult(object sender, PluginResult result, string callbackId)
-        {
-            BaseCommand command = sender as BaseCommand;
-
-            if (command == null)
-            {
-                Debug.WriteLine("OnCommandResult missing argument");
-            }
-            else if (result == null)
-            {
-                Debug.WriteLine("OnCommandResult missing argument");
-            }
-            else if (!String.IsNullOrEmpty(callbackId))
-            {
-               this.InvokeJSSCallback(callbackId, result);
-           }
-
-            // else // no callback required
-
-            // remove listener
-            command.OnCommandResult -= delegate(object o, PluginResult res) {
-                OnCommandResult(sender, result, callbackId);
-            };
-
-        }
-
-        private void InvokeJSSCallback(String callbackId, PluginResult result)
-        {
-            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
-            {
-
-                if (String.IsNullOrEmpty(callbackId))
-                {
-                    throw new ArgumentNullException("callbackId");
-                }
-            
-                if (result == null)
-                {
-                    throw new ArgumentNullException("result");
-                }
-
-                //string callBackScript = result.ToCallbackString(callbackId, "commandResult", "commandError");
-
-                // TODO: this is correct invokation method
-                //this.GapBrowser.InvokeScript("eval", new string[] {callBackScript });
-
-                /// But we temporary use this version because C#<->JS bridge is on fully ready
-                /// 
-                try
-                {
-                    string status = ((int)result.Result).ToString();
-                    string jsonResult = result.ToJSONString();
-                    if (String.IsNullOrEmpty(result.Cast))
-                    {
-                        this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult });
-                    }
-                    else
-                    {
-                        this.GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult, result.Cast });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Exception in InvokeJSSCallback :: " + ex.Message);
-                }
-            });
-        }
-
+       
     }
 }

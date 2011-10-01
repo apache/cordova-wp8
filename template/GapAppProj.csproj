@@ -55,6 +55,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
+    <Reference Include="WP7GapClassLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -76,21 +77,27 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GapLib\WP7GapClassLib.dll" />
+    <Content Include="GapSourceDictionary.xml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GapSourceDictionary.tt</DependentUpon>
+    </Content>
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="www\master.css" />
-    <Content Include="www\phonegap.1.0.js" />
+    <Content Include="www\phonegap-1.1.0.js" />
+    <None Include="GapSourceDictionary.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GapSourceDictionary.xml</LastGenOutput>
+    </None>
     <None Include="Properties\AppManifest.xml">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="GapSourceDictionary.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
@@ -103,6 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

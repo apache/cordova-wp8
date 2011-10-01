@@ -1,11 +1,19 @@
-﻿using System;
-using System.IO.IsolatedStorage;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Security;
+﻿/*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
+ * Copyright (c) 2011, Microsoft Corporation
+ * Copyright (c) 2011, Sergey Grebnov.
+ */
+
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.IsolatedStorage;
+using System.Runtime.Serialization;
+using System.Security;
+using System.Text;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -175,8 +183,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
             [DataMember(Name = "fileName")]
             public string FileName { get; set; }
 
-            [DataMember(Name = "filePath")]
-            public string FilePath { get; set; }
+            [DataMember(Name = "fullPath")]
+            public string FullPath { get; set; }
 
             [DataMember(Name = "type")]
             public string Type { get; set; }
@@ -196,16 +204,29 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         throw new FileNotFoundException("File doesn't exist");
                     }
                     //TODO get file size the other way if possible                
-                    using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream(filePath, FileMode.Open, isoFile))
+                    using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.Read, isoFile))
                     {
                         this.Size = stream.Length;
                     }
-                    this.FilePath = filePath;
+                    this.FullPath = filePath;
                     this.FileName = System.IO.Path.GetFileName(filePath);
                     this.Type = MimeTypeMapper.GetMimeType(filePath);
                     this.LastModifiedDate = isoFile.GetLastWriteTime(filePath).DateTime.ToString();
                 }
             }
+        }
+
+        /// <summary>
+        /// Represents file or directory modification metadata
+        /// </summary>
+        [DataContract]
+        public class ModificationMetadata
+        {
+            /// <summary>
+            /// Modification time
+            /// </summary>
+            [DataMember]
+            public string modificationTime { get; set; }
         }
 
         /// <summary>
@@ -272,11 +293,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     }
                     else if (IsDirectory)
                     {
-                        // slash at the end is a required
-                        // Passing that string, "C:\Directory\SubDirectory", into GetDirectoryName will result in "C:\Directory".
-                        // http://msdn.microsoft.com/en-us/library/system.io.path.getdirectoryname.aspx
-
-                        this.Name = Path.GetDirectoryName(File.AddSlashToDirectory(filePath));
+                        this.Name = this.GetDirectoryName(filePath);
                         if (string.IsNullOrEmpty(Name))
                         {
                             this.Name = "/";
@@ -286,7 +303,32 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     {
                         throw new FileNotFoundException();
                     }
-                    this.FullPath = filePath;
+
+                    this.FullPath = new Uri(filePath).LocalPath;
+                }
+            }
+
+            /// <summary>
+            /// Extracts directory name from path string
+            /// Path should refer to a directory, for example \foo\ or /foo.
+            /// </summary>
+            /// <param name="path"></param>
+            /// <returns></returns>
+            private string GetDirectoryName(string path)
+            {
+                if (String.IsNullOrEmpty(path))
+                {
+                    return path;
+                }
+
+                string[] split = path.Split(new char[] {'/', '\\'}, StringSplitOptions.RemoveEmptyEntries);
+                if (split.Length < 1)
+                {
+                    return null;
+                }
+                else
+                {
+                    return split[split.Length-1];
                 }
             }
         }
@@ -448,6 +490,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
+                string base64URL = null;
+
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!isoFile.FileExists(fileOptions.FilePath))
@@ -460,10 +504,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     using (IsolatedStorageFileStream stream = isoFile.OpenFile(fileOptions.FilePath, FileMode.Open, FileAccess.Read))
                     {
                         string base64String = GetFileContent(stream);
-                        string base64URL = "data:" + mimeType + ";base64," + base64String;
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, base64URL));
+                        base64URL = "data:" + mimeType + ";base64," + base64String;                        
                     }
                 }
+
+                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, base64URL));
             }
             catch (SecurityException e)
             {
@@ -489,6 +534,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
+                string text;
+
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!isoFile.FileExists(fileOptions.FilePath))
@@ -500,10 +547,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                     using (TextReader reader = new StreamReader(isoFile.OpenFile(fileOptions.FilePath, FileMode.Open, FileAccess.Read), encoding))
                     {
-                        string text = reader.ReadToEnd();
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, text));
+                        text = reader.ReadToEnd();
                     }
                 }
+
+                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, text));
             }
             catch (ArgumentException e)
             {
@@ -520,7 +568,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         }
 
 
-        public void truncateFile(string options)
+        public void truncate(string options)
         {
             try
             {
@@ -533,6 +581,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
                 }
+
+                long streamLength = 0;
 
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -549,9 +599,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             stream.SetLength(fileOptions.Size);
                         }
 
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, stream.Length));
+                        streamLength = stream.Length;
                     }
                 }
+
+                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, streamLength));
             }
             catch (ArgumentException e)
             {
@@ -566,7 +618,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
         }
-
+        
         public void write(string options)
         {
             try
@@ -581,18 +633,19 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
+                if (string.IsNullOrEmpty(fileOptions.Data))
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                    return;
+                }
+
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
+                    // create the file if not exists
                     if (!isoFile.FileExists(fileOptions.FilePath))
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
-                        return;
-                    }
-
-                    if (string.IsNullOrEmpty(fileOptions.Data))
-                    {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
-                        return;
+                        var file = isoFile.CreateFile(fileOptions.FilePath);
+                        file.Close();
                     }
 
                     using (FileStream stream = new IsolatedStorageFileStream(fileOptions.FilePath, FileMode.Open, FileAccess.ReadWrite, isoFile))
@@ -605,14 +658,19 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         {
                             writer.Seek(0, SeekOrigin.End);
                             writer.Write(fileOptions.Data.ToCharArray());
-                        }
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, fileOptions.Data.Length));
+                        }                        
                     }
                 }
+
+                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, fileOptions.Data.Length));
             }
             catch (ArgumentException e)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
+            }
+            catch (IsolatedStorageException e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(INVALID_MODIFICATION_ERR)));
             }
             catch (SecurityException e)
             {
@@ -623,7 +681,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
         }
-
+        
         /// <summary>
         /// Look up metadata about this entry.
         /// </summary>
@@ -646,7 +704,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     if (isoFile.FileExists(fileOptions.FullPath))
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, "{modificationTime:" + isoFile.GetLastWriteTime(fileOptions.FullPath).DateTime.ToString() + "}", "window.localFileSystem._castDate"));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, 
+                            new ModificationMetadata() {modificationTime = isoFile.GetLastWriteTime(fileOptions.FullPath).DateTime.ToString()},
+                            "window.localFileSystem._castDate"));
+                    }
+                    else if (isoFile.DirectoryExists(fileOptions.FullPath))
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK,
+                        new ModificationMetadata() { modificationTime = isoFile.GetLastWriteTime(fileOptions.FullPath).DateTime.ToString() },
+                        "window.localFileSystem._castDate"));
                     }
                     else
                     {
@@ -701,7 +767,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
             }
         }
 
-
         /// <summary>
         /// Look up the parent DirectoryEntry containing this Entry. 
         /// If this Entry is the root of IsolatedStorage, its parent is itself.
@@ -734,8 +799,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                     if (isoFile.FileExists(fileOptions.FullPath) || isoFile.DirectoryExists(fileOptions.FullPath))
                     {
-                        //TODO find how to get parent directory. now just return current entry							
-                        entry = FileEntry.GetEntry(fileOptions.FullPath);
+                        string path = this.GetParentDirectory(fileOptions.FullPath);
+                        entry = FileEntry.GetEntry(path);
                         DispatchCommandResult(new PluginResult(PluginResult.Status.OK, entry, "window.localFileSystem._castEntry"));
                     }
                     else
@@ -794,6 +859,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
+            catch (IsolatedStorageException e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(INVALID_MODIFICATION_ERR)));
+            }
             catch (Exception e)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
@@ -817,49 +886,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 return;
             }
             removeDirRecursively(fileOptions.FullPath);
-        }
-
-        private void removeDirRecursively(string fullPath)
-        {
-            try
-            {
-                using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (isoFile.DirectoryExists(fullPath))
-                    {
-                        string path = File.AddSlashToDirectory(fullPath);
-                        string[] files = isoFile.GetFileNames(path + "*");
-                        if (files.Length > 0)
-                        {
-                            foreach (string file in files)
-                            {
-                                isoFile.DeleteFile(path + file);
-                            }
-                        }
-                        string[] dirs = isoFile.GetDirectoryNames(path + "*");
-                        if (dirs.Length > 0)
-                        {
-                            foreach (string dir in dirs)
-                            {
-                                removeDirRecursively(path + dir + "/");
-                            }
-                        }
-                        isoFile.DeleteDirectory(Path.GetDirectoryName(path));
-                    }
-                    else
-                    {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
-                    }
-                }
-            }
-            catch (SecurityException e)
-            {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
-            }
-            catch (Exception e)
-            {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
-            }
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
         }
 
         public void readEntries(string options)
@@ -898,7 +925,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         {
                             entries.Add(FileEntry.GetEntry(path + dir + "/"));
                         }
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, entries, "window.localFileSystem._castEntry"));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, entries, "window.localFileSystem._castEntries"));
                     }
                     else
                     {
@@ -949,14 +976,16 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 }
                 else if (fileOptions.FileSystemType == TEMPORARY)
                 {
-                    string tmpFolder = "/" + TMP_DIRECTORY_NAME;
+                    
                     using (IsolatedStorageFile isoStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        if (!isoStorage.FileExists(tmpFolder))
+                        if (!isoStorage.FileExists(TMP_DIRECTORY_NAME))
                         {
-                            isoStorage.CreateDirectory(tmpFolder);
+                            isoStorage.CreateDirectory(TMP_DIRECTORY_NAME);
                         }
                     }
+
+                    string tmpFolder = "/" + TMP_DIRECTORY_NAME + "/";
 
                     DispatchCommandResult(new PluginResult(PluginResult.Status.OK, new FileSystemInfo("temporary", FileEntry.GetEntry(tmpFolder)), "window.localFileSystem._castFS"));
                 }
@@ -992,18 +1021,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             try
             {
-                Uri uri;
+                
                 try
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
-
-                    if (!Uri.IsWellFormedUriString(fileOptions.Uri, UriKind.RelativeOrAbsolute))
-                    {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
-                        return;
-                    }
-
-                    uri = new Uri(Uri.UnescapeDataString(fileOptions.Uri));
                 }
                 catch (Exception e)
                 {
@@ -1011,7 +1032,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-                FileEntry uriEntry = FileEntry.GetEntry(uri.LocalPath);
+                if (!Uri.IsWellFormedUriString(fileOptions.Uri, UriKind.RelativeOrAbsolute))
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
+                    return;
+                }
+
+                string path = (new Uri(Uri.UnescapeDataString(fileOptions.Uri))).LocalPath;
+
+                FileEntry uriEntry = FileEntry.GetEntry(path);
                 if (uriEntry != null)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.OK, uriEntry, "window.localFileSystem._castEntry"));
@@ -1039,6 +1068,81 @@ namespace WP7GapClassLib.PhoneGap.Commands
         public void moveTo(string options)
         {
             TransferTo(options, true);
+        }
+
+        public void getFile(string options)
+        {
+            GetFileOrDirectory(options, false);
+        }
+
+        public void getDirectory(string options)
+        {
+            GetFileOrDirectory(options, true);
+        }
+
+        #region internal functionality
+        
+        /// <summary>
+        /// Retrieves the parent directory name of the specified path,
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <returns>Parent directory name</returns>
+        private string GetParentDirectory(string path)
+        {
+            if (String.IsNullOrEmpty(path) || path == "/")
+            {
+                return "/";
+            }
+
+            if (path.EndsWith(@"/") || path.EndsWith(@"\"))
+            {
+                return this.GetParentDirectory(Path.GetDirectoryName(path));
+            }
+
+            return Path.GetDirectoryName(path);
+        }
+
+        private void removeDirRecursively(string fullPath)
+        {
+            try
+            {
+                using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (isoFile.DirectoryExists(fullPath))
+                    {
+                        string path = File.AddSlashToDirectory(fullPath);
+                        string[] files = isoFile.GetFileNames(path + "*");
+                        if (files.Length > 0)
+                        {
+                            foreach (string file in files)
+                            {
+                                isoFile.DeleteFile(path + file);
+                            }
+                        }
+                        string[] dirs = isoFile.GetDirectoryNames(path + "*");
+                        if (dirs.Length > 0)
+                        {
+                            foreach (string dir in dirs)
+                            {
+                                removeDirRecursively(path + dir + "/");
+                            }
+                        }
+                        isoFile.DeleteDirectory(Path.GetDirectoryName(path));
+                    }
+                    else
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
+                    }
+                }
+            }
+            catch (SecurityException e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
+            }
+            catch (Exception e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
+            }
         }
 
         private void TransferTo(string options, bool move)
@@ -1076,35 +1180,56 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         return;
                     }
                     string newName;
+                    string newPath;
                     if (isFileExist)
                     {
                         newName = (string.IsNullOrEmpty(fileOptions.NewName))
                                     ? Path.GetFileName(currentPath)
                                     : fileOptions.NewName;
+
+                        newPath = Path.Combine(parentPath, newName);
+
+                        // remove destination file if exists, in other case there will be exception
+                        if (!newPath.Equals(currentPath) && isoFile.FileExists(newPath))
+                        {
+                            isoFile.DeleteFile(newPath);
+                        }
+
                         if (move)
                         {
-                            isoFile.MoveFile(currentPath, parentPath + newName);
+                            isoFile.MoveFile(currentPath, newPath);
                         }
                         else
                         {
-                            isoFile.CopyFile(currentPath, parentPath + newName, true);
+                            isoFile.CopyFile(currentPath, newPath, true);
                         }
                     }
                     else
                     {
                         newName = (string.IsNullOrEmpty(fileOptions.NewName))
-                                    ? File.AddSlashToDirectory(currentPath)
-                                    : File.AddSlashToDirectory(fileOptions.NewName);
+                                    ? currentPath
+                                    : fileOptions.NewName;
+
+                        newPath = Path.Combine(parentPath, newName);
+
                         if (move)
                         {
-                            isoFile.MoveDirectory(currentPath, parentPath + newName);
+
+                            // remove destination directory if exists, in other case there will be exception
+                            // target directory should be empty
+                            if (!newPath.Equals(currentPath) && isoFile.DirectoryExists(newPath))
+                            {
+                                isoFile.DeleteDirectory(newPath);
+                            }
+
+                            isoFile.MoveDirectory(currentPath, newPath);
                         }
                         else
                         {
-                            CopyDirectory(currentPath, parentPath + newName, isoFile);
+                            this.CopyDirectory(currentPath, newPath, isoFile);
                         }
                     }
-                    FileEntry entry = FileEntry.GetEntry(parentPath + newName);
+                    FileEntry entry = FileEntry.GetEntry(newPath);
                     if (entry != null)
                     {
                         DispatchCommandResult(new PluginResult(PluginResult.Status.OK, entry, "window.localFileSystem._castEntry"));
@@ -1123,6 +1248,14 @@ namespace WP7GapClassLib.PhoneGap.Commands
             catch (FileNotFoundException e)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
+            }
+            catch (ArgumentException e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
+            }
+            catch (IsolatedStorageException e)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(INVALID_MODIFICATION_ERR)));
             }
             catch (Exception e)
             {
@@ -1157,16 +1290,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
             }
         }
 
-        public void getFile(string options)
-        {
-            GetFileOrDirectory(options, false);
-        }
-
-        public void getDirectory(string options)
-        {
-            GetFileOrDirectory(options, true);
-        }
-
         private void GetFileOrDirectory(string options, bool getDirectory)
         {
             try
@@ -1187,7 +1310,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return;
                 }
 
-                if (!Uri.IsWellFormedUriString(fileOptions.Path, UriKind.RelativeOrAbsolute) || !Uri.IsWellFormedUriString(fileOptions.FullPath, UriKind.RelativeOrAbsolute))
+                string path;
+
+                try
+                {
+                    path = Path.Combine(fileOptions.FullPath, fileOptions.Path);
+                }
+                catch (Exception ex)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
                     return;
@@ -1195,14 +1324,13 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    string path = this.CreatePath(fileOptions.FullPath, fileOptions.Path);
                     bool isFile = isoFile.FileExists(path);
                     bool isDirectory = isoFile.DirectoryExists(path);
                     bool create = (fileOptions.CreatingOpt == null) ? false : fileOptions.CreatingOpt.Create;
                     bool exclusive = (fileOptions.CreatingOpt == null) ? false : fileOptions.CreatingOpt.Exclusive;
                     if (create)
                     {
-                        if (exclusive && (isoFile.FileExists(path)) || (isoFile.DirectoryExists(path)))
+                        if (exclusive && (isoFile.FileExists(path) || isoFile.DirectoryExists(path)))
                         {
                             DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(PATH_EXISTS_ERR)));
                             return;
@@ -1216,7 +1344,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         {
                             if ((!getDirectory) && (!isFile))
                             {
-                                isoFile.CreateFile(path);
+
+                                IsolatedStorageFileStream fileStream = isoFile.CreateFile(path);
+                                fileStream.Close();
                             }
                         }
 
@@ -1263,18 +1393,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
             }
         }
 
-        private string CreatePath(string rootName, string fileOrDirName)
-        {
-            if (fileOrDirName.StartsWith("/"))
-            {
-                return fileOrDirName;
-            }
-            else
-            {
-                return rootName + "/" + fileOrDirName;
-            }
-        }
-
         private static string AddSlashToDirectory(string dirPath)
         {
             if (dirPath.EndsWith("/"))
@@ -1301,41 +1419,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             return Convert.ToBase64String(fileData);
         }
 
-        /// <summary>
-        /// Method for testing aims. Creates some directories and files
-        /// </summary>
-        /// <param name="options"></param>
-        public void createDir(string options)
-        {
-            try
-            {
-                using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    isoFile.CreateDirectory("123");
-                    isoFile.CreateDirectory("123/abc");
-                    isoFile.CreateDirectory("123/def");
-                    isoFile.CreateDirectory("123/ghi");
-                    isoFile.CreateDirectory("123/ghi/jkl");
-                    isoFile.CreateFile("123/1.txt");
-                    isoFile.CreateFile("123/2.txt");
-                    isoFile.CreateFile("123/def/1.txt");
-                    isoFile.CreateFile("123/def/2.txt");
-                    isoFile.CreateFile("123/def/3.txt");
-                    isoFile.CreateFile("123/ghi/1.txt");
-                    isoFile.CreateFile("123/ghi/2.txt");
-                    isoFile.CreateFile("123/ghi/3.txt");
-
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, "directories were created"));
-                }
-            }
-            catch (Exception e)
-            {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "can't create directories"));
-            }
-        }
+        #endregion
 
     }
-
-
-
 }

@@ -4,7 +4,9 @@
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
+
 
 
 
@@ -206,6 +208,32 @@ PhoneGap.CallbackError = function (callbackId, args, cast) {
             delete PhoneGap.callbacks[callbackId];
         }
     }
+};
+
+/**
+ * Create a UUID
+ *
+ * @return {String}
+ */
+PhoneGap.createUUID = function() {
+    return PhoneGap.UUIDcreatePart(4) + '-' +
+        PhoneGap.UUIDcreatePart(2) + '-' +
+        PhoneGap.UUIDcreatePart(2) + '-' +
+        PhoneGap.UUIDcreatePart(2) + '-' +
+        PhoneGap.UUIDcreatePart(6);
+};
+
+PhoneGap.UUIDcreatePart = function(length) {
+    var uuidpart = "";
+    var i, uuidchar;
+    for (i=0; i<length; i++) {
+        uuidchar = parseInt((Math.random() * 256),0).toString(16);
+        if (uuidchar.length === 1) {
+            uuidchar = "0" + uuidchar;
+        }
+        uuidpart += uuidchar;
+    }
+    return uuidpart;
 };
 
 /**

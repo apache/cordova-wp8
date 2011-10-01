@@ -137,9 +137,11 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>@echo about to build GapExample</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>@echo done GapExample</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

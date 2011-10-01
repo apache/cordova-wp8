@@ -76,10 +76,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AppManifest.xml" />
-    <None Include="Properties\WMAppManifest.xml">
-      <SubType>Designer</SubType>
+    <None Include="GapSourceDictionary.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GapSourceDictionary.xml</LastGenOutput>
     </None>
+    <None Include="Properties\AppManifest.xml" />
+    <None Include="Properties\WMAppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
@@ -89,6 +91,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="GapSourceDictionary.xml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GapSourceDictionary.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
@@ -110,6 +115,7 @@
     <Content Include="www\autotest\tests\contacts.tests.js" />
     <Content Include="www\autotest\tests\device.tests.js" />
     <Content Include="www\autotest\tests\file.tests.js" />
+    <Content Include="www\autotest\tests\filetransfer.tests.js" />
     <Content Include="www\autotest\tests\geolocation.tests.js" />
     <Content Include="www\autotest\tests\media.tests.js" />
     <Content Include="www\autotest\tests\network.tests.js" />
@@ -122,6 +128,7 @@
     <Content Include="www\compass.html" />
     <Content Include="www\contacts.html" />
     <Content Include="www\events.html" />
+    <Content Include="www\file.html" />
     <Content Include="www\index.html" />
     <Content Include="www\location.html" />
     <Content Include="www\master.css" />
@@ -130,7 +137,7 @@
     <Content Include="www\notification.html">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="www\phonegap.1.0.js" />
+    <Content Include="www\phonegap-1.1.0.js" />
     <Content Include="www\storage.html">
       <SubType>Designer</SubType>
     </Content>
@@ -140,6 +147,9 @@
       <Project>{FC6A1A70-892D-46AD-9E4A-9793F72AF780}</Project>
       <Name>WP7GapClassLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
@@ -151,4 +161,8 @@
   </Target>
   -->
   <ProjectExtensions />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

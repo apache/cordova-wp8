@@ -1,77 +1,302 @@
-﻿using System;
-using System.Net;
-using System.Windows;
+﻿/*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
+ * Copyright (c) 2011, Microsoft Corporation
+ * Copyright (c) 2011, Sergey Grebnov.
+ * Copyright (c) 2011, Jesse MacFadyen.
+ */
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Threading;
 using Microsoft.Devices.Sensors;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
+    /// <summary>
+    /// Captures device motion in the x, y, and z direction.
+    /// </summary>
     public class Accelerometer : BaseCommand
     {
-        private Microsoft.Devices.Sensors.Accelerometer accelerometer;
+        #region AccelerometerOptions class
+        /// <summary>
+        /// Represents Accelerometer options.
+        /// </summary>
+        [DataContract]
+        public class AccelerometerOptions
+        {
+            /// <summary>
+            /// How often to retrieve the Acceleration in milliseconds
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "frequency")]
+            public int Frequency { get; set; }
 
+            /// <summary>
+            /// Watcher id
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "id")]
+            public string Id { get; set; }
+
+            /// <summary>
+            /// Creates options object with default parameters
+            /// </summary>
+            public AccelerometerOptions()
+            {
+                this.SetDefaultValues(new StreamingContext());
+            }
+
+            /// <summary>
+            /// Initializes default values for class fields.
+            /// Implemented in separate method because default constructor is not invoked during deserialization.
+            /// </summary>
+            /// <param name="context"></param>
+            [OnDeserializing()]
+            public void SetDefaultValues(StreamingContext context)
+            {
+                this.Frequency = 10000;
+            }
+        }
+
+        #endregion
+
+        #region Status codes
+
+        public const int Stopped = 0;
+        public const int Starting = 1;
+        public const int Running = 2;
+        public const int ErrorFailedToStart = 3;
+
+        #endregion
+
+        #region Static members
+
+        /// <summary>
+        /// Status of listener
+        /// </summary>
+        private static int currentStatus;
+
+        /// <summary>
+        /// Id for get getAcceleration method
+        /// </summary>
+        private static string getAccelId = "getAccelId";
+
+        /// <summary>
+        /// Accelerometer
+        /// </summary>
+        private static Microsoft.Devices.Sensors.Accelerometer accelerometer = new Microsoft.Devices.Sensors.Accelerometer();
+
+        /// <summary>
+        /// Listeners for callbacks
+        /// </summary>
+        private static Dictionary<string, EventHandler<SensorReadingEventArgs<AccelerometerReading>>> listeners = new Dictionary<string, EventHandler<SensorReadingEventArgs<AccelerometerReading>>>();
+
+        #endregion
+
+        /// <summary>
+        /// Time the value was last changed
+        /// </summary>
+        private DateTime lastValueChangedTime;
+
+        /// <summary>
+        /// Accelerometer options
+        /// </summary>
+        private AccelerometerOptions accelOptions;
+
+        /// <summary>
+        /// Start listening for acceleration sensor
+        /// </summary>
+        public void startWatch(string options)
+        {
+            try
+            {
+                accelOptions = JSON.JsonHelper.Deserialize<AccelerometerOptions>(options);
+            }
+            catch (Exception ex)
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(accelOptions.Id))
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+
+            try
+            {
+                lock (accelerometer)
+                {
+                    listeners.Add(accelOptions.Id, accelerometer_CurrentValueChanged);
+                    accelerometer.CurrentValueChanged += listeners[accelOptions.Id];
+                    accelerometer.Start();
+                    this.SetStatus(Starting);
+                }
+            }
+            catch (Exception e)
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ErrorFailedToStart));
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Stops listening to acceleration sensor
+        /// </summary>
+        public void stopWatch(string options)
+        {
+            try
+            {
+                accelOptions = JSON.JsonHelper.Deserialize<AccelerometerOptions>(options);
+            }
+            catch (Exception ex)
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(accelOptions.Id))
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+
+            if (currentStatus != Stopped)
+            {
+                lock (accelerometer)
+                {
+                    accelerometer.CurrentValueChanged -= listeners[accelOptions.Id];
+                    listeners.Remove(accelOptions.Id);
+                }
+            }
+            this.SetStatus(Stopped);
+        }
+
+        /// <summary>
+        /// Gets current accelerometer coordinates
+        /// </summary>
         public void getAcceleration(string options)
         {
             try
             {
-                if (this.accelerometer == null)
+                if (currentStatus != Running)
                 {
-                    this.accelerometer = new Microsoft.Devices.Sensors.Accelerometer();
-                }
+                    int status = this.start();
+                    if (status == ErrorFailedToStart)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
+                        return;
+                    }
 
-                this.accelerometer.CurrentValueChanged += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(accelerometer_CurrentValueChanged);
-                this.accelerometer.Start();
+                    long timeout = 2000;
+                    while ((currentStatus == Starting) && (timeout > 0))
+                    {
+                        timeout = timeout - 100;
+                        Thread.Sleep(100);
+                    }
+
+                    if (currentStatus != Running)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
+                        return;
+                    }
+                }
+                lock (accelerometer)
+                {
+                    if (listeners.ContainsKey(getAccelId))
+                    {
+                        accelerometer.CurrentValueChanged -= listeners[getAccelId];
+                        listeners.Remove(getAccelId);
+                    }
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, GetCurrentAccelerationFormatted()));
+                }
             }
-            catch (UnauthorizedAccessException ex1)
+            catch (UnauthorizedAccessException e)
             {
-                //this.CallbackName = this.errorCallback;
-                //this.CallbackArgs = new[] { unauthorizedAccessException.Message };
-                //this.SendAsyncResponse();
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, ErrorFailedToStart));
             }
-            catch (AccelerometerFailedException ex2)
+            catch (Exception e)
             {
-                //this.CallbackName = this.errorCallback;
-                //this.CallbackArgs = new[] { accelerometerFailedException.Message };
-                //this.SendAsyncResponse();
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ErrorFailedToStart));
             }
         }
 
-        void accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
+        /// <summary>
+        /// Sensor listener event
+        /// </summary>        
+        private void accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
-            if (this.accelerometer != null)
+            this.SetStatus(Running);
+
+            if (accelOptions != null)
             {
-                SensorState state = this.accelerometer.State;
-
-                // TODO: switch on sensor state
-                if (state == SensorState.Ready)
+                if (((DateTime.Now - lastValueChangedTime).TotalMilliseconds) > accelOptions.Frequency)
                 {
-
-                    string messageResult = String.Format("\"x\":{0},\"y\":{1},\"z\":{2}",
-                                                e.SensorReading.Acceleration.X.ToString("0.00000"),
-                                                e.SensorReading.Acceleration.Y.ToString("0.00000"),
-                                                e.SensorReading.Acceleration.Z.ToString("0.00000"));
-
-                    messageResult = "{" + messageResult + "}";
-
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, messageResult));
-                }
-                else
-                {
-                    //this.CallbackName = this.errorCallback;
-                    //this.CallbackArgs = new[] { state.ToString() };
-                    //this.SendAsyncResponse();
-                }
-
-                try
-                {
-                    this.accelerometer.Stop();
-                    this.accelerometer.Dispose();
-                    this.accelerometer = null;
-                }
-                catch
-                {
-                    // NOOP - We don't, currently, care if we can't stop the accelerometer
+                    lastValueChangedTime = DateTime.Now;
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, GetCurrentAccelerationFormatted());
+                    result.KeepCallback = true;
+                    DispatchCommandResult(result);
                 }
             }
+
+            if (listeners.Count == 0)
+            {
+                accelerometer.Stop();
+                this.SetStatus(Stopped);
+            }
+        }
+
+        /// <summary>
+        /// Starts listening for acceleration sensor
+        /// </summary>
+        /// <returns>status of listener</returns>
+        private int start()
+        {
+            if ((currentStatus == Running) || (currentStatus == Starting))
+            {
+                return currentStatus;
+            }
+            try
+            {
+                lock (accelerometer)
+                {
+                    listeners.Add(getAccelId, accelerometer_CurrentValueChanged);
+                    accelerometer.CurrentValueChanged += listeners[getAccelId];
+                    accelerometer.Start();
+                    this.SetStatus(Starting);
+                }
+            }
+            catch (Exception e)
+            {
+                this.SetStatus(ErrorFailedToStart);
+            }
+            return currentStatus;
+        }
+
+        /// <summary>
+        /// Formats current coordinates into JSON format
+        /// </summary>
+        /// <returns>Coordinates in JSON format</returns>
+        private string GetCurrentAccelerationFormatted()
+        {
+            string resultCoordinates = String.Format("\"x\":{0},\"y\":{1},\"z\":{2}",
+                            accelerometer.CurrentValue.Acceleration.X.ToString("0.00000"),
+                            accelerometer.CurrentValue.Acceleration.Y.ToString("0.00000"),
+                            accelerometer.CurrentValue.Acceleration.Z.ToString("0.00000"));
+            resultCoordinates = "{" + resultCoordinates + "}";
+            return resultCoordinates;
+        }
+
+        /// <summary>
+        /// Sets current status
+        /// </summary>
+        /// <param name="status">current status</param>
+        private void SetStatus(int status)
+        {
+            currentStatus = status;
         }
     }
 }

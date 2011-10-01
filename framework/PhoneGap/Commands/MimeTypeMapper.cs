@@ -1,22 +1,28 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
+﻿/*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
+ * Copyright (c) 2011, Microsoft Corporation
+ * Copyright (c) 2011, Sergey Grebnov.
+ */
+
 using System.Collections.Generic;
 using System.IO;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
     /// <summary>
-    /// Represents map to getting mime type by file extention
+    /// Represents file extension to mime type mapper.
     /// </summary>
     public static class MimeTypeMapper
     {
+        /// <summary>
+        /// For unknown type it is recommended to use 'application/octet-stream'
+        /// http://stackoverflow.com/questions/1176022/unknown-file-type-mime
+        /// </summary>
+        private static string DefaultMimeType = "application/octet-stream";
+        
         /// <summary>
         /// Stores mime type for all necessary extension
         /// </summary>
@@ -53,6 +59,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                                                                                  {"ras", "image/x-cmu-raster"},
                                                                                  {"rgb", "image/x-rgb"},
                                                                                  {"snd", "audio/basic"},
+                                                                                 {"txt", "text/plain"},
                                                                                  {"tif", "image/tiff"},
                                                                                  {"tiff", "image/tiff"},
                                                                                  {"wav", "audio/x-wav"},
@@ -66,12 +73,22 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// <returns>mime type</returns>
         public static string GetMimeType(string fileName)
         {
-            if (MIMETypesDictionary.ContainsKey(Path.GetExtension(fileName).Remove(0, 1)))
+            string ext = Path.GetExtension(fileName);
+
+            // invalid extension
+            if (string.IsNullOrEmpty(ext) || !ext.StartsWith("."))
             {
-                return MIMETypesDictionary[Path.GetExtension(fileName).Remove(0, 1)];
+                return DefaultMimeType;
             }
-            // For unknown type it is allowed to use 'application/octet-stream' - http://stackoverflow.com/questions/1176022/unknown-file-type-mime
-            return "application/octet-stream";
+
+            ext = ext.Remove(0, 1);
+
+            if (MIMETypesDictionary.ContainsKey(ext))
+            {
+                return MIMETypesDictionary[ext];
+            }
+
+            return DefaultMimeType;
         }
     }
 }

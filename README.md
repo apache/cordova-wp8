@@ -9,7 +9,27 @@ Requires
 
 - Windows Phone SDK 7.1 [http://create.msdn.com/en-us/home/getting_started]
 
-Getting Started
+
+Getting Started (Hey, not too rough)
+---
+
+- copy the file GapAppStarter.zip to the folder : \My Documents\Visual Studio 2010\Templates\ProjectTemplates\
+- Launch Visual Studio 2010 and select to create a new project
+-- PhoneGapAppStarter should be listed as an option, give it a name
+-- If you do not see it, you may have to select the top level 'Visual C#' to see it
+- Build and Run it!
+
+Note!!!
+---
+
+When you add or remove files/folders in the www folder you will need to do the following
+
+- ensure the new item is included in the project ( Content )
+- In Solution Explorer, Right-Click 'GapSourceDictionary.tt' and select 'Run Custom Tool'
+-- this will generate the GapSourceDictionary.xml file which is included in the project.
+
+
+Getting Started ( Ultra-Violence ! aka for contributors )
 ---
 
 - make sure you have the 7.1 SDK installed

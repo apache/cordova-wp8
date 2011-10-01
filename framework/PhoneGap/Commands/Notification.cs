@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
+ * Copyright (c) 2011, Microsoft Corporation
+ * Copyright (c) 2011, Jesse MacFadyen.
+ */
+
+using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +32,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 {
     public class Notification : BaseCommand
     {
-        ProgressBar progressBar = null;
+        static ProgressBar progressBar = null;
         const int DEFAULT_DURATION = 5;
 
         // alert, confirm, blink, vibrate, beep
@@ -67,18 +76,24 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public void alert(string options)
         {
-            AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
-            MessageBoxResult res = MessageBox.Show(alertOpts.message, alertOpts.title,MessageBoxButton.OK);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                MessageBoxResult res = MessageBox.Show(alertOpts.message, alertOpts.title,MessageBoxButton.OK);
 
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK,(int)res));
+                DispatchCommandResult(new PluginResult(PluginResult.Status.OK,(int)res));
+            });
         }
 
         public void confirm(string options)
         {
-            AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
 
-            MessageBoxResult res = MessageBox.Show(alertOpts.message, alertOpts.title, MessageBoxButton.OKCancel);
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, (int)res));
+                MessageBoxResult res = MessageBox.Show(alertOpts.message, alertOpts.title, MessageBoxButton.OKCancel);
+                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, (int)res));
+            });
         }
 
         public void beep(string count)
@@ -112,52 +127,58 @@ namespace WP7GapClassLib.PhoneGap.Commands
         // Display an inderminate progress indicator
         public void activityStart(string unused)
         {
-            PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
-            if (frame != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
-
-                if (page != null)
+                PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+                if (frame != null)
                 {
-                    Grid grid = page.FindName("LayoutRoot") as Grid;
-                    if (grid != null)
-                    {
-                        if (this.progressBar != null)
-                        {
-                            grid.Children.Remove(progressBar);
-                        }
-                        progressBar = new ProgressBar();
-                        progressBar.IsIndeterminate = true;
-                        progressBar.IsEnabled = true;
+                    PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
 
-                        grid.Children.Add(progressBar);
+                    if (page != null)
+                    {
+                        Grid grid = page.FindName("LayoutRoot") as Grid;
+                        if (grid != null)
+                        {
+                            if (progressBar != null)
+                            {
+                                grid.Children.Remove(progressBar);
+                            }
+                            progressBar = new ProgressBar();
+                            progressBar.IsIndeterminate = true;
+                            progressBar.IsEnabled = true;
+
+                            grid.Children.Add(progressBar);
+                        }
                     }
                 }
-            }
+            });
         }
 
 
         // Remove our inderminate progress indicator
         public void activityStop(string unused)
         {
-            if (progressBar != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                progressBar.IsEnabled = false;
-                PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
-                if (frame != null)
+                if (progressBar != null)
                 {
-                    PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
-                    if (page != null)
+                    progressBar.IsEnabled = false;
+                    PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+                    if (frame != null)
                     {
-                        Grid grid = page.FindName("LayoutRoot") as Grid;
-                        if (grid != null)
+                        PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
+                        if (page != null)
                         {
-                            grid.Children.Remove(progressBar);
+                            Grid grid = page.FindName("LayoutRoot") as Grid;
+                            if (grid != null)
+                            {
+                                grid.Children.Remove(progressBar);
+                            }
                         }
                     }
+                    progressBar = null;
                 }
-                progressBar = null;
-            }
+            });
         }
 
         public void vibrate(string vibrateDuration)

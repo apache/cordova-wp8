@@ -4,6 +4,7 @@
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
  */
 
 if (!PhoneGap.hasResource("capture")) {
@@ -27,14 +28,26 @@ var MediaFile = function(name, fullPath, type, lastModifiedDate, size){
 };
 
 /**
- * Launch device camera application for recording video(s).
+ * Get file meta information
  *
  * @param {Function} successCB
  * @param {Function} errorCB
  */
 MediaFile.prototype.getFormatData = function(successCallback, errorCallback){
-	PhoneGap.exec(successCallback, errorCallback, "Capture", "getFormatData", [this.fullPath, this.type]);
+	PhoneGap.exec(successCallback, errorCallback, "Capture", "getFormatData", {fullPath: this.fullPath, type: this.type});
 };
+
+
+/**
+ * Open file in device media player
+ *
+ * @param {Function} successCB
+ * @param {Function} errorCB
+ */
+MediaFile.prototype.play = function(successCallback, errorCallback){
+	PhoneGap.exec(successCallback, errorCallback, "Capture", "play", this);
+};
+
 
 /**
  * MediaFileData encapsulates format information of a media file.
@@ -106,7 +119,27 @@ Capture.prototype.captureImage = function (successCallback, errorCallback, optio
  * @param {CaptureVideoOptions} options
  */
 Capture.prototype.captureVideo = function(successCallback, errorCallback, options){
-	PhoneGap.exec(successCallback, errorCallback, "Capture", "captureVideo", [options]);
+	PhoneGap.exec(successCallback, errorCallback, "Capture", "captureVideo", options);
+};
+
+/**
+* This function returns and array of MediaFiles.  It is required as we need to convert raw
+* JSON objects into MediaFile objects. 
+*/
+Capture.prototype._castMediaFile = function(pluginResult){
+	var mediaFiles = [];
+	var i;
+	for (i = 0; i < pluginResult.message.length; i++) {
+		var mediaFile = new MediaFile();
+		mediaFile.name = pluginResult.message[i].name;
+		mediaFile.fullPath = pluginResult.message[i].fullPath;
+		mediaFile.type = pluginResult.message[i].type;
+		mediaFile.lastModifiedDate = pluginResult.message[i].lastModifiedDate;
+		mediaFile.size = pluginResult.message[i].size;
+		mediaFiles.push(mediaFile);
+	}
+	pluginResult.message = mediaFiles;
+	return pluginResult;
 };
 
 /**

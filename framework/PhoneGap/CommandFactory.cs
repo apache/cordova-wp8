@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2011, Nitobi Software Inc.
+ * Copyright (c) 2011, Microsoft Corporation
+ */
+
+using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,8 +22,7 @@ using WP7GapClassLib.PhoneGap.Commands;
 namespace WP7GapClassLib.PhoneGap
 {
     /// <summary>
-    /// Provides functionality to create phone gap command by name,
-    /// Each command is created only once and stored in commands pool.
+    /// Provides functionality to create phone gap command by name.
     /// </summary>
     public static class CommandFactory
     {
@@ -29,7 +36,7 @@ namespace WP7GapClassLib.PhoneGap
         /// </summary>
         /// <param name="service">Command class name, for example Device or Notification</param>
         /// <returns>Command class instance or null</returns>
-        public static BaseCommand CreateUsingServiceName(string service)
+        public static BaseCommand CreateByServiceName(string service)
         {
 
             if (string.IsNullOrEmpty(service))
@@ -52,7 +59,7 @@ namespace WP7GapClassLib.PhoneGap
                 }
             }
 
-            return commandMap[service];
+            return Activator.CreateInstance(commandMap[service].GetType()) as BaseCommand;
         }
     }
 }
