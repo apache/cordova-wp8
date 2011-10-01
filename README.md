@@ -11,6 +11,8 @@ Requires
 
 
 Getting Started (Hey, not too rough)
+---
+
 - copy the file GapAppStarter.zip to the folder : \My Documents\Visual Studio 2010\Templates\ProjectTemplates\
 - Launch Visual Studio 2010 and select to create a new project
 -- PhoneGapAppStarter should be listed as an option, give it a name
@@ -19,6 +21,7 @@ Getting Started (Hey, not too rough)
 
 Note!!!
 ---
+
 When you add or remove files/folders in the www folder you will need to do the following
 - ensure the new item is included in the project ( Content )
 - In Solution Explorer, Right-Click 'GapSourceDictionary.tt' and select 'Run Custom Tool'
