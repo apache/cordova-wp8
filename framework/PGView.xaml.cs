@@ -53,6 +53,8 @@ namespace WP7GapClassLib
         /// </summary>
         private NativeExecution nativeExecution;
 
+        protected DOMStorageHelper domStorageHelper;
+
         public PGView()
         {
 
@@ -114,6 +116,8 @@ namespace WP7GapClassLib
 
             // prevents refreshing web control to initial state during pages transitions
             if (this.IsBrowserInitialized) return;
+
+            this.domStorageHelper = new DOMStorageHelper(this.GapBrowser);
 
             try
             {
