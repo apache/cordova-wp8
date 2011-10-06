@@ -66,6 +66,7 @@ namespace WP7GapClassLib
 
         public void HandleStorageCommand(string commandStr)
         {
+            
             string[] split = commandStr.Split('/');
             if (split.Length > 3)
             {

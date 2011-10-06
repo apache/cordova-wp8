@@ -1,6 +1,7 @@
 Tests.prototype.StorageTests = function() 
 {
   module("Session Storage");
+
   test("should exist", function() {
 	expect(7);
 	ok(window.sessionStorage != null, "sessionStorage is defined");
@@ -11,6 +12,7 @@ Tests.prototype.StorageTests = function()
     ok(typeof(window.sessionStorage.removeItem) == "function", "sessionStorage.removeItem is defined");
     ok(typeof(window.sessionStorage.clear) == "function", "sessionStorage.clear is defined");
   });
+
   test("check length", function() {
     expect(3);
     ok(window.sessionStorage.length == 0, "length should be 0");
@@ -19,6 +21,9 @@ Tests.prototype.StorageTests = function()
     window.sessionStorage.removeItem("key");   
     ok(window.sessionStorage.length == 0, "length should be 0");
   });
+
+
+
   test("check key", function() {
 	expect(3);
 	ok(window.sessionStorage.key(0) == null, "key should be null");
@@ -27,6 +32,7 @@ Tests.prototype.StorageTests = function()
 	window.sessionStorage.removeItem("test");   
 	ok(window.sessionStorage.key(0) == null, "key should be null");
   });
+
   test("check getItem", function() {
 	expect(3);
     ok(window.sessionStorage.getItem("item") == null, "item should be null");
@@ -35,6 +41,7 @@ Tests.prototype.StorageTests = function()
     window.sessionStorage.removeItem("item");   
     ok(window.sessionStorage.getItem("item") == null, "item should be null");
   });
+
   test("check setItem", function() {
     expect(4);
     ok(window.sessionStorage.getItem("item") == null, "item should be null");
@@ -45,6 +52,7 @@ Tests.prototype.StorageTests = function()
     window.sessionStorage.removeItem("item");   
     ok(window.sessionStorage.getItem("item") == null, "item should be null");
   });
+
   test("check removeItem", function() {
     expect(3);
     ok(window.sessionStorage.getItem("item") == null, "item should be null");
@@ -53,6 +61,7 @@ Tests.prototype.StorageTests = function()
     window.sessionStorage.removeItem("item");   
     ok(window.sessionStorage.getItem("item") == null, "item should be null");
   });
+  
   test("check clear", function() {
     expect(11);
     ok(window.sessionStorage.getItem("item1") == null, "item1 should be null");
@@ -71,6 +80,7 @@ Tests.prototype.StorageTests = function()
     ok(window.sessionStorage.getItem("item2") == null, "item2 should be null");
     ok(window.sessionStorage.getItem("item3") == null, "item3 should be null");	    
   });
+
   test("check dot notation", function() {
     expect(3);
     ok(window.sessionStorage.item == null, "item should be null");
@@ -79,7 +89,9 @@ Tests.prototype.StorageTests = function()
     window.sessionStorage.removeItem("item");   
     ok(window.sessionStorage.item == null, "item should be null");
   });
+
   module("Local Storage");
+
   test("should exist", function() {
 	expect(7);
 	ok(window.localStorage != null, "localStorage is defined");
@@ -90,6 +102,7 @@ Tests.prototype.StorageTests = function()
     ok(typeof(window.localStorage.removeItem) == "function", "localStorage.removeItem is defined");
     ok(typeof(window.localStorage.clear) == "function", "localStorage.clear is defined");
   });  
+
   test("check length", function() {
     expect(3);
     ok(window.localStorage.length == 0, "length should be 0");
@@ -98,6 +111,7 @@ Tests.prototype.StorageTests = function()
     window.localStorage.removeItem("key");   
     ok(window.localStorage.length == 0, "length should be 0");
   });
+
   test("check key", function() {
     expect(3);
     ok(window.localStorage.key(0) == null, "key should be null");
@@ -106,6 +120,7 @@ Tests.prototype.StorageTests = function()
     window.localStorage.removeItem("test");   
     ok(window.localStorage.key(0) == null, "key should be null");
   });
+
   test("check getItem", function() {
     expect(3);
     ok(window.localStorage.getItem("item") == null, "item should be null");
@@ -114,6 +129,7 @@ Tests.prototype.StorageTests = function()
     window.localStorage.removeItem("item");   
     ok(window.localStorage.getItem("item") == null, "item should be null");
   });
+
   test("check setItem", function() {
     expect(4);
     ok(window.localStorage.getItem("item") == null, "item should be null");
@@ -124,6 +140,7 @@ Tests.prototype.StorageTests = function()
     window.localStorage.removeItem("item");   
     ok(window.localStorage.getItem("item") == null, "item should be null");
   });
+
   test("check removeItem", function() {
     expect(3);
     ok(window.localStorage.getItem("item") == null, "item should be null");
@@ -132,6 +149,7 @@ Tests.prototype.StorageTests = function()
     window.localStorage.removeItem("item");   
     ok(window.localStorage.getItem("item") == null, "item should be null");
   });
+
   test("check clear", function() {
     expect(11);
     ok(window.localStorage.getItem("item1") == null, "item1 should be null");
@@ -150,6 +168,7 @@ Tests.prototype.StorageTests = function()
     ok(window.localStorage.getItem("item2") == null, "item2 should be null");
     ok(window.localStorage.getItem("item3") == null, "item3 should be null");	    
   });
+
   test("check dot notation", function() {
     expect(3);
     ok(window.localStorage.item == null, "item should be null");
@@ -158,7 +177,12 @@ Tests.prototype.StorageTests = function()
     window.localStorage.removeItem("item");   
     ok(window.localStorage.item == null, "item should be null");
   });
+
+  
+
+  /*
   module("HTML 5 Storage");
+
   test("should exist", function() {
     expect(1);
     ok(typeof(window.openDatabase) == "function", "Database is defined");
@@ -167,4 +191,5 @@ Tests.prototype.StorageTests = function()
     var db = openDatabase("Database", "1.0", "HTML5 Database API example", 200000);
     ok(db != null, "Database should be opened");
   });
+  */
 }

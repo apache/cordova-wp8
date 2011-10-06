@@ -290,6 +290,13 @@ namespace WP7GapClassLib
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
             string commandStr = e.Value;
+
+            // DOMStorage/Local OR DOMStorage/Session
+            if (commandStr.IndexOf("DOMStorage") == 0)
+            {
+                this.domStorageHelper.HandleStorageCommand(commandStr);
+                return;
+            }
             
             PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
 

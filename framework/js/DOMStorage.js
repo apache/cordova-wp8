@@ -18,6 +18,11 @@ if(!window.localStorage)
         {
             this._type = type;
         }
+        Object.defineProperty( this, "length", 
+        {
+            configurable: true,
+            get: function(){ return this.getLength() }
+        });
 
     };
 
@@ -27,10 +32,8 @@ if(!window.localStorage)
         _result:null,
         keys:null,
     
-    
         onResult:function(key,valueStr)
         {
-            //console.log("DomStorage::" + this._type + "::onResult::" + key + "::" + valueStr);
             if(!this.keys)
             {
                 this.keys = [];
@@ -40,7 +43,6 @@ if(!window.localStorage)
 
         onKeysChanged:function(jsonKeys)
         {
-            //console.log("onKeysChanged::keys=" + jsonKeys + " ::typeof=" + typeof jsonKeys);
             this.keys = JSON.parse(jsonKeys);
 
             var key;
@@ -70,7 +72,7 @@ if(!window.localStorage)
     /*
         The length attribute must return the number of key/value pairs currently present in the list associated with the object.
     */
-        length:function()
+        getLength:function()
         {
             if(!this.keys)
             {
@@ -108,7 +110,6 @@ if(!window.localStorage)
     */
         getItem:function(key)
         {
-            console.log("DomStorage::" + this._type + "::getItem::" + key);
             if(!this.keys)
             {
                 this.initialize();
@@ -151,13 +152,15 @@ if(!window.localStorage)
             {
                 this.initialize();
             }
-
-            if(this.keys.indexOf(key) > -1)
+            var index = this.keys.indexOf(key);
+            if(index > -1)
             {
+                this.keys.splice(index,1);
                 // TODO: need sanity check for keys ? like 'clear','setItem', ...
-                delete this[key];
                 window.external.Notify("DOMStorage/" + this._type + "/remove/" + key);
+                delete this[key];
             }
+            
         },
 
     /*
@@ -177,6 +180,7 @@ if(!window.localStorage)
                 // TODO: do we need a sanity check for keys ? like 'clear','setItem', ...
                 delete this[this.keys[n]];
             }
+            this.keys = [];
             window.external.Notify("DOMStorage/" + this._type + "/clear/");
         }
     };
