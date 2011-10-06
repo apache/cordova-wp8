@@ -53,6 +53,8 @@ namespace WP7GapClassLib
         /// </summary>
         private NativeExecution nativeExecution;
 
+        protected DOMStorageHelper domStorageHelper;
+
         public PGView()
         {
 
@@ -114,6 +116,8 @@ namespace WP7GapClassLib
 
             // prevents refreshing web control to initial state during pages transitions
             if (this.IsBrowserInitialized) return;
+
+            this.domStorageHelper = new DOMStorageHelper(this.GapBrowser);
 
             try
             {
@@ -286,6 +290,13 @@ namespace WP7GapClassLib
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
             string commandStr = e.Value;
+
+            // DOMStorage/Local OR DOMStorage/Session
+            if (commandStr.IndexOf("DOMStorage") == 0)
+            {
+                this.domStorageHelper.HandleStorageCommand(commandStr);
+                return;
+            }
             
             PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
 
