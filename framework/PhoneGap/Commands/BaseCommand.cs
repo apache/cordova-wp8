@@ -10,10 +10,11 @@
 
 using System;
 using System.Reflection;
+using Microsoft.Phone.Shell;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
-    public abstract class BaseCommand
+    public abstract class BaseCommand : IDisposable
     {
         /*
          *  All commands + plugins must extend BaseCommand, because they are dealt with as BaseCommands in PGView.xaml.cs
@@ -26,7 +27,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public BaseCommand()
         {
-             
+                PhoneApplicationService service = PhoneApplicationService.Current;
+                service.Activated += this.OnResume;                
+                service.Deactivated += this.OnPause;                
         }
 
         /*
@@ -85,10 +88,33 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 if (!result.KeepCallback)
                 {
-                    this.OnCommandResult = null;
+                    this.Dispose();
                 }
 
             }
+        }
+
+        /// <summary>
+        /// Occurs when the application is being deactivated.
+        /// </summary>        
+        public virtual void OnPause(object sender, DeactivatedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Occurs when the application is being made active after previously being put
+        /// into a dormant state or tombstoned.
+        /// </summary>        
+        public virtual void OnResume(object sender, Microsoft.Phone.Shell.ActivatedEventArgs e)
+        {
+        }
+        
+        public void Dispose()
+        {
+            PhoneApplicationService service = PhoneApplicationService.Current;
+            service.Activated -= this.OnResume;
+            service.Deactivated -= this.OnPause;
+            this.OnCommandResult = null;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace WP7GapClassLib.PhoneGap
         /// <summary>
         /// Performance optimization allowing more faster create already known commands.
         /// </summary>
-        private static Dictionary<string, BaseCommand> commandMap = new Dictionary<string,BaseCommand>();
+        private static Dictionary<string, Type> commandMap = new Dictionary<string, Type>();
  
         /// <summary>
         /// Creates command using command class name. Returns null for unknown commands.
@@ -50,16 +50,12 @@ namespace WP7GapClassLib.PhoneGap
                 Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
                 if (t != null)
                 {
-                    BaseCommand bc = Activator.CreateInstance(t) as BaseCommand;
+                    commandMap[service] = t;
 
-                    if (bc != null)
-                    {
-                        commandMap[service] = bc;
-                    }
                 }
             }
 
-            return Activator.CreateInstance(commandMap[service].GetType()) as BaseCommand;
+            return Activator.CreateInstance(commandMap[service]) as BaseCommand;
         }
     }
 }
