@@ -91,7 +91,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         /// <summary>
         /// Listeners for callbacks
         /// </summary>
-        private static Dictionary<string, EventHandler<SensorReadingEventArgs<AccelerometerReading>>> listeners = new Dictionary<string, EventHandler<SensorReadingEventArgs<AccelerometerReading>>>();
+        private static Dictionary<string, Accelerometer> watchers = new Dictionary<string, Accelerometer>();
 
         #endregion
 
@@ -130,8 +130,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
             {
                 lock (accelerometer)
                 {
-                    listeners.Add(accelOptions.Id, accelerometer_CurrentValueChanged);
-                    accelerometer.CurrentValueChanged += listeners[accelOptions.Id];
+                    watchers.Add(accelOptions.Id, this);
+                    accelerometer.CurrentValueChanged += watchers[accelOptions.Id].accelerometer_CurrentValueChanged;
                     accelerometer.Start();
                     this.SetStatus(Starting);
                 }
@@ -168,11 +168,16 @@ namespace WP7GapClassLib.PhoneGap.Commands
             {
                 lock (accelerometer)
                 {
-                    accelerometer.CurrentValueChanged -= listeners[accelOptions.Id];
-                    listeners.Remove(accelOptions.Id);
+                    Accelerometer watcher = watchers[accelOptions.Id];
+                    
+                    watcher.Dispose();
+                    accelerometer.CurrentValueChanged -= watcher.accelerometer_CurrentValueChanged;
+                    watchers.Remove(accelOptions.Id);
                 }
             }
             this.SetStatus(Stopped);
+
+            this.DispatchCommandResult();
         }
 
         /// <summary>
@@ -206,10 +211,10 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 }
                 lock (accelerometer)
                 {
-                    if (listeners.ContainsKey(getAccelId))
+                    if (watchers.ContainsKey(getAccelId))
                     {
-                        accelerometer.CurrentValueChanged -= listeners[getAccelId];
-                        listeners.Remove(getAccelId);
+                        accelerometer.CurrentValueChanged -= watchers[getAccelId].accelerometer_CurrentValueChanged;
+                        watchers.Remove(getAccelId);
                     }
                     DispatchCommandResult(new PluginResult(PluginResult.Status.OK, GetCurrentAccelerationFormatted()));
                 }
@@ -242,7 +247,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 }
             }
 
-            if (listeners.Count == 0)
+            if (watchers.Count == 0)
             {
                 accelerometer.Stop();
                 this.SetStatus(Stopped);
@@ -263,8 +268,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
             {
                 lock (accelerometer)
                 {
-                    listeners.Add(getAccelId, accelerometer_CurrentValueChanged);
-                    accelerometer.CurrentValueChanged += listeners[getAccelId];
+                    watchers.Add(getAccelId, this);
+                    accelerometer.CurrentValueChanged += watchers[getAccelId].accelerometer_CurrentValueChanged;
                     accelerometer.Start();
                     this.SetStatus(Starting);
                 }

@@ -100,18 +100,20 @@ PhoneGap.exec = function(success, fail, service, action, args)
 
 PhoneGapCommandResult = function(status,callbackId,args,cast)
 {
-	if(status === "backbutton")
-	{
+	if(status === "backbutton") {
+
 		PhoneGap.fireEvent(document,"backbutton");
 		return "true";
-	}
-	else if(status === "resume")
-	{
+
+	} else if(status === "resume") {
+
 		PhoneGap.onResume.fire();
-	}
-	else if(status === "pause")
-	{
-		PhoneGap.onPause.fire();	
+		return "true";
+
+	} else if(status === "pause") {
+
+		PhoneGap.onPause.fire();
+		return "true";	
 	}
 	
 	var safeStatus = parseInt(status);
