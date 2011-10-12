@@ -18,6 +18,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
 using WP7GapClassLib.PhoneGap.Commands;
+using System.Reflection;
 
 namespace WP7GapClassLib.PhoneGap
 {
@@ -26,6 +27,11 @@ namespace WP7GapClassLib.PhoneGap
     /// </summary>
     public static class CommandFactory
     {
+        /// <summary>
+        /// Represents predefined namespace name for custom plugins
+        /// </summary>
+        private static readonly string CustomPlaginNamespacePrefix = "PhoneGap.Extension.Commands.";
+
         /// <summary>
         /// Performance optimization allowing more faster create already known commands.
         /// </summary>
@@ -49,15 +55,27 @@ namespace WP7GapClassLib.PhoneGap
             {
                 
                 Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
-                if (t != null)
+
+                // custom plugin could be defined in own namespace and assembly
+                if (t == null)
                 {
-                    commandMap[service] = t;
+                    string serviceFullName = service.Contains(".") ? service : CustomPlaginNamespacePrefix + service;
+                    
+                    foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+                    {
+                        // in this case service name represents full type name including namespace
+                        t = a.GetType(serviceFullName);
+
+                        if (t != null)
+                            break;
+                    }
 
                 }
-                else
-                {
 
-                }
+                // unknown command
+                if (t == null) return null;
+
+                commandMap[service] = t;
             }
 
             return Activator.CreateInstance(commandMap[service]) as BaseCommand;
