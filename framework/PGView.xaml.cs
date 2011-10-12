@@ -36,11 +36,12 @@ using System.Threading;
 using Microsoft.Phone.Shell;
 
 
+
 namespace WP7GapClassLib
 {
     public partial class PGView : UserControl
     {
-
+       
         /// <summary>
         /// Indicates whether web control has been loaded and no additional initialization is needed.
         /// Prevents data clearing during page transitions.
@@ -55,6 +56,14 @@ namespace WP7GapClassLib
 
         protected DOMStorageHelper domStorageHelper;
 
+        public System.Windows.Controls.Grid _LayoutRoot
+        {
+            get
+            {
+                return ((System.Windows.Controls.Grid)(this.FindName("LayoutRoot")));
+            }
+        }
+
         public PGView()
         {
 
@@ -64,6 +73,7 @@ namespace WP7GapClassLib
             {
                 return;
             }
+
 
             StartupMode mode = PhoneApplicationService.Current.StartupMode;
             Debug.WriteLine("StartupMode mode =" + mode.ToString());
@@ -308,6 +318,9 @@ namespace WP7GapClassLib
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
             string commandStr = e.Value;
+
+            Debug.WriteLine("Command::" + commandStr);
+
 
             // DOMStorage/Local OR DOMStorage/Session
             if (commandStr.IndexOf("DOMStorage") == 0)

@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <GapSourceDictionary>
     <FilePath Value="www\accelerometer.html"/> 
+    <FilePath Value="www\accelerometer2.html"/> 
     <FilePath Value="www\audio.html"/> 
     <FilePath Value="www\camera.html"/> 
     <FilePath Value="www\capture.html"/> 

@@ -101,10 +101,13 @@
     <Content Include="www\accelerometer.html">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="www\accelerometer2.html" />
     <Content Include="www\audio.html">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="www\autotest\index.html" />
+    <Content Include="www\autotest\index.html">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="www\autotest\qunit.css" />
     <Content Include="www\autotest\qunit.js" />
     <Content Include="www\autotest\test-runner.js" />
