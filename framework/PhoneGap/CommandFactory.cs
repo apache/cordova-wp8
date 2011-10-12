@@ -29,6 +29,7 @@ namespace WP7GapClassLib.PhoneGap
         /// <summary>
         /// Performance optimization allowing more faster create already known commands.
         /// </summary>
+
         private static Dictionary<string, Type> commandMap = new Dictionary<string, Type>();
  
         /// <summary>
@@ -46,11 +47,15 @@ namespace WP7GapClassLib.PhoneGap
 
             if (!commandMap.ContainsKey(service))
             {
-            
+                
                 Type t = Type.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
                 if (t != null)
                 {
                     commandMap[service] = t;
+
+                }
+                else
+                {
 
                 }
             }

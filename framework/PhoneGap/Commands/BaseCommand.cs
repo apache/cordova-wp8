@@ -117,4 +117,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             this.OnCommandResult = null;
         }
     }
+
+
+
 }
