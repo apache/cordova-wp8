@@ -652,17 +652,7 @@ PhoneGap.fireEvent = function(_targ,evtName)
     var eventObj = document.createEvent('MouseEvents');
       	eventObj.initEvent( evtName, true, false );
 	target.dispatchEvent( eventObj );
-}	
-
-// request deviceinfo, required to start
-PhoneGap.exec(function(res)
-{
-	var deviceInfo = JSON.parse(res);
-	console.log("GotDeviceInfo :: " + deviceInfo.version);
-	device = deviceInfo;
-	PhoneGap.available = true;
-	PhoneGap.onDeviceReady.fire();
-},function(err){console.log("DeviceInfoError::" + err);},"Device","Get");
+}
 	
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
@@ -1645,7 +1635,9 @@ var Device = function() {
 
     var me = this;
     this.getInfo(
-        function (info) {
+        function (res) {
+            var info = JSON.parse(res);
+            console.log("GotDeviceInfo :: " + info.version);
             me.available = true;
             me.platform = info.platform;
             me.version = info.version;
