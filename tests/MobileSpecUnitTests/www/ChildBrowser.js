@@ -45,12 +45,12 @@ ChildBrowser.prototype.showWebPage = function(loc,geolocationEnabled)
 {
   var success = function(msg)
   {
-     console.log("showWebPage success :: " + msg);
+     console.log("ChildBrowser.showWebPage success :: " + msg);
   };
 
   var error = function(e)
   {
-     console.log("showWebPage error :: " + msg);
+     console.log("ChildBrowser.showWebPage error :: " + e);
   };
 
   var options = 

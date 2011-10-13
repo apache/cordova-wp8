@@ -30,6 +30,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
     {
 
         private static WebBrowser browser;
+        private static ApplicationBarIconButton backButton;
+        private static ApplicationBarIconButton fwdButton;
 
         // Display an inderminate progress indicator
         public void showWebPage(string options)
@@ -59,6 +61,8 @@ namespace WP7GapClassLib.PhoneGap.Commands
                                 browser = new WebBrowser();
                                 browser.Navigate(loc);
 
+                                browser.LoadCompleted += new System.Windows.Navigation.LoadCompletedEventHandler(browser_LoadCompleted);
+
                                 browser.Navigating += new EventHandler<NavigatingEventArgs>(browser_Navigating);
                                 browser.NavigationFailed += new System.Windows.Navigation.NavigationFailedEventHandler(browser_NavigationFailed);
                                 browser.Navigated += new EventHandler<System.Windows.Navigation.NavigationEventArgs>(browser_Navigated);
@@ -70,32 +74,78 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             ApplicationBar bar = new ApplicationBar();
                             bar.BackgroundColor = Colors.Black;
                             bar.IsMenuEnabled = false;
+
+                            backButton = new ApplicationBarIconButton();
+                            backButton.Text = "Back";
+                            backButton.IconUri = new Uri("/Images/appbar.back.rest.png", UriKind.Relative);
+                            backButton.Click += new EventHandler(backButton_Click);
+                            backButton.IsEnabled = false;
+                            bar.Buttons.Add(backButton);
+
+
+                            fwdButton = new ApplicationBarIconButton();
+                            fwdButton.Text = "Forward";
+                            fwdButton.IconUri = new Uri("/Images/appbar.next.rest.png", UriKind.Relative);
+                            fwdButton.Click += new EventHandler(fwdButton_Click);
+                            fwdButton.IsEnabled = false;
+                            bar.Buttons.Add(fwdButton);
+
                             ApplicationBarIconButton closeBtn = new ApplicationBarIconButton();
                             closeBtn.Text = "Close";
-                            closeBtn.IconUri = new Uri("/Images/appbar_button1.png", UriKind.Relative);
+                            closeBtn.IconUri = new Uri("/Images/appbar.close.rest.png", UriKind.Relative);
                             closeBtn.Click += new EventHandler(closeBtn_Click);
                             bar.Buttons.Add(closeBtn);
 
                             page.ApplicationBar = bar;
                         }
 
-
-
-
-
-                        
                     }
                 }
             });
         }
 
+        void browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            
+        }
+
+        void fwdButton_Click(object sender, EventArgs e)
+        {
+            if (browser != null)
+            {
+                try
+                {
+                    browser.InvokeScript("execScript", "history.forward();");
+                }
+                catch(Exception)
+                {
+
+                }
+            }
+        }
+
+        void backButton_Click(object sender, EventArgs e)
+        {
+            if (browser != null)
+            {
+                try
+                {
+                    browser.InvokeScript("execScript", "history.back();");
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+
         void closeBtn_Click(object sender, EventArgs e)
         {
-            this.close("");
+            this.close();
         }
 
 
-        public void close(string options)
+        public void close(string options="")
         {
             if (browser != null)
             {

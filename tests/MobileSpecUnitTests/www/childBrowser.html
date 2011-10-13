@@ -2,8 +2,11 @@
 <html>
   <head>
     <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
+
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    
     <title>PhoneGap - ChildBrowser</title>
     <link rel="stylesheet" href="master.css" type="text/css" media="screen"/>
     
@@ -29,33 +32,39 @@
       
 <script type="text/javascript" charset="utf-8">
 
+  var childBrowser;
+
   function onDeviceReady(e)
   {
-      var cb = ChildBrowser.install();
-      if(cb != null)
-      {
-        cb.onLocationChange = function(loc){locChanged(loc); };
-        cb.onClose = function(){onCloseBrowser()};
-        cb.onOpenExternal = function(){onOpenExternal();};
+      childBrowser = ChildBrowser.install();
 
-        window.plugins.childBrowser.showWebPage("http://google.com");
+  }
+
+  function openAppHub()
+  {
+      if(childBrowser != null)
+      {
+        childBrowser.onLocationChange = function(loc){locChanged(loc); };
+        childBrowser.onClose = function(){onCloseBrowser()};
+        childBrowser.onOpenExternal = function(){onOpenExternal();};
+        childBrowser.showWebPage("http://create.msdn.com");
         
       }
   }
 
   function onCloseBrowser()
   {
-    console.log("In index.html child browser closed");
+    console.log("onCloseBrowser");
   }
   
   function locChanged(loc)
   {
-    console.log("In index.html new loc = " + loc);
+    console.log("locChanged = " + loc);
   }
   
   function onOpenExternal()
   {
-    console.log("In index.html onOpenExternal");
+    console.log("onOpenExternal In index.html onOpenExternal");
   }
 
 
@@ -63,18 +72,20 @@
   /**
   * Function called when page has finished loading.
   */
-  function init() {
-
-  document.addEventListener("deviceready",onDeviceReady, false);
+  function init() 
+  {
+    document.addEventListener("deviceready",onDeviceReady, false);
   }
 
 </script>
 
 
   </head>
+
   <body onLoad="init();" id="stage" class="theme">
 
+    <div class="btn large" onclick="openAppHub();">Open AppHub</div>
 
-  <a href="index.html" class="backBtn">Back</a>
+    <a href="index.html" class="backBtn">Back</a>
   </body>
 </html>      
