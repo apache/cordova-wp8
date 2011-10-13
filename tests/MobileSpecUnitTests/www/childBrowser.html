@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>PhoneGap - ChildBrowser</title>
+    <link rel="stylesheet" href="master.css" type="text/css" media="screen"/>
+    
+    	<script type="text/javascript">
+			// provide our own console if it does not exist, huge dev aid!
+			if(typeof window.console == "undefined")
+			{
+			window.console = {log:function(str){window.external.Notify(str);}};
+			}
+			
+			// output any errors to console log, created above.
+			window.onerror=function(e)
+			{
+				console.log("window.onerror ::" + JSON.stringify(e));
+			};
+			
+			console.log("Installed console ! ");
+	</script>
+    
+    
+    <script type="text/javascript" charset="utf-8" src="phonegap-1.1.0.js"></script>      
+    <script type="text/javascript" charset="utf-8" src="ChildBrowser.js"></script>    
+      
+<script type="text/javascript" charset="utf-8">
+
+  function onDeviceReady(e)
+  {
+      var cb = ChildBrowser.install();
+      if(cb != null)
+      {
+        cb.onLocationChange = function(loc){locChanged(loc); };
+        cb.onClose = function(){onCloseBrowser()};
+        cb.onOpenExternal = function(){onOpenExternal();};
+
+        window.plugins.childBrowser.showWebPage("http://google.com");
+        
+      }
+  }
+
+  function onCloseBrowser()
+  {
+    console.log("In index.html child browser closed");
+  }
+  
+  function locChanged(loc)
+  {
+    console.log("In index.html new loc = " + loc);
+  }
+  
+  function onOpenExternal()
+  {
+    console.log("In index.html onOpenExternal");
+  }
+
+
+
+  /**
+  * Function called when page has finished loading.
+  */
+  function init() {
+
+  document.addEventListener("deviceready",onDeviceReady, false);
+  }
+
+</script>
+
+
+  </head>
+  <body onLoad="init();" id="stage" class="theme">
+
+
+  <a href="index.html" class="backBtn">Back</a>
+  </body>
+</html>      
