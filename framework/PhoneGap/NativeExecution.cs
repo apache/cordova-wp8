@@ -61,55 +61,68 @@ namespace WP7GapClassLib.PhoneGap
             {
                 throw new ArgumentNullException("commandCallParams");
             }
-            
-            BaseCommand bc = CommandFactory.CreateByServiceName(commandCallParams.Service);
 
-            if (bc == null)
-            {
-                this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION));
-                return;
-            }
-
-            EventHandler<PluginResult> OnCommandResultHandler = delegate(object o, PluginResult res)
-            {
-                this.OnCommandResult(commandCallParams.CallbackId, res);
-            };
-
-            bc.OnCommandResult += OnCommandResultHandler;
-
-            EventHandler<ScriptCallback> OnCustomScriptHandler = delegate(object o, ScriptCallback script)
-            {
-                this.InvokeScriptCallback(script);
-            };
-
-
-            bc.OnCustomScript += OnCustomScriptHandler;
-
-            // TODO: alternative way is using thread pool (ThreadPool.QueueUserWorkItem) instead of 
-            // new thread for every command call; but num threads are not sufficient - 2 threads per CPU core
-
-            
-            Thread thread = new Thread(func =>
+            try
             {
 
-                try
+                BaseCommand bc = CommandFactory.CreateByServiceName(commandCallParams.Service);
+
+                if (bc == null)
                 {
-                    bc.InvokeMethodNamed(commandCallParams.Action, commandCallParams.Args);
-                }
-                catch (Exception)
-                {
-                    bc.OnCommandResult -= OnCommandResultHandler;
-                    bc.OnCustomScript -= OnCustomScriptHandler;
-
-                    Debug.WriteLine("failed to InvokeMethodNamed :: " + commandCallParams.Action + " on Object :: " + commandCallParams.Service);
-
-                    this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
-
+                    this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION));
                     return;
                 }
-            });
 
-            thread.Start();
+                EventHandler<PluginResult> OnCommandResultHandler = delegate(object o, PluginResult res)
+                {
+                    this.OnCommandResult(commandCallParams.CallbackId, res);
+                };
+
+                bc.OnCommandResult += OnCommandResultHandler;
+
+                EventHandler<ScriptCallback> OnCustomScriptHandler = delegate(object o, ScriptCallback script)
+                {
+                    this.InvokeScriptCallback(script);
+                };
+
+
+                bc.OnCustomScript += OnCustomScriptHandler;
+
+                // TODO: alternative way is using thread pool (ThreadPool.QueueUserWorkItem) instead of 
+                // new thread for every command call; but num threads are not sufficient - 2 threads per CPU core
+
+
+                Thread thread = new Thread(func =>
+                {
+
+                    try
+                    {
+                        bc.InvokeMethodNamed(commandCallParams.Action, commandCallParams.Args);
+                    }
+                    catch (Exception)
+                    {
+                        bc.OnCommandResult -= OnCommandResultHandler;
+                        bc.OnCustomScript -= OnCustomScriptHandler;
+
+                        Debug.WriteLine("failed to InvokeMethodNamed :: " + commandCallParams.Action + " on Object :: " + commandCallParams.Service);
+
+                        this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
+
+                        return;
+                    }
+                });
+
+                thread.Start();
+            }
+            catch (Exception ex)
+            {
+                // ERROR
+                Debug.WriteLine(String.Format("Unable to execute command :: {0}:{1}:{3} ", 
+                    commandCallParams.Service, commandCallParams.Action, ex.Message));
+
+                this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.ERROR));
+                return;
+            }
         }
 
         /// <summary>
