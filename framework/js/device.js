@@ -25,7 +25,9 @@ var Device = function() {
 
     var me = this;
     this.getInfo(
-        function (info) {
+        function (res) {
+            var info = JSON.parse(res);
+            console.log("GotDeviceInfo :: " + info.version);
             me.available = true;
             me.platform = info.platform;
             me.version = info.version;
