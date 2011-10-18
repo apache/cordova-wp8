@@ -112,7 +112,7 @@ namespace WP7GapClassLib
             }
             catch (Exception)
             {
-                Debug.WriteLine("Pause event error");
+                Console.Error.WriteLine("Pause event error");
             } 
         }
 
@@ -124,7 +124,6 @@ namespace WP7GapClassLib
         void AppActivated(object sender, Microsoft.Phone.Shell.ActivatedEventArgs e)
         {
             Debug.WriteLine("AppActivated");
-
             try
             {
                 GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { "resume" });
