@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PhoneGap\Commands\AudioPlayer.cs" />
+    <Compile Include="PhoneGap\Commands\ChildBrowserCommand.cs" />
     <Compile Include="PhoneGap\Commands\Compass.cs" />
     <Compile Include="PhoneGap\Commands\Media.cs" />
     <Compile Include="PhoneGap\DOMStorageHelper.cs" />
@@ -110,8 +111,17 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\appbar.back.rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\appbar.close.rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\appbar.feature.video.rest.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\appbar.next.rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\appbar.stop.rest.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

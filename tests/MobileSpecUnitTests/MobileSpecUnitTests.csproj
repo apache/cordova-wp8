@@ -131,8 +131,10 @@
     <Content Include="www\calculator.html" />
     <Content Include="www\camera.html" />
     <Content Include="www\capture.html" />
+    <Content Include="www\ChildBrowser.js" />
     <Content Include="www\compass.html" />
     <Content Include="www\contacts.html" />
+    <Content Include="www\childBrowser.html" />
     <Content Include="www\events.html" />
     <Content Include="www\file.html" />
     <Content Include="www\index.html" />
