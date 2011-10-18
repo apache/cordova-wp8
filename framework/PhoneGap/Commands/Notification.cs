@@ -139,7 +139,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                     if (page != null)
                     {
-                        var temp = page.FindName("LayoutRoot");// as Grid;
+                        var temp = page.FindName("LayoutRoot");
                         Grid grid = temp as Grid;
                         if (grid != null)
                         {
