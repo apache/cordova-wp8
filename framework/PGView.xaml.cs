@@ -112,7 +112,7 @@ namespace WP7GapClassLib
             }
             catch (Exception)
             {
-                Console.Error.WriteLine("Pause event error");
+                Debug.WriteLine("Pause event error");
             } 
         }
 

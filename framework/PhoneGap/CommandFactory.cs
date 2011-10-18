@@ -71,7 +71,7 @@ namespace WP7GapClassLib.PhoneGap
 
                         if (t == null) // try the Commands Namespace
                         {
-                            t = a.GetType("WP7GapClassLib.PhoneGap.Commands." + service);
+                            t = a.GetType(BaseCommandNamespacePrefix + service);
                         }
 
                         if (t != null)
