@@ -1,11 +1,11 @@
-﻿<!DOCTYPE HTML>
+﻿<!DOCTYPE html>
 <html>
   <head>
-    <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
-    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <!-- ISO-8859-1 -->
+   
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/> 
     <title>PhoneGap</title>
-    <link rel="stylesheet" href="master.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="master.css" type="text/css" media="screen"/>
     
     	<script type="text/javascript">
 			// provide our own console if it does not exist, huge dev aid!
@@ -65,7 +65,7 @@
 
         // Update acceleration every 1 sec
         var opt = {};
-        opt.frequency = 5000;
+        opt.frequency = 50;
         watchAccelId = navigator.accelerometer.watchAcceleration(success, fail, opt);
 
         setAccelStatus("Running");
@@ -136,6 +136,8 @@
 
 </script>
 
+
+
   </head>
   <body onLoad="init();" id="stage" class="theme">
   
@@ -148,6 +150,8 @@
             <tr><td width="20%">Z:</td><td id="z">&nbsp;</td></tr>
         </table></div>
     </div>
+    
+
 
     <h2>Action</h2>
     <a href="#" class="btn large" onclick="getAccel();">Get Acceleration</a>

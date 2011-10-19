@@ -118,8 +118,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                });
 
             }
-          
-
+         
             // TODO: may need a listener to trigger DispatchCommandResult after the alarm has finished executing...
             DispatchCommandResult();
         }
@@ -129,14 +128,19 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+                var t1 = Application.Current.RootVisual;
+                PhoneApplicationFrame frame =  t1 as PhoneApplicationFrame;
+
+                var temp1 = frame.FindName("LayoutRoot");
+
                 if (frame != null)
                 {
                     PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
 
                     if (page != null)
                     {
-                        Grid grid = page.FindName("LayoutRoot") as Grid;
+                        var temp = page.FindName("LayoutRoot");
+                        Grid grid = temp as Grid;
                         if (grid != null)
                         {
                             if (progressBar != null)

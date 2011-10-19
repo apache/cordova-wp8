@@ -36,11 +36,12 @@ using System.Threading;
 using Microsoft.Phone.Shell;
 
 
+
 namespace WP7GapClassLib
 {
     public partial class PGView : UserControl
     {
-
+       
         /// <summary>
         /// Indicates whether web control has been loaded and no additional initialization is needed.
         /// Prevents data clearing during page transitions.
@@ -55,6 +56,14 @@ namespace WP7GapClassLib
 
         protected DOMStorageHelper domStorageHelper;
 
+        public System.Windows.Controls.Grid _LayoutRoot
+        {
+            get
+            {
+                return ((System.Windows.Controls.Grid)(this.FindName("LayoutRoot")));
+            }
+        }
+
         public PGView()
         {
 
@@ -65,10 +74,11 @@ namespace WP7GapClassLib
                 return;
             }
 
+
             StartupMode mode = PhoneApplicationService.Current.StartupMode;
             Debug.WriteLine("StartupMode mode =" + mode.ToString());
 
-            if (mode == StartupMode.Activate)
+            if (mode == StartupMode.Launch)
             {
                 PhoneApplicationService service = PhoneApplicationService.Current;
                 service.Activated += new EventHandler<Microsoft.Phone.Shell.ActivatedEventArgs>(AppActivated);
@@ -95,6 +105,15 @@ namespace WP7GapClassLib
         void AppDeactivated(object sender, DeactivatedEventArgs e)
         {
             Debug.WriteLine("AppDeactivated");
+
+            try
+            {
+                GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { "pause" });
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine("Pause event error");
+            } 
         }
 
         void AppLaunching(object sender, LaunchingEventArgs e)
@@ -105,6 +124,14 @@ namespace WP7GapClassLib
         void AppActivated(object sender, Microsoft.Phone.Shell.ActivatedEventArgs e)
         {
             Debug.WriteLine("AppActivated");
+            try
+            {
+                GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { "resume" });
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine("Resume event error");
+            }  
         }
 
         void GapBrowser_Loaded(object sender, RoutedEventArgs e)
@@ -290,6 +317,9 @@ namespace WP7GapClassLib
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
             string commandStr = e.Value;
+
+            Debug.WriteLine("Command::" + commandStr);
+
 
             // DOMStorage/Local OR DOMStorage/Session
             if (commandStr.IndexOf("DOMStorage") == 0)

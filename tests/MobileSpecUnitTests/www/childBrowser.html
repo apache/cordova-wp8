@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
+
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+
+    <title>PhoneGap - ChildBrowser</title>
+    <link rel="stylesheet" href="master.css" type="text/css" media="screen"/>
+    
+    	<script type="text/javascript">
+			// provide our own console if it does not exist, huge dev aid!
+			if(typeof window.console == "undefined")
+			{
+			window.console = {log:function(str){window.external.Notify(str);}};
+			}
+			
+			// output any errors to console log, created above.
+			window.onerror=function(e)
+			{
+				console.log("window.onerror ::" + JSON.stringify(e));
+			};
+			
+			console.log("Installed console ! ");
+	</script>
+    
+    
+    <script type="text/javascript" charset="utf-8" src="phonegap-1.1.0.js"></script>      
+    <script type="text/javascript" charset="utf-8" src="ChildBrowser.js"></script>    
+      
+<script type="text/javascript" charset="utf-8">
+
+  var childBrowser;
+
+  function onDeviceReady(e)
+  {
+      childBrowser = ChildBrowser.install();
+
+  }
+
+  function openAppHub()
+  {
+      if(childBrowser != null)
+      {
+        childBrowser.onLocationChange = function(loc){locChanged(loc); };
+        childBrowser.onClose = function(){onCloseBrowser()};
+        childBrowser.onOpenExternal = function(){onOpenExternal();};
+        childBrowser.showWebPage("http://create.msdn.com");
+        
+      }
+  }
+
+  function onCloseBrowser()
+  {
+    console.log("onCloseBrowser");
+  }
+  
+  function locChanged(loc)
+  {
+    console.log("locChanged = " + loc);
+  }
+  
+  function onOpenExternal()
+  {
+    console.log("onOpenExternal In index.html onOpenExternal");
+  }
+
+  function loadFacebook()
+  {
+    var client_id = "91320880376";
+    var redir_url = "http://www.facebook.com/connect/login_success.html";
+
+    // var authorize_url  = "https://graph.facebook.com/oauth/authorize?";
+    // authorize_url += "client_id=" + client_id;
+    // authorize_url += "&redirect_uri=" + redir_url;
+    // authorize_url += "&display="+ "touch";
+    // authorize_url += "&type=user_agent";
+
+    // var test = "http://m.facebook.com/login.php?app_id=91320880376&cancel=http%3A%2F%2Fwww.facebook.com%2Fconnect%2Flogin_success.html%3Ferror_reason%3Duser_denied%26error%3Daccess_denied%26error_description%3DThe%2Buser%2Bdenied%2Byour%2Brequest.&fbconnect=1&next=https%3A%2F%2Fwww.facebook.com%2Fdialog%2Fpermissions.request%3F_path%3Dpermissions.request%26app_id%3D91320880376%26redirect_uri%3Dhttp%253A%252F%252Fwww.facebook.com%252Fconnect%252Flogin_success.html%26display%3Dtouch%26type%3Duser_agent%26fbconnect%3D1%26from_login%3D1&rcount=1&_rdr";
+
+    var test2 = "https://www.facebook.com/dialog/oauth?client_id=91320880376&redirect_uri=http://www.facebook.com/connect/login_success.html";
+
+  window.plugins.childBrowser.showWebPage(test2);
+  }
+
+
+
+  /**
+  * Function called when page has finished loading.
+  */
+  function init() 
+  {
+    document.addEventListener("deviceready",onDeviceReady, false);
+  }
+
+</script>
+
+
+  </head>
+
+  <body onLoad="init();" id="stage" class="theme">
+
+    <div class="btn large" onclick="openAppHub();">Open AppHub</div>
+
+    <div class="btn large" onclick="loadFacebook();">Open Facebook</div>
+
+    <a href="index.html" class="backBtn">Back</a>
+  </body>
+</html>      

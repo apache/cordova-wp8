@@ -1,9 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <GapSourceDictionary>
     <FilePath Value="www\accelerometer.html"/> 
+    <FilePath Value="www\accelerometer2.html"/> 
     <FilePath Value="www\audio.html"/> 
+    <FilePath Value="www\calculator.html"/> 
     <FilePath Value="www\camera.html"/> 
     <FilePath Value="www\capture.html"/> 
+    <FilePath Value="www\childBrowser.html"/> 
+    <FilePath Value="www\ChildBrowser.js"/> 
     <FilePath Value="www\compass.html"/> 
     <FilePath Value="www\contacts.html"/> 
     <FilePath Value="www\events.html"/> 

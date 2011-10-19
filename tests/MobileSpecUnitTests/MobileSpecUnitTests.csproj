@@ -50,6 +50,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -60,6 +61,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Calculator.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -101,10 +103,13 @@
     <Content Include="www\accelerometer.html">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="www\accelerometer2.html" />
     <Content Include="www\audio.html">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="www\autotest\index.html" />
+    <Content Include="www\autotest\index.html">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="www\autotest\qunit.css" />
     <Content Include="www\autotest\qunit.js" />
     <Content Include="www\autotest\test-runner.js" />
@@ -123,6 +128,7 @@
     <Content Include="www\autotest\tests\orientation.tests.js" />
     <Content Include="www\autotest\tests\storage.tests.js" />
     <Content Include="www\autotest\tests\system.tests.js" />
+    <Content Include="www\calculator.html" />
     <Content Include="www\camera.html" />
     <Content Include="www\capture.html" />
     <Content Include="www\compass.html" />
