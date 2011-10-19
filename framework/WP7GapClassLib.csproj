@@ -58,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PhoneGap\Commands\AudioPlayer.cs" />
-    <Compile Include="PhoneGap\Commands\ChildBrowserCommand.cs" />
     <Compile Include="PhoneGap\Commands\Compass.cs" />
     <Compile Include="PhoneGap\Commands\Media.cs" />
     <Compile Include="PhoneGap\DOMStorageHelper.cs" />
