@@ -78,10 +78,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GapSourceDictionary.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>GapSourceDictionary.xml</LastGenOutput>
-    </None>
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml" />
   </ItemGroup>
@@ -92,13 +88,8 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="GapSourceDictionary.xml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GapSourceDictionary.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
+    <None Include="ManifestProcessor.js" />
+    <Content Include="GapSourceDictionary.xml" />
     <Content Include="SplashScreenImage.jpg" />
     <Content Include="www\accelerometer.html">
       <SubType>Designer</SubType>
@@ -168,7 +159,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>CScript $(ProjectDir)/ManifestProcessor.js</PreBuildEvent>
   </PropertyGroup>
 </Project>
