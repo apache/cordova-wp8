@@ -78,20 +78,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GapLib\WP7GapClassLib.dll" />
-    <Content Include="GapSourceDictionary.xml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GapSourceDictionary.tt</DependentUpon>
-    </Content>
+    <Content Include="GapSourceDictionary.xml" />
+    <Content Include="ManifestProcessor.js" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="www\master.css" />
     <Content Include="www\phonegap-1.1.0.js" />
-    <None Include="GapSourceDictionary.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>GapSourceDictionary.xml</LastGenOutput>
-    </None>
     <None Include="Properties\AppManifest.xml">
       <SubType>Designer</SubType>
     </None>
@@ -125,9 +118,10 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>@echo about to build GapExample</PreBuildEvent>
+    <PreBuildEvent>CScript "$(ProjectDir)/ManifestProcessor.js"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>@echo done GapExample</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

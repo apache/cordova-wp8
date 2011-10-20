@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=320; user-scalable=no" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     
     <title>PhoneGap WP7</title>
@@ -28,11 +28,7 @@
        
       <script type="text/javascript">
 
-
-        function init()
-        {
         document.addEventListener("deviceready",onDeviceReady,false);
-        }
 
         // once the device ready event fires, you can safely do your thing! -jm
         function onDeviceReady()
@@ -46,7 +42,7 @@
 	  
 
   </head>
-  <body onLoad="init();">
+  <body>
     <h1>Hello PhoneGap</h1>
     <div id="welcomeMsg"></div>
   </body>

@@ -11,15 +11,10 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="True" d:DesignHeight="768" d:DesignWidth="480" xmlns:my="clr-namespace:WP7GapClassLib;assembly=WP7GapClassLib">
-    <Grid>
+    <Grid x:Name="LayoutRoot" >
 
         <my:PGView Name="pGView1" HorizontalAlignment="Stretch"  
                           VerticalAlignment="Stretch"></my:PGView>
-        <!--<phone:WebBrowser x:Name="GapBrowser" 
-                          Loaded="GapBrowser_Loaded" 
-                          HorizontalAlignment="Stretch"  
-                          VerticalAlignment="Stretch" 
-                          IsScriptEnabled="True" />-->
 
     </Grid>
 
