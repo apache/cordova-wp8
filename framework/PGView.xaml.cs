@@ -49,12 +49,14 @@ namespace WP7GapClassLib
         private bool IsBrowserInitialized = false;
         private bool OverrideBackButton = false;
 
+
         /// <summary>
         /// Handles native api calls
         /// </summary>
         private NativeExecution nativeExecution;
 
         protected DOMStorageHelper domStorageHelper;
+        protected OrientationHelper orientationHelper;
 
         public System.Windows.Controls.Grid _LayoutRoot
         {
@@ -260,18 +262,15 @@ namespace WP7GapClassLib
             if (frame != null)
             {
                 PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
-
+                 
                 if (page != null)
                 {
                     page.BackKeyPress += new EventHandler<CancelEventArgs>(page_BackKeyPress);
-                    page.OrientationChanged += new EventHandler<OrientationChangedEventArgs>(page_OrientationChanged);
+
+                    this.orientationHelper = new OrientationHelper(this.GapBrowser, page); 
+
                 }
             }
-        }
-
-        void page_OrientationChanged(object sender, OrientationChangedEventArgs e)
-        {
-            //throw new NotImplementedException();
         }
 
         void page_BackKeyPress(object sender, CancelEventArgs e)
@@ -320,11 +319,15 @@ namespace WP7GapClassLib
 
             Debug.WriteLine("Command::" + commandStr);
 
-
             // DOMStorage/Local OR DOMStorage/Session
             if (commandStr.IndexOf("DOMStorage") == 0)
             {
                 this.domStorageHelper.HandleStorageCommand(commandStr);
+                return;
+            }
+            else if (commandStr.IndexOf("Orientation") == 0)
+            {
+                this.orientationHelper.HandleCommand(commandStr);
                 return;
             }
             
@@ -364,6 +367,7 @@ namespace WP7GapClassLib
         private void GapBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             Debug.WriteLine("GapBrowser_Navigated");
+            
         }
 
        
