@@ -63,6 +63,7 @@
     <Compile Include="PhoneGap\DOMStorageHelper.cs" />
     <Compile Include="PhoneGap\JSON\JsonHelper.cs" />
     <Compile Include="PhoneGap\Commands\MimeTypeMapper.cs" />
+    <Compile Include="PhoneGap\OrientationHelper.cs" />
     <Compile Include="PhoneGap\PhoneGapCommandCall.cs" />
     <Compile Include="PhoneGap\CommandFactory.cs" />
     <Compile Include="PhoneGap\Commands\Accelerometer.cs" />
