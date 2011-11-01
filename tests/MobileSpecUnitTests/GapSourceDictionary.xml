@@ -16,7 +16,7 @@
     <FilePath Value="www\master.css"/>
     <FilePath Value="www\network.html"/>
     <FilePath Value="www\notification.html"/>
-    <FilePath Value="www\phonegap-1.1.0.js"/>
+    <FilePath Value="www\phonegap-1.2.0.js"/>
     <FilePath Value="www\storage.html"/>
     <FilePath Value="www\autotest\index.html"/>
     <FilePath Value="www\autotest\qunit.css"/>
