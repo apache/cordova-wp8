@@ -21,12 +21,11 @@
     </script>
       
     <link rel="stylesheet" href="master.css" type="text/css" media="screen">
-    <script type="text/javascript" charset="utf-8" src="phonegap-1.1.0.js"></script>       
+    <script type="text/javascript" charset="utf-8" src="phonegap-1.2.0.js"></script>       
 
       
 <script type="text/javascript" charset="utf-8">
 
-    var deviceReady = false;
 
     function interceptBackbutton() {
     	eventOutput("Back button intercepted");
@@ -48,23 +47,41 @@
     /**
      * Function called when page has finished loading.
      */
-    function init() {
+    function init() 
+    {
         document.addEventListener("deviceready", function() {
-                deviceReady = true;
                 console.log("Device="+device.platform+" "+device.version);
                 eventOutput("deviceready event: "+device.platform+" "+device.version);
             }, false);
-        window.setTimeout(function() {
-        	if (!deviceReady) {
-        		alert("Error: PhoneGap did not initialize.  Demo will not run correctly.");
-        	}
-        },1000);
+            
 		
         document.addEventListener("resume", function() {eventOutput("resume event");}, false);
         document.addEventListener("pause", function() {eventOutput("pause event");}, false);
         window.addEventListener("online", function() {eventOutput("online event");});  
-        window.addEventListener("offline", function() {eventOutput("offline event");});  
-
+        window.addEventListener("offline", function() {eventOutput("offline event");}); 
+        
+        window.addEventListener("orientationchange", onOrientationChangedA);  
+        
+        window.onorientationchange  = onOrientationChangedB;
+        
+        console.log("window.orientation = " + window.orientation);
+    }
+    
+    function tryCallback(orientation)
+    {
+        var evt = document.createEvent('HTMLEvents')
+        evt.initEvent( 'orientationchange', true, false );
+        window.dispatchEvent(evt);
+    }
+    
+    function onOrientationChangedA(e)
+    {
+      console.log("A OrientationChange event received!!!!!! " + window.orientation);
+    }
+    
+    function onOrientationChangedB(e)
+    {
+      console.log("B OrientationChange event received!!!!!! " + window.orientation);
     }
 	
 	function onInterceptClicked(bAdd)

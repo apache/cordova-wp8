@@ -15,7 +15,7 @@ Getting Started (Hey, not too rough)
 
 - copy the file GapAppStarter.zip to the folder : \My Documents\Visual Studio 2010\Templates\ProjectTemplates\
 - Launch Visual Studio 2010 and select to create a new project
--- PhoneGapAppStarter should be listed as an option, give it a name
+-- GapAppStarter should be listed as an option, give it a name
 -- If you do not see it, you may have to select the top level 'Visual C#' to see it
 - Build and Run it!
 
@@ -25,8 +25,7 @@ Note!!!
 When you add or remove files/folders in the www folder you will need to do the following
 
 - ensure the new item is included in the project ( Content )
-- In Solution Explorer, Right-Click 'GapSourceDictionary.tt' and select 'Run Custom Tool'
--- this will generate the GapSourceDictionary.xml file which is included in the project.
+-- Do not modify the GapSourceDictionary.xml file which is included in the project, it is auto-generated for you when you build.
 
 
 Getting Started ( Ultra-Violence ! aka for contributors )
@@ -36,7 +35,7 @@ Getting Started ( Ultra-Violence ! aka for contributors )
 - fork/git or download/unzip the repo to your harddrive
 - copy the file GapAppStarter.zip to the folder : \My Documents\Visual Studio 2010\Templates\ProjectTemplates\
 - Launch Visual Studio 2010 and select to create a new project
--- PhoneGapAppStarter should be listed as an option, give it a name
+-- GapAppStarter should be listed as an option, give it a name
 - Right-Click on the solution and select Add->Existing Project, and add the project :
  framework\WP7GapClassLib.csproj from the downloaded repo
 - Right-Click your main project and "Add Reference" to the WP7GapClassLib project

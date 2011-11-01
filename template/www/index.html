@@ -24,7 +24,7 @@
 		  console.log("Installed console ! ");
       </script>
       
-      <script type="text/javascript" charset="utf-8" src="phonegap-1.1.0.js"></script>
+      <script type="text/javascript" charset="utf-8" src="phonegap-1.2.0.js"></script>
        
       <script type="text/javascript">
 
@@ -33,7 +33,9 @@
         // once the device ready event fires, you can safely do your thing! -jm
         function onDeviceReady()
         {
-            document.getElementById("welcomeMsg").innerHTML += "PhoneGap is ready!";
+            document.getElementById("welcomeMsg").innerHTML += "PhoneGap is ready! version=" + window.device.phonegap;
+            
+            
         }
 
       </script>
