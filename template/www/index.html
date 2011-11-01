@@ -33,7 +33,9 @@
         // once the device ready event fires, you can safely do your thing! -jm
         function onDeviceReady()
         {
-            document.getElementById("welcomeMsg").innerHTML += "PhoneGap is ready!";
+            document.getElementById("welcomeMsg").innerHTML += "PhoneGap is ready! version=" + window.device.phonegap;
+            
+            
         }
 
       </script>
