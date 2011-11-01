@@ -129,9 +129,7 @@
     <Content Include="Images\appbar.save.rest.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="js\phonegap-1.1.0.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="js\phonegap-1.2.0.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="js\phonegap.log">
