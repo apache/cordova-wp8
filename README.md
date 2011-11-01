@@ -19,6 +19,8 @@ Getting Started (Hey, not too rough)
 -- If you do not see it, you may have to select the top level 'Visual C#' to see it
 - Build and Run it!
 
+-- Also, if you prefer, you may add the project instead to the "Silverlight for Windows Phone" subfolder of "Visual C#".  This is up to you, and only affects where the GapAppStarter template is shown when creating a new project.
+
 Note!!!
 ---
 
