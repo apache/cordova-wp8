@@ -66,9 +66,44 @@ namespace WP7GapClassLib
             }
         }
 
+        public WebBrowser Browser
+        {
+            get
+            {
+                return GapBrowser;
+            }
+        }
+
+        /*
+         * Setting StartPageUri only has an effect if called before the view is loaded.
+         **/
+        protected Uri _startPageUri = null;
+        public Uri StartPageUri
+        {
+            get
+            {
+                if (_startPageUri == null)
+                {
+                    // default
+                    return new Uri("www/index.html", UriKind.Relative);                    
+                }
+                else
+                {
+                    return _startPageUri;
+                }
+            }
+            set
+            {
+                if (!this.IsBrowserInitialized)
+                {
+                    _startPageUri = value;
+                }
+            }
+        }
+
         public PGView()
         {
-
+            
             InitializeComponent();
 
             if (DesignerProperties.IsInDesignTool)
@@ -201,8 +236,6 @@ namespace WP7GapClassLib
                                  };
                     StreamResourceInfo fileResourceStreamInfo;
 
-
-
                     using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
 
@@ -228,7 +261,6 @@ namespace WP7GapClassLib
                                             writer.Write(data);
                                         }
                                     }
-
                                 }
                             }
                             else
@@ -239,14 +271,8 @@ namespace WP7GapClassLib
                     }
                 }
 
-                // todo: this should be a start page param passed in via a getter/setter
-                // aka StartPage
-
-                Uri indexUri = new Uri("www/index.html", UriKind.Relative);
-                this.GapBrowser.Navigate(indexUri);
-
-                this.IsBrowserInitialized = true;
-
+                GapBrowser.Navigate(StartPageUri);
+                IsBrowserInitialized = true;
                 AttachHardwareButtonHandlers();
 
             }
