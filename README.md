@@ -26,7 +26,7 @@ Note!!!
 
 When you add or remove files/folders in the www folder you will need to do the following
 
-- ensure the new item is included in the project ( Content )
+- ensure the new item is included in the project ( Content ) This includes ALL images/css/html/js/* and anything that you want available at runtime.
 -- Do not modify the GapSourceDictionary.xml file which is included in the project, it is auto-generated for you when you build.
 
 
