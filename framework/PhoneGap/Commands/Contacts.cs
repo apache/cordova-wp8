@@ -181,7 +181,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
         // refer here for contact properties we can access: http://msdn.microsoft.com/en-us/library/microsoft.phone.tasks.savecontacttask_members%28v=VS.92%29.aspx
         public void save(string jsonContact)
         {
-            Debug.WriteLine("Saving Contact :: " + jsonContact);
 
             JSONContact contact = JSON.JsonHelper.Deserialize<JSONContact>(jsonContact);
 
@@ -430,11 +429,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
             List<string> contactList = new List<string>();
 
-            foreach(Contact cont in foundContacts)
-            {
-                Debug.WriteLine(cont.ToString() + " : " + cont.DisplayName + " : " + cont.GetHashCode().ToString());
-            }
-
 
             IEnumerable<Contact> distinctContacts = foundContacts.Distinct();
             
@@ -512,8 +506,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
                                                FormatJSONWebsites(con));
 
             jsonContact = "{" + jsonContact + "}";
-
-            //Debug.WriteLine("jsonContact = " + jsonContact);
 
             return jsonContact;
         }

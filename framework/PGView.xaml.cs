@@ -113,7 +113,6 @@ namespace WP7GapClassLib
 
 
             StartupMode mode = PhoneApplicationService.Current.StartupMode;
-            Debug.WriteLine("StartupMode mode =" + mode.ToString());
 
             if (mode == StartupMode.Launch)
             {
@@ -317,7 +316,7 @@ namespace WP7GapClassLib
 
         void GapBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            Debug.WriteLine("GapBrowser_LoadCompleted");
+
         }
 
 
@@ -343,8 +342,6 @@ namespace WP7GapClassLib
         {
             string commandStr = e.Value;
 
-            Debug.WriteLine("Command::" + commandStr);
-
             // DOMStorage/Local OR DOMStorage/Session
             if (commandStr.IndexOf("DOMStorage") == 0)
             {
@@ -363,7 +360,6 @@ namespace WP7GapClassLib
             {
                 // ERROR
                 Debug.WriteLine("ScriptNotify :: " + commandStr);
-                return;
             }
             else if (commandCallParams.Service == "CoreEvents")
             {
@@ -374,15 +370,16 @@ namespace WP7GapClassLib
                         this.OverrideBackButton = (args != null && args.Length > 0 && args[0] == "true");
                         break;
                 }
-                return;
             }
-
-            this.nativeExecution.ProcessCommand(commandCallParams);
+            else
+            {
+                this.nativeExecution.ProcessCommand(commandCallParams);
+            }
         }
 
         private void GapBrowser_Unloaded(object sender, RoutedEventArgs e)
         {
-            //throw new NotImplementedException();
+
         }
 
         private void GapBrowser_NavigationFailed(object sender, System.Windows.Navigation.NavigationFailedEventArgs e)
@@ -392,8 +389,7 @@ namespace WP7GapClassLib
 
         private void GapBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            Debug.WriteLine("GapBrowser_Navigated");
-            
+             
         }
 
        
