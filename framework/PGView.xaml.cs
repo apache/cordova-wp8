@@ -49,6 +49,8 @@ namespace WP7GapClassLib
         private bool IsBrowserInitialized = false;
         private bool OverrideBackButton = false;
 
+        private static string AppRoot = "app\\";
+
 
         /// <summary>
         /// Handles native api calls
@@ -85,7 +87,7 @@ namespace WP7GapClassLib
                 if (_startPageUri == null)
                 {
                     // default
-                    return new Uri("www/index.html", UriKind.Relative);                    
+                    return new Uri( AppRoot + "www/index.html", UriKind.Relative);                    
                 }
                 else
                 {
@@ -205,10 +207,12 @@ namespace WP7GapClassLib
                     }
 
                     Debug.WriteLine("Updating IsolatedStorage for APP:DeviceID :: " + deviceUUID);
+
                     // always overwrite user-iso-store if we are in debug mode.
-#if DEBUG
-                    appStorage.Remove();
-#endif 
+                    //if (appStorage.DirectoryExists("app"))
+                    //{
+                    //    appStorage.DeleteDirectory("app");
+                    //}
 
                     IsolatedStorageFileStream file = new IsolatedStorageFileStream("DeviceID.txt", FileMode.Create, FileAccess.Write, appStorage);
                     using (StreamWriter writeFile = new StreamWriter(file))
@@ -231,7 +235,7 @@ namespace WP7GapClassLib
                     var files = from results in document.Descendants("FilePath")
                                  select new
                                  {
-                                     path = (string)results.Attribute("Value")
+                                     path =  (string)results.Attribute("Value")
                                  };
                     StreamResourceInfo fileResourceStreamInfo;
 
@@ -248,13 +252,13 @@ namespace WP7GapClassLib
                                 {
                                     byte[] data = br.ReadBytes((int)fileResourceStreamInfo.Stream.Length);
 
-                                    string strBaseDir = file.path.Substring(0, file.path.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
+                                    string strBaseDir = AppRoot + file.path.Substring(0, file.path.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
                                     appStorage.CreateDirectory(strBaseDir);
 
                                     // This will truncate/overwrite an existing file, or 
-                                    using (IsolatedStorageFileStream outFile = appStorage.OpenFile(file.path, FileMode.Create))
+                                    using (IsolatedStorageFileStream outFile = appStorage.OpenFile(AppRoot + file.path, FileMode.Create))
                                     {
-                                        Debug.WriteLine("Writing data for " + file.path + " and length = " + data.Length);
+                                        Debug.WriteLine("Writing data for " + AppRoot + file.path + " and length = " + data.Length);
                                         using (var writer = new BinaryWriter(outFile))
                                         {
                                             writer.Write(data);
