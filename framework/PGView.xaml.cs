@@ -59,6 +59,8 @@ namespace WP7GapClassLib
 
         protected DOMStorageHelper domStorageHelper;
         protected OrientationHelper orientationHelper;
+        //protected XHRHelper xhrHelper;
+
 
         public System.Windows.Controls.Grid _LayoutRoot
         {
@@ -183,6 +185,7 @@ namespace WP7GapClassLib
             if (this.IsBrowserInitialized) return;
 
             this.domStorageHelper = new DOMStorageHelper(this.GapBrowser);
+            //this.xhrHelper = new XHRHelper(this.GapBrowser);
 
             try
             {
@@ -357,6 +360,11 @@ namespace WP7GapClassLib
                 this.orientationHelper.HandleCommand(commandStr);
                 return;
             }
+            //else if (commandStr.IndexOf("XHR") == 0)
+            //{
+            //    this.xhrHelper.HandleCommand(commandStr);
+            //    return;
+            //}
             
             PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
 
