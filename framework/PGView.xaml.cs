@@ -30,7 +30,6 @@ using System.Xml.Linq;
 using WP7GapClassLib.PhoneGap.Commands;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Xna.Framework;
 using WP7GapClassLib.PhoneGap;
 using System.Threading;
 using Microsoft.Phone.Shell;
@@ -185,7 +184,6 @@ namespace WP7GapClassLib
             if (this.IsBrowserInitialized) return;
 
             this.domStorageHelper = new DOMStorageHelper(this.GapBrowser);
-            //this.xhrHelper = new XHRHelper(this.GapBrowser);
 
             try
             {
@@ -360,12 +358,7 @@ namespace WP7GapClassLib
                 this.orientationHelper.HandleCommand(commandStr);
                 return;
             }
-            //else if (commandStr.IndexOf("XHR") == 0)
-            //{
-            //    this.xhrHelper.HandleCommand(commandStr);
-            //    return;
-            //}
-            
+
             PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
 
             if (commandCallParams == null)
