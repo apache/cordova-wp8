@@ -58,8 +58,6 @@ namespace WP7GapClassLib
 
         protected DOMStorageHelper domStorageHelper;
         protected OrientationHelper orientationHelper;
-        //protected XHRHelper xhrHelper;
-
 
         public System.Windows.Controls.Grid _LayoutRoot
         {
@@ -208,13 +206,6 @@ namespace WP7GapClassLib
                     }
 
                     Debug.WriteLine("Updating IsolatedStorage for APP:DeviceID :: " + deviceUUID);
-
-                    // always overwrite user-iso-store if we are in debug mode.
-                    //if (appStorage.DirectoryExists("app"))
-                    //{
-                    //    appStorage.DeleteDirectory("app");
-                    //}
-
                     IsolatedStorageFileStream file = new IsolatedStorageFileStream("DeviceID.txt", FileMode.Create, FileAccess.Write, appStorage);
                     using (StreamWriter writeFile = new StreamWriter(file))
                     {
@@ -254,7 +245,12 @@ namespace WP7GapClassLib
                                     byte[] data = br.ReadBytes((int)fileResourceStreamInfo.Stream.Length);
 
                                     string strBaseDir = AppRoot + file.path.Substring(0, file.path.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
-                                    appStorage.CreateDirectory(strBaseDir);
+
+                                    if(!appStorage.DirectoryExists(strBaseDir))
+                                    {
+                                        //Debug.WriteLine("Creating Directory :: " + strBaseDir);
+                                        appStorage.CreateDirectory(strBaseDir);
+                                    }
 
                                     // This will truncate/overwrite an existing file, or 
                                     using (IsolatedStorageFileStream outFile = appStorage.OpenFile(AppRoot + file.path, FileMode.Create))
@@ -278,7 +274,6 @@ namespace WP7GapClassLib
                 GapBrowser.Navigate(StartPageUri);
                 IsBrowserInitialized = true;
                 AttachHardwareButtonHandlers();
-
             }
             catch (Exception ex)
             {
@@ -321,14 +316,17 @@ namespace WP7GapClassLib
 
         void GapBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-
+            this.GapBrowser.Opacity = 1;
         }
 
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
             Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
-
+            if (e.Uri.ToString().IndexOf("#") > -1)
+            {
+                e.Cancel = true;
+            }
             // TODO: tell any running plugins to stop doing what they are doing.
             // TODO: check whitelist / blacklist
             // NOTE: Navigation can be cancelled by setting :        e.Cancel = true;
