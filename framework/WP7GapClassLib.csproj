@@ -131,7 +131,7 @@
     <Content Include="Images\appbar.save.rest.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="js\phonegap-1.2.0.js" />
+    <Content Include="js\phonegap-1.3.rc1.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="js\phonegap.log">

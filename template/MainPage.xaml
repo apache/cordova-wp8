@@ -9,7 +9,7 @@
     mc:Ignorable="d" FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     shell:SystemTray.IsVisible="True" d:DesignHeight="768" d:DesignWidth="480" xmlns:my="clr-namespace:WP7GapClassLib;assembly=WP7GapClassLib">
     <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
