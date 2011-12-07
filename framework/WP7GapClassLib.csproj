@@ -45,7 +45,6 @@
   <ItemGroup>
     <Reference Include="Microsoft.Devices.Sensors" />
     <Reference Include="Microsoft.Phone" />
-    <Reference Include="Microsoft.Phone.Controls.Maps, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="System.Device" />
@@ -60,11 +59,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PhoneGap\BrowserMouseHelper.cs" />
     <Compile Include="PhoneGap\Commands\AudioPlayer.cs" />
     <Compile Include="PhoneGap\Commands\Compass.cs" />
     <Compile Include="PhoneGap\Commands\Media.cs" />
-    <Compile Include="PhoneGap\XHRHelper.cs" />
     <Compile Include="PhoneGap\DOMStorageHelper.cs" />
     <Compile Include="PhoneGap\JSON\JsonHelper.cs" />
     <Compile Include="PhoneGap\Commands\MimeTypeMapper.cs" />

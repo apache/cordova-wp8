@@ -47,7 +47,6 @@ namespace WP7GapClassLib
         /// </summary>
         private bool IsBrowserInitialized = false;
         private bool OverrideBackButton = false;
-        //protected WP7GapControlExtensions.BrowserMouseHelper mouseHelper;
 
         private static string AppRoot = "app\\";
 
@@ -183,8 +182,6 @@ namespace WP7GapClassLib
             if (this.IsBrowserInitialized) return;
 
             this.domStorageHelper = new DOMStorageHelper(this.GapBrowser);
-
-            //this.mouseHelper = new WP7GapControlExtensions.BrowserMouseHelper(this.GapBrowser);
 
             try
             {
