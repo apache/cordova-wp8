@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="PhoneGap\Commands\AudioPlayer.cs" />
     <Compile Include="PhoneGap\Commands\Compass.cs" />
+    <Compile Include="PhoneGap\Commands\GeoLocation.cs" />
     <Compile Include="PhoneGap\Commands\Media.cs" />
     <Compile Include="PhoneGap\DOMStorageHelper.cs" />
     <Compile Include="PhoneGap\JSON\JsonHelper.cs" />
@@ -78,10 +79,7 @@
     <Compile Include="PhoneGap\Commands\Device.cs" />
     <Compile Include="PhoneGap\Commands\File.cs" />
     <Compile Include="PhoneGap\Commands\FileTransfer.cs" />
-    <Compile Include="PhoneGap\Commands\Motion.cs" />
     <Compile Include="PhoneGap\Commands\Notification.cs" />
-    <Compile Include="PhoneGap\Commands\Reachability.cs" />
-    <Compile Include="PhoneGap\Commands\Sound.cs" />
     <Compile Include="PhoneGap\NativeExecution.cs" />
     <Compile Include="PhoneGap\PluginResult.cs" />
     <Compile Include="PhoneGap\ScriptCallback.cs" />
