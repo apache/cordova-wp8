@@ -21,13 +21,23 @@ using System.Diagnostics;
 namespace WP7GapClassLib.PhoneGap.Commands
 {
 
-
     public class DebugConsole : BaseCommand
     {
         // warn, error
         public void log(string msg)
         {
-            Debug.WriteLine(msg);
+            Debug.WriteLine("Log:" + msg);
         }
+
+        public void error(string msg)
+        {
+            Debug.WriteLine("Error:" + msg);
+        }
+
+        public void warn(string msg)
+        {
+            Debug.WriteLine("Warn:" + msg);
+        }
+
     }
 }

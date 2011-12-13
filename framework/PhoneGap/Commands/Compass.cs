@@ -20,7 +20,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using DeviceCompass = Microsoft.Devices.Sensors.Compass;
 using System.Windows.Threading;
-using Microsoft.Xna.Framework;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -35,8 +34,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
         bool isDataValid;
 
         bool calibrating = false;
-
-        Accelerometer accelerometer;
 
         public Compass()
         {

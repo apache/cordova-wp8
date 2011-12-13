@@ -304,7 +304,7 @@ var ContactFindOptions = function(filter, multiple) {
 /**
  * Add the contact interface into the browser.
  */
-PhoneGap.addConstructor(function() {
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     if(typeof navigator.contacts === "undefined") {
         navigator.contacts = new Contacts();
     }

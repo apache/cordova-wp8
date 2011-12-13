@@ -1031,7 +1031,7 @@ LocalFileSystem.prototype._castDate = function (pluginResult) {
 /**
  * Add the FileSystem interface into the browser.
  */
-PhoneGap.addConstructor(function () {
+PhoneGap.onPhoneGapInit.subscribeOnce(function () {
     var pgLocalFileSystem = new LocalFileSystem();
 	// Needed for cast methods
     if(typeof window.localFileSystem == "undefined") window.localFileSystem  = pgLocalFileSystem;

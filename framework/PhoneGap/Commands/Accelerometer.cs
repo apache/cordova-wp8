@@ -8,6 +8,7 @@
  * Copyright (c) 2011, Jesse MacFadyen.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -21,7 +22,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
     /// </summary>
     public class Accelerometer : BaseCommand
     {
-        #region AccelerometerOptions class
+#region AccelerometerOptions class
         /// <summary>
         /// Represents Accelerometer options.
         /// </summary>
@@ -62,7 +63,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         #endregion
 
-        #region Status codes
+#region Status codes
 
         public const int Stopped = 0;
         public const int Starting = 1;
@@ -71,7 +72,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         #endregion
 
-        #region Static members
+#region Static members
 
         /// <summary>
         /// Status of listener
@@ -305,3 +306,4 @@ namespace WP7GapClassLib.PhoneGap.Commands
         }
     }
 }
+

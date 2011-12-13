@@ -67,9 +67,9 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
     PhoneGap.exec(successCallback, errorCallback, "Device", "Get");
 };
 
-PhoneGap.addConstructor(function() {
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     if (typeof navigator.device === "undefined") {
         navigator.device = window.device = new Device();
     }
-});
+    });
 }
