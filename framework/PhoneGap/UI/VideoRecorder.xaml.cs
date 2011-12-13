@@ -204,7 +204,7 @@ namespace WP7GapClassLib.PhoneGap.UI
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new VideoResult(TaskResult.None);
             }
@@ -312,7 +312,7 @@ namespace WP7GapClassLib.PhoneGap.UI
                 }
                 this.UpdateUI(VideoState.Recording);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.result = new VideoResult(TaskResult.None);
                 this.NavigateBack();
@@ -334,7 +334,7 @@ namespace WP7GapClassLib.PhoneGap.UI
                     this.StartVideoPreview();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.result = new VideoResult(TaskResult.None);
                 this.NavigateBack();
@@ -356,7 +356,7 @@ namespace WP7GapClassLib.PhoneGap.UI
                     this.UpdateUI(VideoState.Ready);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.result = new VideoResult(TaskResult.None);
                 this.NavigateBack();

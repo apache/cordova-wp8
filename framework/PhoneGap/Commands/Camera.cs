@@ -67,17 +67,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
         private const int PNG = 1;
 
         /// <summary>
-        /// Desired width of the image
-        /// </summary>
-        private int targetWidth;
-
-        /// <summary>
-        /// desired height of the image
-        /// </summary>    
-        private int targetHeight;
-
-
-        /// <summary>
         /// Folder to store captured images
         /// </summary>
         private const string isoFolder = "CapturedImagesCache";
@@ -231,7 +220,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         DispatchCommandResult(new PluginResult(PluginResult.Status.OK, imagePathOrContent));
 
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error retrieving image."));
                     }
@@ -304,7 +293,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 return new Uri(filePath, UriKind.Relative).ToString();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //TODO: log or do something else
                 throw;

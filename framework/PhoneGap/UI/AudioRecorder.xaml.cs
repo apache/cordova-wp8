@@ -267,7 +267,7 @@ namespace WP7GapClassLib.PhoneGap.UI
                 
                 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //TODO: log or do something else
                 throw;

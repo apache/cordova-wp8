@@ -16,7 +16,7 @@ namespace WP7GapClassLib.PhoneGap
     {
         protected WebBrowser gapBrowser;
         protected PhoneApplicationPage page;
-        private PageOrientation CurrentOrientation = PageOrientation.PortraitUp;
+       // private PageOrientation CurrentOrientation = PageOrientation.PortraitUp;
         //private PageOrientation[] SupportedOrientations; // TODO:
 
         public OrientationHelper(WebBrowser gapBrowser, PhoneApplicationPage gapPage)
