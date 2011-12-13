@@ -24,13 +24,13 @@ var Connection = function()
     var me = this;
     this.getInfo(
         function(type) {
-			console.log("getInfo result" + type);
+			//console.log("getInfo result" + type);
             // Need to send events if we are on or offline
             if (type == "none") {
                 // set a timer if still offline at the end of timer send the offline event
                 me._timer = setTimeout(function(){
                     me.type = type;
-					console.log("PhoneGap.fireEvent::offline");
+					//console.log("PhoneGap.fireEvent::offline");
                     PhoneGap.fireEvent(document,'offline');
                     me._timer = null;
                     }, me.timeout);
@@ -41,7 +41,7 @@ var Connection = function()
                     me._timer = null;
                 }
                 me.type = type;
-				console.log("PhoneGap.fireEvent::online " + me.type);
+				//console.log("PhoneGap.fireEvent::online " + me.type);
                 PhoneGap.fireEvent(document,'online');
             }
             
@@ -49,7 +49,7 @@ var Connection = function()
             if (me._firstRun) 
 			{
                 me._firstRun = false;
-				console.log("onPhoneGapConnectionReady");
+				//console.log("onPhoneGapConnectionReady");
                 PhoneGap.onPhoneGapConnectionReady.fire();
             }            
         },

@@ -18,10 +18,10 @@
 
 	    if(!docDomain || docDomain.length == 0)
 	    {
-	        console.log("adding our own Local XHR shim ");
+	        //console.log("adding our own Local XHR shim ");
 			var aliasXHR = win.XMLHttpRequest;
 		
-			win.XMLHttpRequest = function(){console.log("created new ProxyXHR!")};
+			win.XMLHttpRequest = function(){};
 		
 			var UNSENT = 0;
 			var OPENED = 1;
@@ -41,7 +41,7 @@
 					{
 						if(!this.wrappedXHR)
 						{
-							console.log("using wrapped XHR");
+							//console.log("using wrapped XHR");
 							this.wrappedXHR = new aliasXHR();
 							Object.defineProperty( this, "status", { get: function() {
 								return this.wrappedXHR.status;										
@@ -110,7 +110,7 @@
 				},
 				onError:function(err)
 				{
-					console.log("Received Error from FileAPI :: " + err);
+					//console.log("Received Error from FileAPI :: " + err);
 					this.status = 404;
 					this.changeReadyState(DONE);
 				},
