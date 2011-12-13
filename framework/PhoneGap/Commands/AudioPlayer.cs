@@ -164,7 +164,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         FrameworkDispatcher.Update();
                         this.SetState(MediaRunning);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                         this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorStartingRecording));
                 }
@@ -193,7 +193,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                         this.FinalizeXnaGameLoop();
                         this.SetState(MediaStopped);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {                
                         //TODO 
                     }
@@ -462,7 +462,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //TODO: log or do something else
                 throw;

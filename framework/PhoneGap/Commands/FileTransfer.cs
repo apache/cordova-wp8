@@ -183,7 +183,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     uploadOptions = JSON.JsonHelper.Deserialize<UploadOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -194,7 +194,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     serverUri = new Uri(uploadOptions.Server);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR,new FileTransferError(InvalidUrlError)));
                     return;
@@ -204,7 +204,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 webRequest.Method = "POST";
                 webRequest.BeginGetRequestStream(WriteCallback, webRequest);      
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new FileTransferError(ConnectionError)));
             }
@@ -267,7 +267,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 }
                 webRequest.BeginGetResponse(ReadCallback, webRequest);
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -300,7 +300,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() => 
                 { 

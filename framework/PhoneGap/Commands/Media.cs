@@ -62,7 +62,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -108,7 +108,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -152,7 +152,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -195,7 +195,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -247,7 +247,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -289,7 +289,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -328,7 +328,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -372,7 +372,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -413,7 +413,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;

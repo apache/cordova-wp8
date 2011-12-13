@@ -400,11 +400,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     DispatchCommandResult(new PluginResult(PluginResult.Status.OK, isoFile.AvailableFreeSpace));
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (IsolatedStorageException e)
+            catch (IsolatedStorageException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
@@ -441,7 +441,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -461,15 +461,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     DispatchCommandResult(new PluginResult(PluginResult.Status.OK, isExist));
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (IsolatedStorageException e)
+            catch (IsolatedStorageException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
             }
@@ -484,7 +484,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -510,11 +510,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK, base64URL));
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
@@ -528,7 +528,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -553,15 +553,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK, text));
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
@@ -576,7 +576,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -605,15 +605,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK, streamLength));
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
@@ -627,7 +627,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -664,19 +664,19 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK, fileOptions.Data.Length));
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
             }
-            catch (IsolatedStorageException e)
+            catch (IsolatedStorageException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(INVALID_MODIFICATION_ERR)));
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
@@ -694,7 +694,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -721,11 +721,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (IsolatedStorageException e)
+            catch (IsolatedStorageException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
@@ -745,7 +745,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -753,15 +753,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 FileMetadata metaData = new FileMetadata(fileOptions.FullPath);
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK, metaData, "window.localFileSystem._castDate"));
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (IsolatedStorageException e)
+            catch (IsolatedStorageException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
             }
@@ -781,7 +781,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -810,11 +810,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (IsolatedStorageException e)
+            catch (IsolatedStorageException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_READABLE_ERR)));
             }
@@ -828,7 +828,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -855,15 +855,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (IsolatedStorageException e)
+            catch (IsolatedStorageException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(INVALID_MODIFICATION_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
             }
@@ -875,7 +875,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             {
                 fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                 return;
@@ -897,7 +897,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -933,11 +933,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     }
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
             }
@@ -951,7 +951,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -1003,15 +1003,15 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 }
 
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
             }
@@ -1026,7 +1026,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -1050,11 +1050,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
             }
@@ -1135,11 +1135,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     }
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
             }
@@ -1153,7 +1153,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -1241,23 +1241,23 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 }
 
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
             }
-            catch (IsolatedStorageException e)
+            catch (IsolatedStorageException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(INVALID_MODIFICATION_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
             }
@@ -1298,7 +1298,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     fileOptions = JSON.JsonHelper.Deserialize<FileOptions>(options);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                     return;
@@ -1316,7 +1316,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     path = Path.Combine(fileOptions.FullPath, fileOptions.Path);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(ENCODING_ERR)));
                     return;
@@ -1375,19 +1375,19 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     }
                 }
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(SECURITY_ERR)));
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NOT_FOUND_ERR)));
             }
-            catch (DirectoryNotFoundException e)
+            catch (DirectoryNotFoundException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(PATH_EXISTS_ERR)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new ErrorCode(NO_MODIFICATION_ALLOWED_ERR)));
             }

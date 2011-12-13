@@ -29,11 +29,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         double magneticHeading;
         double trueHeading;
-        double headingAccuracy;
+        //double headingAccuracy;
 
-        bool isDataValid;
+        //bool isDataValid;
 
-        bool calibrating = false;
+        //bool calibrating = false;
 
         public Compass()
         {

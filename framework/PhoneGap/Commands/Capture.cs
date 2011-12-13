@@ -374,7 +374,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR));
             }
@@ -472,7 +472,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             files.Clear();
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error capturing image."));
                     }
@@ -539,7 +539,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             files.Clear();
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error capturing audio."));
                     }
@@ -606,7 +606,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             files.Clear();
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error capturing video."));
                     }
@@ -657,7 +657,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     return imageSource;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -693,7 +693,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                 return filePath;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //TODO: log or do something else
                 throw;

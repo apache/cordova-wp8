@@ -137,7 +137,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     this.SetStatus(Starting);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ErrorFailedToStart));
                 return;
@@ -220,11 +220,11 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     DispatchCommandResult(new PluginResult(PluginResult.Status.OK, GetCurrentAccelerationFormatted()));
                 }
             }
-            catch (UnauthorizedAccessException e)
+            catch (UnauthorizedAccessException)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, ErrorFailedToStart));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ErrorFailedToStart));
             }
@@ -275,7 +275,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     this.SetStatus(Starting);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.SetStatus(ErrorFailedToStart);
             }
