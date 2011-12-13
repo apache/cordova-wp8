@@ -138,7 +138,7 @@ Compass.prototype.clearWatch = function(id) {
 
 };
 
-PhoneGap.addConstructor(
+PhoneGap.onPhoneGapInit.subscribeOnce(
 function()
 {
     if (!navigator.compass) 

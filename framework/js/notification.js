@@ -120,7 +120,7 @@ Notification.prototype.beep = function(repeatCount)
     PhoneGap.exec(null, null, "Notification", "beep", count);
 };
 
-PhoneGap.addConstructor(function() {
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     if (typeof navigator.notification === "undefined") {
         navigator.notification = new Notification();
     }
