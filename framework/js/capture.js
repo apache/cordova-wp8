@@ -189,7 +189,7 @@ var CaptureAudioOptions = function(){
 	// The selected audio mode. Must match with one of the elements in supportedAudioModes array.
 	this.mode = null;
 };
-PhoneGap.addConstructor(function () {
+PhoneGap.onPhoneGapInit.subscribeOnce(function () {
 	if (typeof navigator.device === "undefined") {
 		navigator.device = window.device = new Device();
 	}

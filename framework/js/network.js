@@ -78,10 +78,9 @@ Connection.prototype.getInfo = function(successCallback, errorCallback) {
 };
 
 
-PhoneGap.addConstructor(function() {
-    if (typeof navigator.network === "undefined") {
-        navigator.network = new Object();
-    }
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
+
+	navigator.network = navigator.network || {};
     if (typeof navigator.network.connection === "undefined") {
         navigator.network.connection = new Connection();
     }

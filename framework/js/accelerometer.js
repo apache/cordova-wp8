@@ -64,7 +64,6 @@ Accelerometer.prototype.getCurrentAcceleration = function(successCallback, error
 	var onSuccess = function(result)
 	{
 		var accResult = JSON.parse(result);
-		console.log("Accel x = " + accResult.x);
 		self.lastAcceleration = new Acceleration(accResult.x,accResult.y,accResult.z);
 		successCallback(self.lastAcceleration);
 	}
@@ -104,7 +103,6 @@ Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallb
 	
     var onSuccess = function (result) {
         var accResult = JSON.parse(result);
-        console.log("Accel x = " + accResult.x);
         self.lastAcceleration = new Acceleration(accResult.x, accResult.y, accResult.z);
         successCallback(self.lastAcceleration);
     }
@@ -135,12 +133,11 @@ Accelerometer.prototype.clearWatch = function(id) {
     PhoneGap.exec(null, null, "Accelerometer", "stopWatch", { id: id });
 };
 
-PhoneGap.addConstructor(
+PhoneGap.onPhoneGapInit.subscribeOnce(
 function()
 {
     if (!navigator.accelerometer) 
 	{
-		console.log("Installing accelerometer");
         navigator.accelerometer = new Accelerometer();
     }
 });

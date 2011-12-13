@@ -138,7 +138,7 @@ Camera.prototype.getPicture = function(successCallback, errorCallback, options) 
     PhoneGap.exec(successCallback, errorCallback, "Camera", "getPicture", this.options);
 };
 
-PhoneGap.addConstructor(function() {
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     if (typeof navigator.camera === "undefined") {
         navigator.camera = new Camera();
     }
