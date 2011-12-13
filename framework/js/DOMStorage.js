@@ -51,7 +51,6 @@ if(!window.localStorage)
                 key = this.keys[n];
                 if(!this.hasOwnProperty(key))
                 {
-                    console.log("didn't have a prop, now we do ...");
                     Object.defineProperty( this, key, 
                     {
 

@@ -720,7 +720,6 @@ Accelerometer.prototype.getCurrentAcceleration = function(successCallback, error
 	var onSuccess = function(result)
 	{
 		var accResult = JSON.parse(result);
-		console.log("Accel x = " + accResult.x);
 		self.lastAcceleration = new Acceleration(accResult.x,accResult.y,accResult.z);
 		successCallback(self.lastAcceleration);
 	}
@@ -760,7 +759,6 @@ Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallb
 	
     var onSuccess = function (result) {
         var accResult = JSON.parse(result);
-        console.log("Accel x = " + accResult.x);
         self.lastAcceleration = new Acceleration(accResult.x, accResult.y, accResult.z);
         successCallback(self.lastAcceleration);
     }
@@ -791,12 +789,11 @@ Accelerometer.prototype.clearWatch = function(id) {
     PhoneGap.exec(null, null, "Accelerometer", "stopWatch", { id: id });
 };
 
-PhoneGap.addConstructor(
+PhoneGap.onPhoneGapInit.subscribeOnce(
 function()
 {
     if (!navigator.accelerometer) 
 	{
-		console.log("Installing accelerometer");
         navigator.accelerometer = new Accelerometer();
     }
 });
@@ -941,7 +938,7 @@ Camera.prototype.getPicture = function(successCallback, errorCallback, options) 
     PhoneGap.exec(successCallback, errorCallback, "Camera", "getPicture", this.options);
 };
 
-PhoneGap.addConstructor(function() {
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     if (typeof navigator.camera === "undefined") {
         navigator.camera = new Camera();
     }
@@ -1138,7 +1135,7 @@ var CaptureAudioOptions = function(){
 	// The selected audio mode. Must match with one of the elements in supportedAudioModes array.
 	this.mode = null;
 };
-PhoneGap.addConstructor(function () {
+PhoneGap.onPhoneGapInit.subscribeOnce(function () {
 	if (typeof navigator.device === "undefined") {
 		navigator.device = window.device = new Device();
 	}
@@ -1287,7 +1284,7 @@ Compass.prototype.clearWatch = function(id) {
 
 };
 
-PhoneGap.addConstructor(
+PhoneGap.onPhoneGapInit.subscribeOnce(
 function()
 {
     if (!navigator.compass) 
@@ -1602,13 +1599,73 @@ var ContactFindOptions = function(filter, multiple) {
 /**
  * Add the contact interface into the browser.
  */
-PhoneGap.addConstructor(function() {
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     if(typeof navigator.contacts === "undefined") {
         navigator.contacts = new Contacts();
     }
 });
 }
 /*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2010, Nitobi Software Inc.
+ * Copyright (c) 2010-2011, IBM Corporation
+ * Copyright (c) 2011, Microsoft Corporation
+ */
+
+if (!PhoneGap.hasResource("debugConsole")) {
+PhoneGap.addResource("debugConsole");
+
+var debugConsole = 
+{
+	log:function(msg){
+		PhoneGap.exec(null,null,"DebugConsole","log",msg);
+	},
+	warn:function(msg){
+		PhoneGap.exec(null,null,"DebugConsole","warn",msg);
+	},
+	error:function(msg){
+		PhoneGap.exec(null,null,"DebugConsole","error",msg);
+	}	
+};
+
+
+if(typeof window.console == "undefined")
+{
+	window.console = {
+		log:function(str){
+			if(navigator.debugConsole){
+				navigator.debugConsole.log(str);
+			}
+			else
+			{// In case log messages are received before device ready
+				window.external.Notify("Info:" + str);
+			}
+		}
+	};
+}
+
+// output any errors to console log, created above.
+window.onerror=function(e)
+{
+	if(navigator.debugConsole)
+	{
+		navigator.debugConsole.error(JSON.stringify(e));
+	}
+	else
+	{// In case errors occur before device ready
+		window.external.Notify("Error:" + JSON.stringify(e));	
+	}
+};
+
+
+
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
+	navigator.debugConsole = debugConsole;
+});
+
+}/*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
@@ -1677,11 +1734,11 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
     PhoneGap.exec(successCallback, errorCallback, "Device", "Get");
 };
 
-PhoneGap.addConstructor(function() {
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     if (typeof navigator.device === "undefined") {
         navigator.device = window.device = new Device();
     }
-});
+    });
 }
 
 // this is a WP7 Only implementation of the Storage API for use in webpages loaded from the local file system
@@ -1736,7 +1793,6 @@ if(!window.localStorage)
                 key = this.keys[n];
                 if(!this.hasOwnProperty(key))
                 {
-                    console.log("didn't have a prop, now we do ...");
                     Object.defineProperty( this, key, 
                     {
 
@@ -2924,7 +2980,7 @@ LocalFileSystem.prototype._castDate = function (pluginResult) {
 /**
  * Add the FileSystem interface into the browser.
  */
-PhoneGap.addConstructor(function () {
+PhoneGap.onPhoneGapInit.subscribeOnce(function () {
     var pgLocalFileSystem = new LocalFileSystem();
 	// Needed for cast methods
     if(typeof window.localFileSystem == "undefined") window.localFileSystem  = pgLocalFileSystem;
@@ -3281,13 +3337,13 @@ var Connection = function()
     var me = this;
     this.getInfo(
         function(type) {
-			console.log("getInfo result" + type);
+			//console.log("getInfo result" + type);
             // Need to send events if we are on or offline
             if (type == "none") {
                 // set a timer if still offline at the end of timer send the offline event
                 me._timer = setTimeout(function(){
                     me.type = type;
-					console.log("PhoneGap.fireEvent::offline");
+					//console.log("PhoneGap.fireEvent::offline");
                     PhoneGap.fireEvent(document,'offline');
                     me._timer = null;
                     }, me.timeout);
@@ -3298,7 +3354,7 @@ var Connection = function()
                     me._timer = null;
                 }
                 me.type = type;
-				console.log("PhoneGap.fireEvent::online " + me.type);
+				//console.log("PhoneGap.fireEvent::online " + me.type);
                 PhoneGap.fireEvent(document,'online');
             }
             
@@ -3306,7 +3362,7 @@ var Connection = function()
             if (me._firstRun) 
 			{
                 me._firstRun = false;
-				console.log("onPhoneGapConnectionReady");
+				//console.log("onPhoneGapConnectionReady");
                 PhoneGap.onPhoneGapConnectionReady.fire();
             }            
         },
@@ -3335,10 +3391,9 @@ Connection.prototype.getInfo = function(successCallback, errorCallback) {
 };
 
 
-PhoneGap.addConstructor(function() {
-    if (typeof navigator.network === "undefined") {
-        navigator.network = new Object();
-    }
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
+
+	navigator.network = navigator.network || {};
     if (typeof navigator.network.connection === "undefined") {
         navigator.network.connection = new Connection();
     }
@@ -3466,7 +3521,7 @@ Notification.prototype.beep = function(repeatCount)
     PhoneGap.exec(null, null, "Notification", "beep", count);
 };
 
-PhoneGap.addConstructor(function() {
+PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     if (typeof navigator.notification === "undefined") {
         navigator.notification = new Notification();
     }
@@ -3492,10 +3547,10 @@ PhoneGap.addConstructor(function() {
 
 	    if(!docDomain || docDomain.length == 0)
 	    {
-	        console.log("adding our own Local XHR shim ");
+	        //console.log("adding our own Local XHR shim ");
 			var aliasXHR = win.XMLHttpRequest;
 		
-			win.XMLHttpRequest = function(){console.log("created new ProxyXHR!")};
+			win.XMLHttpRequest = function(){};
 		
 			var UNSENT = 0;
 			var OPENED = 1;
@@ -3515,7 +3570,7 @@ PhoneGap.addConstructor(function() {
 					{
 						if(!this.wrappedXHR)
 						{
-							console.log("using wrapped XHR");
+							//console.log("using wrapped XHR");
 							this.wrappedXHR = new aliasXHR();
 							Object.defineProperty( this, "status", { get: function() {
 								return this.wrappedXHR.status;										
@@ -3584,7 +3639,7 @@ PhoneGap.addConstructor(function() {
 				},
 				onError:function(err)
 				{
-					console.log("Received Error from FileAPI :: " + err);
+					//console.log("Received Error from FileAPI :: " + err);
 					this.status = 404;
 					this.changeReadyState(DONE);
 				},
