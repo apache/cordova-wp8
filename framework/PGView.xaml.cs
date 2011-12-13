@@ -392,7 +392,7 @@ namespace WP7GapClassLib
 
         private void GapBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-             
+            Debug.WriteLine("GapBrowser_Navigated :: " + e.Uri.ToString());
         }
 
        
