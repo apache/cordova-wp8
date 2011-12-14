@@ -3,7 +3,7 @@
 */
 
 
-/*
+﻿/*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
@@ -1144,7 +1144,8 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function () {
 		navigator.device.capture = window.device.capture = new Capture();
 	}
 });
-}/*
+}
+/*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
@@ -1665,7 +1666,8 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 	navigator.debugConsole = debugConsole;
 });
 
-}/*
+}
+/*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
@@ -1740,7 +1742,7 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     }
     });
 }
-
+﻿
 // this is a WP7 Only implementation of the Storage API for use in webpages loaded from the local file system
 // inside phonegap application.
 // there is a native implementation which is backing this and providing the persistance of values.
@@ -3527,7 +3529,7 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     }
 });
 }
-/**
+﻿/**
  * @author purplecabbage
  */
                           
