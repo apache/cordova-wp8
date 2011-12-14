@@ -52,7 +52,7 @@ for(var n = 0; n < allSourceFiles.length; n++)
     {
         outFile.WriteLine(srcFile.ReadLine());
     }
-
+    outFile.WriteLine("");
 }
 
 var outFile = fso.CreateTextFile("phonegap-" + versionStr + "-core.js", true);
@@ -63,7 +63,7 @@ for(var n = 0; n < coreSourceFiles.length; n++)
     {
         outFile.WriteLine(srcFile.ReadLine());
     }
-
+    outFile.WriteLine("");
 }
 
 
