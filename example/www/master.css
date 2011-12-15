@@ -1,112 +1,156 @@
+/**
+    PhoneFontSizeSmall=14pt
+    PhoneFontSizeNormal = 15pt
+    PhoneFontSizeMedium=17pt
+    PhoneFontSizeMediumLarge=19pt
+    PhoneFontSizeLarge=24pt
+    PhoneFontSizeExtraLarge=32pt
+    PhoneFontSizeExtraExtraLarge=54pt
+    PhoneFontSizeHuge=140pt
+*/
+
+/** 
+
+main wp7 color and fonts 
+
+*/
   
-  body {
-	background:#222 none repeat scroll 0 0;
-	color:#FFC312;
-	font-family:Helvetica, Verdana, Geneva, sans-serif;
-	font-size:72%;
-	line-height:1.5em;
-	margin:0;
-	border-top:1px solid #393939;
-  }
+body, input, div
+{
+    background: black;
+    color: White;
+    font-family: Segoe WP;
+    font-size: 15pt; /* PhoneFontSizeNormal */
+    margin-left:0.1em;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=#000000,direction=45);
+}
 
-  #info{
-    background:#ffa;
-    border: 1px solid #ffd324;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    clear:both;
-    margin:15px 6px 0;
-    width:295px;
-    padding:4px 0px 2px 10px;
-	color:#666;
-  }
+h1, h2, h3, h4 
+{    
+    display: block;
+    font-family: Segoe WP Light;
+    font-weight: bold;
+    margin: 0 0.1em;
+    min-height: 1.1em;
+    outline: 0 none;
+    overflow: hidden;
+    padding: 0;
+    text-align: left;
+    white-space: nowrap;
+ }
+
+h1
+{
+    font-size: 32pt; /* PhoneFontSizeExtraLarge */ 
+}
+
+h2
+{
+    font-size: 24pt; /* PhoneFontSizeLarge */
+    font-weight: normal;
+}
+
+h3
+{
+    font-size: 17pt; /* PhoneFontSizeMedium */
+}
+
+h4
+{
+    font-size: 15pt; /* PhoneFontSizeNormal */
+    font-weight: normal;
+}
+
+h4 > span
+{
+    color: gray;
+}
+
+/** 
+
+Buttons
+
+*/
+
+a.btn, div.btn
+{
+    background: black;
+    color: white;
+    text-decoration: none;
+    display:block;
+    font-size: 15pt;
+    text-decoration:none;
+    padding:0.7em 0;
+    margin:3px 0px 3px 5px;
+}
+
+a.backBtn, input[type="button"], input[type="submit"]
+{
+    background: black;
+    color: white;
+    border-color: white;
+    border-style: solid;
+    padding: 4px 10px;
+    border-width: 3px; /* PhoneBorderThickness */
+    font-size: 17pt; /* PhoneFontSizeMedium */
+    display: block;
+    text-decoration:none;
+    text-transform:lowercase;
   
-  #info > h4{
-    font-size:.95em;
-    margin:5px 0;
-  }
- 	
-  #stage.theme{
-    padding-top:3px;
-  }
+}
 
-  /* Definition List */
-  #stage.theme > dl{
-  	padding-top:10px;
-  	clear:both;
-  	margin:0;
-  	list-style-type:none;
-  	padding-left:10px;
-  	overflow:auto;
-  }
+input[type="button"]:active, input[type="submit"]:active
+{
+    background: white;
+    color: black;
+}
 
-  #stage.theme > dl > dt{
-  	font-weight:bold;
-  	float:left;
-  	margin-left:5px;
-  }
+/** 
 
-  #stage.theme > dl > dd{
-  	width:45px;
-  	float:left;
-  	color:#a87;
-  	font-weight:bold;
-  }
+Input fields 
 
-  /* Content Styling */
-  #stage.theme > h1, #stage.theme > h2, #stage.theme > p{
-    margin:1em 0 .5em 13px;
-  }
+*/
 
-  #stage.theme > h1{
-    color:#eee;
-    font-size:1.6em;
-    text-align:center;
-    margin:0;
-    margin-top:15px;
-    padding:0;
-  }
+input[type="text"]
+{
+    width: 150px;
+    padding:4px;
+    margin-bottom: 14px;
+    box-shadow: 0px 0px 12px #387bbe;
+    background-color: #8c8e8b;
+    border: 1px solid #B3B3B3;
+    color: #3e3e3e;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
 
-  #stage.theme > h2{
-  	clear:both;
-    margin:0;
-    padding:3px;
-    font-size:1em;
-    text-align:center;
-  }
+input[type="text"]:focus,
+input[type="text"]:active {
+    box-shadow: 0 0 12px #387BBE;
+    background-color: #f0f0f0;
+}
 
-  /* Stage Buttons */
-  #stage.theme .btn{
-  	border: 1px solid #555;
-  	-webkit-border-radius: 5px;
-  	border-radius: 5px;
-  	text-align:center;
-  	display:block;
-  	float:left;
-  	background:#444;
-  	width:150px;
-  	color:#9ab;
-  	font-size:1.1em;
-  	text-decoration:none;
-  	padding:1.2em 0;
-  	margin:3px 0px 3px 5px;
-  }
-  #stage.theme .btn.large{
-  	width:308px;
-  	padding:1.2em 0;
-  }
-  #stage.theme .backBtn{
-   border: 1px solid #555;
-   -webkit-border-radius: 5px;
-   border-radius: 5px;
-   text-align:center;
-   display:block;
-   float:right;
-   background:#666;
-   width:75px;
-   color:#9ab;
-   font-size:1.1em;
-   text-decoration:none;
-   padding:1.2em 0;
-   margin:3px 5px 3px 5px;
-  }
+span.tb-label
+{
+    padding: 4px 10px 8px 4px;
+    font-size: 12pt;
+    color: grey; 
+    display: block;
+}
+
+/** 
+
+application specific styles
+
+*/
+
+#info {
+    border-bottom: 1px solid #666666;
+    border-top: 1px solid #666666;
+}
+
+#info table
+{
+    font-family: Segoe WP Light;
+}
+
+  

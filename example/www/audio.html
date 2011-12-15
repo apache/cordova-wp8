@@ -79,7 +79,7 @@
         // Play audio
         media1.play();
         
-        document.getElementById('play_caption').innerHTML = "<b>Now playing:</b> ";
+        document.getElementById('play_caption').innerHTML = "Now playing: ";
         document.getElementById('file_name').innerHTML = path;
         
         if (media1Timer == null && media1.getCurrentPosition) {
@@ -190,7 +190,7 @@
         console.log("Start recording...");
         mediaRec.startRecord();
 
-        document.getElementById('play_caption').innerHTML = "<b>Recording in:<b>";
+        document.getElementById('play_caption').innerHTML = "Recording in:";
         document.getElementById('file_name').innerHTML = recordSrc;
 
         // Stop recording after 10 sec
@@ -250,10 +250,10 @@
     <h1>Audio</h1>  
     <div id="info">    
         <table width="100%">
-        <tr><td id="play_caption"><b>Now playing:</b></td><td id="file_name">&nbsp;</td></tr>
-        <tr><td><b>Status:</b></td><td id="audio_status">&nbsp;</td></tr>
-        <tr><td><b>Duration:</b></td><td id="audio_duration"></td></tr>
-        <tr><td><b>Position:</b></td><td id="audio_position"></td></tr>
+        <tr><td id="play_caption">Now playing:</td><td id="file_name">&nbsp;</td></tr>
+        <tr><td>Status:</td><td id="audio_status">&nbsp;</td></tr>
+        <tr><td>Duration:</td><td id="audio_duration"></td></tr>
+        <tr><td>Position:</td><td id="audio_position"></td></tr>
         </table>
     </div>
     <h2>Action</h2>
