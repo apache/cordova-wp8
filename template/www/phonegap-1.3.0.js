@@ -3,7 +3,8 @@
 */
 
 
-/*
+
+﻿/*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
@@ -654,6 +655,7 @@ PhoneGap.fireEvent = function(_targ,evtName)
 	target.dispatchEvent( eventObj );
 }
 	
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -798,6 +800,7 @@ function()
     }
 });
 }
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -944,6 +947,7 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     }
 });
 }
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -1144,7 +1148,9 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function () {
 		navigator.device.capture = window.device.capture = new Capture();
 	}
 });
-}/*
+}
+
+/*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
@@ -1293,6 +1299,7 @@ function()
     }
 });
 }
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -1605,6 +1612,7 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     }
 });
 }
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -1665,7 +1673,9 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 	navigator.debugConsole = debugConsole;
 });
 
-}/*
+}
+
+/*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
@@ -1741,6 +1751,7 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     });
 }
 
+﻿
 // this is a WP7 Only implementation of the Storage API for use in webpages loaded from the local file system
 // inside phonegap application.
 // there is a native implementation which is backing this and providing the persistance of values.
@@ -1946,6 +1957,7 @@ if(!window.localStorage)
 
 
 })();};
+
 
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
@@ -2988,6 +3000,7 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function () {
     if(typeof window.resolveLocalFileSystemURI == "undefined") window.resolveLocalFileSystemURI = pgLocalFileSystem.resolveLocalFileSystemURI;
 });
 }
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -3084,6 +3097,7 @@ var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
     this.params = params || null;
 };
 }
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -3311,6 +3325,7 @@ PhoneGapMediaonStatus = function (args) {
 }
 
 }
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -3399,6 +3414,7 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     }
 });
 }
+
 /*
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
@@ -3527,7 +3543,8 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     }
 });
 }
-/**
+
+﻿/**
  * @author purplecabbage
  */
                           
@@ -3662,3 +3679,4 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 })(window,document);
 
           
+
