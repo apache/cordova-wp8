@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
   <head>
     <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
@@ -124,7 +124,7 @@
   
     <h1>Events</h1>
     <div id="info">
-        <b>Results:</b><br>
+        Results:<br>
         <span id="results"></span>
     </div>
 
@@ -136,6 +136,6 @@
     <div class="btn large" onclick="document.addEventListener('searchbutton', interceptSearchbutton, false);">Intercept searchbutton</div>
     <div class="btn large" onclick="document.removeEventListener('searchbutton', interceptSearchbutton, false);">Stop intercept of searchbutton</div>
     <div/>
-    <div onclick="goBack()" class="backBtn">Back</div>
+    <a href="index.html" class="backBtn">Back</a>
   </body>
 </html>      
