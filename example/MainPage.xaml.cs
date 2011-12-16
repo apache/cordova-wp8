@@ -27,25 +27,6 @@ namespace GapExample
 
         private void GapBrowser_Loaded(object sender, RoutedEventArgs e)
         {
-            //var rs = Application.GetResourceStream(new Uri("www", UriKind.Relative));
-
-            ////StreamReader sr = new StreamReader(rs.Stream);
-            ////GapBrowser.NavigateToString(sr.ReadToEnd());
-
-            //Uri indexUri = new Uri("www/index.html", UriKind.Relative);
-
-            //StreamResourceInfo streamInfo = Application.GetResourceStream(indexUri);
-            //if (streamInfo != null)
-            //{
-            //    StreamReader sr = new StreamReader(streamInfo.Stream);
-            //    GapBrowser.NavigateToString(sr.ReadToEnd());
-            //}
-
-            //GapBrowser.Source = baseUri;
-
-            //Uri uri = new Uri("/www/images/ArrowImg.png", UriKind.Relative);  
-            //BitmapImage imgSource = new BitmapImage(uri);
-            //this.myImage.Source = imgSource;
             
         }
     }
