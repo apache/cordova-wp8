@@ -5,6 +5,12 @@ for (i = 0; i < objArgs.length; i++)
    WScript.Echo("Arg :: " + objArgs(i));
 }
 
+var projectFilePath = null;
+if(objArgs && objArgs.length > 0)
+{
+    projectFilePath = objArgs(0);
+}
+
 
 var fso = WScript.CreateObject("Scripting.FileSystemObject");
 
@@ -47,10 +53,9 @@ if(projectFilePath != null)
     if(projXml.load(projectFilePath))
     {
         var nodes = projXml.selectNodes("Project/ItemGroup/Content/Link");
-    
+        WScript.Echo("nodes.length" + nodes.length);
         for(var n = 0; n < nodes.length; n++)
         {
-            WScript.Echo("adding linked file :: " + nodes[n].text);
             outFile.WriteLine('    <FilePath Value="' + nodes[n].text + '"/>');
         }
     }

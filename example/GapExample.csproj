@@ -167,7 +167,7 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>CScript "$(ProjectDir)/ManifestProcessor.js"</PreBuildEvent>
+    <PreBuildEvent>CScript "$(ProjectDir)/ManifestProcessor.js" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
