@@ -10,12 +10,10 @@ obj
 bin
 Bin
 *.csproj.user
-*ReSharper*
-*resharper*
 *.suo
 *.cache
 Thumbs.db
-ARMADILLO_CACHE
+
  
 # Other useful stuff
 *.bak
@@ -37,4 +35,10 @@ httpd.parse.errors
  
 # Exclude ALL DLLs? (
 # *.dll
+
+/example/GapSourceDictionary.xml
+/tests/MobileSpecUnitTests/GapSourceDictionary.xml
+
+
+
  
