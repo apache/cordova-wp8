@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading;
 using Microsoft.Devices.Sensors;
+using System.Globalization;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
@@ -293,9 +294,9 @@ namespace WP7GapClassLib.PhoneGap.Commands
         private string GetCurrentAccelerationFormatted()
         {
             string resultCoordinates = String.Format("\"x\":{0},\"y\":{1},\"z\":{2}",
-                            accelerometer.CurrentValue.Acceleration.X.ToString("0.00000"),
-                            accelerometer.CurrentValue.Acceleration.Y.ToString("0.00000"),
-                            accelerometer.CurrentValue.Acceleration.Z.ToString("0.00000"));
+                            accelerometer.CurrentValue.Acceleration.X.ToString("0.00000",CultureInfo.InvariantCulture),
+                            accelerometer.CurrentValue.Acceleration.Y.ToString("0.00000", CultureInfo.InvariantCulture),
+                            accelerometer.CurrentValue.Acceleration.Z.ToString("0.00000", CultureInfo.InvariantCulture));
             resultCoordinates = "{" + resultCoordinates + "}";
             return resultCoordinates;
         }
