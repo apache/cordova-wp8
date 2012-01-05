@@ -129,7 +129,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
             public void SetDefaultValues(StreamingContext context)
             {
                 PictureSourceType = CAMERA;
-                DestinationType = DATA_URL;
+                DestinationType = FILE_URI;
                 Quality = 80;
                 TargetHeight = -1;
                 TargetWidth = -1;
