@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Phone.Controls;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {    
@@ -229,21 +230,29 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 {
                     if (this.player == null)
                     {
-
-                        if (!Application.Current.Resources.Contains("PhoneGapMediaPlayer"))
+                        // this.player is a MediaElement, it must be added to the visual tree in order to play
+                        PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+                        if (frame != null)
                         {
-                            throw new Exception("PhoneGapMediaPlayer wasn't found in application resources");
+                            PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
+                            if (page != null)
+                            {
+                                Grid grid = page.FindName("LayoutRoot") as Grid;
+                                if (grid != null)
+                                {
+                                    this.player = new MediaElement();
+                                    grid.Children.Add(this.player);
+                                    this.player.Visibility = Visibility.Collapsed;
+                                    this.player.MediaOpened += MediaOpened;
+                                    this.player.MediaEnded += MediaEnded;
+                                    this.player.MediaFailed += MediaFailed;
+                                }
+                            }
                         }
-
-                        this.player = Application.Current.Resources["PhoneGapMediaPlayer"] as MediaElement;
-
-                        this.player.MediaOpened += MediaOpened;
-                        this.player.MediaEnded += MediaEnded;
-                        this.player.MediaFailed += MediaFailed;
 
                     }
                     this.audioFile = filePath;
-                    this.player.AutoPlay = false;
+
                     Uri uri = new Uri(filePath, UriKind.RelativeOrAbsolute);
                     if (uri.IsAbsoluteUri)
                     {
