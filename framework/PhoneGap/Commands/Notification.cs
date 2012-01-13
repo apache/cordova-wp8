@@ -125,8 +125,6 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 var t1 = Application.Current.RootVisual;
                 PhoneApplicationFrame frame =  t1 as PhoneApplicationFrame;
 
-                var temp1 = frame.FindName("LayoutRoot");
-
                 if (frame != null)
                 {
                     PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
