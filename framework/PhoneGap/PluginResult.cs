@@ -67,7 +67,7 @@ namespace WP7GapClassLib.PhoneGap
 		};
 
 		public Status Result {get; private set;}
-		public string Message {get; private set;}
+		public string Message {get; set;}
 		public String Cast { get; private set; }
 
 		public bool KeepCallback { get; set; }        

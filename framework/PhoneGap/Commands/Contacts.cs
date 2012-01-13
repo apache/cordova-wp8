@@ -432,22 +432,25 @@ namespace WP7GapClassLib.PhoneGap.Commands
                 foundContacts = new List<Contact>(e.Results);
             }
 
-            List<string> contactList = new List<string>();
+            //List<string> contactList = new List<string>();
 
+            string strResult = "";
 
             IEnumerable<Contact> distinctContacts = foundContacts.Distinct();
             
             foreach (Contact contact in distinctContacts)
             {
-                contactList.Add(FormatJSONContact(contact, null));
-                //contactList.Add("{" + String.Format(contactFormat, contact.DisplayName) + "}");
+                strResult += FormatJSONContact(contact, null) + ",";
+
+                //contactList.Add(FormatJSONContact(contact, null));
                 if (!searchParams.options.multiple)
                 {
                     break; // just return the first item
                 }
             }
-
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, contactList.ToArray()));
+            PluginResult result = new PluginResult(PluginResult.Status.OK);
+            result.Message = "[" + strResult.TrimEnd(',') + "]";
+            DispatchCommandResult(result);
 
         }
 
@@ -510,9 +513,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
                                                FormatJSONAddresses(con),
                                                FormatJSONWebsites(con));
 
-            jsonContact = "{" + jsonContact + "}";
-
-            return jsonContact;
+            return "{" + jsonContact + "}";
         }
     }
 }
