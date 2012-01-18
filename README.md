@@ -49,7 +49,8 @@ Getting Started ( Ultra-Violence ! aka for contributors )
 
 BUGS?
 -----
-File them at [PhoneGap-WP7 GitHub Issues](https://github.com/phonegap/phonegap-wp7/issues)      
+File them at Apache Incubator 
+https://issues.apache.org/jira/browse/CB
 <br />
 
 
