@@ -70,6 +70,7 @@ Connection.CELL_2G = "2g";
 Connection.CELL_3G = "3g";
 Connection.CELL_4G = "4g";
 Connection.NONE = "none";
+Connection.CELL = "cellular";
 
 /**
  * Get connection info
