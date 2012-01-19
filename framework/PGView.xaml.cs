@@ -327,10 +327,6 @@ namespace WP7GapClassLib
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
             Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
-            if (e.Uri.ToString().IndexOf("#") > -1)
-            {
-                e.Cancel = true;
-            }
             // TODO: tell any running plugins to stop doing what they are doing.
             // TODO: check whitelist / blacklist
             // NOTE: Navigation can be cancelled by setting :        e.Cancel = true;
