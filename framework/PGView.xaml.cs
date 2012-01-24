@@ -52,7 +52,7 @@ namespace WP7GapClassLib
         private bool IsBrowserInitialized = false;
         private bool OverrideBackButton = false;
 
-        private static string AppRoot = "app/";
+        private static string AppRoot = "/app/";
 
 
         /// <summary>
