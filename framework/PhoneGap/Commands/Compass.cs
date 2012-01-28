@@ -104,48 +104,20 @@ namespace WP7GapClassLib.PhoneGap.Commands
         }
         #endregion
 
-        //#region CompassHeading
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        //[DataContract]
-        //public class CompassHeading
-        //{
-        //    /// <summary>
-        //    /// The heading in degrees from 0 - 359.99 at a single moment in time. 
-        //    /// </summary>
-        //    [DataMember(IsRequired = false, Name = "magneticHeading")]
-        //    public double MagneticHeading { get; set; }
-
-        //    /// <summary>
-        //    ///  The heading relative to the geographic North Pole in degrees 0 - 359.99 at a single moment in time. 
-        //    ///  A negative value indicates that the true heading could not be determined.
-        //    /// </summary>
-        //    [DataMember(IsRequired = false, Name = "trueHeading")]
-        //    public double TrueHeading { get; set; }
-
-        //    /// <summary>
-        //    /// The deviation in degrees between the reported heading and the true heading.
-        //    /// </summary>
-        //    [DataMember(IsRequired = false, Name = "headingAccuracy")]
-        //    public double HeadingAccuracy { get; set; }
-        //}
-
-        //#endregion
 
         /// <summary>
         /// Time the value was last changed
         /// </summary>
-        private DateTime lastValueChangedTime;
+        //private DateTime lastValueChangedTime;
 
         /// <summary>
         /// Accelerometer options
         /// </summary>
         private CompassOptions compassOptions;
 
-        bool isDataValid;
+        //bool isDataValid;
 
-        bool calibrating = false;
+        //bool calibrating = false;
 
         public Compass()
         {
@@ -344,16 +316,12 @@ namespace WP7GapClassLib.PhoneGap.Commands
             if (compass.IsDataValid)
             {
                 // trueHeading :: The heading in degrees from 0 - 359.99 at a single moment in time.
-
                 //  magneticHeading:: The heading relative to the geographic North Pole in degrees 0 - 359.99 at a single moment in time. 
                 //  A negative value indicates that the true heading could not be determined.
-                
                 // headingAccuracy :: The deviation in degrees between the reported heading and the true heading.
-
                 //rawMagnetometerReading = e.SensorReading.MagnetometerReading;
 
-                //compass.Stop();
-                Debug.WriteLine("Compass Result :: " + GetHeadingFormatted(e.SensorReading));
+                //Debug.WriteLine("Compass Result :: " + GetHeadingFormatted(e.SensorReading));
 
                 PluginResult result = new PluginResult(PluginResult.Status.OK,GetHeadingFormatted(e.SensorReading));
                 result.KeepCallback = true;

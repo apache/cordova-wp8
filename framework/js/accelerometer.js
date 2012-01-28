@@ -93,7 +93,7 @@ Accelerometer.prototype.getCurrentAcceleration = function(successCallback, error
  */
 Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallback, options) 
 {
-
+	var self = this;
     // successCallback required
     if (typeof successCallback !== "function") {
         console.log("Accelerometer Error: successCallback is not a function");
