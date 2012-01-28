@@ -27,7 +27,11 @@ var Compass = function() {
 	this.isCompassSupported = true; // default assumption
 };
 
-Compass.ERROR_MSG = ["Not running", "Starting", "", "Failed to start", "Not Supported"];
+// Capture error codes
+CompassError = {
+	COMPASS_INTERNAL_ERR:0,
+	COMPASS_NOT_SUPPORTED:20
+}
 
 /**
  * Asynchronously aquires the current heading.
@@ -57,15 +61,15 @@ Compass.prototype.getCurrentHeading = function(successCallback, errorCallback, o
 		var self = this;
 		var onSuccess = function(result)
 		{
-			//var compassResult = JSON.parse(result);
-			console.log("compassResult = " + result);
-			self.lastHeading = result;
+			var compassResult = JSON.parse(result);
+			//console.log("compassResult = " + result);
+			self.lastHeading = compassResult;
 			successCallback(self.lastHeading);
 		}
 		
 		var onError = function(err)
 		{
-			if(err == 4)
+			if(err == CompassError.COMPASS_NOT_SUPPORTED)
 			{
 				self.isCompassSupported = false;	
 			}
@@ -79,9 +83,9 @@ Compass.prototype.getCurrentHeading = function(successCallback, errorCallback, o
 	{
 		var funk = function()
 		{
-			errorCallback(4);
+			errorCallback(CompassError.COMPASS_NOT_SUPPORTED);
 		};
-		window.setTimeout(funk,0);
+		window.setTimeout(funk,0); // async
 	}
 };
 
@@ -96,7 +100,8 @@ Compass.prototype.getCurrentHeading = function(successCallback, errorCallback, o
 Compass.prototype.watchHeading= function(successCallback, errorCallback, options) {
 
     // Default interval (100 msec)
-    var frequency = (options !== undefined) ? options.frequency : 100;
+    
+	var self = this;
 
     // successCallback required
     if (typeof successCallback !== "function") {
@@ -112,22 +117,36 @@ Compass.prototype.watchHeading= function(successCallback, errorCallback, options
 	
 	if(this.isCompassSupported)
 	{	
-		var self = this;
-		var onInterval = function()
-		{
-			self.getCurrentHeading(successCallback,errorCallback,options);
+		var onSuccess = function (result) {
+			var compassResult = JSON.parse(result);
+			self.lastHeading = compassResult;
+			successCallback(self.lastHeading);
 		}
-		return window.setInterval(onInterval,frequency);
+	
+		var onError = function (err) {
+			errorCallback(err);
+		}
+	
+		var id = PhoneGap.createUUID();
+	
+		var params = {id:id,
+					  frequency:((options && options.frequency) ? options.frequency : 100)};
+	
+	
+		PhoneGap.exec(onSuccess, onError, "Compass", "startWatch", params);
+	
+		return id; 
 	}
 	else
 	{
 		var funk = function()
 		{
-			errorCallback(4);
+			errorCallback(CompassError.COMPASS_NOT_SUPPORTED);
 		};
-		window.setTimeout(funk,0);
+		window.setTimeout(funk,0); // async
 		return -1;
 	}
+
 };
 
 
@@ -138,8 +157,7 @@ Compass.prototype.watchHeading= function(successCallback, errorCallback, options
  */
 Compass.prototype.clearWatch = function(id) {
 
-    // Stop javascript timer
-	clearInterval(id);
+	PhoneGap.exec(null, null, "Compass", "stopWatch", { id: id });
 
 };
 

@@ -24,31 +24,154 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using DeviceCompass = Microsoft.Devices.Sensors.Compass;
 using System.Windows.Threading;
+using System.Runtime.Serialization;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Threading;
+using Microsoft.Devices.Sensors;
 
 namespace WP7GapClassLib.PhoneGap.Commands
 {
+
     public class Compass : BaseCommand
     {
-        DeviceCompass compass;
+        #region Static members
 
-        double magneticHeading;
-        double trueHeading;
-        //double headingAccuracy;
+        /// <summary>
+        /// Status of listener
+        /// </summary>
+        private static int currentStatus;
 
-        //bool isDataValid;
+        /// <summary>
+        /// Id for get getCompass method
+        /// </summary>
+        private static string getCompassId = "getCompassId";
 
-        //bool calibrating = false;
+        /// <summary>
+        /// Compass
+        /// </summary>
+        private static DeviceCompass compass = new DeviceCompass();
+
+        /// <summary>
+        /// Listeners for callbacks
+        /// </summary>
+        private static Dictionary<string, Compass> watchers = new Dictionary<string, Compass>();
+
+        #endregion
+
+        #region Status codes
+
+        public const int Stopped = 0;
+        public const int Starting = 1;
+        public const int Running = 2;
+        public const int ErrorFailedToStart = 4;
+        public const int Not_Supported = 20;
+
+        /*
+         *   // Capture error codes
+            CompassError.COMPASS_INTERNAL_ERR = 0;
+            CompassError.COMPASS_NOT_SUPPORTED = 20;
+         * */
+
+        #endregion
+
+        #region CompassOptions class
+        /// <summary>
+        /// Represents Accelerometer options.
+        /// </summary>
+        [DataContract]
+        public class CompassOptions
+        {
+            /// <summary>
+            /// How often to retrieve the Acceleration in milliseconds
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "frequency")]
+            public int Frequency { get; set; }
+
+            /// <summary>
+            /// The change in degrees required to initiate a watchHeadingFilter success callback.
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "filter")]
+            public int Filter { get; set; }
+
+            /// <summary>
+            /// Watcher id
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "id")]
+            public string Id { get; set; }
+
+        }
+        #endregion
+
+        //#region CompassHeading
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //[DataContract]
+        //public class CompassHeading
+        //{
+        //    /// <summary>
+        //    /// The heading in degrees from 0 - 359.99 at a single moment in time. 
+        //    /// </summary>
+        //    [DataMember(IsRequired = false, Name = "magneticHeading")]
+        //    public double MagneticHeading { get; set; }
+
+        //    /// <summary>
+        //    ///  The heading relative to the geographic North Pole in degrees 0 - 359.99 at a single moment in time. 
+        //    ///  A negative value indicates that the true heading could not be determined.
+        //    /// </summary>
+        //    [DataMember(IsRequired = false, Name = "trueHeading")]
+        //    public double TrueHeading { get; set; }
+
+        //    /// <summary>
+        //    /// The deviation in degrees between the reported heading and the true heading.
+        //    /// </summary>
+        //    [DataMember(IsRequired = false, Name = "headingAccuracy")]
+        //    public double HeadingAccuracy { get; set; }
+        //}
+
+        //#endregion
+
+        /// <summary>
+        /// Time the value was last changed
+        /// </summary>
+        private DateTime lastValueChangedTime;
+
+        /// <summary>
+        /// Accelerometer options
+        /// </summary>
+        private CompassOptions compassOptions;
+
+        bool isDataValid;
+
+        bool calibrating = false;
 
         public Compass()
         {
 
         }
 
+        /// <summary>
+        /// Formats current coordinates into JSON format
+        /// </summary>
+        /// <returns>Coordinates in JSON format</returns>
+        private string GetHeadingFormatted(CompassReading reading)
+        {
+            string result = String.Format("\"magneticHeading\":{0},\"headingAccuracy\":{1},\"trueHeading\":{2},\"timestamp\":{3}",
+                            reading.MagneticHeading.ToString("0.0", CultureInfo.InvariantCulture),
+                            reading.HeadingAccuracy.ToString("0.0", CultureInfo.InvariantCulture),
+                            reading.TrueHeading.ToString("0.0", CultureInfo.InvariantCulture),
+                            reading.Timestamp.UtcTicks.ToString());
+            result = "{" + result + "}";
+            return result;
+        }
+
         public void getHeading(string options)
         {
             if (!DeviceCompass.IsSupported)
             {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR,"4"));
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, Not_Supported));
             }
             else
             {
@@ -58,33 +181,194 @@ namespace WP7GapClassLib.PhoneGap.Commands
                     compass = new DeviceCompass();
                     compass.TimeBetweenUpdates = TimeSpan.FromMilliseconds(40);
                     compass.CurrentValueChanged += new EventHandler<Microsoft.Devices.Sensors.SensorReadingEventArgs<Microsoft.Devices.Sensors.CompassReading>>(compass_CurrentValueChanged);
+                    compass.Calibrate += new EventHandler<Microsoft.Devices.Sensors.CalibrationEventArgs>(compass_Calibrate);
                 }
-                //compass.Calibrate += new EventHandler<Microsoft.Devices.Sensors.CalibrationEventArgs>(compass_Calibrate);
+                
                 
                 compass.Start();
             }
+
+            try
+            {
+                if (currentStatus != Running)
+                {
+                    int status = this.start();
+                    if (status == ErrorFailedToStart)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
+                        return;
+                    }
+
+                    long timeout = 2000;
+                    while ((currentStatus == Starting) && (timeout > 0))
+                    {
+                        timeout = timeout - 100;
+                        Thread.Sleep(100);
+                    }
+
+                    if (currentStatus != Running)
+                    {
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
+                        return;
+                    }
+                }
+                lock (compass)
+                {
+                    if (watchers.ContainsKey(getCompassId))
+                    {
+                        compass.CurrentValueChanged -= watchers[getCompassId].compass_CurrentValueChanged;
+                        watchers.Remove(getCompassId);
+                    }
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, GetHeadingFormatted(compass.CurrentValue)));
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, ErrorFailedToStart));
+            }
+            catch (Exception)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ErrorFailedToStart));
+            }
         }
 
-        //void compass_Calibrate(object sender, Microsoft.Devices.Sensors.CalibrationEventArgs e)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        /// <summary>
+        /// Starts listening for compass sensor
+        /// </summary>
+        /// <returns>status of listener</returns>
+        private int start()
+        {
 
-        void compass_CurrentValueChanged(object sender, Microsoft.Devices.Sensors.SensorReadingEventArgs<Microsoft.Devices.Sensors.CompassReading> e)
+            if ((currentStatus == Running) || (currentStatus == Starting))
+            {
+                return currentStatus;
+            }
+            try
+            {
+                lock (compass)
+                {
+                    watchers.Add(getCompassId, this);
+                    compass.CurrentValueChanged += watchers[getCompassId].compass_CurrentValueChanged;
+                    compass.Start();
+                    this.SetStatus(Starting);
+                }
+            }
+            catch (Exception)
+            {
+                this.SetStatus(ErrorFailedToStart);
+            }
+            return currentStatus;
+        }
+
+        public void startWatch(string options)
+        {
+            if (!DeviceCompass.IsSupported)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, Not_Supported));
+            }
+
+            try
+            {
+                compassOptions = JSON.JsonHelper.Deserialize<CompassOptions>(options);
+            }
+            catch (Exception ex)
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(compassOptions.Id))
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+
+            try
+            {
+                lock (compass)
+                {
+                    watchers.Add(compassOptions.Id, this);
+                    compass.CurrentValueChanged += watchers[compassOptions.Id].compass_CurrentValueChanged;
+                    compass.Start();
+                    this.SetStatus(Starting);
+                }
+            }
+            catch (Exception)
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ErrorFailedToStart));
+                return;
+            }
+        }
+
+        public void stopWatch(string options)
+        {
+            try
+            {
+                compassOptions = JSON.JsonHelper.Deserialize<CompassOptions>(options);
+            }
+            catch (Exception ex)
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION, ex.Message));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(compassOptions.Id))
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+
+            if (currentStatus != Stopped)
+            {
+                lock (compass)
+                {
+                    Compass watcher = watchers[compassOptions.Id];
+                    compass.CurrentValueChanged -= watcher.compass_CurrentValueChanged;
+                    watchers.Remove(compassOptions.Id);
+                    watcher.Dispose();
+                }
+            }
+            this.SetStatus(Stopped);
+
+            this.DispatchCommandResult();
+        }
+
+        void compass_Calibrate(object sender, Microsoft.Devices.Sensors.CalibrationEventArgs e)
+        {
+            //throw new NotImplementedException();
+            // TODO: pass calibration error to JS
+        }
+
+        void compass_CurrentValueChanged(object sender, Microsoft.Devices.Sensors.SensorReadingEventArgs<CompassReading> e)
         {
             if (compass.IsDataValid)
             {
-                trueHeading = e.SensorReading.TrueHeading;
-                magneticHeading = e.SensorReading.MagneticHeading;
-                //headingAccuracy = Math.Abs(e.SensorReading.HeadingAccuracy);
+                // trueHeading :: The heading in degrees from 0 - 359.99 at a single moment in time.
+
+                //  magneticHeading:: The heading relative to the geographic North Pole in degrees 0 - 359.99 at a single moment in time. 
+                //  A negative value indicates that the true heading could not be determined.
+                
+                // headingAccuracy :: The deviation in degrees between the reported heading and the true heading.
+
                 //rawMagnetometerReading = e.SensorReading.MagnetometerReading;
 
-                string messageResult = trueHeading.ToString();
+                //compass.Stop();
+                Debug.WriteLine("Compass Result :: " + GetHeadingFormatted(e.SensorReading));
 
-                compass.Stop();
+                PluginResult result = new PluginResult(PluginResult.Status.OK,GetHeadingFormatted(e.SensorReading));
+                result.KeepCallback = true;
 
-                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, messageResult));
+                DispatchCommandResult(result);
             }
+        }
+
+        /// <summary>
+        /// Sets current status
+        /// </summary>
+        /// <param name="status">current status</param>
+        private void SetStatus(int status)
+        {
+            currentStatus = status;
         }
 
     }
