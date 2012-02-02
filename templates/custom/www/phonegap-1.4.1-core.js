@@ -1,6 +1,5 @@
-﻿/* 
+/* 
 	This is a machine generated file, do not edit directly.  -jm
-	This version includes only the minimum API to get started
 */
 
 
@@ -719,14 +718,19 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 
 }
 
-/*
- * PhoneGap is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
- *
- * Copyright (c) 2005-2010, Nitobi Software Inc.
- * Copyright (c) 2010-2011, IBM Corporation
- * Copyright (c) 2011, Microsoft Corporation
- */
+/*  
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+*/
 
 if (!PhoneGap.hasResource("device")) {
 PhoneGap.addResource("device");
@@ -795,7 +799,20 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
     });
 }
 
-﻿
+﻿/*  
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+*/
+
 // this is a WP7 Only implementation of the Storage API for use in webpages loaded from the local file system
 // inside phonegap application.
 // there is a native implementation which is backing this and providing the persistance of values.
@@ -1003,14 +1020,19 @@ if(!window.localStorage)
 })();};
 
 
-/*
- * PhoneGap is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
- *
- * Copyright (c) 2005-2010, Nitobi Software Inc.
- * Copyright (c) 2010-2011, IBM Corporation
- * Copyright (c) 2011, Microsoft Corporation
- */
+/*  
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+*/
 
 if (!PhoneGap.hasResource("file")) {
 PhoneGap.addResource("file");
@@ -2045,14 +2067,19 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function () {
 });
 }
 
-/*
- * PhoneGap is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
- *
- * Copyright (c) 2005-2010, Nitobi Software Inc.
- * Copyright (c) 2010-2011, IBM Corporation
- * Copyright (c) 2011, Microsoft Corporation
- */
+/*  
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+*/
 
 if (!PhoneGap.hasResource("filetransfer")) {
 PhoneGap.addResource("filetransfer");
@@ -2142,14 +2169,19 @@ var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
 };
 }
 
-/*
- * PhoneGap is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
- *
- * Copyright (c) 2005-2010, Nitobi Software Inc.
- * Copyright (c) 2010-2011, IBM Corporation
- * Copyright (c) 2011, Microsoft Corporation
- */
+/*  
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+*/
 
 if (!PhoneGap.hasResource("network")) {
 PhoneGap.addResource("network");
@@ -2209,6 +2241,7 @@ Connection.CELL_2G = "2g";
 Connection.CELL_3G = "3g";
 Connection.CELL_4G = "4g";
 Connection.NONE = "none";
+Connection.CELL = "cellular";
 
 /**
  * Get connection info
@@ -2231,14 +2264,19 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 });
 }
 
-/*
- * PhoneGap is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
- *
- * Copyright (c) 2005-2011, Nitobi Software Inc.
- * Copyright (c) 2010-2011, IBM Corporation
- * Copyright (c) 2011, Microsoft Corporation
- */
+/*  
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+*/
 
 if (!PhoneGap.hasResource("notification")) {
 PhoneGap.addResource("notification");
@@ -2360,11 +2398,26 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 });
 }
 
-﻿/**
+﻿/*  
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+*/
+                          
+/**
  * @author purplecabbage
  */
                           
 (function(win,doc){
+
 
     doc.addEventListener("DOMContentLoaded",function()
     {
@@ -2385,26 +2438,34 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 		
 			win.XMLHttpRequest = function(){};
 		
-			var UNSENT = 0;
-			var OPENED = 1;
-			var HEADERS_RECEIVED = 2;
-			var LOADING = 3;
-			var DONE = 4;
+			win.XMLHttpRequest.UNSENT = 0;
+			win.XMLHttpRequest.OPENED = 1;
+			win.XMLHttpRequest.HEADERS_RECEIVED = 2;
+			win.XMLHttpRequest.LOADING = 3;
+			win.XMLHttpRequest.DONE = 4;
 	          
 			win.XMLHttpRequest.prototype =
 			{
+                UNSENT:0,
+                OPENED:1,
+                HEADERS_RECEIVED:2,
+                LOADING:3,
+                DONE:4,
+
 				isAsync:false,
 				onreadystatechange:null,
-				readyState:UNSENT,
+				readyState:0,
+                _url:"",
 				open:function(reqType,uri,isAsync,user,password)
 				{
-					//console.log("XMLHttpRequest.open " + uri);
+					console.log("XMLHttpRequest.open " + uri);
 					if(uri && uri.indexOf("http") == 0)
 					{
 						if(!this.wrappedXHR)
 						{
-							//console.log("using wrapped XHR");
 							this.wrappedXHR = new aliasXHR();
+                            var self = this;
+
 							Object.defineProperty( this, "status", { get: function() {
 								return this.wrappedXHR.status;										
 							}});
@@ -2414,32 +2475,40 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 							Object.defineProperty( this, "statusText", { get: function() {
 								return this.wrappedXHR.statusText;										
 							}});
-							Object.defineProperty( this, "responseXML", { get: function() {
+
+                            Object.defineProperty( this, "responseXML", { get: function() {
 								return this.wrappedXHR.responseXML;										
-							}});
-							
-							this.getResponseHeader = function() {
-								return this.wrappedXHR.getResponseHeader.apply(this.wrappedXHR,arguments);
+							}});    
+                        
+							this.getResponseHeader = function(header) {
+								return this.wrappedXHR.getResponseHeader(header);
 							};
 							this.getAllResponseHeaders = function() {
-								return this.wrappedXHR.getAllResponseHeaders.apply(this.wrappedXHR,arguments);
+								return this.wrappedXHR.getAllResponseHeaders();
 							};
 							
-							this.wrappedXHR.onreadystatechange = this.onreadystatechange;
+							this.wrappedXHR.onreadystatechange = function()
+                            {
+                                self.changeReadyState(self.wrappedXHR.readyState);
+                            };
 						}
 						return this.wrappedXHR.open(reqType,uri,isAsync,user,password);
 					}
 					else
 					{
+                        // x-wmapp1://app/www/page2.html
                         // need to work some magic on the actual url/filepath
-		                var lastFileSlash = uri.lastIndexOf("\\");
-		                var newUrl =  "app/" + uri.substr(lastFileSlash + 1);
+		                var newUrl =  uri;
+                        if(newUrl.indexOf(":/") > -1)
+                        {
+                            newUrl = newUrl.split(":/")[1];
+                        }
+
 		                if(newUrl.lastIndexOf("/") === newUrl.length - 1)
 		                {
-		                    newUrl += "index.html"; // default page is index.html, when call is to a dir/
+		                    newUrl += "index.html"; // default page is index.html, when call is to a dir/ ( why not ...? )
 		                }
-						navigator.fileMgr.readAsText(newUrl,"UTF-8",this.onResult.bind(this),this.onError.bind(this));
-		                this.changeReadyState(OPENED);
+                        this._url = newUrl;
 					}
 				},
 				statusText:"",
@@ -2451,41 +2520,55 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 						this.onreadystatechange();	
 					}
 				},
-				getResponseHeader:function()
+				getResponseHeader:function(header)
 				{
-					return "";
+                    return this.wrappedXHR ?  this.wrappedXHR.getResponseHeader(header) : "";
 				},
 				getAllResponseHeaders:function()
 				{
-					return "";
+					return this.wrappedXHR ?  this.wrappedXHR.getAllResponseHeaders() : "";
 				},
 				responseText:"",
-				responseXML:function()
-				{
-					return new Document(this.responseText);
-				},
+				responseXML:"",
 				onResult:function(res)
 				{
 					this.status = 200;
 					this.responseText = res;
-					this.changeReadyState(DONE);
+
+                    Object.defineProperty( this, "responseXML", { get: function() {
+                        var parser = new DOMParser();
+						return parser.parseFromString(this.responseText,"text/xml");										
+					}}); 
+					this.changeReadyState(this.DONE);
 				},
 				onError:function(err)
 				{
-					//console.log("Received Error from FileAPI :: " + err);
+					console.log("Wrapped XHR received Error from FileAPI :: " + err);
 					this.status = 404;
-					this.changeReadyState(DONE);
+					this.changeReadyState(this.DONE);
 				},
+
+                abort:function()
+                {
+					if(this.wrappedXHR)
+					{
+						return this.wrappedXHR.abort();
+					}
+                },
 				
 				send:function(data)
 				{
 					if(this.wrappedXHR)
 					{
-						return this.wrappedXHR.send.apply(this.wrappedXHR,arguments);
+						return this.wrappedXHR.send(data);
 					}
+                    else
+                    {
+                        this.changeReadyState(this.OPENED);
+                        navigator.fileMgr.readAsText(this._url,"UTF-8",this.onResult.bind(this),this.onError.bind(this));
+                    }
 				},
-				status:404,
-				responseText:"empty"
+				status:404
 			};		  
 	    } // if doc domain 
 
@@ -2493,6 +2576,4 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 
 		  
 })(window,document);
-
-          
 
