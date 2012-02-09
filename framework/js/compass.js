@@ -12,8 +12,8 @@
 	limitations under the License.
 */
 
-if (!PhoneGap.hasResource("compass")) {
-PhoneGap.addResource("compass");
+if (!Cordova.hasResource("compass")) {
+Cordova.addResource("compass");
 
 /**
  * This class provides access to device Compass data.
@@ -77,7 +77,7 @@ Compass.prototype.getCurrentHeading = function(successCallback, errorCallback, o
 		}
 	
 		// Get heading
-		PhoneGap.exec(onSuccess, onError, "Compass", "getHeading", []);
+		Cordova.exec(onSuccess, onError, "Compass", "getHeading", []);
 	}
 	else
 	{
@@ -127,13 +127,13 @@ Compass.prototype.watchHeading= function(successCallback, errorCallback, options
 			errorCallback(err);
 		}
 	
-		var id = PhoneGap.createUUID();
+		var id = Cordova.createUUID();
 	
 		var params = {id:id,
 					  frequency:((options && options.frequency) ? options.frequency : 100)};
 	
 	
-		PhoneGap.exec(onSuccess, onError, "Compass", "startWatch", params);
+		Cordova.exec(onSuccess, onError, "Compass", "startWatch", params);
 	
 		return id; 
 	}
@@ -157,11 +157,11 @@ Compass.prototype.watchHeading= function(successCallback, errorCallback, options
  */
 Compass.prototype.clearWatch = function(id) {
 
-	PhoneGap.exec(null, null, "Compass", "stopWatch", { id: id });
+	Cordova.exec(null, null, "Compass", "stopWatch", { id: id });
 
 };
 
-PhoneGap.onPhoneGapInit.subscribeOnce(
+Cordova.onCordovaInit.subscribeOnce(
 function()
 {
     if (!navigator.compass) 

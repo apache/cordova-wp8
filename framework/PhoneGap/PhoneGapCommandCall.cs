@@ -24,12 +24,12 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Linq;
 
-namespace WP7GapClassLib.PhoneGap
+namespace WP7GapClassLib.Cordova
 {
     /// <summary>
-    /// Represents PhoneGap native command call: action callback, etc
+    /// Represents Cordova native command call: action callback, etc
     /// </summary>
-    public class PhoneGapCommandCall
+    public class CordovaCommandCall
     {
         public String Service {get; private set;}
         public String Action {get; private set;}
@@ -40,8 +40,8 @@ namespace WP7GapClassLib.PhoneGap
         /// Retrieves command call parameters and creates wrapper for them
         /// </summary>
         /// <param name="commandStr">Command string in the form 'service/action/callback/args'</param>
-        /// <returns>New class instance or null of string does not represent PhoneGap command</returns>
-        public static PhoneGapCommandCall Parse(string commandStr)
+        /// <returns>New class instance or null of string does not represent Cordova command</returns>
+        public static CordovaCommandCall Parse(string commandStr)
         {
             if (string.IsNullOrEmpty(commandStr))
             {
@@ -55,7 +55,7 @@ namespace WP7GapClassLib.PhoneGap
                 return null;
             }
 
-            PhoneGapCommandCall commandCallParameters = new PhoneGapCommandCall();
+            CordovaCommandCall commandCallParameters = new CordovaCommandCall();
 
             commandCallParameters.Service = split[0];
             commandCallParameters.Action = split[1];
@@ -64,7 +64,7 @@ namespace WP7GapClassLib.PhoneGap
 
             // sanity check for illegal names
             // was failing with ::
-            // PhoneGapCommandResult :: 1, Device1, {"status":1,"message":"{\"name\":\"XD.....
+            // CordovaCommandResult :: 1, Device1, {"status":1,"message":"{\"name\":\"XD.....
             if (commandCallParameters.Service.IndexOfAny(new char[] { '@', ':', ',', '!', ' ' }) > -1)
             {
                 return null;
@@ -77,9 +77,9 @@ namespace WP7GapClassLib.PhoneGap
 
         /// <summary>
         /// Private ctr to disable class creation.
-        /// New class instance must be initialized via PhoneGapCommandCall.Parse static method.
+        /// New class instance must be initialized via CordovaCommandCall.Parse static method.
         /// </summary>
-        private PhoneGapCommandCall() { }
+        private CordovaCommandCall() { }
             
 
     }

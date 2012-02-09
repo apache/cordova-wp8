@@ -20,9 +20,9 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
-using VideoResult = WP7GapClassLib.PhoneGap.UI.VideoCaptureTask.VideoResult;
+using VideoResult = WP7GapClassLib.Cordova.UI.VideoCaptureTask.VideoResult;
 
-namespace WP7GapClassLib.PhoneGap.UI
+namespace WP7GapClassLib.Cordova.UI
 {
     public partial class VideoRecorder : PhoneApplicationPage
     {

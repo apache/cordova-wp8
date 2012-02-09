@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7GapClassLib.Cordova.Commands
 {
     /// <summary>
     /// Represents file extension to mime type mapper.

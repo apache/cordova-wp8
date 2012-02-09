@@ -17,9 +17,9 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.Devices;
 using Microsoft.Phone.Controls;
-using WP7GapClassLib.PhoneGap.Commands;
+using WP7GapClassLib.Cordova.Commands;
 
-namespace WP7GapClassLib.PhoneGap
+namespace WP7GapClassLib.Cordova
 {
     /// <summary>
     /// Implements logic to execute native command and return result back.
@@ -59,7 +59,7 @@ namespace WP7GapClassLib.PhoneGap
         /// Executes command and returns result back.
         /// </summary>
         /// <param name="commandCallParams">Command to execute</param>
-        public void ProcessCommand(PhoneGapCommandCall commandCallParams)
+        public void ProcessCommand(CordovaCommandCall commandCallParams)
         {
 
             if (commandCallParams == null)
@@ -160,11 +160,11 @@ namespace WP7GapClassLib.PhoneGap
 
             if (String.IsNullOrEmpty(result.Cast))
             {
-                scriptCallback = new ScriptCallback("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult });
+                scriptCallback = new ScriptCallback("CordovaCommandResult", new string[] { status, callbackId, jsonResult });
             }
             else
             {
-                scriptCallback = new ScriptCallback("PhoneGapCommandResult", new string[] { status, callbackId, jsonResult, result.Cast });
+                scriptCallback = new ScriptCallback("CordovaCommandResult", new string[] { status, callbackId, jsonResult, result.Cast });
             }
 
             this.InvokeScriptCallback(scriptCallback);

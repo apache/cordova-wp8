@@ -12,8 +12,8 @@
 	limitations under the License.
 */
 
-if (!PhoneGap.hasResource("device")) {
-PhoneGap.addResource("device");
+if (!Cordova.hasResource("device")) {
+Cordova.addResource("device");
 
 /**
  * This represents the mobile device, and provides properties for inspecting the model, version, UUID of the
@@ -21,7 +21,7 @@ PhoneGap.addResource("device");
  * @constructor
  */
 var Device = function() {
-    this.available = PhoneGap.available;
+    this.available = Cordova.available;
     this.platform = null;
     this.version = null;
     this.name = null;
@@ -40,11 +40,11 @@ var Device = function() {
             me.uuid = info.uuid;
             me.phonegap = info.phonegap;
 
-            PhoneGap.onPhoneGapInfoReady.fire();
+            Cordova.onCordovaInfoReady.fire();
         },
         function(e) {
             me.available = false;
-            console.log("Error initializing PhoneGap: " + e);
+            console.log("Error initializing Cordova: " + e);
         });
 };
 
@@ -69,10 +69,10 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
     }
 
     // Get info
-    PhoneGap.exec(successCallback, errorCallback, "Device", "Get");
+    Cordova.exec(successCallback, errorCallback, "Device", "Get");
 };
 
-PhoneGap.onPhoneGapInit.subscribeOnce(function() {
+Cordova.onCordovaInit.subscribeOnce(function() {
     if (typeof navigator.device === "undefined") {
         navigator.device = window.device = new Device();
     }

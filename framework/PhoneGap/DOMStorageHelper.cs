@@ -26,7 +26,7 @@ using System.IO.IsolatedStorage;
 using System.Collections.Generic;
 using Microsoft.Phone.Controls;
 using System.Linq;
-using WP7GapClassLib.PhoneGap.JSON;
+using WP7GapClassLib.Cordova.JSON;
 
 /*
  * Translates DOMStorage API between JS and Isolated Storage

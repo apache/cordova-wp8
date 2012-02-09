@@ -27,7 +27,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WP7GapClassLib.PhoneGap.JSON
+namespace WP7GapClassLib.Cordova.JSON
 {
     /// <summary>
     /// Provides JSON serialization/deserialization functionality.

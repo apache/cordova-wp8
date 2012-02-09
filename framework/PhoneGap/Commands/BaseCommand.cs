@@ -16,7 +16,7 @@ using System;
 using System.Reflection;
 using Microsoft.Phone.Shell;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7GapClassLib.Cordova.Commands
 {
     public abstract class BaseCommand : IDisposable
     {

@@ -24,7 +24,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7GapClassLib.Cordova.Commands
 {
 
     public class DebugConsole : BaseCommand

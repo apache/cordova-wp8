@@ -21,11 +21,11 @@ using System.Windows.Media.Imaging;
 using Microsoft.Phone;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.Media;
-using WP7GapClassLib.PhoneGap.UI;
-using AudioResult = WP7GapClassLib.PhoneGap.UI.AudioCaptureTask.AudioResult;
-using VideoResult = WP7GapClassLib.PhoneGap.UI.VideoCaptureTask.VideoResult;
+using WP7GapClassLib.Cordova.UI;
+using AudioResult = WP7GapClassLib.Cordova.UI.AudioCaptureTask.AudioResult;
+using VideoResult = WP7GapClassLib.Cordova.UI.VideoCaptureTask.VideoResult;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7GapClassLib.Cordova.Commands
 {
     /// <summary>
     /// Provides access to the audio, image, and video capture capabilities of the device

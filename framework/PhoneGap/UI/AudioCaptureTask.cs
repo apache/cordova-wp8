@@ -18,7 +18,7 @@ using System.Windows;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 
-namespace WP7GapClassLib.PhoneGap.UI
+namespace WP7GapClassLib.Cordova.UI
 {
     /// <summary>
     /// Allows an application to launch the Audio Recording application. 
@@ -28,7 +28,7 @@ namespace WP7GapClassLib.PhoneGap.UI
     {
         /// <summary>
         /// Represents recorded audio returned from a call to the Show method of
-        /// a WP7GapClassLib.PhoneGap.Controls.AudioCaptureTask object
+        /// a WP7GapClassLib.Cordova.Controls.AudioCaptureTask object
         /// </summary>
         public class AudioResult : TaskEventArgs
         {
@@ -75,7 +75,7 @@ namespace WP7GapClassLib.PhoneGap.UI
                 root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
                 // dummy parameter is used to always open a fresh version
-                root.Navigate(new System.Uri("/WP7GapClassLib;component/PhoneGap/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+                root.Navigate(new System.Uri("/WP7GapClassLib;component/Cordova/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
             });
         }
 

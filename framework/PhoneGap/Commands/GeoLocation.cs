@@ -18,7 +18,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Device.Location;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7GapClassLib.Cordova.Commands
 {
     /// <summary>
     /// This is a command stub, the browser provides the correct implementation.  We use this to trigger the static analyzer that we require this permission 

@@ -18,7 +18,7 @@ using System.Windows;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 
-namespace WP7GapClassLib.PhoneGap.UI
+namespace WP7GapClassLib.Cordova.UI
 {
     /// <summary>
     /// Allows an application to launch the Video Recording application. 
@@ -28,7 +28,7 @@ namespace WP7GapClassLib.PhoneGap.UI
     {
         /// <summary>
         /// Represents recorded video returned from a call to the Show method of
-        /// a WP7GapClassLib.PhoneGap.Controls.VideoCaptureTask object
+        /// a WP7GapClassLib.Cordova.Controls.VideoCaptureTask object
         /// </summary>
         public class VideoResult : TaskEventArgs
         {
@@ -75,7 +75,7 @@ namespace WP7GapClassLib.PhoneGap.UI
                 root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
                 // dummy parameter is used to always open a fresh version
-                root.Navigate(new System.Uri("/WP7GapClassLib;component/PhoneGap/UI/VideoRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+                root.Navigate(new System.Uri("/WP7GapClassLib;component/Cordova/UI/VideoRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
             });
         }
 

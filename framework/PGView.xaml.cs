@@ -31,10 +31,10 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.ComponentModel;
 using System.Xml.Linq;
-using WP7GapClassLib.PhoneGap.Commands;
+using WP7GapClassLib.Cordova.Commands;
 using System.Diagnostics;
 using System.Text;
-using WP7GapClassLib.PhoneGap;
+using WP7GapClassLib.Cordova;
 using System.Threading;
 using Microsoft.Phone.Shell;
 
@@ -149,7 +149,7 @@ namespace WP7GapClassLib
 
             try
             {
-                GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { "pause" });
+                GapBrowser.InvokeScript("CordovaCommandResult", new string[] { "pause" });
             }
             catch (Exception)
             {
@@ -167,7 +167,7 @@ namespace WP7GapClassLib
             Debug.WriteLine("AppActivated");
             try
             {
-                GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { "resume" });
+                GapBrowser.InvokeScript("CordovaCommandResult", new string[] { "resume" });
             }
             catch (Exception)
             {
@@ -308,7 +308,7 @@ namespace WP7GapClassLib
             {
                 try
                 {
-                    GapBrowser.InvokeScript("PhoneGapCommandResult", new string[] { "backbutton" });
+                    GapBrowser.InvokeScript("CordovaCommandResult", new string[] { "backbutton" });
                     e.Cancel = true;
                 }
                 catch (Exception)
@@ -357,7 +357,7 @@ namespace WP7GapClassLib
                 return;
             }
 
-            PhoneGapCommandCall commandCallParams = PhoneGapCommandCall.Parse(commandStr);
+            CordovaCommandCall commandCallParams = CordovaCommandCall.Parse(commandStr);
 
             if (commandCallParams == null)
             {
@@ -369,7 +369,7 @@ namespace WP7GapClassLib
                 switch (commandCallParams.Action.ToLower())
                 {
                     case "overridebackbutton":
-                        string[] args = PhoneGap.JSON.JsonHelper.Deserialize<string[]>(commandCallParams.Args);
+                        string[] args = Cordova.JSON.JsonHelper.Deserialize<string[]>(commandCallParams.Args);
                         this.OverrideBackButton = (args != null && args.Length > 0 && args[0] == "true");
                         break;
                 }

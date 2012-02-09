@@ -23,7 +23,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Phone.Controls;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7GapClassLib.Cordova.Commands
 {    
     /// <summary>
     /// Implements audio record and play back functionality.
@@ -55,7 +55,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         private const int MediaErrorPauseState = 7;
         private const int MediaErrorStopState = 8;
 
-        private const string CallbackFunction = "PhoneGapMediaonStatus";
+        private const string CallbackFunction = "CordovaMediaonStatus";
 
         #endregion
 

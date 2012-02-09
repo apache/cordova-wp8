@@ -24,7 +24,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 
-namespace WP7GapClassLib.PhoneGap
+namespace WP7GapClassLib.Cordova
 {
     public class OrientationHelper
     {
@@ -65,7 +65,7 @@ namespace WP7GapClassLib.PhoneGap
                     i = 90;
                     break;
             }
-            // PhoneGap.fireEvent('orientationchange', window);
+            // Cordova.fireEvent('orientationchange', window);
             string jsCallback = String.Format("window.orientation = {0};", i);
 
             try
@@ -98,7 +98,7 @@ namespace WP7GapClassLib.PhoneGap
                     i = 90;
                     break;
             }
-            // PhoneGap.fireEvent('orientationchange', window);
+            // Cordova.fireEvent('orientationchange', window);
             string jsCallback = String.Format("window.orientation = {0};", i);
 
             try

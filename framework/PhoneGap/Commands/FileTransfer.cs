@@ -20,7 +20,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Windows;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7GapClassLib.Cordova.Commands
 {
     public class FileTransfer : BaseCommand
     {                

@@ -28,7 +28,7 @@ using System.Windows.Resources;
 using System.IO;
 using System.Diagnostics;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7GapClassLib.Cordova.Commands
 {
     public class Device : BaseCommand
     {
@@ -60,7 +60,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
         {
             get
             {
-                // TODO: should be able to dynamically read the PhoneGap version from somewhere...
+                // TODO: should be able to dynamically read the Cordova version from somewhere...
                 return "1.4.1";
             }
         }

@@ -23,11 +23,11 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
-using WP7GapClassLib.PhoneGap.Commands;
+using WP7GapClassLib.Cordova.Commands;
 using System.Reflection;
 using System.Diagnostics;
 
-namespace WP7GapClassLib.PhoneGap
+namespace WP7GapClassLib.Cordova
 {
     /// <summary>
     /// Provides functionality to create phone gap command by name.
@@ -37,9 +37,9 @@ namespace WP7GapClassLib.PhoneGap
         /// <summary>
         /// Represents predefined namespace name for custom plugins
         /// </summary>
-        private static readonly string CustomPluginNamespacePrefix = "PhoneGap.Extension.Commands.";
+        private static readonly string CustomPluginNamespacePrefix = "Cordova.Extension.Commands.";
 
-        private static readonly string BaseCommandNamespacePrefix  = "WP7GapClassLib.PhoneGap.Commands.";
+        private static readonly string BaseCommandNamespacePrefix  = "WP7GapClassLib.Cordova.Commands.";
 
         /// <summary>
         /// Performance optimization allowing more faster create already known commands.
