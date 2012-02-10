@@ -147,29 +147,37 @@ namespace WP7GapClassLib.Cordova.Commands
             }
             else
             {
-                if (compass == null)
-                {
-                    // Instantiate the compass.
-                    compass = new DeviceCompass();
-                    compass.TimeBetweenUpdates = TimeSpan.FromMilliseconds(40);
-                    compass.CurrentValueChanged += new EventHandler<Microsoft.Devices.Sensors.SensorReadingEventArgs<Microsoft.Devices.Sensors.CompassReading>>(compass_CurrentValueChanged);
-                    compass.Calibrate += new EventHandler<Microsoft.Devices.Sensors.CalibrationEventArgs>(compass_Calibrate);
-                }
+                //if (compass == null)
+                //{
+                //    // Instantiate the compass.
+                //    compass = new DeviceCompass();
+                //    compass.TimeBetweenUpdates = TimeSpan.FromMilliseconds(40);
+                //    compass.CurrentValueChanged += new EventHandler<Microsoft.Devices.Sensors.SensorReadingEventArgs<Microsoft.Devices.Sensors.CompassReading>>(compass_CurrentValueChanged);
+                //    compass.Calibrate += new EventHandler<Microsoft.Devices.Sensors.CalibrationEventArgs>(compass_Calibrate);
+                //}
                 
                 
-                compass.Start();
+                //compass.Start();
+
             }
 
             try
             {
                 if (currentStatus != Running)
                 {
-                    int status = this.start();
-                    if (status == ErrorFailedToStart)
+
+                    lock (compass)
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
-                        return;
+                        compass.CurrentValueChanged += compass_SingleHeadingValueChanged;
+                        compass.Start();
+                        this.SetStatus(Starting);
                     }
+
+                    //if (status == ErrorFailedToStart)
+                    //{
+                    //    DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
+                    //    return;
+                    //}
 
                     long timeout = 2000;
                     while ((currentStatus == Starting) && (timeout > 0))
@@ -186,12 +194,13 @@ namespace WP7GapClassLib.Cordova.Commands
                 }
                 lock (compass)
                 {
-                    if (watchers.ContainsKey(getCompassId))
+
+                    compass.CurrentValueChanged -= compass_SingleHeadingValueChanged;
+                    if (watchers.Count < 1)
                     {
-                        compass.CurrentValueChanged -= watchers[getCompassId].compass_CurrentValueChanged;
-                        watchers.Remove(getCompassId);
+                        compass.Stop();
                     }
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, GetHeadingFormatted(compass.CurrentValue)));
+                    //DispatchCommandResult(new PluginResult(PluginResult.Status.OK, GetHeadingFormatted(compass.CurrentValue)));
                 }
             }
             catch (UnauthorizedAccessException)
@@ -204,13 +213,31 @@ namespace WP7GapClassLib.Cordova.Commands
             }
         }
 
+        void compass_SingleHeadingValueChanged(object sender, Microsoft.Devices.Sensors.SensorReadingEventArgs<CompassReading> e)
+        {
+            this.SetStatus(Running);
+            if (compass.IsDataValid)
+            {
+                // trueHeading :: The heading in degrees from 0 - 359.99 at a single moment in time.
+                //  magneticHeading:: The heading relative to the geographic North Pole in degrees 0 - 359.99 at a single moment in time. 
+                //  A negative value indicates that the true heading could not be determined.
+                // headingAccuracy :: The deviation in degrees between the reported heading and the true heading.
+                //rawMagnetometerReading = e.SensorReading.MagnetometerReading;
+
+                //Debug.WriteLine("Compass Result :: " + GetHeadingFormatted(e.SensorReading));
+
+                PluginResult result = new PluginResult(PluginResult.Status.OK, GetHeadingFormatted(e.SensorReading));
+
+                DispatchCommandResult(result);
+            }
+        }
+
         /// <summary>
         /// Starts listening for compass sensor
         /// </summary>
         /// <returns>status of listener</returns>
         private int start()
         {
-
             if ((currentStatus == Running) || (currentStatus == Starting))
             {
                 return currentStatus;
@@ -313,6 +340,7 @@ namespace WP7GapClassLib.Cordova.Commands
 
         void compass_CurrentValueChanged(object sender, Microsoft.Devices.Sensors.SensorReadingEventArgs<CompassReading> e)
         {
+            this.SetStatus(Running);
             if (compass.IsDataValid)
             {
                 // trueHeading :: The heading in degrees from 0 - 359.99 at a single moment in time.

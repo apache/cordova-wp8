@@ -21,24 +21,23 @@ Tests.prototype.CompassTests = function()
 		QUnit.stop(Tests.TEST_TIMEOUT);
 		var win = function(a) 
 		{
-			ok(typeof a == 'Object', "Compass heading object returned in getCurrentHeading success callback should be of type 'Object'.");
+			ok(typeof a == 'object', "Compass heading object returned in getCurrentHeading success callback should be of type 'Object'.");
 			ok(a.magneticHeading != null, "Compass heading object has a magneticHeading property");
-            ok(typeof a.magneticHeading == "Number", "Compass heading.magneticHeading is a Number");
+            ok(typeof a.magneticHeading == "number", "Compass heading.magneticHeading is a Number");
 
             ok(a.trueHeading != null, "Compass heading object has a magneticHeading property");
-            ok(typeof a.trueHeading == "Number", "Compass heading.trueHeading is a Number");
+            ok(typeof a.trueHeading == "number", "Compass heading.trueHeading is a Number");
 
             ok(a.headingAccuracy != null, "Compass heading object has a magneticHeading property");
-            ok(typeof a.headingAccuracy == "Number", "Compass heading.headingAccuracy is a Number");
+            ok(typeof a.headingAccuracy == "number", "Compass heading.headingAccuracy is a Number");
 
             ok(a.timestamp != null, "Compass heading object has a magneticHeading property");
-            ok(typeof a.timestamp == "Number", "Compass heading.timestamp is a Number");
+            ok(typeof a.timestamp == "number", "Compass heading.timestamp is a Number");
 
             start();
 		};
 		var fail = function(a) 
 		{ 
-            console.log("compass failed to return a result :: " + a);
             ok(typeof a == 'object', "Compass heading object returned in getCurrentHeading FAIL callback should be of type 'object'.");
 		    ok(a.code != null, "Compass error result should have a 'code' property");
             ok(typeof a.code == 'string', "Compass error result should have a 'code' property of type string");
