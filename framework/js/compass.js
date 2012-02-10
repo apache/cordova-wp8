@@ -67,9 +67,10 @@ Compass.prototype.getCurrentHeading = function(successCallback, errorCallback, o
 			successCallback(self.lastHeading);
 		}
 		
-		var onError = function(err)
+		var onError = function(res)
 		{
-			if(err == CompassError.COMPASS_NOT_SUPPORTED)
+			var err = JSON.parse(res);
+			if(err.code == CompassError.COMPASS_NOT_SUPPORTED)
 			{
 				self.isCompassSupported = false;	
 			}
@@ -83,7 +84,7 @@ Compass.prototype.getCurrentHeading = function(successCallback, errorCallback, o
 	{
 		var funk = function()
 		{
-			errorCallback(CompassError.COMPASS_NOT_SUPPORTED);
+			errorCallback({code:CompassError.COMPASS_NOT_SUPPORTED});
 		};
 		window.setTimeout(funk,0); // async
 	}
@@ -123,15 +124,19 @@ Compass.prototype.watchHeading= function(successCallback, errorCallback, options
 			successCallback(self.lastHeading);
 		}
 	
-		var onError = function (err) {
+		var onError = function (res) {
+			var err = JSON.parse(res);
+			if(err.code == CompassError.COMPASS_NOT_SUPPORTED)
+			{
+				self.isCompassSupported = false;	
+			}
+	
 			errorCallback(err);
 		}
 	
 		var id = Cordova.createUUID();
 	
-		var params = {id:id,
-					  frequency:((options && options.frequency) ? options.frequency : 100)};
-	
+		var params = {id:id,frequency:((options && options.frequency) ? options.frequency : 100)};
 	
 		Cordova.exec(onSuccess, onError, "Compass", "startWatch", params);
 	
@@ -141,7 +146,7 @@ Compass.prototype.watchHeading= function(successCallback, errorCallback, options
 	{
 		var funk = function()
 		{
-			errorCallback(CompassError.COMPASS_NOT_SUPPORTED);
+			errorCallback({code:CompassError.COMPASS_NOT_SUPPORTED});
 		};
 		window.setTimeout(funk,0); // async
 		return -1;

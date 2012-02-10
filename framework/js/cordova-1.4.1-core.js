@@ -4,19 +4,7 @@
 
 
 
-﻿/*
- * Cordova is available under *either* the terms of the modified BSD license *or* the
- * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
- *
- * Copyright (c) 2005-2010, Nitobi Software Inc.
- * Copyright (c) 2010-2011, IBM Corporation
- * Copyright (c) 2011, Microsoft Corporation
- */
-
-
-
-
-
+﻿
 /**
  * The order of events during page load and Cordova startup is as follows:
  *
@@ -2398,20 +2386,7 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 });
 }
 
-﻿/*  
-	Licensed under the Apache License, Version 2.0 (the "License");
-	you may not use this file except in compliance with the License.
-	You may obtain a copy of the License at
-	
-	http://www.apache.org/licenses/LICENSE-2.0
-	
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
-*/
-                          
+﻿                          
 /**
  * @author purplecabbage
  */
@@ -2437,7 +2412,7 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 			var aliasXHR = win.XMLHttpRequest;
 		
 			win.XMLHttpRequest = function(){};
-		
+			win.XMLHttpRequest.noConflict = aliasXHR;
 			win.XMLHttpRequest.UNSENT = 0;
 			win.XMLHttpRequest.OPENED = 1;
 			win.XMLHttpRequest.HEADERS_RECEIVED = 2;
@@ -2456,15 +2431,47 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 				onreadystatechange:null,
 				readyState:0,
                 _url:"",
+                timeout:0,
+                withCredentials:false,
+                _requestHeaders:null,
 				open:function(reqType,uri,isAsync,user,password)
 				{
-					console.log("XMLHttpRequest.open " + uri);
+					console.log("XMLHttpRequest.open ::: " + uri);
+
 					if(uri && uri.indexOf("http") == 0)
 					{
 						if(!this.wrappedXHR)
 						{
 							this.wrappedXHR = new aliasXHR();
                             var self = this;
+
+                            // timeout
+                            if(this.timeout > 0)
+                            {
+                                this.wrappedXHR.timeout = this.timeout;
+                            }
+                            Object.defineProperty( this, "timeout", { 
+                            set: function(val) {
+								this.wrappedXHR.timeout = val;										
+							},
+                            get:function() {
+                                return this.wrappedXHR.timeout;
+                            }});
+                            
+                            
+
+                            if(this.withCredentials)
+                            {
+                                this.wrappedXHR.withCredentials = this.withCredentials;
+                            }
+                            Object.defineProperty( this, "withCredentials", { 
+                            set: function(val) {
+								this.wrappedXHR.withCredentials = val;										
+							},
+                            get:function() {
+                                return this.wrappedXHR.withCredentials;
+                            }});
+                            
 
 							Object.defineProperty( this, "status", { get: function() {
 								return this.wrappedXHR.status;										
@@ -2520,6 +2527,13 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 						this.onreadystatechange();	
 					}
 				},
+                setRequestHeader:function(header,value)
+                {
+                    if(this.wrappedXHR)
+                    {
+                        this.wrappedXHR.setRequestHeader(header,value);
+                    }
+                },
 				getResponseHeader:function(header)
 				{
                     return this.wrappedXHR ?  this.wrappedXHR.getResponseHeader(header) : "";
@@ -2576,4 +2590,5 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 
 		  
 })(window,document);
+
 

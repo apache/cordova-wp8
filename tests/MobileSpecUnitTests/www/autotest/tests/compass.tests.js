@@ -17,16 +17,31 @@ Tests.prototype.CompassTests = function()
 	
 	test("getCurrentHeading success callback should be called with an heading (string)", 
 	function() {
-		expect(1);
+		expect(9);
 		QUnit.stop(Tests.TEST_TIMEOUT);
 		var win = function(a) 
 		{
-			ok(typeof a == 'string', "Compass heading object returned in getCurrentHeading success callback should be of type 'string'.");
-			start();
+			ok(typeof a == 'Object', "Compass heading object returned in getCurrentHeading success callback should be of type 'Object'.");
+			ok(a.magneticHeading != null, "Compass heading object has a magneticHeading property");
+            ok(typeof a.magneticHeading == "Number", "Compass heading.magneticHeading is a Number");
+
+            ok(a.trueHeading != null, "Compass heading object has a magneticHeading property");
+            ok(typeof a.trueHeading == "Number", "Compass heading.trueHeading is a Number");
+
+            ok(a.headingAccuracy != null, "Compass heading object has a magneticHeading property");
+            ok(typeof a.headingAccuracy == "Number", "Compass heading.headingAccuracy is a Number");
+
+            ok(a.timestamp != null, "Compass heading object has a magneticHeading property");
+            ok(typeof a.timestamp == "Number", "Compass heading.timestamp is a Number");
+
+            start();
 		};
 		var fail = function(a) 
 		{ 
-		    ok(typeof a == 'string', "Compass heading object returned in getCurrentHeading FAIL callback should be of type 'string'.");
+            console.log("compass failed to return a result :: " + a);
+            ok(typeof a == 'object', "Compass heading object returned in getCurrentHeading FAIL callback should be of type 'object'.");
+		    ok(a.code != null, "Compass error result should have a 'code' property");
+            ok(typeof a.code == 'string', "Compass error result should have a 'code' property of type string");
 			start(); 
 		};
 		navigator.compass.getCurrentHeading(win, fail);
