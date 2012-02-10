@@ -3741,7 +3741,7 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 		                {
 		                    newUrl += "index.html"; // default page is index.html, when call is to a dir/ ( why not ...? )
 		                }
-                        this._url = newUrl;
+                        	this._url = newUrl;
 					}
 				},
 				statusText:"",
@@ -3752,6 +3752,13 @@ PhoneGap.onPhoneGapInit.subscribeOnce(function() {
 					{
 						this.onreadystatechange();	
 					}
+				},
+				setRequestHeader:function(header,value)
+				{
+				    if(this.wrappedXHR)
+				    {
+				        this.wrappedXHR.setRequestHeader(header,value);
+				    }
 				},
 				getResponseHeader:function(header)
 				{
