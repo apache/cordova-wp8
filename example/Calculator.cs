@@ -1,9 +1,9 @@
 ﻿
 
 using System.Runtime.Serialization;
-using WP7GapClassLib.Cordova;
-using WP7GapClassLib.Cordova.Commands;
-using WP7GapClassLib.Cordova.JSON;
+using WP7CordovaClassLib.Cordova;
+using WP7CordovaClassLib.Cordova.Commands;
+using WP7CordovaClassLib.Cordova.JSON;
 
 namespace Cordova.Extension.Commands
 {

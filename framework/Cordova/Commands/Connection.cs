@@ -24,7 +24,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Net.NetworkInformation;
 
-namespace WP7GapClassLib.Cordova.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
 
     // http://msdn.microsoft.com/en-us/library/microsoft.phone.net.networkinformation(v=VS.92).aspx

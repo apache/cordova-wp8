@@ -32,7 +32,7 @@ using System.Diagnostics;
 using System.Linq;
 
 
-namespace WP7GapClassLib.Cordova.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
     [DataContract]
     public class SearchOptions

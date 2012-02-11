@@ -28,7 +28,7 @@ using System.Windows.Resources;
 using System.IO;
 using System.Diagnostics;
 
-namespace WP7GapClassLib.Cordova.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
     public class Device : BaseCommand
     {

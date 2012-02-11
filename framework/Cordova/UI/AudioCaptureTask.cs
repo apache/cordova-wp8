@@ -18,7 +18,7 @@ using System.Windows;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 
-namespace WP7GapClassLib.Cordova.UI
+namespace WP7CordovaClassLib.Cordova.UI
 {
     /// <summary>
     /// Allows an application to launch the Audio Recording application. 

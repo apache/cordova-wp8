@@ -20,7 +20,7 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Text;
 
-namespace WP7GapClassLib.Cordova.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
     /// <summary>
     /// Provides access to isolated storage

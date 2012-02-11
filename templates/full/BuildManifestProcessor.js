@@ -16,11 +16,11 @@ var fso = WScript.CreateObject("Scripting.FileSystemObject");
 
 var folder = fso.GetFolder("..\\..\\www");
 
-var outFile = fso.CreateTextFile("..\\..\\CordovaSourceDictionary.xml", true);
+var outFile = fso.CreateTextFile("..\\..\\GapSourceDictionary.xml", true);
 
 outFile.WriteLine('<?xml version="1.0" encoding="utf-8"?>');
 outFile.WriteLine('<!-- This file is auto-generated, do not edit! -jm -->');
-outFile.WriteLine('<CordovaSourceDictionary>');
+outFile.WriteLine('<GapSourceDictionary>');
 
 function enumerateFolder(folder,parentPath)
 {

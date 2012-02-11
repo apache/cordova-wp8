@@ -83,8 +83,8 @@
   <ItemGroup>
     <Content Include="GapLib\WP7GapClassLib.dll" />
     <Content Include="GapSourceDictionary.xml" />
-    <Content Include="www\phonegap-1.4.1.js" />
-    <None Include="ManifestProcessor.js" />
+    <None Include="BuildManifestProcessor.js" />
+    <Content Include="www\cordova-1.4.1.js" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
     </Content>

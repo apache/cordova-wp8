@@ -17,9 +17,9 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.Devices;
 using Microsoft.Phone.Controls;
-using WP7GapClassLib.Cordova.Commands;
+using WP7CordovaClassLib.Cordova.Commands;
 
-namespace WP7GapClassLib.Cordova
+namespace WP7CordovaClassLib.Cordova
 {
     /// <summary>
     /// Implements logic to execute native command and return result back.

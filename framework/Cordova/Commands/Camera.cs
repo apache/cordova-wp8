@@ -29,7 +29,7 @@ using System.IO.IsolatedStorage;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone;
 
-namespace WP7GapClassLib.Cordova.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
     public class Camera : BaseCommand
     {

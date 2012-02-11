@@ -21,9 +21,9 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using AudioResult = WP7GapClassLib.Cordova.UI.AudioCaptureTask.AudioResult;
+using AudioResult = WP7CordovaClassLib.Cordova.UI.AudioCaptureTask.AudioResult;
 
-namespace WP7GapClassLib.Cordova.UI
+namespace WP7CordovaClassLib.Cordova.UI
 {
     /// <summary>
     /// Implements Audio Recording application

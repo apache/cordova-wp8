@@ -26,14 +26,14 @@ using System.IO.IsolatedStorage;
 using System.Collections.Generic;
 using Microsoft.Phone.Controls;
 using System.Linq;
-using WP7GapClassLib.Cordova.JSON;
+using WP7CordovaClassLib.Cordova.JSON;
 
 /*
  * Translates DOMStorage API between JS and Isolated Storage
  * Missing pieces : QUOTA_EXCEEDED_ERR  + StorageEvent  
  * */
 
-namespace WP7GapClassLib
+namespace WP7CordovaClassLib
 {
     public class DOMStorageHelper
     {

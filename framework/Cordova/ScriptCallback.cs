@@ -16,9 +16,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using WP7GapClassLib.Cordova.JSON;
+using WP7CordovaClassLib.Cordova.JSON;
 
-namespace WP7GapClassLib.Cordova
+namespace WP7CordovaClassLib.Cordova
 {
     /// <summary>
     /// Represents client script function to execute
