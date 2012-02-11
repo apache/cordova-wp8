@@ -3753,7 +3753,7 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 		                {
 		                    newUrl += "index.html"; // default page is index.html, when call is to a dir/ ( why not ...? )
 		                }
-                        this._url = newUrl;
+                        	this._url = newUrl;
 					}
 				},
 				statusText:"",
