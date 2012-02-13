@@ -35,9 +35,9 @@ namespace WP7CordovaClassLib.Cordova.Commands
         public void Get(string notused)
         {
 
-            string res = String.Format("\"name\":\"{0}\",\"phonegap\":\"{1}\",\"platform\":\"{2}\",\"uuid\":\"{3}\",\"version\":\"{4}\"",
+            string res = String.Format("\"name\":\"{0}\",\"cordova\":\"{1}\",\"platform\":\"{2}\",\"uuid\":\"{3}\",\"version\":\"{4}\"",
                                         this.name,
-                                        this.phonegap,
+                                        this.cordova,
                                         this.platform,
                                         this.uuid,
                                         this.version);
@@ -56,7 +56,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
             }
         }
 
-        public string phonegap
+        public string cordova
         {
             get
             {

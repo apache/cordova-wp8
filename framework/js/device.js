@@ -26,7 +26,7 @@ var Device = function() {
     this.version = null;
     this.name = null;
     this.uuid = null;
-    this.phonegap = null;
+    this.cordova = null;
 
     var me = this;
     this.getInfo(
@@ -38,7 +38,7 @@ var Device = function() {
             me.version = info.version;
             me.name = info.name;
             me.uuid = info.uuid;
-            me.phonegap = info.phonegap;
+            me.cordova = info.cordova;
 
             Cordova.onCordovaInfoReady.fire();
         },

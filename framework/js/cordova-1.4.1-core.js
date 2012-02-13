@@ -734,7 +734,7 @@ var Device = function() {
     this.version = null;
     this.name = null;
     this.uuid = null;
-    this.phonegap = null;
+    this.cordova = null;
 
     var me = this;
     this.getInfo(
@@ -746,7 +746,7 @@ var Device = function() {
             me.version = info.version;
             me.name = info.name;
             me.uuid = info.uuid;
-            me.phonegap = info.phonegap;
+            me.cordova = info.cordova;
 
             Cordova.onCordovaInfoReady.fire();
         },
@@ -802,7 +802,7 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 */
 
 // this is a WP7 Only implementation of the Storage API for use in webpages loaded from the local file system
-// inside phonegap application.
+// inside cordova application.
 // there is a native implementation which is backing this and providing the persistance of values.
 // webpages loaded from a domain will not need to use this as IE9 has support for WebStorage
 // Javascript Interface is as defined here : http://dev.w3.org/html5/webstorage/#storage-0
