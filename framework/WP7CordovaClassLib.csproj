@@ -59,22 +59,36 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cordova\Commands\AudioPlayer.cs" />
-    <Compile Include="Cordova\Commands\Compass.cs" />
+    <Compile Include="Cordova\Commands\Accelerometer.cs" />
+    <Compile Include="Cordova\Commands\AudioPlayer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cordova\Commands\Camera.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cordova\Commands\Capture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cordova\Commands\Compass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cordova\Commands\Contacts.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Cordova\Commands\GeoLocation.cs" />
-    <Compile Include="Cordova\Commands\Media.cs" />
+    <Compile Include="Cordova\Commands\Media.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cordova\Commands\MimeTypeMapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Cordova\DOMStorageHelper.cs" />
     <Compile Include="Cordova\JSON\JsonHelper.cs" />
-    <Compile Include="Cordova\Commands\MimeTypeMapper.cs" />
     <Compile Include="Cordova\OrientationHelper.cs" />
-    <Compile Include="Cordova\PhoneGapCommandCall.cs" />
+    <Compile Include="Cordova\CordovaCommandCall.cs" />
     <Compile Include="Cordova\CommandFactory.cs" />
-    <Compile Include="Cordova\Commands\Accelerometer.cs" />
     <Compile Include="Cordova\Commands\BaseCommand.cs" />
-    <Compile Include="Cordova\Commands\Camera.cs" />
-    <Compile Include="Cordova\Commands\Capture.cs" />
     <Compile Include="Cordova\Commands\Connection.cs" />
-    <Compile Include="Cordova\Commands\Contacts.cs" />
     <Compile Include="Cordova\Commands\DebugConsole.cs" />
     <Compile Include="Cordova\Commands\Device.cs" />
     <Compile Include="Cordova\Commands\File.cs" />
