@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This file is auto-generated, do not edit! -jm -->
-<GapSourceDictionary>
+<CordovaSourceDictionary>
     <FilePath Value="www\cordova-1.4.1.js"/>
     <FilePath Value="www\index.html"/>
     <FilePath Value="www\master.css"/>
@@ -23,4 +23,4 @@
     <FilePath Value="www\autotest\tests\orientation.tests.js"/>
     <FilePath Value="www\autotest\tests\storage.tests.js"/>
     <FilePath Value="www\autotest\tests\system.tests.js"/>
-</GapSourceDictionary>
+</CordovaSourceDictionary>
