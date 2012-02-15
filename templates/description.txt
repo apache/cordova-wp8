@@ -1,0 +1,1 @@
+Starter project for building a Cordova app for Windows Phone v1.4.1 ( formerly PhoneGap )
