@@ -10,6 +10,7 @@
     <FilePath Value="www\compass.html"/>
     <FilePath Value="www\contacts.html"/>
     <FilePath Value="www\cordova-1.4.1.js"/>
+    <FilePath Value="www\cordova.js"/>
     <FilePath Value="www\events.html"/>
     <FilePath Value="www\file.html"/>
     <FilePath Value="www\index.html"/>
