@@ -5,5 +5,4 @@ Starter project for building a Cordova app for Windows Phone v1.5.0 ( formerly P
 
 CordovaCustom
 
-Starter project for building a Cordova app for Windows Phone v1.5.0 ( formerly PhoneGap )
-Note: You will need to link to the framework manually.
+Starter project for building a Cordova app for Windows Phone v1.5.0 ( formerly PhoneGap ) Note: You will need to link to the framework manually.
