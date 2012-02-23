@@ -61,7 +61,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
             get
             {
                 // TODO: should be able to dynamically read the Cordova version from somewhere...
-                return "1.4.1";
+                return "1.5.0";
             }
         }
 

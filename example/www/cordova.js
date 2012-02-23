@@ -1,2 +1,2 @@
 
-document.write('<script type="text/javascript" charset="utf-8" src="cordova-1.4.1.js"></script>');
+document.write('<script type="text/javascript" charset="utf-8" src="cordova-1.5.0.js"></script>');
