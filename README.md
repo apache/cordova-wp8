@@ -10,7 +10,7 @@ Requires
 - Windows Phone SDK 7.1 [http://create.msdn.com/en-us/home/getting_started]
 
 
-Getting Started (Hey, not too rough)
+Getting Started
 ---
 
 - copy the file Cordova-1.5.0-Starter.zip to the folder : \My Documents\Visual Studio 2010\Templates\ProjectTemplates\
