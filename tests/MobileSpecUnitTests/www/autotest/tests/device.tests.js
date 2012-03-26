@@ -33,4 +33,5 @@ Tests.prototype.DeviceTests = function() {
 		ok(typeof window.device.cordova != 'undefined' && window.device.cordova != null, "window.device.cordova should not be null.")
 		ok((new String(window.device.cordova)).length > 0, "window.device.cordova should contain some kind of string value.")
 	});
+    
 };

@@ -6,49 +6,50 @@
 
     <title>Cordova Tests</title>
 	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
+
       
-      <script type="text/javascript" charset="utf-8" src="cordova-1.5.0.js"></script> 
+      <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
        
       <script type="text/javascript">
 
 
-          function init()
-          {
-          document.addEventListener("deviceready",onDeviceReady,false);
-          document.addEventListener("backbutton",onBackButton,false);
+      function init()
+      {
+      document.addEventListener("deviceready",onDeviceReady,false);
+      document.addEventListener("backbutton",onBackButton,false);
 
-          }
-
-
-          function onBackButton()
-          {
-          console.log("onBackButton");
-          }
-
-          function onDeviceReady(e)
-          {
-          updateDeviceInfo();
-          console.log("deviceready event fired!");
-          }
-
-          function updateDeviceInfo()
-          {
-          document.getElementById("platform").innerHTML = device.platform;
-          document.getElementById("version").innerHTML = device.version;
-          document.getElementById("uuid").innerHTML = device.uuid;
-          document.getElementById("name").innerHTML = device.name;
-          document.getElementById("width").innerHTML = screen.width;
-          document.getElementById("height").innerHTML = screen.height;
-          document.getElementById("colorDepth").innerHTML = screen.colorDepth;
-          document.getElementById("cordovaVersion").innerHTML = device.cordova;
-
-          };
+      }
 
 
+      function onBackButton()
+      {
+      console.log("onBackButton");
+      }
+
+      function onDeviceReady(e)
+      {
+      updateDeviceInfo();
+      console.log("deviceready event fired!");
+      }
+
+      function updateDeviceInfo()
+      {
+      document.getElementById("platform").innerHTML = device.platform;
+      document.getElementById("version").innerHTML = device.version;
+      document.getElementById("uuid").innerHTML = device.uuid;
+      document.getElementById("name").innerHTML = device.name;
+      document.getElementById("width").innerHTML = screen.width;
+      document.getElementById("height").innerHTML = screen.height;
+      document.getElementById("colorDepth").innerHTML = screen.colorDepth;
+      document.getElementById("cordovaVersion").innerHTML = device.cordova;
+
+      };
 
 
 
-      </script>
+
+
+  </script>
 
 
   </head>
