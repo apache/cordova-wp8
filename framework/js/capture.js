@@ -94,6 +94,26 @@ var Capture = function(){
 	this.supportedVideoModes = [];
 };
 
+function _capture(type, successCallback, errorCallback, options)
+{
+    var win = function (pluginResult)
+    {
+        var mediaFiles = [];
+        var i;
+        for (i = 0; i < pluginResult.length; i++) {
+            var mediaFile = new MediaFile();
+            mediaFile.name = pluginResult[i].name;
+            mediaFile.fullPath = pluginResult[i].fullPath;
+            mediaFile.type = pluginResult[i].type;
+            mediaFile.lastModifiedDate = pluginResult[i].lastModifiedDate;
+            mediaFile.size = pluginResult[i].size;
+            mediaFiles.push(mediaFile);
+        }
+        successCallback(mediaFiles);
+    };
+    Cordova.exec(win, errorCallback, "Capture", type, [options]);
+}
+
 /**
  * Launch audio recorder application for recording audio clip(s).
  *
@@ -101,8 +121,10 @@ var Capture = function(){
  * @param {Function} errorCB
  * @param {CaptureAudioOptions} options
  */
-Capture.prototype.captureAudio = function(successCallback, errorCallback, options){
-	Cordova.exec(successCallback, errorCallback, "Capture", "captureAudio", options);
+Capture.prototype.captureAudio = function (successCallback, errorCallback, options)
+{
+    _capture("captureAudio", successCallback, errorCallback, options);
+	//Cordova.exec(successCallback, errorCallback, "Capture", "captureAudio", options);
 };
 
 /**
@@ -112,8 +134,10 @@ Capture.prototype.captureAudio = function(successCallback, errorCallback, option
  * @param {Function} errorCB
  * @param {CaptureImageOptions} options
  */
-Capture.prototype.captureImage = function (successCallback, errorCallback, options) {
-    Cordova.exec(successCallback, errorCallback, "Capture", "captureImage", options);
+Capture.prototype.captureImage = function (successCallback, errorCallback, options)
+{
+    _capture("captureImage", successCallback, errorCallback, options);
+    //Cordova.exec(successCallback, errorCallback, "Capture", "captureImage", options);
 };
 
 /**
@@ -123,29 +147,34 @@ Capture.prototype.captureImage = function (successCallback, errorCallback, optio
  * @param {Function} errorCB
  * @param {CaptureVideoOptions} options
  */
-Capture.prototype.captureVideo = function(successCallback, errorCallback, options){
-	Cordova.exec(successCallback, errorCallback, "Capture", "captureVideo", options);
+Capture.prototype.captureVideo = function (successCallback, errorCallback, options)
+{
+    _capture("captureVideo", successCallback, errorCallback, options);
+    //Cordova.exec(successCallback, errorCallback, "Capture", "captureVideo", options);
 };
+
+
+
 
 /**
 * This function returns and array of MediaFiles.  It is required as we need to convert raw
 * JSON objects into MediaFile objects. 
 */
-Capture.prototype._castMediaFile = function(pluginResult){
-	var mediaFiles = [];
-	var i;
-	for (i = 0; i < pluginResult.message.length; i++) {
-		var mediaFile = new MediaFile();
-		mediaFile.name = pluginResult.message[i].name;
-		mediaFile.fullPath = pluginResult.message[i].fullPath;
-		mediaFile.type = pluginResult.message[i].type;
-		mediaFile.lastModifiedDate = pluginResult.message[i].lastModifiedDate;
-		mediaFile.size = pluginResult.message[i].size;
-		mediaFiles.push(mediaFile);
-	}
-	pluginResult.message = mediaFiles;
-	return pluginResult;
-};
+//Capture.prototype._castMediaFile = function(pluginResult){
+//	var mediaFiles = [];
+//	var i;
+//	for (i = 0; i < pluginResult.message.length; i++) {
+//		var mediaFile = new MediaFile();
+//		mediaFile.name = pluginResult.message[i].name;
+//		mediaFile.fullPath = pluginResult.message[i].fullPath;
+//		mediaFile.type = pluginResult.message[i].type;
+//		mediaFile.lastModifiedDate = pluginResult.message[i].lastModifiedDate;
+//		mediaFile.size = pluginResult.message[i].size;
+//		mediaFiles.push(mediaFile);
+//	}
+//	pluginResult.message = mediaFiles;
+//	return pluginResult;
+//};
 
 /**
  * Encapsulates a set of parameters that the capture device supports.
