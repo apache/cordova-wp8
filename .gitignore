@@ -36,6 +36,8 @@ httpd.parse.errors
 # Exclude ALL DLLs? (
 # *.dll
 
+*.DS_Store
+
 /example/GapSourceDictionary.xml
 /tests/MobileSpecUnitTests/GapSourceDictionary.xml
 
