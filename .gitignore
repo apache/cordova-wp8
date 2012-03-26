@@ -38,8 +38,8 @@ httpd.parse.errors
 
 *.DS_Store
 
-/example/GapSourceDictionary.xml
-/tests/MobileSpecUnitTests/GapSourceDictionary.xml
+
+*/CordovaSourceDictionary.xml
 
 
 
