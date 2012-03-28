@@ -94,6 +94,7 @@ Cordova.exec = function(success, fail, service, action, args)
 
 CordovaCommandResult = function(status,callbackId,args,cast)
 {
+	console.log("CordovaCommandResult::" + status + ", " + callbackId + ", " + args);
 	if(status === "backbutton") {
 
 		Cordova.fireEvent(document,"backbutton");
@@ -110,15 +111,23 @@ CordovaCommandResult = function(status,callbackId,args,cast)
 		return "true";	
 	}
 	
-	var safeStatus = parseInt(status);
-	if(safeStatus === Cordova.callbackStatus.NO_RESULT ||
-	   safeStatus === Cordova.callbackStatus.OK) {
-		Cordova.CallbackSuccess(callbackId,args,cast);
-	}
-	else
+	try
 	{
-		Cordova.CallbackError(callbackId,args,cast);
+		var safeStatus = parseInt(status);
+		if(safeStatus === Cordova.callbackStatus.NO_RESULT ||
+		   safeStatus === Cordova.callbackStatus.OK) {
+			Cordova.CallbackSuccess(callbackId,args,cast);
+		}
+		else
+		{
+			Cordova.CallbackError(callbackId,args,cast);
+		}
 	}
+	catch(ex)
+	{
+		console.log("exception in CordovaCommandResult :: " + ex);
+	}
+
 };
 
 /**
@@ -1598,6 +1607,11 @@ Contacts.prototype.find = function(fields, successCB, errorCB, options) {
     if (successCB === null) {
         throw new TypeError("You must specify a success callback for the find command.");
     }
+	console.log("Contacts.prototype.find :: fields=" + fields);
+	console.log("Contacts.prototype.find :: successCB=" + successCB);
+	console.log("Contacts.prototype.find :: errorCB=" + errorCB);
+	console.log("Contacts.prototype.find :: options=" + options);
+
     if (fields === null || fields === "undefined" || fields.length === "undefined" || fields.length <= 0) {
         if (typeof errorCB === "function") 
 		{
@@ -1612,10 +1626,22 @@ Contacts.prototype.find = function(fields, successCB, errorCB, options) {
 	{
 		var onSuccess = function(res)
 		{
-			setTimeout(function()
-			{
+			console.log("contacts.search :: onSuccess" + res);
+			//setTimeout(function()
+			//{
 				successCB(res);
-			},0);
+			//},0);
+		}
+		var onError = function(err)
+		{
+			console.log("contacts.search :: onError " + err);
+			if(errorCB)
+			{
+				//setTimeout(function()
+				//{
+					errorCB(err);
+				//},0);
+			}
 		}
         Cordova.exec(onSuccess, errorCB, "Contacts", "search", {"fields":fields,"options":options});        
     }
