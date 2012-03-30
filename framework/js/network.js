@@ -26,6 +26,7 @@ var Connection = function()
     this._timer = null;
     this.timeout = 500;
 
+/*
     var me = this;
     this.getInfo(
         function(type) {
@@ -54,13 +55,14 @@ var Connection = function()
             if (me._firstRun) 
 			{
                 me._firstRun = false;
-				//console.log("onCordovaConnectionReady");
+				console.log("onCordovaConnectionReady");
                 Cordova.onCordovaConnectionReady.fire();
             }            
         },
         function(e) {
             console.log("Error initializing Network Connection: " + e);
         });
+*/
 };
 
 Connection.UNKNOWN = "unknown";

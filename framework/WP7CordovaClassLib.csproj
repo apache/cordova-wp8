@@ -88,7 +88,7 @@
     <Compile Include="Cordova\CordovaCommandCall.cs" />
     <Compile Include="Cordova\CommandFactory.cs" />
     <Compile Include="Cordova\Commands\BaseCommand.cs" />
-    <Compile Include="Cordova\Commands\Connection.cs" />
+    <Compile Include="Cordova\Commands\NetworkStatus.cs" />
     <Compile Include="Cordova\Commands\DebugConsole.cs" />
     <Compile Include="Cordova\Commands\Device.cs" />
     <Compile Include="Cordova\Commands\File.cs" />
