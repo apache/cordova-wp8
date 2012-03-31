@@ -322,11 +322,16 @@ namespace WP7CordovaClassLib
         {
             this.CordovaBrowser.Opacity = 1;
 
-            string nativeReady = "try{ cordova.require('cordova/channel').onNativeReady.fire() }catch(e){console.log('error firing nativeReady event' + e);}";
-
-            CordovaBrowser.InvokeScript("execScript",  new string[] { nativeReady });
+            Dispatcher.BeginInvoke(new ThreadStart(nativeReady));
         }
 
+        void nativeReady()
+        {
+            Thread.Sleep(1000);
+
+            string nativeReady = "cordova.require('cordova/channel').onNativeReady.fire();";
+            CordovaBrowser.InvokeScript("execScript", new string[] {nativeReady});
+        }
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
