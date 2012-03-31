@@ -322,16 +322,18 @@ namespace WP7CordovaClassLib
         {
             this.CordovaBrowser.Opacity = 1;
 
-            Dispatcher.BeginInvoke(new ThreadStart(nativeReady));
+            string nativeReady = "(function(){ cordova.require('cordova/channel').onNativeReady.fire()})();";
+
+            try
+            {
+                CordovaBrowser.InvokeScript("execScript", new string[] { nativeReady });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error calling js to fire nativeReady event :: " + ex.Message);
+            }
         }
 
-        void nativeReady()
-        {
-            Thread.Sleep(1000);
-
-            string nativeReady = "cordova.require('cordova/channel').onNativeReady.fire();";
-            CordovaBrowser.InvokeScript("execScript", new string[] {nativeReady});
-        }
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
@@ -339,8 +341,6 @@ namespace WP7CordovaClassLib
             // TODO: tell any running plugins to stop doing what they are doing.
             // TODO: check whitelist / blacklist
             // NOTE: Navigation can be cancelled by setting :        e.Cancel = true;
-
-            
 
 
         }
