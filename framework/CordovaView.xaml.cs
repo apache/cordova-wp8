@@ -358,6 +358,8 @@ namespace WP7CordovaClassLib
         {
             string commandStr = e.Value;
 
+            Debug.WriteLine("ScriptNotify::" + commandStr);
+
             // DOMStorage/Local OR DOMStorage/Session
             if (commandStr.IndexOf("DOMStorage") == 0)
             {
@@ -389,7 +391,7 @@ namespace WP7CordovaClassLib
             }
             else
             {
-                Debug.WriteLine("ProcessCommand :: " + commandStr);
+                //Debug.WriteLine("ProcessCommand :: " + commandStr);
                 this.nativeExecution.ProcessCommand(commandCallParams);
             }
         }

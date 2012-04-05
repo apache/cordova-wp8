@@ -28,10 +28,9 @@ Tests.prototype.DeviceTests = function() {
 			ok(window.device.uuid > 0, "window.device.uuid, as a number, should be greater than 0. (should it, even?)")
 		}
 	});
-	test("should contain a cordova version that is a string", function() {
+	test("should contain a cordova specification that is a string", function() {
 		expect(2);
 		ok(typeof window.device.cordova != 'undefined' && window.device.cordova != null, "window.device.cordova should not be null.")
-		ok((new String(window.device.cordova)).length > 0, "window.device.cordova should contain some kind of string value.")
+		ok((new String(window.device.cordova)).length > 0, "window.device.cordova should contain some kind of description.")
 	});
-    
 };
