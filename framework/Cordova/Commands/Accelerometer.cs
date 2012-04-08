@@ -68,12 +68,14 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
         #endregion
 
-#region Status codes
+#region Status codes and Constants
 
         public const int Stopped = 0;
         public const int Starting = 1;
         public const int Running = 2;
         public const int ErrorFailedToStart = 3;
+
+        public const double gConstant = -9.81;
 
         #endregion
 
@@ -294,9 +296,9 @@ namespace WP7CordovaClassLib.Cordova.Commands
         private string GetCurrentAccelerationFormatted()
         {
             string resultCoordinates = String.Format("\"x\":{0},\"y\":{1},\"z\":{2}",
-                            accelerometer.CurrentValue.Acceleration.X.ToString("0.00000",CultureInfo.InvariantCulture),
-                            accelerometer.CurrentValue.Acceleration.Y.ToString("0.00000", CultureInfo.InvariantCulture),
-                            accelerometer.CurrentValue.Acceleration.Z.ToString("0.00000", CultureInfo.InvariantCulture));
+                            (accelerometer.CurrentValue.Acceleration.X * gConstant).ToString("0.00000",CultureInfo.InvariantCulture),
+                            (accelerometer.CurrentValue.Acceleration.Y * gConstant).ToString("0.00000", CultureInfo.InvariantCulture),
+                            (accelerometer.CurrentValue.Acceleration.Z * gConstant).ToString("0.00000", CultureInfo.InvariantCulture));
             resultCoordinates = "{" + resultCoordinates + "}";
             return resultCoordinates;
         }
