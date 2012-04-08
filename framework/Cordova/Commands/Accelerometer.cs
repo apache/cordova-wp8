@@ -101,6 +101,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
         /// </summary>
         private static Dictionary<string, Accelerometer> watchers = new Dictionary<string, Accelerometer>();
 
+        private static DateTime StartOfEpoch = new DateTime(1970, 1, 1, 0, 0, 0);
+
         #endregion
 
         /// <summary>
@@ -295,10 +297,13 @@ namespace WP7CordovaClassLib.Cordova.Commands
         /// <returns>Coordinates in JSON format</returns>
         private string GetCurrentAccelerationFormatted()
         {
-            string resultCoordinates = String.Format("\"x\":{0},\"y\":{1},\"z\":{2}",
+            // convert to unix timestamp
+            long timestamp = ((accelerometer.CurrentValue.Timestamp.DateTime - StartOfEpoch).Ticks) / 10000;
+            string resultCoordinates = String.Format("\"x\":{0},\"y\":{1},\"z\":{2},\"timestamp\":{3}",
                             (accelerometer.CurrentValue.Acceleration.X * gConstant).ToString("0.00000",CultureInfo.InvariantCulture),
                             (accelerometer.CurrentValue.Acceleration.Y * gConstant).ToString("0.00000", CultureInfo.InvariantCulture),
-                            (accelerometer.CurrentValue.Acceleration.Z * gConstant).ToString("0.00000", CultureInfo.InvariantCulture));
+                            (accelerometer.CurrentValue.Acceleration.Z * gConstant).ToString("0.00000", CultureInfo.InvariantCulture),
+                            timestamp.ToString());
             resultCoordinates = "{" + resultCoordinates + "}";
             return resultCoordinates;
         }
