@@ -63,6 +63,7 @@
     <Compile Include="Cordova\Commands\AudioPlayer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Cordova\Commands\Battery.cs" />
     <Compile Include="Cordova\Commands\Camera.cs">
       <SubType>Code</SubType>
     </Compile>
