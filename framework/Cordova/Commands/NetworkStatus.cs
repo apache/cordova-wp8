@@ -30,7 +30,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
     // http://msdn.microsoft.com/en-us/library/microsoft.phone.net.networkinformation(v=VS.92).aspx
     // http://msdn.microsoft.com/en-us/library/microsoft.phone.net.networkinformation.devicenetworkinformation(v=VS.92).aspx
 
-    public class Connection : BaseCommand
+    public class NetworkStatus : BaseCommand
     {
         const string UNKNOWN = "unknown";
         const string ETHERNET = "ethernet";

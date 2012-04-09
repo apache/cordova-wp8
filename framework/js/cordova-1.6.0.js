@@ -45,6 +45,8 @@ var Cordova = {
 	resources:{}
 };
 
+cordova = Cordova;
+
 Cordova.callbackStatus = {
     NO_RESULT: 0,
     OK: 1,
@@ -3445,13 +3447,14 @@ Cordova.addResource("network");
  * This class contains information about the current network Connection.
  * @constructor
  */
-var Connection = function() 
+var NetworkConnection = function() 
 {
     this.type = null;
     this._firstRun = true;
     this._timer = null;
     this.timeout = 500;
 
+/*
     var me = this;
     this.getInfo(
         function(type) {
@@ -3480,23 +3483,24 @@ var Connection = function()
             if (me._firstRun) 
 			{
                 me._firstRun = false;
-				//console.log("onCordovaConnectionReady");
+				console.log("onCordovaConnectionReady");
                 Cordova.onCordovaConnectionReady.fire();
             }            
         },
         function(e) {
             console.log("Error initializing Network Connection: " + e);
         });
+*/
 };
 
-Connection.UNKNOWN = "unknown";
-Connection.ETHERNET = "ethernet";
-Connection.WIFI = "wifi";
-Connection.CELL_2G = "2g";
-Connection.CELL_3G = "3g";
-Connection.CELL_4G = "4g";
-Connection.NONE = "none";
-Connection.CELL = "cellular";
+NetworkConnection.UNKNOWN = "unknown";
+NetworkConnection.ETHERNET = "ethernet";
+NetworkConnection.WIFI = "wifi";
+NetworkConnection.CELL_2G = "2g";
+NetworkConnection.CELL_3G = "3g";
+NetworkConnection.CELL_4G = "4g";
+NetworkConnection.NONE = "none";
+NetworkConnection.CELL = "cellular";
 
 /**
  * Get connection info
@@ -3504,9 +3508,9 @@ Connection.CELL = "cellular";
  * @param {Function} successCallback The function to call when the Connection data is available
  * @param {Function} errorCallback The function to call when there is an error getting the Connection data. (OPTIONAL)
  */
-Connection.prototype.getInfo = function(successCallback, errorCallback) {
+NetworkConnection.prototype.getInfo = function(successCallback, errorCallback) {
     // Get info
-    Cordova.exec(successCallback, errorCallback, "Connection", "getConnectionInfo", []);
+    Cordova.exec(successCallback, errorCallback, "NetworkConnection", "getConnectionInfo", []);
 };
 
 
@@ -3514,7 +3518,7 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 
 	navigator.network = navigator.network || {};
     if (typeof navigator.network.connection === "undefined") {
-        navigator.network.connection = new Connection();
+        navigator.network.connection = new NetworkConnection();
     }
 });
 }

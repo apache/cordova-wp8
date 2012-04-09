@@ -39,6 +39,8 @@ var Cordova = {
 	resources:{}
 };
 
+cordova = Cordova;
+
 Cordova.callbackStatus = {
     NO_RESULT: 0,
     OK: 1,
