@@ -50,7 +50,18 @@ namespace WP7CordovaClassLib
         /// Prevents data clearing during page transitions.
         /// </summary>
         private bool IsBrowserInitialized = false;
+        
+        /// <summary>
+        /// Set when the user attaches a back button handler inside the WebBrowser
+        /// </summary>
         private bool OverrideBackButton = false;
+
+        /// <summary>
+        /// Used for keeping track of our history
+        /// </summary>
+        private Stack<Uri> history = new Stack<Uri>();
+        private bool IsBackButtonPressed = false;
+
 
         private static string AppRoot = "/app/";
 
@@ -311,9 +322,20 @@ namespace WP7CordovaClassLib
                     CordovaBrowser.InvokeScript("CordovaCommandResult", new string[] { "backbutton" });
                     e.Cancel = true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    Console.WriteLine("Exception while invoking backbutton into cordova view: " + ex.Message);
+                }
+            }
+            else
+            {
+                if (history.Count > 1)
+                {
+                    history.Pop();
+                    Uri next = history.Peek();
+                    IsBackButtonPressed = true;
+                    CordovaBrowser.Navigate(next);
+                    e.Cancel = true;
                 }
             }
         }
@@ -337,6 +359,15 @@ namespace WP7CordovaClassLib
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
+            if (!IsBackButtonPressed)
+            {
+                history.Push(e.Uri);
+            }
+            else
+            {
+                IsBackButtonPressed = false;
+            }
+
             Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
             // TODO: tell any running plugins to stop doing what they are doing.
             // TODO: check whitelist / blacklist
