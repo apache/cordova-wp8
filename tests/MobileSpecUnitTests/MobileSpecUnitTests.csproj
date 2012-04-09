@@ -82,7 +82,7 @@
     <None Include="Properties\WMAppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\cordova-js\pkg\cordova.wp7.js">
+    <Content Include="..\..\..\js\pkg\cordova.wp7.js">
       <Link>www\cordova.wp7.js</Link>
     </Content>
     <Content Include="ApplicationIcon.png">

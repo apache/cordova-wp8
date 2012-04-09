@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
@@ -17,38 +17,54 @@
     <script type="text/javascript" src="../test-runner.js"></script>
 
     <!-- Tests -->
-    <script type="text/javascript" src="../tests/accelerometer.tests.js"></script>
-    <script type="text/javascript" src="../tests/battery.tests.js"></script>
-    <script type="text/javascript" src="../tests/capture.tests.js"></script>
-    <script type="text/javascript" src="../tests/compass.tests.js"></script>
-    <script type="text/javascript" src="../tests/contacts.tests.js"></script>
-    <script type="text/javascript" src="../tests/camera.tests.js"></script>
+
+
+
     <script type="text/javascript" src="../tests/device.tests.js"></script>
-    <script type="text/javascript" src="../tests/file.tests.js"></script>
+    <script type="text/javascript" src="../tests/accelerometer.tests.js"></script>
+    <script type="text/javascript" src="../tests/capture.tests.js"></script>
+
+    <script type="text/javascript" src="../tests/compass.tests.js"></script>
+    
+    <script type="text/javascript" src="../tests/camera.tests.js"></script>
+
+        
     <script type="text/javascript" src="../tests/geolocation.tests.js"></script>
-    <script type="text/javascript" src="../tests/media.tests.js"></script>
+    
     <script type="text/javascript" src="../tests/network.tests.js"></script>
     <script type="text/javascript" src="../tests/notification.tests.js"></script>
     <script type="text/javascript" src="../tests/platform.tests.js"></script>
     <script type="text/javascript" src="../tests/storage.tests.js"></script>
+
+
+
+    <!--
+    <script type="text/javascript" src="../tests/contacts.tests.js"></script>
+    <script type="text/javascript" src="../tests/battery.tests.js"></script>
+    <script type="text/javascript" src="../tests/media.tests.js"></script>
+    <script type="text/javascript" src="../tests/file.tests.js"></script>
+    
+
+    -->
     <script type="text/javascript">
-      document.addEventListener('deviceready', function() {
-          console.log('running tests');
-          var tests = new Tests();
+        document.addEventListener('deviceready', function () {
 
-          // Each group of tests are declared as a function in the object `Tests`.
-          // A group of tests are identified by a name that contains the word 'Tests'.
-          //
-          // Load each group of tests into QUnit
-          for (var t in tests) {
-              if (t.indexOf('Tests') > -1) {
-                  tests[t]();
-              }
-          }
+            console.log("doc got device ready event");
+            var tests = new Tests();
+            console.log('running tests');
+            // Each group of tests are declared as a function in the object `Tests`.
+            // A group of tests are identified by a name that contains the word 'Tests'.
+            //
+            // Load each group of tests into QUnit
+            for (var t in tests) {
+                if (t.indexOf('Tests') > -1) {
+                    tests[t]();
+                }
+            }
 
-          // Start the QUnit test suite
-          QUnit.start();
-      }, false);
+            // Start the QUnit test suite
+            QUnit.start();
+        }, false);
     </script>
   </head>
     <body>
