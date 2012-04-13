@@ -1,7 +1,6 @@
-﻿// File generated at :: Mon Apr 09 2012 15:18:40 GMT-0700 (Pacific Daylight Time)
+// commit 9451ff3c5517ba9ba4a2c062633686bb3a993f52
 
-
-// Built for WP7-1.6.0
+// File generated at :: Thu Apr 12 2012 16:53:58 GMT-0700 (Pacific Daylight Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -419,7 +418,40 @@ module.exports = {
 // file: lib\common\channel.js
 define("cordova/channel", function(require, exports, module) {
 /**
- * Custom pub-sub channel that can have functions subscribed to it
+ * Custom pub-sub "channel" that can have functions subscribed to it
+ * This object is used to define and control firing of events for
+ * cordova initialization.
+ *
+ * The order of events during page load and Cordova startup is as follows:
+ *
+ * onDOMContentLoaded         Internal event that is received when the web page is loaded and parsed.
+ * onNativeReady              Internal event that indicates the Cordova native side is ready.
+ * onCordovaReady             Internal event fired when all Cordova JavaScript objects have been created.
+ * onCordovaInfoReady         Internal event fired when device properties are available.
+ * onCordovaConnectionReady   Internal event fired when the connection property has been set.
+ * onDeviceReady              User event fired to indicate that Cordova is ready
+ * onResume                   User event fired to indicate a start/resume lifecycle event
+ * onPause                    User event fired to indicate a pause lifecycle event
+ * onDestroy                  Internal event fired when app is being destroyed (User should use window.onunload event, not this one).
+ *
+ * The only Cordova events that user code should register for are:
+ *      deviceready           Cordova native code is initialized and Cordova APIs can be called from JavaScript
+ *      pause                 App has moved to background
+ *      resume                App has returned to foreground
+ *
+ * Listeners can be registered as:
+ *      document.addEventListener("deviceready", myDeviceReadyListener, false);
+ *      document.addEventListener("resume", myResumeListener, false);
+ *      document.addEventListener("pause", myPauseListener, false);
+ *
+ * The DOM lifecycle events should be used for saving and restoring state
+ *      window.onload
+ *      window.onunload
+ *
+ */
+
+/**
+ * Channel
  * @constructor
  * @param type  String the channel name
  * @param opts  Object options to pass into the channel, currently
@@ -589,8 +621,7 @@ Channel.prototype.fire = function(e) {
     return true;
 };
 
-//HACK: defining them here so they are ready super fast!
-
+// defining them here so they are ready super fast!
 // DOM event that is received when the web page is loaded and parsed.
 channel.create('onDOMContentLoaded');
 
@@ -1044,214 +1075,23 @@ define("cordova/platform", function(require, exports, module) {
 var cordova = require('cordova'),
       exec = require('cordova/exec');
 
+// specifically require the following patches :
+
+// localStorage+SessionStorage APIs
+require("cordova/plugin/wp7/DOMStorage");
+
+// Fix XHR calls to local file-system
+require("cordova/plugin/wp7/XHRPatch");
+
+
 module.exports = {
     id: "wp7",
     initialize:function() {
 
-console.log("window.CordovaMediaonStatus = " + window.CordovaMediaonStatus);
-
-if(!window.localStorage)
-{(function()
-{
-	
-	
-
-    var DOMStorage = function(type)
-    {
-        // default type is local
-        if(type == "sessionStorage")
-        {
-            this._type = type;
-        }
-        Object.defineProperty( this, "length", 
-        {
-            configurable: true,
-            get: function(){ return this.getLength() }
-        });
-
-    };
-
-    DOMStorage.prototype = 
-    {
-        _type:"localStorage",
-        _result:null,
-        keys:null,
-    
-        onResult:function(key,valueStr)
-        {
-            if(!this.keys)
-            {
-                this.keys = [];
-            }
-            this._result = valueStr;
-        },
-
-        onKeysChanged:function(jsonKeys)
-        {
-            this.keys = JSON.parse(jsonKeys);
-
-            var key;
-            for(var n = 0,len =this.keys.length; n < len; n++)
-            {
-                key = this.keys[n];
-                if(!this.hasOwnProperty(key))
-                {
-                    Object.defineProperty( this, key, 
-                    {
-
-                        configurable: true,
-                        get: function(){ return this.getItem(key); },
-                        set: function(val){ return this.setItem(key,val); }
-                    });
-                }
-            }
-
-        },
-
-        initialize:function()
-        {
-            window.external.Notify("DOMStorage/" + this._type + "/load/keys");
-        },
-
-    /*
-        The length attribute must return the number of key/value pairs currently present in the list associated with the object.
-    */
-        getLength:function()
-        {
-            if(!this.keys)
-            {
-                this.initialize();
-            }
-            return this.keys.length;
-        },
-
-    /*
-        The key(n) method must return the name of the nth key in the list. 
-        The order of keys is user-agent defined, but must be consistent within an object so long as the number of keys doesn't change. 
-        (Thus, adding or removing a key may change the order of the keys, but merely changing the value of an existing key must not.) 
-        If n is greater than or equal to the number of key/value pairs in the object, then this method must return null. 
-    */
-        key:function(n)
-        {
-            if(!this.keys)
-            {
-                this.initialize();
-            }
-
-            if(n >= this.keys.length)
-            {
-                return null;
-            }
-            else
-            {
-                return this.keys[n];
-            }
-        },
-
-    /*
-        The getItem(key) method must return the current value associated with the given key. 
-        If the given key does not exist in the list associated with the object then this method must return null.
-    */
-        getItem:function(key)
-        {
-            if(!this.keys)
-            {
-                this.initialize();
-            }
-
-            var retVal = null;
-            if(this.keys.indexOf(key) > -1)
-            {
-                window.external.Notify("DOMStorage/" + this._type + "/get/" + key);
-                retVal = this._result;
-                this._result = null;
-            }
-            return retVal;
-        },
-    /*
-        The setItem(key, value) method must first check if a key/value pair with the given key already exists 
-        in the list associated with the object.
-        If it does not, then a new key/value pair must be added to the list, with the given key and with its value set to value.
-        If the given key does exist in the list, then it must have its value updated to value.
-        If it couldn't set the new value, the method must raise an QUOTA_EXCEEDED_ERR exception. 
-        (Setting could fail if, e.g., the user has disabled storage for the site, or if the quota has been exceeded.)
-    */
-        setItem:function(key,value)
-        {
-            if(!this.keys)
-            {
-                this.initialize();
-            }
-            window.external.Notify("DOMStorage/" + this._type + "/set/" + key + "/" + value);
-        },
-
-    /*
-        The removeItem(key) method must cause the key/value pair with the given key to be removed from the list 
-        associated with the object, if it exists. 
-        If no item with that key exists, the method must do nothing.
-    */
-        removeItem:function(key)
-        {
-            if(!this.keys)
-            {
-                this.initialize();
-            }
-            var index = this.keys.indexOf(key);
-            if(index > -1)
-            {
-                this.keys.splice(index,1);
-                // TODO: need sanity check for keys ? like 'clear','setItem', ...
-                window.external.Notify("DOMStorage/" + this._type + "/remove/" + key);
-                delete this[key];
-            }
-            
-        },
-
-    /*
-        The clear() method must atomically cause the list associated with the object to be emptied of all 
-        key/value pairs, if there are any. 
-        If there are none, then the method must do nothing.
-    */
-        clear:function()
-        {
-            if(!this.keys)
-            {
-                this.initialize();
-            }
-
-            for(var n=0,len=this.keys.length; n < len;n++)
-            {
-                // TODO: do we need a sanity check for keys ? like 'clear','setItem', ...
-                delete this[this.keys[n]];
-            }
-            this.keys = [];
-            window.external.Notify("DOMStorage/" + this._type + "/clear/");
-        }
-    };
-
-    // initialize DOMStorage
-    
-    Object.defineProperty( window, "localStorage", 
-    {
-        writable: false,
-        configurable: false,
-        value:new DOMStorage("localStorage")
-    });
-    window.localStorage.initialize();
-
-    Object.defineProperty( window, "sessionStorage", 
-    {
-        writable: false,
-        configurable: false,
-        value:new DOMStorage("sessionStorage")
-    });
-    window.sessionStorage.initialize();
 
 
-})();};
 
-
-		// INject a lsitener for the backbutton, and tell native to override the flag (true/false) when we have 1 or more, or 0, listeners
+	// INject a lsitener for the backbutton, and tell native to override the flag (true/false) when we have 1 or more, or 0, listeners
     var backButtonChannel = cordova.addDocumentEventHandler('backbutton', {
       onSubscribe:function() {
         if (this.numHandlers === 1) {
@@ -3016,7 +2856,7 @@ FileWriter.prototype.seek = function(offset) {
         throw new FileError(FileError.INVALID_STATE_ERR);
     }
 
-    if (!offset) {
+    if (!offset && offset != 0) {
         return;
     }
 
@@ -4371,6 +4211,413 @@ module.exports = function(args) {
 	//var res = JSON.parse(args);
     //require("cordova/media").onStatus(res.id, res.msg, res.value);
 };
+
+});
+
+// file: lib\wp7\plugin\wp7\DOMStorage.js
+define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
+(function()
+{
+
+    var DOMStorage = function(type)
+    {
+        // default type is local
+        if(type == "sessionStorage")
+        {
+            this._type = type;
+        }
+        Object.defineProperty( this, "length", 
+        {
+            configurable: true,
+            get: function(){ return this.getLength() }
+        });
+
+    };
+
+    DOMStorage.prototype = 
+    {
+        _type:"localStorage",
+        _result:null,
+        keys:null,
+    
+        onResult:function(key,valueStr)
+        {
+            if(!this.keys)
+            {
+                this.keys = [];
+            }
+            this._result = valueStr;
+        },
+
+        onKeysChanged:function(jsonKeys)
+        {
+            this.keys = JSON.parse(jsonKeys);
+
+            var key;
+            for(var n = 0,len =this.keys.length; n < len; n++)
+            {
+                key = this.keys[n];
+                if(!this.hasOwnProperty(key))
+                {
+                    Object.defineProperty( this, key, 
+                    {
+
+                        configurable: true,
+                        get: function(){ return this.getItem(key); },
+                        set: function(val){ return this.setItem(key,val); }
+                    });
+                }
+            }
+
+        },
+
+        initialize:function()
+        {
+            window.external.Notify("DOMStorage/" + this._type + "/load/keys");
+        },
+
+    /*
+        The length attribute must return the number of key/value pairs currently present in the list associated with the object.
+    */
+        getLength:function()
+        {
+            if(!this.keys)
+            {
+                this.initialize();
+            }
+            return this.keys.length;
+        },
+
+    /*
+        The key(n) method must return the name of the nth key in the list. 
+        The order of keys is user-agent defined, but must be consistent within an object so long as the number of keys doesn't change. 
+        (Thus, adding or removing a key may change the order of the keys, but merely changing the value of an existing key must not.) 
+        If n is greater than or equal to the number of key/value pairs in the object, then this method must return null. 
+    */
+        key:function(n)
+        {
+            if(!this.keys)
+            {
+                this.initialize();
+            }
+
+            if(n >= this.keys.length)
+            {
+                return null;
+            }
+            else
+            {
+                return this.keys[n];
+            }
+        },
+
+    /*
+        The getItem(key) method must return the current value associated with the given key. 
+        If the given key does not exist in the list associated with the object then this method must return null.
+    */
+        getItem:function(key)
+        {
+            if(!this.keys)
+            {
+                this.initialize();
+            }
+
+            var retVal = null;
+            if(this.keys.indexOf(key) > -1)
+            {
+                window.external.Notify("DOMStorage/" + this._type + "/get/" + key);
+                retVal = this._result;
+                this._result = null;
+            }
+            return retVal;
+        },
+    /*
+        The setItem(key, value) method must first check if a key/value pair with the given key already exists 
+        in the list associated with the object.
+        If it does not, then a new key/value pair must be added to the list, with the given key and with its value set to value.
+        If the given key does exist in the list, then it must have its value updated to value.
+        If it couldn't set the new value, the method must raise an QUOTA_EXCEEDED_ERR exception. 
+        (Setting could fail if, e.g., the user has disabled storage for the site, or if the quota has been exceeded.)
+    */
+        setItem:function(key,value)
+        {
+            if(!this.keys)
+            {
+                this.initialize();
+            }
+            window.external.Notify("DOMStorage/" + this._type + "/set/" + key + "/" + value);
+        },
+
+    /*
+        The removeItem(key) method must cause the key/value pair with the given key to be removed from the list 
+        associated with the object, if it exists. 
+        If no item with that key exists, the method must do nothing.
+    */
+        removeItem:function(key)
+        {
+            if(!this.keys)
+            {
+                this.initialize();
+            }
+            var index = this.keys.indexOf(key);
+            if(index > -1)
+            {
+                this.keys.splice(index,1);
+                // TODO: need sanity check for keys ? like 'clear','setItem', ...
+                window.external.Notify("DOMStorage/" + this._type + "/remove/" + key);
+                delete this[key];
+            }
+            
+        },
+
+    /*
+        The clear() method must atomically cause the list associated with the object to be emptied of all 
+        key/value pairs, if there are any. 
+        If there are none, then the method must do nothing.
+    */
+        clear:function()
+        {
+            if(!this.keys)
+            {
+                this.initialize();
+            }
+
+            for(var n=0,len=this.keys.length; n < len;n++)
+            {
+                // TODO: do we need a sanity check for keys ? like 'clear','setItem', ...
+                delete this[this.keys[n]];
+            }
+            this.keys = [];
+            window.external.Notify("DOMStorage/" + this._type + "/clear/");
+        }
+    };
+
+    // initialize DOMStorage
+    
+    Object.defineProperty( window, "localStorage", 
+    {
+        writable: false,
+        configurable: false,
+        value:new DOMStorage("localStorage")
+    });
+    window.localStorage.initialize();
+
+    Object.defineProperty( window, "sessionStorage", 
+    {
+        writable: false,
+        configurable: false,
+        value:new DOMStorage("sessionStorage")
+    });
+    window.sessionStorage.initialize();
+
+
+})();
+
+module.exports = null;
+});
+
+// file: lib\wp7\plugin\wp7\XHRPatch.js
+define("cordova/plugin/wp7/XHRPatch", function(require, exports, module) {
+
+
+(function (win, doc) {
+
+var docDomain = null;
+try {
+    docDomain = doc.domain;
+}
+catch (err) 
+{
+    //console.log("caught exception trying to access document.domain");
+}
+
+if (!docDomain || docDomain.length == 0) {
+
+    var aliasXHR = win.XMLHttpRequest;
+
+    win.XMLHttpRequest = function () { };
+    win.XMLHttpRequest.noConflict = aliasXHR;
+    win.XMLHttpRequest.UNSENT = 0;
+    win.XMLHttpRequest.OPENED = 1;
+    win.XMLHttpRequest.HEADERS_RECEIVED = 2;
+    win.XMLHttpRequest.LOADING = 3;
+    win.XMLHttpRequest.DONE = 4;
+
+    win.XMLHttpRequest.prototype =
+	{
+	    UNSENT: 0,
+	    OPENED: 1,
+	    HEADERS_RECEIVED: 2,
+	    LOADING: 3,
+	    DONE: 4,
+
+	    isAsync: false,
+	    onreadystatechange: null,
+	    readyState: 0,
+	    _url: "",
+	    timeout: 0,
+	    withCredentials: false,
+	    _requestHeaders: null,
+	    open: function (reqType, uri, isAsync, user, password) {
+
+	        if (uri && uri.indexOf("http") == 0) {
+	            if (!this.wrappedXHR) {
+	                this.wrappedXHR = new aliasXHR();
+	                var self = this;
+
+	                // timeout
+	                if (this.timeout > 0) {
+	                    this.wrappedXHR.timeout = this.timeout;
+	                }
+	                Object.defineProperty(this, "timeout", {
+	                    set: function (val) {
+	                        this.wrappedXHR.timeout = val;
+	                    },
+	                    get: function () {
+	                        return this.wrappedXHR.timeout;
+	                    }
+	                });
+
+
+
+	                if (this.withCredentials) {
+	                    this.wrappedXHR.withCredentials = this.withCredentials;
+	                }
+	                Object.defineProperty(this, "withCredentials", {
+	                    set: function (val) {
+	                        this.wrappedXHR.withCredentials = val;
+	                    },
+	                    get: function () {
+	                        return this.wrappedXHR.withCredentials;
+	                    }
+	                });
+
+
+	                Object.defineProperty(this, "status", { get: function () {
+	                    return this.wrappedXHR.status;
+	                }
+	                });
+	                Object.defineProperty(this, "responseText", { get: function () {
+	                    return this.wrappedXHR.responseText;
+	                }
+	                });
+	                Object.defineProperty(this, "statusText", { get: function () {
+	                    return this.wrappedXHR.statusText;
+	                }
+	                });
+
+	                Object.defineProperty(this, "responseXML", { get: function () {
+	                    return this.wrappedXHR.responseXML;
+	                }
+	                });
+
+	                this.getResponseHeader = function (header) {
+	                    return this.wrappedXHR.getResponseHeader(header);
+	                };
+	                this.getAllResponseHeaders = function () {
+	                    return this.wrappedXHR.getAllResponseHeaders();
+	                };
+
+	                this.wrappedXHR.onreadystatechange = function () {
+	                    self.changeReadyState(self.wrappedXHR.readyState);
+	                };
+	            }
+	            return this.wrappedXHR.open(reqType, uri, isAsync, user, password);
+	        }
+	        else {
+	            // x-wmapp1://app/www/page2.html
+	            // need to work some magic on the actual url/filepath
+	            var newUrl = uri;
+	            if (newUrl.indexOf(":/") > -1) {
+	                newUrl = newUrl.split(":/")[1];
+	            }
+
+	            if (newUrl.lastIndexOf("/") === newUrl.length - 1) {
+	                newUrl += "index.html"; // default page is index.html, when call is to a dir/ ( why not ...? )
+	            }
+	            this._url = newUrl;
+	        }
+	    },
+	    statusText: "",
+	    changeReadyState: function (newState) {
+	        this.readyState = newState;
+	        if (this.onreadystatechange) {
+	            this.onreadystatechange();
+	        }
+	    },
+	    setRequestHeader: function (header, value) {
+	        if (this.wrappedXHR) {
+	            this.wrappedXHR.setRequestHeader(header, value);
+	        }
+	    },
+	    getResponseHeader: function (header) {
+	        return this.wrappedXHR ? this.wrappedXHR.getResponseHeader(header) : "";
+	    },
+	    getAllResponseHeaders: function () {
+	        return this.wrappedXHR ? this.wrappedXHR.getAllResponseHeaders() : "";
+	    },
+	    responseText: "",
+	    responseXML: "",
+	    onResult: function (res) {
+	        this.status = 200;
+	        this.responseText = res;
+	        this.responseXML = res;
+	        this.changeReadyState(this.DONE);
+	    },
+	    onError: function (err) {
+	        this.status = 404;
+	        this.changeReadyState(this.DONE);
+	    },
+
+	    abort: function () {
+	        if (this.wrappedXHR) {
+	            return this.wrappedXHR.abort();
+	        }
+	    },
+
+	    send: function (data) {
+	        if (this.wrappedXHR) {
+	            return this.wrappedXHR.send(data);
+	        }
+	        else {
+	            this.changeReadyState(this.OPENED);
+
+	            var alias = this;
+
+	            function fail(evt) {
+	                alias.onError(evt.code);
+	            }
+
+	            function gotFile(file) {
+	                var reader = new FileReader();
+	                reader.onloadend = function (evt) 
+	                {
+	                    alias.onResult.apply(alias,[evt.target.result]);
+	                };
+	                reader.readAsText(file);
+	            }
+
+	            function gotEntry(entry) {
+	                entry.file(gotFile, fail);
+	            }
+
+	            function gotFS(fs) {
+	                fs.root.getFile(alias._url, null, gotEntry, fail);
+	            }
+
+	            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+
+	        }
+	    },
+	    status: 404
+	};
+} // if doc domain 
+
+// end closure wrap
+})(window, document); 
+
+module.exports = null;
+
 
 });
 
