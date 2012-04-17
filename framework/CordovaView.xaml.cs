@@ -352,7 +352,7 @@ namespace WP7CordovaClassLib
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error calling js to fire nativeReady event :: " + ex.Message);
+                Debug.WriteLine("Error calling js to fire nativeReady event. Did you include cordova-x.x.x.js in your html script tag?");
             }
         }
 
