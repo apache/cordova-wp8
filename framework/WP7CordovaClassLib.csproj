@@ -59,6 +59,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cordova\BrowserMouseHelper.cs" />
     <Compile Include="Cordova\Commands\Accelerometer.cs" />
     <Compile Include="Cordova\Commands\AudioPlayer.cs">
       <SubType>Code</SubType>

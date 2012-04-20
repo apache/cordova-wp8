@@ -71,6 +71,8 @@ namespace WP7CordovaClassLib
         /// </summary>
         private NativeExecution nativeExecution;
 
+        protected BrowserMouseHelper bmHelper;
+
         protected DOMStorageHelper domStorageHelper;
         protected OrientationHelper orientationHelper;
 
@@ -145,6 +147,7 @@ namespace WP7CordovaClassLib
 
             // initializes native execution logic
             this.nativeExecution = new NativeExecution(ref this.CordovaBrowser);
+            this.bmHelper = new BrowserMouseHelper(this.CordovaBrowser);
         }
 
         
@@ -195,6 +198,8 @@ namespace WP7CordovaClassLib
 
             // prevents refreshing web control to initial state during pages transitions
             if (this.IsBrowserInitialized) return;
+
+            
 
             this.domStorageHelper = new DOMStorageHelper(this.CordovaBrowser);
 
