@@ -347,17 +347,21 @@ namespace WP7CordovaClassLib
 
         void GapBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            this.CordovaBrowser.Opacity = 1;
-
             string nativeReady = "(function(){ cordova.require('cordova/channel').onNativeReady.fire()})();";
 
             try
             {
                 CordovaBrowser.InvokeScript("execScript", new string[] { nativeReady });
             }
-            catch (Exception ex)
+            catch (Exception /*ex*/)
             {
                 Debug.WriteLine("Error calling js to fire nativeReady event. Did you include cordova-x.x.x.js in your html script tag?");
+            }
+
+            if (this.CordovaBrowser.Opacity < 1)
+            {
+                this.CordovaBrowser.Opacity = 1;
+                RotateIn.Begin();
             }
         }
 
