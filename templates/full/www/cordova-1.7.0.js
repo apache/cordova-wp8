@@ -1,6 +1,6 @@
-// commit 1eb529fe62d3e542e155745696b2be0e1ae1d316
+// commit bb82c944d5d7465c0e014edbcd81be919f53064e
 
-// File generated at :: Mon Apr 23 2012 12:02:02 GMT-0700 (Pacific Daylight Time)
+// File generated at :: Wed Apr 25 2012 15:25:32 GMT-0700 (PDT)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -23,7 +23,7 @@
 
 ;(function() {
 
-// file: lib\scripts\require.js
+// file: lib/scripts/require.js
 var require,
     define;
 
@@ -326,6 +326,9 @@ var cordova = {
 if (!window.PhoneGap) {
     window.PhoneGap = cordova;
 }
+if (!window.Cordova) {
+    window.Cordova = cordova;
+}
 
 /**
  * Plugins object
@@ -339,7 +342,7 @@ module.exports = cordova;
 
 });
 
-// file: lib\common\builder.js
+// file: lib/common/builder.js
 define("cordova/builder", function(require, exports, module) {
 var utils = require('cordova/utils');
 
@@ -432,7 +435,7 @@ module.exports = {
 
 });
 
-// file: lib\common\channel.js
+// file: lib/common/channel.js
 define("cordova/channel", function(require, exports, module) {
 /**
  * Custom pub-sub "channel" that can have functions subscribed to it
@@ -675,7 +678,7 @@ channel.waitForInitialization('onCordovaConnectionReady');
 module.exports = channel;
 });
 
-// file: lib\common\common.js
+// file: lib/common/common.js
 define("cordova/common", function(require, exports, module) {
 module.exports = {
     objects: {
@@ -859,7 +862,7 @@ module.exports = {
 };
 });
 
-// file: lib\wp7\exec.js
+// file: lib/wp7/exec.js
 define("cordova/exec", function(require, exports, module) {
 var cordova = require('cordova');
 
@@ -968,7 +971,7 @@ module.exports = function(success, fail, service, action, args) {
 
 });
 
-// file: lib\wp7\platform.js
+// file: lib/wp7/platform.js
 define("cordova/platform", function(require, exports, module) {
 var cordova = require('cordova'),
       exec = require('cordova/exec');
@@ -1054,7 +1057,7 @@ module.exports = {
 };
 });
 
-// file: lib\common\plugin\Acceleration.js
+// file: lib/common/plugin/Acceleration.js
 define("cordova/plugin/Acceleration", function(require, exports, module) {
 var Acceleration = function(x, y, z, timestamp) {
   this.x = x;
@@ -1066,7 +1069,7 @@ var Acceleration = function(x, y, z, timestamp) {
 module.exports = Acceleration;
 });
 
-// file: lib\common\plugin\Camera.js
+// file: lib/common/plugin/Camera.js
 define("cordova/plugin/Camera", function(require, exports, module) {
 var exec = require('cordova/exec'),
     Camera = require('cordova/plugin/CameraConstants');
@@ -1175,7 +1178,7 @@ cameraExport.getPicture = function(successCallback, errorCallback, options) {
 module.exports = cameraExport;
 });
 
-// file: lib\common\plugin\CameraConstants.js
+// file: lib/common/plugin/CameraConstants.js
 define("cordova/plugin/CameraConstants", function(require, exports, module) {
 module.exports = {
   DestinationType:{
@@ -1199,7 +1202,7 @@ module.exports = {
 };
 });
 
-// file: lib\common\plugin\CaptureAudioOptions.js
+// file: lib/common/plugin/CaptureAudioOptions.js
 define("cordova/plugin/CaptureAudioOptions", function(require, exports, module) {
 /**
  * Encapsulates all audio capture operation configuration options.
@@ -1216,7 +1219,7 @@ var CaptureAudioOptions = function(){
 module.exports = CaptureAudioOptions;
 });
 
-// file: lib\common\plugin\CaptureError.js
+// file: lib/common/plugin/CaptureError.js
 define("cordova/plugin/CaptureError", function(require, exports, module) {
 /**
  * The CaptureError interface encapsulates all errors in the Capture API.
@@ -1239,7 +1242,7 @@ CaptureError.CAPTURE_NOT_SUPPORTED = 20;
 module.exports = CaptureError;
 });
 
-// file: lib\common\plugin\CaptureImageOptions.js
+// file: lib/common/plugin/CaptureImageOptions.js
 define("cordova/plugin/CaptureImageOptions", function(require, exports, module) {
 /**
  * Encapsulates all image capture operation configuration options.
@@ -1254,7 +1257,7 @@ var CaptureImageOptions = function(){
 module.exports = CaptureImageOptions;
 });
 
-// file: lib\common\plugin\CaptureVideoOptions.js
+// file: lib/common/plugin/CaptureVideoOptions.js
 define("cordova/plugin/CaptureVideoOptions", function(require, exports, module) {
 /**
  * Encapsulates all video capture operation configuration options.
@@ -1271,7 +1274,7 @@ var CaptureVideoOptions = function(){
 module.exports = CaptureVideoOptions;
 });
 
-// file: lib\common\plugin\CompassError.js
+// file: lib/common/plugin/CompassError.js
 define("cordova/plugin/CompassError", function(require, exports, module) {
 /**
  *  CompassError.
@@ -1288,7 +1291,7 @@ CompassError.COMPASS_NOT_SUPPORTED = 20;
 module.exports = CompassError;
 });
 
-// file: lib\common\plugin\CompassHeading.js
+// file: lib/common/plugin/CompassHeading.js
 define("cordova/plugin/CompassHeading", function(require, exports, module) {
 var CompassHeading = function(magneticHeading, trueHeading, headingAccuracy, timestamp) {
   this.magneticHeading = (magneticHeading !== undefined ? magneticHeading : null);
@@ -1300,7 +1303,7 @@ var CompassHeading = function(magneticHeading, trueHeading, headingAccuracy, tim
 module.exports = CompassHeading;
 });
 
-// file: lib\common\plugin\ConfigurationData.js
+// file: lib/common/plugin/ConfigurationData.js
 define("cordova/plugin/ConfigurationData", function(require, exports, module) {
 /**
  * Encapsulates a set of parameters that the capture device supports.
@@ -1319,7 +1322,7 @@ function ConfigurationData() {
 module.exports = ConfigurationData;
 });
 
-// file: lib\common\plugin\Connection.js
+// file: lib/common/plugin/Connection.js
 define("cordova/plugin/Connection", function(require, exports, module) {
 /**
  * Network status
@@ -1335,7 +1338,7 @@ module.exports = {
 };
 });
 
-// file: lib\common\plugin\Contact.js
+// file: lib/common/plugin/Contact.js
 define("cordova/plugin/Contact", function(require, exports, module) {
 var exec = require('cordova/exec'),
     ContactError = require('cordova/plugin/ContactError'),
@@ -1516,7 +1519,7 @@ Contact.prototype.save = function(successCB, errorCB) {
 module.exports = Contact;
 });
 
-// file: lib\common\plugin\ContactAddress.js
+// file: lib/common/plugin/ContactAddress.js
 define("cordova/plugin/ContactAddress", function(require, exports, module) {
 /**
 * Contact address.
@@ -1545,7 +1548,7 @@ var ContactAddress = function(pref, type, formatted, streetAddress, locality, re
 module.exports = ContactAddress;
 });
 
-// file: lib\common\plugin\ContactError.js
+// file: lib/common/plugin/ContactError.js
 define("cordova/plugin/ContactError", function(require, exports, module) {
 /**
  *  ContactError.
@@ -1570,7 +1573,7 @@ ContactError.PERMISSION_DENIED_ERROR = 20;
 module.exports = ContactError;
 });
 
-// file: lib\common\plugin\ContactField.js
+// file: lib/common/plugin/ContactField.js
 define("cordova/plugin/ContactField", function(require, exports, module) {
 /**
 * Generic contact field.
@@ -1590,7 +1593,7 @@ var ContactField = function(type, value, pref) {
 module.exports = ContactField;
 });
 
-// file: lib\common\plugin\ContactFindOptions.js
+// file: lib/common/plugin/ContactFindOptions.js
 define("cordova/plugin/ContactFindOptions", function(require, exports, module) {
 /**
  * ContactFindOptions.
@@ -1607,7 +1610,7 @@ var ContactFindOptions = function(filter, multiple) {
 module.exports = ContactFindOptions;
 });
 
-// file: lib\common\plugin\ContactName.js
+// file: lib/common/plugin/ContactName.js
 define("cordova/plugin/ContactName", function(require, exports, module) {
 /**
 * Contact name.
@@ -1631,7 +1634,7 @@ var ContactName = function(formatted, familyName, givenName, middle, prefix, suf
 module.exports = ContactName;
 });
 
-// file: lib\common\plugin\ContactOrganization.js
+// file: lib/common/plugin/ContactOrganization.js
 define("cordova/plugin/ContactOrganization", function(require, exports, module) {
 /**
 * Contact organization.
@@ -1658,7 +1661,7 @@ var ContactOrganization = function(pref, type, name, dept, title) {
 module.exports = ContactOrganization;
 });
 
-// file: lib\common\plugin\Coordinates.js
+// file: lib/common/plugin/Coordinates.js
 define("cordova/plugin/Coordinates", function(require, exports, module) {
 /**
  * This class contains position information.
@@ -1705,7 +1708,7 @@ var Coordinates = function(lat, lng, alt, acc, head, vel, altacc) {
 module.exports = Coordinates;
 });
 
-// file: lib\common\plugin\DirectoryEntry.js
+// file: lib/common/plugin/DirectoryEntry.js
 define("cordova/plugin/DirectoryEntry", function(require, exports, module) {
 var utils = require('cordova/utils'),
     exec = require('cordova/exec'),
@@ -1791,7 +1794,7 @@ module.exports = DirectoryEntry;
 
 });
 
-// file: lib\common\plugin\DirectoryReader.js
+// file: lib/common/plugin/DirectoryReader.js
 define("cordova/plugin/DirectoryReader", function(require, exports, module) {
 var exec = require('cordova/exec'),
     FileError = require('cordova/plugin/FileError') ;
@@ -1838,7 +1841,7 @@ module.exports = DirectoryReader;
 
 });
 
-// file: lib\common\plugin\Entry.js
+// file: lib/common/plugin/Entry.js
 define("cordova/plugin/Entry", function(require, exports, module) {
 var exec = require('cordova/exec'),
     FileError = require('cordova/plugin/FileError'),
@@ -2045,7 +2048,7 @@ Entry.prototype.getParent = function(successCallback, errorCallback) {
 module.exports = Entry;
 });
 
-// file: lib\common\plugin\File.js
+// file: lib/common/plugin/File.js
 define("cordova/plugin/File", function(require, exports, module) {
 /**
  * Constructor.
@@ -2067,7 +2070,7 @@ var File = function(name, fullPath, type, lastModifiedDate, size){
 module.exports = File;
 });
 
-// file: lib\common\plugin\FileEntry.js
+// file: lib/common/plugin/FileEntry.js
 define("cordova/plugin/FileEntry", function(require, exports, module) {
 var utils = require('cordova/utils'),
     exec = require('cordova/exec'),
@@ -2134,7 +2137,7 @@ FileEntry.prototype.file = function(successCallback, errorCallback) {
 module.exports = FileEntry;
 });
 
-// file: lib\common\plugin\FileError.js
+// file: lib/common/plugin/FileError.js
 define("cordova/plugin/FileError", function(require, exports, module) {
 /**
  * FileError
@@ -2163,7 +2166,7 @@ FileError.PATH_EXISTS_ERR = 12;
 module.exports = FileError;
 });
 
-// file: lib\common\plugin\FileReader.js
+// file: lib/common/plugin/FileReader.js
 define("cordova/plugin/FileReader", function(require, exports, module) {
 var exec = require('cordova/exec'),
     FileError = require('cordova/plugin/FileError'),
@@ -2416,7 +2419,7 @@ FileReader.prototype.readAsArrayBuffer = function(file) {
 module.exports = FileReader;
 });
 
-// file: lib\common\plugin\FileSystem.js
+// file: lib/common/plugin/FileSystem.js
 define("cordova/plugin/FileSystem", function(require, exports, module) {
 var DirectoryEntry = require('cordova/plugin/DirectoryEntry');
 
@@ -2437,7 +2440,7 @@ var FileSystem = function(name, root) {
 module.exports = FileSystem;
 });
 
-// file: lib\common\plugin\FileTransfer.js
+// file: lib/common/plugin/FileTransfer.js
 define("cordova/plugin/FileTransfer", function(require, exports, module) {
 var exec = require('cordova/exec');
 
@@ -2511,7 +2514,7 @@ module.exports = FileTransfer;
 
 });
 
-// file: lib\common\plugin\FileTransferError.js
+// file: lib/common/plugin/FileTransferError.js
 define("cordova/plugin/FileTransferError", function(require, exports, module) {
 /**
  * FileTransferError
@@ -2528,7 +2531,7 @@ FileTransferError.CONNECTION_ERR = 3;
 module.exports = FileTransferError;
 });
 
-// file: lib\common\plugin\FileUploadOptions.js
+// file: lib/common/plugin/FileUploadOptions.js
 define("cordova/plugin/FileUploadOptions", function(require, exports, module) {
 /**
  * Options to customize the HTTP request used to upload files.
@@ -2548,7 +2551,7 @@ var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
 module.exports = FileUploadOptions;
 });
 
-// file: lib\common\plugin\FileUploadResult.js
+// file: lib/common/plugin/FileUploadResult.js
 define("cordova/plugin/FileUploadResult", function(require, exports, module) {
 /**
  * FileUploadResult
@@ -2563,7 +2566,7 @@ var FileUploadResult = function() {
 module.exports = FileUploadResult;
 });
 
-// file: lib\common\plugin\FileWriter.js
+// file: lib/common/plugin/FileWriter.js
 define("cordova/plugin/FileWriter", function(require, exports, module) {
 var exec = require('cordova/exec'),
     FileError = require('cordova/plugin/FileError'),
@@ -2821,7 +2824,7 @@ module.exports = FileWriter;
 
 });
 
-// file: lib\common\plugin\Flags.js
+// file: lib/common/plugin/Flags.js
 define("cordova/plugin/Flags", function(require, exports, module) {
 /**
  * Supplies arguments to methods that lookup or create files and directories.
@@ -2840,7 +2843,7 @@ function Flags(create, exclusive) {
 module.exports = Flags;
 });
 
-// file: lib\common\plugin\LocalFileSystem.js
+// file: lib/common/plugin/LocalFileSystem.js
 define("cordova/plugin/LocalFileSystem", function(require, exports, module) {
 var exec = require('cordova/exec');
 
@@ -2857,7 +2860,7 @@ LocalFileSystem.PERSISTENT = 1; //persistent
 module.exports = LocalFileSystem;
 });
 
-// file: lib\common\plugin\Media.js
+// file: lib/common/plugin/Media.js
 define("cordova/plugin/Media", function(require, exports, module) {
 var utils = require('cordova/utils'),
     exec = require('cordova/exec');
@@ -3048,7 +3051,7 @@ Media.onStatus = function(id, msg, value) {
 module.exports = Media;
 });
 
-// file: lib\common\plugin\MediaError.js
+// file: lib/common/plugin/MediaError.js
 define("cordova/plugin/MediaError", function(require, exports, module) {
 /**
  * This class contains information about any Media errors.
@@ -3068,7 +3071,7 @@ MediaError.MEDIA_ERR_NONE_SUPPORTED = 4;
 module.exports = MediaError;
 });
 
-// file: lib\common\plugin\MediaFile.js
+// file: lib/common/plugin/MediaFile.js
 define("cordova/plugin/MediaFile", function(require, exports, module) {
 var utils = require('cordova/utils'),
     exec = require('cordova/exec'),
@@ -3084,7 +3087,7 @@ var utils = require('cordova/utils'),
  * size {Number} size of the file in bytes
  */
 var MediaFile = function(name, fullPath, type, lastModifiedDate, size){
-  MediaFile.__super__.constructor.apply(this, arguments);
+    MediaFile.__super__.constructor.apply(this, arguments);
 };
 
 utils.extend(MediaFile, File);
@@ -3099,10 +3102,11 @@ MediaFile.prototype.getFormatData = function(successCallback, errorCallback) {
     if (typeof this.fullPath === "undefined" || this.fullPath === null) {
         errorCallback(new CaptureError(CaptureError.CAPTURE_INVALID_ARGUMENT));
     } else {
-    exec(successCallback, errorCallback, "Capture", "getFormatData", [this.fullPath, this.type]);
+        exec(successCallback, errorCallback, "Capture", "getFormatData", [this.fullPath, this.type]);
     }
 };
 
+// TODO: can we axe this?
 /**
  * Casts a PluginResult message property  (array of objects) to an array of MediaFile objects
  * (used in Objective-C and Android)
@@ -3110,25 +3114,25 @@ MediaFile.prototype.getFormatData = function(successCallback, errorCallback) {
  * @param {PluginResult} pluginResult
  */
 MediaFile.cast = function(pluginResult) {
-  var mediaFiles = [];
-  var i;
-  for (i=0; i<pluginResult.message.length; i++) {
-    var mediaFile = new MediaFile();
-    mediaFile.name = pluginResult.message[i].name;
-    mediaFile.fullPath = pluginResult.message[i].fullPath;
-    mediaFile.type = pluginResult.message[i].type;
-    mediaFile.lastModifiedDate = pluginResult.message[i].lastModifiedDate;
-    mediaFile.size = pluginResult.message[i].size;
-    mediaFiles.push(mediaFile);
-  }
-  pluginResult.message = mediaFiles;
-  return pluginResult;
+    var mediaFiles = [];
+    for (var i=0; i<pluginResult.message.length; i++) {
+        var mediaFile = new MediaFile();
+        mediaFile.name = pluginResult.message[i].name;
+        mediaFile.fullPath = pluginResult.message[i].fullPath;
+        mediaFile.type = pluginResult.message[i].type;
+        mediaFile.lastModifiedDate = pluginResult.message[i].lastModifiedDate;
+        mediaFile.size = pluginResult.message[i].size;
+        mediaFiles.push(mediaFile);
+    }
+    pluginResult.message = mediaFiles;
+    return pluginResult;
 };
 
 module.exports = MediaFile;
+
 });
 
-// file: lib\common\plugin\MediaFileData.js
+// file: lib/common/plugin/MediaFileData.js
 define("cordova/plugin/MediaFileData", function(require, exports, module) {
 /**
  * MediaFileData encapsulates format information of a media file.
@@ -3150,7 +3154,7 @@ var MediaFileData = function(codecs, bitrate, height, width, duration){
 module.exports = MediaFileData;
 });
 
-// file: lib\common\plugin\Metadata.js
+// file: lib/common/plugin/Metadata.js
 define("cordova/plugin/Metadata", function(require, exports, module) {
 /**
  * Information about the state of the file or directory
@@ -3164,7 +3168,7 @@ var Metadata = function(time) {
 module.exports = Metadata;
 });
 
-// file: lib\common\plugin\Position.js
+// file: lib/common/plugin/Position.js
 define("cordova/plugin/Position", function(require, exports, module) {
 var Coordinates = require('cordova/plugin/Coordinates');
 
@@ -3176,7 +3180,7 @@ var Position = function(coords, timestamp) {
 module.exports = Position;
 });
 
-// file: lib\common\plugin\PositionError.js
+// file: lib/common/plugin/PositionError.js
 define("cordova/plugin/PositionError", function(require, exports, module) {
 /**
  * Position error object
@@ -3197,7 +3201,7 @@ PositionError.TIMEOUT = 3;
 module.exports = PositionError;
 });
 
-// file: lib\common\plugin\ProgressEvent.js
+// file: lib/common/plugin/ProgressEvent.js
 define("cordova/plugin/ProgressEvent", function(require, exports, module) {
 // If ProgressEvent exists in global context, use it already, otherwise use our own polyfill
 // Feature test: See if we can instantiate a native ProgressEvent;
@@ -3247,7 +3251,7 @@ var ProgressEvent = (function() {
 module.exports = ProgressEvent;
 });
 
-// file: lib\common\plugin\accelerometer.js
+// file: lib/common/plugin/accelerometer.js
 define("cordova/plugin/accelerometer", function(require, exports, module) {
 /**
  * This class provides access to device accelerometer data.
@@ -3346,7 +3350,7 @@ var accelerometer = {
 module.exports = accelerometer;
 });
 
-// file: lib\common\plugin\battery.js
+// file: lib/common/plugin/battery.js
 define("cordova/plugin/battery", function(require, exports, module) {
 /**
  * This class contains information about the current battery status.
@@ -3437,7 +3441,7 @@ var battery = new Battery();
 module.exports = battery;
 });
 
-// file: lib\common\plugin\capture.js
+// file: lib/common/plugin/capture.js
 define("cordova/plugin/capture", function(require, exports, module) {
 var exec = require('cordova/exec'),
     MediaFile = require('cordova/plugin/MediaFile');
@@ -3514,7 +3518,7 @@ module.exports = new Capture();
 
 });
 
-// file: lib\common\plugin\compass.js
+// file: lib/common/plugin/compass.js
 define("cordova/plugin/compass", function(require, exports, module) {
 var exec = require('cordova/exec'),
     utils = require('cordova/utils'),
@@ -3619,7 +3623,7 @@ var exec = require('cordova/exec'),
 module.exports = compass;
 });
 
-// file: lib\common\plugin\contacts.js
+// file: lib/common/plugin/contacts.js
 define("cordova/plugin/contacts", function(require, exports, module) {
 var exec = require('cordova/exec'),
     ContactError = require('cordova/plugin/ContactError'),
@@ -3680,7 +3684,7 @@ var contacts = {
 module.exports = contacts;
 });
 
-// file: lib\common\plugin\geolocation.js
+// file: lib/common/plugin/geolocation.js
 define("cordova/plugin/geolocation", function(require, exports, module) {
 var utils = require('cordova/utils'),
     exec = require('cordova/exec'),
@@ -3778,7 +3782,7 @@ var geolocation = {
 module.exports = geolocation;
 });
 
-// file: lib\common\plugin\network.js
+// file: lib/common/plugin/network.js
 define("cordova/plugin/network", function(require, exports, module) {
 var exec = require('cordova/exec'),
     cordova = require('cordova'),
@@ -3842,7 +3846,7 @@ NetworkConnection.prototype.getInfo = function (successCallback, errorCallback) 
 module.exports = new NetworkConnection();
 });
 
-// file: lib\common\plugin\notification.js
+// file: lib/common/plugin/notification.js
 define("cordova/plugin/notification", function(require, exports, module) {
 var exec = require('cordova/exec');
 
@@ -3902,7 +3906,7 @@ module.exports = {
 };
 });
 
-// file: lib\common\plugin\requestFileSystem.js
+// file: lib/common/plugin/requestFileSystem.js
 define("cordova/plugin/requestFileSystem", function(require, exports, module) {
 var FileError = require('cordova/plugin/FileError'),
     FileSystem = require('cordova/plugin/FileSystem'),
@@ -3946,7 +3950,7 @@ var requestFileSystem = function(type, size, successCallback, errorCallback) {
 module.exports = requestFileSystem;
 });
 
-// file: lib\common\plugin\resolveLocalFileSystemURI.js
+// file: lib/common/plugin/resolveLocalFileSystemURI.js
 define("cordova/plugin/resolveLocalFileSystemURI", function(require, exports, module) {
 var DirectoryEntry = require('cordova/plugin/DirectoryEntry'),
     FileEntry = require('cordova/plugin/FileEntry'),
@@ -3993,7 +3997,7 @@ module.exports = function(uri, successCallback, errorCallback) {
 
 });
 
-// file: lib\wp7\plugin\wp7\CordovaCommandResult.js
+// file: lib/wp7/plugin/wp7/CordovaCommandResult.js
 define("cordova/plugin/wp7/CordovaCommandResult", function(require, exports, module) {
 
 var cordova = require('cordova');
@@ -4049,7 +4053,7 @@ module.exports = function(status,callbackId,args,cast) {
 };
 });
 
-// file: lib\wp7\plugin\wp7\CordovaMediaonStatus.js
+// file: lib/wp7/plugin/wp7/CordovaMediaonStatus.js
 define("cordova/plugin/wp7/CordovaMediaonStatus", function(require, exports, module) {
 
 var cordova = require('cordova');
@@ -4062,7 +4066,7 @@ module.exports = function(args) {
 };
 });
 
-// file: lib\wp7\plugin\wp7\DOMStorage.js
+// file: lib/wp7/plugin/wp7/DOMStorage.js
 define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
 (function() {
 
@@ -4229,7 +4233,7 @@ define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
 module.exports = null;
 });
 
-// file: lib\wp7\plugin\wp7\XHRPatch.js
+// file: lib/wp7/plugin/wp7/XHRPatch.js
 define("cordova/plugin/wp7/XHRPatch", function(require, exports, module) {
 // TODO: the build process implicitly will wrap this in a define() call
 // with a closure of its own; do you need this extra closure?
@@ -4431,7 +4435,7 @@ if (!docDomain || docDomain.length === 0) {
 module.exports = null;
 });
 
-// file: lib\wp7\plugin\wp7\console.js
+// file: lib/wp7/plugin/wp7/console.js
 define("cordova/plugin/wp7/console", function(require, exports, module) {
 
 var exec = require('cordova/exec'),
@@ -4453,7 +4457,7 @@ var debugConsole = {
 module.exports = debugConsole;
 });
 
-// file: lib\wp7\plugin\wp7\device.js
+// file: lib/wp7/plugin/wp7/device.js
 define("cordova/plugin/wp7/device", function(require, exports, module) {
 var channel = require('cordova/channel'),
     utils = require('cordova/utils'),
@@ -4517,7 +4521,7 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
 module.exports = new Device();
 });
 
-// file: lib\wp7\plugin\wp7\requestFileSystem.js
+// file: lib/wp7/plugin/wp7/requestFileSystem.js
 define("cordova/plugin/wp7/requestFileSystem", function(require, exports, module) {
 
 var FileError = require('cordova/plugin/FileError'),
@@ -4563,7 +4567,7 @@ var requestFileSystem = function(type, size, successCallback, errorCallback) {
 module.exports = requestFileSystem;
 });
 
-// file: lib\wp7\plugin\wp7\resolveLocalFileSystemURI.js
+// file: lib/wp7/plugin/wp7/resolveLocalFileSystemURI.js
 define("cordova/plugin/wp7/resolveLocalFileSystemURI", function(require, exports, module) {
 
 
@@ -4606,7 +4610,7 @@ module.exports = function(uri, successCallback, errorCallback) {
 
 });
 
-// file: lib\common\utils.js
+// file: lib/common/utils.js
 define("cordova/utils", function(require, exports, module) {
 function UUIDcreatePart(length) {
     var uuidpart = "";
@@ -4717,7 +4721,7 @@ module.exports = _self;
 
 window.cordova = require('cordova');
 
-// file: lib\scripts\bootstrap.js
+// file: lib/scripts/bootstrap.js
 (function (context) {
     var channel = require("cordova/channel"),
         _self = {
