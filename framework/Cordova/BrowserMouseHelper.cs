@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media;
 using System;
+using System.Collections.Generic;
 
 namespace WP7CordovaClassLib
 {
@@ -62,7 +63,14 @@ namespace WP7CordovaClassLib
         /// </summary>
         public bool ScrollDisabled { get; set; }
         public bool ZoomDisabled { get; set; }
+
+        private bool isScaling = false;
+
+        private bool userScalable = true;
+        private double maxScale = 2.0;
+        private double minScale = 0.5;
         protected Border border;
+
 
         public BrowserMouseHelper(WebBrowser browser)
         {
@@ -93,20 +101,49 @@ namespace WP7CordovaClassLib
 
         }
 
-        void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        void ParseViewportMeta()
         {
-
             string metaScript = "(function() { return document.querySelector('meta[name=viewport]').content; })()";
-            string scriptRet = null;
 
             try
             {
-                string eval = _browser.InvokeScript("eval",new string[] {metaScript}) as string;
+                string metaContent = _browser.InvokeScript("eval", new string[] { metaScript }) as string;
+                string[] arr = metaContent.Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+                Dictionary<string, string> metaDictionary = new Dictionary<string, string>();
+                foreach (string val in arr)
+                {
+                    string[] keyVal = val.Split('=');
+                    metaDictionary.Add(keyVal[0], keyVal[1]);
+                }
+
+                this.userScalable = false; // reset to default
+                if (metaDictionary.ContainsKey("user-scalable"))
+                {
+                    this.userScalable = metaDictionary["user-scalable"] == "yes";
+                }
+
+                this.maxScale = 2.0;// reset to default
+                if (metaDictionary.ContainsKey("maximum-scale"))
+                {
+                    this.maxScale = double.Parse(metaDictionary["maximum-scale"]);
+                }
+
+                this.minScale = 0.5;// reset to default
+                if (metaDictionary.ContainsKey("minimum-scale"))
+                {
+                    this.minScale = double.Parse(metaDictionary["minimum-scale"]);
+                }
             }
             catch (Exception)
             {
 
             }
+        }
+
+        void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+
+            ParseViewportMeta();
 
 
             try
@@ -142,25 +179,23 @@ namespace WP7CordovaClassLib
 
         void Border_Hold(object sender, GestureEventArgs e)
         {
+            Debug.WriteLine("Border_Hold");
             e.Handled = true;
         }
 
         void Border_DoubleTap(object sender, GestureEventArgs e)
         {
+            Debug.WriteLine("Border_DoubleTap");
             e.Handled = true;
-        }
-
-        void Border_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
-        {
-            if (ScrollDisabled)
-            {
-                e.Handled = true;
-                e.Complete();
-            }
         }
 
         void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (isScaling)
+                return;
+
+            Debug.WriteLine("Border_MouseLeftButtonDown");
+
             border.MouseMove += new MouseEventHandler(Border_MouseMove);
             border.MouseLeftButtonUp += new MouseButtonEventHandler(Border_MouseLeftButtonUp);
 
@@ -173,6 +208,11 @@ namespace WP7CordovaClassLib
 
         void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            if (isScaling)
+                return;
+
+            Debug.WriteLine("Border_MouseLeftButtonUp");
+
             border.MouseMove -= new MouseEventHandler(Border_MouseMove);
             border.MouseLeftButtonUp -= new MouseButtonEventHandler(Border_MouseLeftButtonUp);
             Point pos = e.GetPosition(_browser);
@@ -185,7 +225,10 @@ namespace WP7CordovaClassLib
 
         void Border_MouseMove(object sender, MouseEventArgs e)
         {
-            //Debug.WriteLine("Border_MouseMove");
+            if (isScaling)
+                return;
+
+            Debug.WriteLine("Border_MouseMove");
             Point pos = e.GetPosition(_browser);
 
             bool bCancelled = InvokeSimulatedMouseEvent("mousemove", pos);
@@ -193,11 +236,26 @@ namespace WP7CordovaClassLib
 
         }
 
+        void Border_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
+        {
+            Debug.WriteLine("Border_ManipulationStarted");
+
+            if (ScrollDisabled)
+            {
+                e.Handled = true;
+                e.Complete();
+            }
+            else if (this.userScalable)
+            {
+                isScaling = true;
+            }
+        }
+
         private void Border_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
         {
-            
+            Debug.WriteLine("Border_ManipulationCompleted");
             // suppress zoom
-            if (e.FinalVelocities != null)
+            if (!userScalable && e.FinalVelocities != null)
             {
                 if (e.FinalVelocities.ExpansionVelocity.X != 0.0 ||
                    e.FinalVelocities.ExpansionVelocity.Y != 0.0)
@@ -205,13 +263,19 @@ namespace WP7CordovaClassLib
                     e.Handled = true;
                 }
             }
+            this.isScaling = false;
         }
 
         private void Border_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
         {
-
+            Debug.WriteLine("Border_ManipulationDelta");
             // optionally suppress zoom
-            if (ZoomDisabled && (e.DeltaManipulation.Scale.X != 0.0 || e.DeltaManipulation.Scale.Y != 0.0) )
+            if (isScaling)
+            {
+                return;
+            }
+
+            if (!userScalable && (e.DeltaManipulation.Scale.X != 0.0 || e.DeltaManipulation.Scale.Y != 0.0))
             {
                 e.Handled = true;
                 e.Complete();
