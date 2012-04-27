@@ -215,6 +215,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
         /// <param name="options">Upload options</param>
         public void upload(string options)
         {
+            options = options.Replace("{}", "null");
+
             try
             {
                 try
