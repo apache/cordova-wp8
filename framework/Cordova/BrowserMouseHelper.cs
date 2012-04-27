@@ -95,6 +95,20 @@ namespace WP7CordovaClassLib
 
         void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
+
+            string metaScript = "(function() { return document.querySelector('meta[name=viewport]').content; })()";
+            string scriptRet = null;
+
+            try
+            {
+                string eval = _browser.InvokeScript("eval",new string[] {metaScript}) as string;
+            }
+            catch (Exception)
+            {
+
+            }
+
+
             try
             {
                 _browser.InvokeScript("execScript", MinifiedMouseScript);
