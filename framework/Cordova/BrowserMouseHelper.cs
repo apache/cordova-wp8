@@ -62,17 +62,15 @@ namespace WP7CordovaClassLib
         /// the WebBrowser control;
         /// </summary>
         public bool ScrollDisabled { get; set; }
-        public bool ZoomDisabled { get; set; }
-
-        private bool isScaling = false;
 
         private bool userScalable = true;
         private double maxScale = 2.0;
         private double minScale = 0.5;
         protected Border border;
+        private bool firstMouseMove = false;
 
 
-        public BrowserMouseHelper(WebBrowser browser)
+        public BrowserMouseHelper(ref WebBrowser browser)
         {
             _browser = browser;
             browser.Loaded += new RoutedEventHandler(browser_Loaded);
@@ -85,7 +83,6 @@ namespace WP7CordovaClassLib
             var panZoom = VisualTreeHelper.GetChild(border1, 0);
             var grid = VisualTreeHelper.GetChild(panZoom, 0);
             border = VisualTreeHelper.GetChild(grid, 0) as Border;
-
 
             if (border != null)
             {
@@ -142,9 +139,7 @@ namespace WP7CordovaClassLib
 
         void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-
             ParseViewportMeta();
-
 
             try
             {
@@ -154,7 +149,6 @@ namespace WP7CordovaClassLib
             {
                 Debug.WriteLine("BrowserHelper Failed to install mouse script in WebBrowser");
             }
-
         }
 
         bool InvokeSimulatedMouseEvent(string eventName, Point pos)
@@ -167,7 +161,6 @@ namespace WP7CordovaClassLib
                 {
                     return bCancelled;
                 }
-
             }
             catch (Exception)
             {
@@ -177,11 +170,17 @@ namespace WP7CordovaClassLib
             return bCancelled;
         }
 
+        #region Hold
+
         void Border_Hold(object sender, GestureEventArgs e)
         {
             Debug.WriteLine("Border_Hold");
             e.Handled = true;
         }
+
+        #endregion
+
+        #region DoubleTap
 
         void Border_DoubleTap(object sender, GestureEventArgs e)
         {
@@ -189,71 +188,73 @@ namespace WP7CordovaClassLib
             e.Handled = true;
         }
 
+        #endregion
+
+        #region MouseEvents
+
         void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (isScaling)
-                return;
-
-            Debug.WriteLine("Border_MouseLeftButtonDown");
-
             border.MouseMove += new MouseEventHandler(Border_MouseMove);
             border.MouseLeftButtonUp += new MouseButtonEventHandler(Border_MouseLeftButtonUp);
 
-            Point pos = e.GetPosition(_browser);
+            firstMouseMove = true;
 
-            bool bCancelled = InvokeSimulatedMouseEvent("mousedown", pos);
-            e.Handled = bCancelled;
-            ScrollDisabled = bCancelled;
+            Point pos = e.GetPosition(_browser);
+            InvokeSimulatedMouseEvent("mousedown", pos);
+        }
+
+        void Border_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point pos = e.GetPosition(_browser);
+            bool retVal = InvokeSimulatedMouseEvent("mousemove", pos);
+            // only the return value from the first mouse move event should be used to determine if scrolling is prevented.
+            if (firstMouseMove)
+            {
+                ScrollDisabled = retVal;
+            }
         }
 
         void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (isScaling)
-                return;
-
-            Debug.WriteLine("Border_MouseLeftButtonUp");
-
             border.MouseMove -= new MouseEventHandler(Border_MouseMove);
             border.MouseLeftButtonUp -= new MouseButtonEventHandler(Border_MouseLeftButtonUp);
             Point pos = e.GetPosition(_browser);
-
-            bool bCancelled = InvokeSimulatedMouseEvent("mouseup", pos);
-            e.Handled = bCancelled;
+            e.Handled = InvokeSimulatedMouseEvent("mouseup", pos);
             ScrollDisabled = false;
         }
 
 
-        void Border_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (isScaling)
-                return;
+        #endregion
 
-            Debug.WriteLine("Border_MouseMove");
-            Point pos = e.GetPosition(_browser);
-
-            bool bCancelled = InvokeSimulatedMouseEvent("mousemove", pos);
-            //ScrollDisabled = bCancelled;
-
-        }
+        #region ManipulationEvents
 
         void Border_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
         {
-            Debug.WriteLine("Border_ManipulationStarted");
-
             if (ScrollDisabled)
             {
                 e.Handled = true;
                 e.Complete();
             }
-            else if (this.userScalable)
+        }
+
+        private void Border_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
+            // optionally suppress zoom
+            if ((ScrollDisabled || !userScalable) && (e.DeltaManipulation.Scale.X != 0.0 || e.DeltaManipulation.Scale.Y != 0.0))
             {
-                isScaling = true;
+                e.Handled = true;
+                e.Complete();
+            }
+            // optionally suppress scrolling
+            if (ScrollDisabled && (e.DeltaManipulation.Translation.X != 0.0 || e.DeltaManipulation.Translation.Y != 0.0))
+            {
+                e.Handled = true;
+                e.Complete();
             }
         }
 
         private void Border_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
         {
-            Debug.WriteLine("Border_ManipulationCompleted");
             // suppress zoom
             if (!userScalable && e.FinalVelocities != null)
             {
@@ -263,30 +264,10 @@ namespace WP7CordovaClassLib
                     e.Handled = true;
                 }
             }
-            this.isScaling = false;
         }
 
-        private void Border_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
-        {
-            Debug.WriteLine("Border_ManipulationDelta");
-            // optionally suppress zoom
-            if (isScaling)
-            {
-                return;
-            }
 
-            if (!userScalable && (e.DeltaManipulation.Scale.X != 0.0 || e.DeltaManipulation.Scale.Y != 0.0))
-            {
-                e.Handled = true;
-                e.Complete();
-            }
-            // optionally suppress scrolling
-            if (ScrollDisabled && (e.DeltaManipulation.Translation.X != 0.0 || e.DeltaManipulation.Translation.Y != 0.0) )
-            {
-                e.Handled = true;
-                e.Complete();
-            }
-        }
+        #endregion
 
     }
 }
