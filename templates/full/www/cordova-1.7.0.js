@@ -1,6 +1,10 @@
-// commit 97d4ff51d1c63ce1017fd54e1493795c193722f6
+// commit 1c9ac3578a369dcb35b168c3e2d7ce2e89d45d12
 
-// File generated at :: Mon Apr 30 2012 12:27:44 GMT-0700 (Pacific Daylight Time)
+
+// File generated at :: Tue May 01 2012 13:46:18 GMT-0700 (Pacific Daylight Time)
+
+// WP7
+
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -349,10 +353,10 @@ function deprecateFunctions(obj, objLabel) {
  * TODO: remove in 2.0.
  */
 if (!window.PhoneGap) {
-    window.PhoneGap = deprecateFunctions(cordova, 'PhoneGap');
+    window.PhoneGap = cordova;
 }
 if (!window.Cordova) {
-    window.Cordova = deprecateFunctions(cordova, 'Cordova');
+    window.Cordova = cordova;
 }
 
 /**
@@ -906,6 +910,8 @@ var cordova = require('cordova');
 var NamedArgs =  {
     File:{
         getFileMetadata:["fullPath"],
+        getMetadata:["fullPath"],
+        getParent:["fullPath"],
         readAsText:["fileName","encoding"],
         readAsDataURL:["fileName"],
         getDirectory:["fullPath","path","options"],
@@ -917,7 +923,8 @@ var NamedArgs =  {
         truncate:["fileName","size"]
     },
     FileTransfer:{
-        upload:["filePath", "server", "fileKey", "fileName", "mimeType", "params", "debug", "chunkedMode"]
+        upload:["filePath", "server", "fileKey", "fileName", "mimeType", "params", "debug", "chunkedMode"],
+        download:["url","filePath"]
     },
     Contacts:{
         search:["fields","options"]
@@ -963,6 +970,7 @@ var NamedArgs =  {
  */
 
 module.exports = function(success, fail, service, action, args) {
+
 
     var callbackId = service + cordova.callbackId++;
     if (typeof success == "function" || typeof fail == "function")
