@@ -345,8 +345,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
                       
                     }
                 }
-
-                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK, reqState.options.FilePath));
+                 WP7CordovaClassLib.Cordova.Commands.File.FileEntry entry = new WP7CordovaClassLib.Cordova.Commands.File.FileEntry(reqState.options.FilePath);
+                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK, entry));
             }
             catch (IsolatedStorageException)
             {
