@@ -19,9 +19,6 @@
         // once the device ready event fires, you can safely do your thing! -jm
         function onDeviceReady()
         {
-            // IE does NOT provide an alert method, you can patch it with this line after deviceready.
-            window.alert = window.alert || navigator.notification.alert;
-
             document.getElementById("welcomeMsg").innerHTML += "Cordova is ready! version=" + window.device.cordova;
             console.log("onDeviceReady. You should see this message in Visual Studio's output window.");
 

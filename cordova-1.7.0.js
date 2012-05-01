@@ -1,10 +1,6 @@
-// commit 1c9ac3578a369dcb35b168c3e2d7ce2e89d45d12
+// commit 9cfdc134f83b5d51f655e52ec7d4ddab167437c7 WP7
 
-
-// File generated at :: Tue May 01 2012 13:46:18 GMT-0700 (Pacific Daylight Time)
-
-// WP7
-
+// File generated at :: Tue May 01 2012 14:51:58 GMT-0700 (Pacific Daylight Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -353,10 +349,10 @@ function deprecateFunctions(obj, objLabel) {
  * TODO: remove in 2.0.
  */
 if (!window.PhoneGap) {
-    window.PhoneGap = cordova;
+    window.PhoneGap = deprecateFunctions(cordova, 'PhoneGap');
 }
 if (!window.Cordova) {
-    window.Cordova = cordova;
+    window.Cordova = deprecateFunctions(cordova, 'Cordova');
 }
 
 /**
@@ -725,6 +721,20 @@ module.exports = {
                 }
             }
         },
+        Cordova: {
+            children: {
+                exec: {
+                    path: 'cordova/exec'
+                }
+            }
+        },
+        PhoneGap:{
+            children: {
+                exec: {
+                    path: 'cordova/exec'
+                }
+            }
+        },
         navigator: {
             children: {
                 notification: {
@@ -895,6 +905,7 @@ module.exports = {
         }
     }
 };
+
 });
 
 // file: lib\wp7\exec.js
@@ -1031,8 +1042,7 @@ module.exports = {
     id: "wp7",
     initialize:function() {
 
-
-
+	window.alert = require("cordova/plugin/notification").alert;
 
     // INject a lsitener for the backbutton, and tell native to override the flag (true/false) when we have 1 or more, or 0, listeners
     var backButtonChannel = cordova.addDocumentEventHandler('backbutton', {
