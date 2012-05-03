@@ -57,11 +57,11 @@ namespace WP7CordovaClassLib
         private bool OverrideBackButton = false;
 
         /// <summary>
-        /// Used for keeping track of our history
+        /// Sentinal to keep track of page changes as a result of the hardware back button
+        /// Set to false when the back-button is pressed, which calls js window.history.back()
+        /// If the page changes as a result of the back button the event is cancelled.
         /// </summary>
-        private Stack<Uri> history = new Stack<Uri>();
-        private bool IsBackButtonPressed = false;
-
+        private bool PageDidChange = false;
 
         private static string AppRoot = "/app/";
 
@@ -334,14 +334,10 @@ namespace WP7CordovaClassLib
             }
             else
             {
-                if (history.Count > 1)
-                {
-                    history.Pop();
-                    Uri next = history.Peek();
-                    IsBackButtonPressed = true;
-                    CordovaBrowser.Navigate(next);
-                    e.Cancel = true;
-                }
+                PageDidChange = false;
+                // calling js history.back with result in a page change if history was valid.
+                CordovaBrowser.InvokeScript("eval", new string[] { "(function(){window.history.back();})()" });
+                e.Cancel = PageDidChange;
             }
         }
 
@@ -368,21 +364,11 @@ namespace WP7CordovaClassLib
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
-            if (!IsBackButtonPressed)
-            {
-                history.Push(e.Uri);
-            }
-            else
-            {
-                IsBackButtonPressed = false;
-            }
-
+            this.PageDidChange = true;
             Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
             // TODO: tell any running plugins to stop doing what they are doing.
             // TODO: check whitelist / blacklist
             // NOTE: Navigation can be cancelled by setting :        e.Cancel = true;
-
-
         }
 
         /*
@@ -428,7 +414,6 @@ namespace WP7CordovaClassLib
             }
             else
             {
-                //Debug.WriteLine("ProcessCommand :: " + commandStr);
                 this.nativeExecution.ProcessCommand(commandCallParams);
             }
         }
