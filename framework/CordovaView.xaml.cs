@@ -320,6 +320,7 @@ namespace WP7CordovaClassLib
 
         void page_BackKeyPress(object sender, CancelEventArgs e)
         {
+           
             if (OverrideBackButton)
             {
                 try
@@ -334,10 +335,17 @@ namespace WP7CordovaClassLib
             }
             else
             {
-                PageDidChange = false;
-                // calling js history.back with result in a page change if history was valid.
-                CordovaBrowser.InvokeScript("eval", new string[] { "(function(){window.history.back();})()" });
-                e.Cancel = PageDidChange;
+                try
+                {
+                    PageDidChange = false;
+                    // calling js history.back with result in a page change if history was valid.
+                    CordovaBrowser.InvokeScript("eval", new string[] { "(function(){window.history.back();})()" });
+                    e.Cancel = PageDidChange;
+                }
+                catch (Exception)
+                {
+                    e.Cancel = false; // exit the app ... ?
+                }
             }
         }
 
