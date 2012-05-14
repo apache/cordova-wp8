@@ -83,8 +83,22 @@ namespace WP7CordovaClassLib.Cordova.Commands
             /// <summary>
             /// File path
             /// </summary>
+            /// 
+            private string _fileName;
             [DataMember(Name = "fileName")]
-            public string FilePath { get; set; }
+            public string FilePath 
+            {
+                get
+                {
+                    return this._fileName;
+                }
+
+                set
+                {
+                    int index = value.IndexOfAny(new char[] {'#','?'});
+                    this._fileName = index > -1 ? value.Substring(0, index) : value;
+                }
+            }
 
             /// <summary>
             /// Full entryPath
@@ -113,8 +127,22 @@ namespace WP7CordovaClassLib.Cordova.Commands
             /// <summary>
             /// Uri to get file
             /// </summary>
+            /// 
+            private string _uri;
             [DataMember(Name = "uri")]
-            public string Uri { get; set; }
+            public string Uri 
+            {
+                get
+                {
+                    return this._uri;
+                }
+
+                set
+                {
+                    int index = value.IndexOfAny(new char[] { '#', '?' });
+                    this._uri = index > -1 ? value.Substring(0, index) : value;
+                }
+            }
 
             /// <summary>
             /// Size to truncate file
@@ -715,8 +743,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
                     }
                     else if (isoFile.DirectoryExists(fileOptions.FullPath))
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK,
-                        new ModificationMetadata() { modificationTime = isoFile.GetLastWriteTime(fileOptions.FullPath).DateTime.ToString() }));
+                        string modTime = isoFile.GetLastWriteTime(fileOptions.FullPath).DateTime.ToString();
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK, new ModificationMetadata() { modificationTime = modTime }));
                     }
                     else
                     {
@@ -1323,7 +1351,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
                 try
                 {
-                    path = Path.Combine(fileOptions.FullPath, fileOptions.Path);
+                    path = Path.Combine(fileOptions.FullPath + "/", fileOptions.Path);
                 }
                 catch (Exception)
                 {
@@ -1404,6 +1432,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
         private static string AddSlashToDirectory(string dirPath)
         {
+            Debug.WriteLine("AddSlashToDirectory :: " + dirPath);
             if (dirPath.EndsWith("/"))
             {
                 return dirPath;
