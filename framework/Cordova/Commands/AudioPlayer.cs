@@ -22,6 +22,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Phone.Controls;
+using System.Diagnostics;
 
 namespace WP7CordovaClassLib.Cordova.Commands
 {    
@@ -271,6 +272,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
                             }
                             else
                             {
+                                Debug.WriteLine("Error: source doesn't exist :: " + filePath);
                                 throw new ArgumentException("Source doesn't exist");
                             }
                         }
