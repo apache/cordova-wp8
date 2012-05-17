@@ -86,6 +86,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="www\master.css" />
+    <None Include="cordova\debug.bat" />
+    <None Include="cordova\emulate.bat" />
     <None Include="Properties\AppManifest.xml">
       <SubType>Designer</SubType>
     </None>
