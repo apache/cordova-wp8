@@ -1432,7 +1432,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
         private static string AddSlashToDirectory(string dirPath)
         {
-            Debug.WriteLine("AddSlashToDirectory :: " + dirPath);
+            //Debug.WriteLine("AddSlashToDirectory :: " + dirPath);
             if (dirPath.EndsWith("/"))
             {
                 return dirPath;
