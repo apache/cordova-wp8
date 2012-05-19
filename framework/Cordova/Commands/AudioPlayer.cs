@@ -29,7 +29,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
     /// <summary>
     /// Implements audio record and play back functionality.
     /// </summary>
-    internal class AudioPlayer: IDisposable
+    internal class AudioPlayer : IDisposable
     {
         #region Constants
         
@@ -56,6 +56,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
         private const int MediaErrorPauseState = 7;
         private const int MediaErrorStopState = 8;
 
+        //TODO: get rid of this callback, it should be universal
         private const string CallbackFunction = "CordovaMediaonStatus";
 
         #endregion
@@ -131,6 +132,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
         /// </summary>
         public void Dispose()
         {
+            Debug.WriteLine("Dispose :: " + this.audioFile);
             if (this.player != null)
             {
                 this.stopPlaying();
@@ -225,7 +227,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
             }
 
 
-            if ((this.player == null) || (this.state == MediaStopped))
+            if (this.player == null) 
             {
                 try
                 {
@@ -241,7 +243,9 @@ namespace WP7CordovaClassLib.Cordova.Commands
                                 Grid grid = page.FindName("LayoutRoot") as Grid;
                                 if (grid != null)
                                 {
+                                    
                                     this.player = new MediaElement();
+                                    this.player.Name = "playerMediaElement";
                                     grid.Children.Add(this.player);
                                     this.player.Visibility = Visibility.Collapsed;
                                     this.player.MediaOpened += MediaOpened;
@@ -281,13 +285,13 @@ namespace WP7CordovaClassLib.Cordova.Commands
                 }
                 catch (Exception e)
                 {
-                    string s = e.Message;
+                    Debug.WriteLine("Error: " + e.Message);
                     this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaError, MediaErrorStartingPlayback));
                 }
             }
             else
             {
-                if ((this.state == MediaPaused) || (this.state == MediaStarting))
+                if (this.state != MediaRunning)
                 {
                     this.player.Play();
                     this.SetState(MediaRunning);
@@ -340,8 +344,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
         { 
             if (this.player != null)
             {
-                TimeSpan timeSpen = new TimeSpan(0, 0, 0, 0, milliseconds);
-                this.player.Position = timeSpen;
+                TimeSpan tsPos = new TimeSpan(0, 0, 0, 0, milliseconds);
+                this.player.Position = tsPos;
                 this.handler.InvokeCustomScript(new ScriptCallback(CallbackFunction, this.id, MediaPosition, milliseconds / 1000.0f));
             }
         }
@@ -370,6 +374,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
             if ((this.state == MediaRunning) || (this.state == MediaPaused))
             {
                 this.player.Stop();
+
+                this.player.Position = new TimeSpan(0L);
                 this.SetState(MediaStopped);
             } else
             {
