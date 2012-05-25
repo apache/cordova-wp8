@@ -1,6 +1,10 @@
-// commit 4a4ba9985c920850fe3f229abc60de984e196ab5
+// commit eab1ae45c970f66068784cb614bf544508e0654a
 
-// File generated at :: Fri May 18 2012 14:31:57 GMT-0700 (Pacific Daylight Time)
+
+// File generated at :: Fri May 25 2012 15:00:12 GMT-0700 (Pacific Daylight Time)
+
+
+// BUilt for WP7 - jm
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -711,6 +715,9 @@ module.exports = {
             children: {
                 exec: {
                     path: 'cordova/exec'
+                },
+                logger: {
+                    path: 'cordova/plugin/logger'
                 }
             }
         },
@@ -929,7 +936,9 @@ var NamedArgs =  {
         write:["fileName","data","position"],
         truncate:["fileName","size"],
         copyTo:["fullPath","parent", "newName"],
-        moveTo:["fullPath","parent", "newName"]
+        moveTo:["fullPath","parent", "newName"],
+        requestFileSystem:["type","size"],
+        resolveLocalFileSystemURI:["uri"]
     },
     FileTransfer:{
         upload:["filePath", "server", "fileKey", "fileName", "mimeType", "params", "debug", "chunkedMode"],
@@ -941,10 +950,10 @@ var NamedArgs =  {
     Media:{
         create:["id","src"],
         startPlayingAudio:["id","src","milliseconds"],
-        //stopPlayingAudio
+        stopPlayingAudio:["id"],
         seekToAudio:["id","milliseconds"],
-        //pausePlayingAudio
-        //getCurrentPositionAudio
+        pausePlayingAudio:["id"],
+        getCurrentPositionAudio:["id"],
         startRecordingAudio:["id","src"],
         stopRecordingAudio:["id"],
         release:["id"],
@@ -1064,10 +1073,10 @@ module.exports = {
             path:"cordova/plugin/wp7/CordovaMediaonStatus"
         },
         requestFileSystem: {
-            path:"cordova/plugin/wp7/requestFileSystem"
+            path:"cordova/plugin/requestFileSystem"
         },
         resolveLocalFileSystemURI: {
-            path:"cordova/plugin/wp7/resolveLocalFileSystemURI"
+            path:"cordova/plugin/resolveLocalFileSystemURI"
         },
         File: {
             path: "cordova/plugin/File"
@@ -1136,7 +1145,7 @@ for (var key in Camera) {
  * Gets a picture from source defined by "options.sourceType", and returns the
  * image as defined by the "options.destinationType" option.
 
- * The defaults are sourceType=CAMERA and destinationType=FILE_URL.
+ * The defaults are sourceType=CAMERA and destinationType=FILE_URI.
  *
  * @param {Function} successCallback
  * @param {Function} errorCallback
@@ -1222,8 +1231,12 @@ cameraExport.getPicture = function(successCallback, errorCallback, options) {
     } else if (typeof options.saveToPhotoAlbum == "number") {
         saveToPhotoAlbum = options.saveToPhotoAlbum <=0 ? false : true;
     }
+    var popoverOptions = null;
+    if (typeof options.popoverOptions == "object") {
+        popoverOptions = options.popoverOptions;
+    }
 
-    exec(successCallback, errorCallback, "Camera", "takePicture", [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType, mediaType, allowEdit, correctOrientation, saveToPhotoAlbum]);
+    exec(successCallback, errorCallback, "Camera", "takePicture", [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType, mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions]);
 };
 
 module.exports = cameraExport;
@@ -1249,6 +1262,13 @@ module.exports = {
     PHOTOLIBRARY : 0,    // Choose image from picture library (same as SAVEDPHOTOALBUM for Android)
     CAMERA : 1,          // Take picture from camera
     SAVEDPHOTOALBUM : 2  // Choose image from picture library (same as PHOTOLIBRARY for Android)
+  },
+  PopoverArrowDirection:{
+      ARROW_UP : 1,        // matches iOS UIPopoverArrowDirection constants to specify arrow location on popover
+      ARROW_DOWN : 2,
+      ARROW_LEFT : 4,
+      ARROW_RIGHT : 8,
+      ARROW_ANY : 15
   }
 };
 });
@@ -2082,7 +2102,7 @@ Entry.prototype.toURL = function() {
 Entry.prototype.toURI = function(mimeType) {
     console.log("DEPRECATED: Update your code to use 'toURL'");
     // fullPath attribute contains the full URI
-    return this.fullPath;
+    return this.toURL();
 };
 
 /**
@@ -3759,6 +3779,177 @@ var exec = require('cordova/exec'),
 module.exports = compass;
 });
 
+// file: lib\common\plugin\console-via-logger.js
+define("cordova/plugin/console-via-logger", function(require, exports, module) {
+//------------------------------------------------------------------------------
+
+var logger = require("cordova/plugin/logger");
+var utils  = require("cordova/utils");
+
+//------------------------------------------------------------------------------
+// object that we're exporting
+//------------------------------------------------------------------------------
+var console = module.exports;
+
+//------------------------------------------------------------------------------
+// copy of the original console object
+//------------------------------------------------------------------------------
+var WinConsole = window.console;
+
+//------------------------------------------------------------------------------
+// whether to use the logger
+//------------------------------------------------------------------------------
+var UseLogger = false;
+
+//------------------------------------------------------------------------------
+// Timers
+//------------------------------------------------------------------------------
+var Timers = {};
+
+//------------------------------------------------------------------------------
+// used for unimplemented methods
+//------------------------------------------------------------------------------
+function noop() {}
+
+//------------------------------------------------------------------------------
+// used for unimplemented methods
+//------------------------------------------------------------------------------
+console.useLogger = function (value) {
+    if (arguments.length) UseLogger = !!value;
+
+    if (UseLogger) {
+        if (logger.useConsole()) {
+            throw new Error("console and logger are too intertwingly");
+        }
+    }
+
+    return UseLogger;
+};
+
+//------------------------------------------------------------------------------
+console.log = function() {
+    if (logger.useConsole()) return;
+    logger.log.apply(logger, [].slice.call(arguments));
+};
+
+//------------------------------------------------------------------------------
+console.error = function() {
+    if (logger.useConsole()) return;
+    logger.error.apply(logger, [].slice.call(arguments));
+};
+
+//------------------------------------------------------------------------------
+console.warn = function() {
+    if (logger.useConsole()) return;
+    logger.warn.apply(logger, [].slice.call(arguments));
+};
+
+//------------------------------------------------------------------------------
+console.info = function() {
+    if (logger.useConsole()) return;
+    logger.info.apply(logger, [].slice.call(arguments));
+};
+
+//------------------------------------------------------------------------------
+console.debug = function() {
+    if (logger.useConsole()) return;
+    logger.debug.apply(logger, [].slice.call(arguments));
+};
+
+//------------------------------------------------------------------------------
+console.assert = function(expression) {
+    if (expression) return;
+
+    var message = utils.vformat(arguments[1], [].slice.call(arguments, 2));
+    console.log("ASSERT: " + message);
+};
+
+//------------------------------------------------------------------------------
+console.clear = function() {};
+
+//------------------------------------------------------------------------------
+console.dir = function(object) {
+    console.log("%o", object);
+};
+
+//------------------------------------------------------------------------------
+console.dirxml = function(node) {
+    console.log(node.innerHTML);
+};
+
+//------------------------------------------------------------------------------
+console.trace = noop;
+
+//------------------------------------------------------------------------------
+console.group = console.log;
+
+//------------------------------------------------------------------------------
+console.groupCollapsed = console.log;
+
+//------------------------------------------------------------------------------
+console.groupEnd = noop;
+
+//------------------------------------------------------------------------------
+console.time = function(name) {
+    Timers[name] = new Date().valueOf();
+};
+
+//------------------------------------------------------------------------------
+console.timeEnd = function(name) {
+    var timeStart = Timers[name];
+    if (!timeStart) {
+        console.warn("unknown timer: " + name);
+        return;
+    }
+
+    var timeElapsed = new Date().valueOf() - timeStart;
+    console.log(name + ": " + timeElapsed + "ms");
+};
+
+//------------------------------------------------------------------------------
+console.timeStamp = noop;
+
+//------------------------------------------------------------------------------
+console.profile = noop;
+
+//------------------------------------------------------------------------------
+console.profileEnd = noop;
+
+//------------------------------------------------------------------------------
+console.count = noop;
+
+//------------------------------------------------------------------------------
+console.exception = console.log;
+
+//------------------------------------------------------------------------------
+console.table = function(data, columns) {
+    console.log("%o", data);
+};
+
+//------------------------------------------------------------------------------
+// return a new function that calls both functions passed as args
+//------------------------------------------------------------------------------
+function wrapperedOrigCall(orgFunc, newFunc) {
+    return function() {
+        var args = [].slice.call(arguments);
+        try { orgFunc.apply(WinConsole, args); } catch (e) {}
+        try { newFunc.apply(console,    args); } catch (e) {}
+    };
+}
+
+//------------------------------------------------------------------------------
+// For every function that exists in the original console object, that
+// also exists in the new console object, wrap the new console method
+// with one that calls both
+//------------------------------------------------------------------------------
+for (var key in console) {
+    if (typeof WinConsole[key] == "function") {
+        console[key] = wrapperedOrigCall(WinConsole[key], console[key]);
+    }
+}
+
+});
+
 // file: lib\common\plugin\contacts.js
 define("cordova/plugin/contacts", function(require, exports, module) {
 var exec = require('cordova/exec'),
@@ -4020,6 +4211,233 @@ module.exports = geolocation;
 
 });
 
+// file: lib\common\plugin\logger.js
+define("cordova/plugin/logger", function(require, exports, module) {
+//------------------------------------------------------------------------------
+// The logger module exports the following properties/functions:
+//
+// LOG                          - constant for the level LOG
+// ERROR                        - constant for the level ERROR
+// WARN                         - constant for the level WARN
+// INFO                         - constant for the level INFO
+// DEBUG                        - constant for the level DEBUG
+// logLevel()                   - returns current log level
+// logLevel(value)              - sets and returns a new log level
+// useConsole()                 - returns whether logger is using console
+// useConsole(value)            - sets and returns whether logger is using console
+// log(message,...)             - logs a message at level LOG
+// error(message,...)           - logs a message at level ERROR
+// warn(message,...)            - logs a message at level WARN
+// info(message,...)            - logs a message at level INFO
+// debug(message,...)           - logs a message at level DEBUG
+// logLevel(level,message,...)  - logs a message specified level
+//
+//------------------------------------------------------------------------------
+
+var logger = exports;
+
+var exec    = require('cordova/exec');
+var utils   = require('cordova/utils');
+
+var UseConsole   = true;
+var Queued       = [];
+var DeviceReady  = false;
+var CurrentLevel;
+
+/**
+ * Logging levels
+ */
+
+var Levels = [
+    "LOG",
+    "ERROR",
+    "WARN",
+    "INFO",
+    "DEBUG"
+];
+
+/*
+ * add the logging levels to the logger object and
+ * to a separate levelsMap object for testing
+ */
+
+var LevelsMap = {};
+for (var i=0; i<Levels.length; i++) {
+    var level = Levels[i];
+    LevelsMap[level] = i;
+    logger[level]    = level;
+}
+
+CurrentLevel = LevelsMap.WARN;
+
+/**
+ * Getter/Setter for the logging level
+ *
+ * Returns the current logging level.
+ *
+ * When a value is passed, sets the logging level to that value.
+ * The values should be one of the following constants:
+ *    logger.LOG
+ *    logger.ERROR
+ *    logger.WARN
+ *    logger.INFO
+ *    logger.DEBUG
+ *
+ * The value used determines which messages get printed.  The logging
+ * values above are in order, and only messages logged at the logging
+ * level or above will actually be displayed to the user.  Eg, the
+ * default level is WARN, so only messages logged with LOG, ERROR, or
+ * WARN will be displayed; INFO and DEBUG messages will be ignored.
+ */
+logger.level = function (value) {
+    if (arguments.length) {
+        if (LevelsMap[value] === null) {
+            throw new Error("invalid logging level: " + value);
+        }
+        CurrentLevel = LevelsMap[value];
+    }
+
+    return Levels[CurrentLevel];
+};
+
+/**
+ * Getter/Setter for the useConsole functionality
+ *
+ * When useConsole is true, the logger will log via the
+ * browser 'console' object.  Otherwise, it will use the
+ * native Logger plugin.
+ */
+logger.useConsole = function (value) {
+    if (arguments.length) UseConsole = !!value;
+
+    if (UseConsole) {
+        if (typeof console == "undefined") {
+            throw new Error("global console object is not defined");
+        }
+
+        if (typeof console.log != "function") {
+            throw new Error("global console object does not have a log function");
+        }
+
+        if (typeof console.useLogger == "function") {
+            if (console.useLogger()) {
+                throw new Error("console and logger are too intertwingly");
+            }
+        }
+    }
+
+    return UseConsole;
+};
+
+/**
+ * Logs a message at the LOG level.
+ *
+ * Parameters passed after message are used applied to
+ * the message with utils.format()
+ */
+logger.log   = function(message) { logWithArgs("LOG",   arguments); };
+
+/**
+ * Logs a message at the ERROR level.
+ *
+ * Parameters passed after message are used applied to
+ * the message with utils.format()
+ */
+logger.error = function(message) { logWithArgs("ERROR", arguments); };
+
+/**
+ * Logs a message at the WARN level.
+ *
+ * Parameters passed after message are used applied to
+ * the message with utils.format()
+ */
+logger.warn  = function(message) { logWithArgs("WARN",  arguments); };
+
+/**
+ * Logs a message at the INFO level.
+ *
+ * Parameters passed after message are used applied to
+ * the message with utils.format()
+ */
+logger.info  = function(message) { logWithArgs("INFO",  arguments); };
+
+/**
+ * Logs a message at the DEBUG level.
+ *
+ * Parameters passed after message are used applied to
+ * the message with utils.format()
+ */
+logger.debug = function(message) { logWithArgs("DEBUG", arguments); };
+
+// log at the specified level with args
+function logWithArgs(level, args) {
+    args = [level].concat([].slice.call(args));
+    logger.logLevel.apply(logger, args);
+}
+
+/**
+ * Logs a message at the specified level.
+ *
+ * Parameters passed after message are used applied to
+ * the message with utils.format()
+ */
+logger.logLevel = function(level, message /* , ... */) {
+    // format the message with the parameters
+    var formatArgs = [].slice.call(arguments, 2);
+    message    = utils.vformat(message, formatArgs);
+
+    if (LevelsMap[level] === null) {
+        throw new Error("invalid logging level: " + level);
+    }
+
+    if (LevelsMap[level] > CurrentLevel) return;
+
+    // queue the message if not yet at deviceready
+    if (!DeviceReady && !UseConsole) {
+        Queued.push([level, message]);
+        return;
+    }
+
+    // if not using the console, use the native logger
+    if (!UseConsole) {
+        exec(null, null, "Logger", "logLevel", [level, message]);
+        return;
+    }
+
+    // make sure console is not using logger
+    if (console.__usingCordovaLogger) {
+        throw new Error("console and logger are too intertwingly");
+    }
+
+    // log to the console
+    switch (level) {
+        case logger.LOG:   console.log(message); break;
+        case logger.ERROR: console.log("ERROR: " + message); break;
+        case logger.WARN:  console.log("WARN: "  + message); break;
+        case logger.INFO:  console.log("INFO: "  + message); break;
+        case logger.DEBUG: console.log("DEBUG: " + message); break;
+    }
+};
+
+// when deviceready fires, log queued messages
+logger.__onDeviceReady = function() {
+    if (DeviceReady) return;
+
+    DeviceReady = true;
+
+    for (var i=0; i<Queued.length; i++) {
+        var messageArgs = Queued[i];
+        logger.logLevel(messageArgs[0], messageArgs[1]);
+    }
+
+    Queued = null;
+};
+
+// add a deviceready event to log queued messages
+document.addEventListener("deviceready", logger.__onDeviceReady, false);
+
+});
+
 // file: lib\common\plugin\network.js
 define("cordova/plugin/network", function(require, exports, module) {
 var exec = require('cordova/exec'),
@@ -4208,10 +4626,16 @@ module.exports = function(uri, successCallback, errorCallback) {
             errorCallback(new FileError(error));
         }
     };
+    // sanity check for 'not:valid:filename'
+    if(!uri || uri.split(":").length > 2) {
+        setTimeout( function() {
+            fail(FileError.ENCODING_ERR);
+        },0);
+        return;
+    }
     // if successful, return either a file or directory entry
     var success = function(entry) {
         var result;
-
         if (entry) {
             if (typeof successCallback === 'function') {
                 // create appropriate Entry object
@@ -4309,12 +4733,16 @@ module.exports = function(status,callbackId,args,cast) {
 define("cordova/plugin/wp7/CordovaMediaonStatus", function(require, exports, module) {
 
 var cordova = require('cordova');
+var Media = require('cordova/plugin/Media');
 
 module.exports = function(args) {
-
-    console.log("media on status :: " + args);
-    //var res = JSON.parse(args);
-    //require("cordova/media").onStatus(res.id, res.msg, res.value);
+    try {
+        var res = JSON.parse(args);
+        Media.onStatus(res.id, res.msg, res.value);
+    }
+    catch(e) {
+        console.log("Error calling Media.onStatus :: " + e);
+    }
 };
 });
 
@@ -4773,95 +5201,6 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
 module.exports = new Device();
 });
 
-// file: lib\wp7\plugin\wp7\requestFileSystem.js
-define("cordova/plugin/wp7/requestFileSystem", function(require, exports, module) {
-
-var FileError = require('cordova/plugin/FileError'),
-    FileSystem = require('cordova/plugin/FileSystem'),
-    exec = require('cordova/exec');
-
-/**
- * Request a file system in which to store application data.
- * @param type  local file system type
- * @param size  indicates how much storage space, in bytes, the application expects to need
- * @param successCallback  invoked with a FileSystem object
- * @param errorCallback  invoked if error occurs retrieving file system
- */
-var requestFileSystem = function(type, size, successCallback, errorCallback) {
-    // wp7 custom imp
-    var fail = function(code) {
-        if (typeof errorCallback === 'function') {
-            errorCallback(new FileError(code));
-        }
-    };
-
-    if (type < 0 || type > 3) {
-        fail(FileError.SYNTAX_ERR);
-    } else {
-        // if successful, return a FileSystem object
-        var success = function(file_system) {
-            if (file_system) {
-                if (typeof successCallback === 'function') {
-                    // grab the name and root from the file system object
-                    var result = new FileSystem(file_system.name, file_system.root);
-                    successCallback(result);
-                }
-            }
-            else {
-                // no FileSystem object returned
-                fail(FileError.NOT_FOUND_ERR);
-            }
-        };
-        exec(success, fail, "File", "requestFileSystem", {type:type,size:size});
-    }
-};
-
-module.exports = requestFileSystem;
-});
-
-// file: lib\wp7\plugin\wp7\resolveLocalFileSystemURI.js
-define("cordova/plugin/wp7/resolveLocalFileSystemURI", function(require, exports, module) {
-
-
-var DirectoryEntry = require('cordova/plugin/DirectoryEntry'),
-    FileEntry = require('cordova/plugin/FileEntry'),
-    FileError = require('cordova/plugin/FileError'),
-    exec = require('cordova/exec');
-
-module.exports = function(uri, successCallback, errorCallback) {
-    // error callback
-    var fail = function(error) {
-        if (typeof errorCallback === 'function') {
-            errorCallback(new FileError(error));
-        }
-    };
-    // if successful, return either a file or directory entry
-    var success = function(entry) {
-        var result;
-
-        if (entry) {
-            if (typeof successCallback === 'function') {
-                // create appropriate Entry object
-                result = (entry.isDirectory) ? new DirectoryEntry(entry.name, entry.fullPath) : new FileEntry(entry.name, entry.fullPath);
-                try {
-                    successCallback(result);
-                }
-                catch (e) {
-                    console.log('Error invoking callback: ' + e);
-                }
-            }
-        }
-        else {
-            // no Entry object returned
-            fail(FileError.NOT_FOUND_ERR);
-        }
-    };
-
-    exec(success, fail, "File", "resolveLocalFileSystemURI", {uri:uri});
-};
-
-});
-
 // file: lib\common\utils.js
 define("cordova/utils", function(require, exports, module) {
 var utils = exports;
@@ -4963,6 +5302,16 @@ utils.alert = function(msg) {
 /**
  * Formats a string and arguments following it ala sprintf()
  *
+ * see utils.vformat() for more information
+ */
+utils.format = function(formatString /* ,... */) {
+    var args = [].slice.call(arguments, 1);
+    return utils.vformat(formatString, args);
+};
+
+/**
+ * Formats a string and arguments following it ala vsprintf()
+ *
  * format chars:
  *   %j - format arg as JSON
  *   %o - format arg as JSON
@@ -4974,14 +5323,13 @@ utils.alert = function(msg) {
  * for rationale, see FireBug's Console API:
  *    http://getfirebug.com/wiki/index.php/Console_API
  */
-utils.format = function(formatString /* ,... */) {
+utils.vformat = function(formatString, args) {
     if (formatString === null || formatString === undefined) return "";
     if (arguments.length == 1) return formatString.toString();
 
     var pattern = /(.*?)%(.)(.*)/;
     var rest    = formatString.toString();
     var result  = [];
-    var args    = [].slice.call(arguments,1);
 
     while (args.length) {
         var arg   = args.shift();
