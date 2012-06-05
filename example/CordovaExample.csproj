@@ -97,12 +97,16 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\cordova-1.8.0.js">
+      <Link>www\cordova-1.8.0.js</Link>
+    </Content>
     <Content Include="CordovaSourceDictionary.xml" />
     <Content Include="GapLib\WP7CordovaClassLib.dll" />
-    <Content Include="www\cordova-1.8.0.js" />
     <Content Include="www\network.html" />
     <Content Include="www\notification.html" />
-    <Content Include="www\storage.html" />
+    <Content Include="www\storage.html">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="BuildManifestProcessor.js" />
     <Content Include="www\accelerometer.html" />
     <Content Include="www\accelerometer2.html" />
