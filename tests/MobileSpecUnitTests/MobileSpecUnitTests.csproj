@@ -109,7 +109,7 @@
     </Content>
     <Content Include="BuildManifestProcessor.js" />
     <Content Include="CordovaSourceDictionary.xml" />
-    <Content Include="www\cordova-1.8.0rc1.js" />
+    <Content Include="www\cordova-1.8.0.js" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
     </Content>
