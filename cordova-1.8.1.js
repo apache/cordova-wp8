@@ -1,7 +1,6 @@
-// commit 79f8fb9057ae174c8b8c8b1414e247d9871c55e4 ( WP7 )
-// File generated at :: Tue Jun 05 2012 14:11:12 GMT-0700 (Pacific Daylight Time)
+// commit 64fd5201a610e588e0d45c9495d5cab1ea18afdb
 
-
+// File generated at :: Wed Jun 13 2012 09:15:52 GMT-0700 (Pacific Daylight Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -21,8 +20,6 @@
  specific language governing permissions and limitations
  under the License.
 */
-
-
 
 ;(function() {
 
@@ -1235,6 +1232,10 @@ cameraExport.getPicture = function(successCallback, errorCallback, options) {
     }
 
     exec(successCallback, errorCallback, "Camera", "takePicture", [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType, mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions]);
+};
+
+cameraExport.cleanup = function(successCallback, errorCallback) {
+    exec(successCallback, errorCallback, "Camera", "cleanup", []);
 };
 
 module.exports = cameraExport;
@@ -2544,6 +2545,8 @@ var DirectoryEntry = require('cordova/plugin/DirectoryEntry');
 var FileSystem = function(name, root) {
     this.name = name || null;
     if (root) {
+        console.log('root.name ' + name);
+        console.log('root.root ' + root);
         this.root = new DirectoryEntry(root.name, root.fullPath);
     }
 };
@@ -5046,6 +5049,10 @@ if (!docDomain || docDomain.length === 0) {
                 if (newUrl.indexOf(":/") > -1) {
                     newUrl = newUrl.split(":/")[1];
                 }
+                // prefix relative urls to our physical root
+                if(newUrl.indexOf("app/www/") < 0) {
+                    newUrl = "app/www/" + newUrl;
+                }
 
                 if (newUrl.lastIndexOf("/") === newUrl.length - 1) {
                     newUrl += "index.html"; // default page is index.html, when call is to a dir/ ( why not ...? )
@@ -5075,6 +5082,12 @@ if (!docDomain || docDomain.length === 0) {
         responseXML: "",
         onResult: function (res) {
             this.status = 200;
+            if(typeof res == "object")
+            {   // callback result handler may have already parsed this from a string-> a JSON object,
+                // if so, we need to restore it's stringyness, as handlers are expecting string data.
+                // especially if used with jQ -> $.getJSON
+                res = JSON.stringify(res);
+            }
             this.responseText = res;
             this.responseXML = res;
             this.changeReadyState(this.DONE);
