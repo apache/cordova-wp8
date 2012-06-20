@@ -333,13 +333,58 @@ namespace WP7CordovaClassLib.Cordova.Commands
         {
             int streamLength = (int)stream.Length;
             byte[] fileData = new byte[streamLength + 1];
-            stream.Read(fileData, 0, streamLength);
-            stream.Close();
+            stream.Read(fileData, 0, streamLength);        
 
-            return Convert.ToBase64String(fileData);
+            //use photo's actual width & height if user doesn't provide width & height
+            if (cameraOptions.TargetWidth < 0 && cameraOptions.TargetHeight < 0)
+            {
+                stream.Close();
+                return Convert.ToBase64String(fileData);                
+            }
+            else
+            {
+                // resize photo
+                byte[] resizedFile = resizePhoto(stream, fileData);
+                stream.Close();
+                return Convert.ToBase64String(resizedFile);
+            }
         }
 
+        /// <summary>
+        /// Resize image
+        /// </summary>
+        /// <param name="stream">Image stream</param>
+        /// <param name="fileData">File data</param>
+        /// <returns>resized image</returns>
+        private byte[] resizePhoto(Stream stream, byte[] fileData)
+        {
+            int streamLength = (int)stream.Length;
+            int intResult = 0;
 
+            byte[] resizedFile;
+
+            stream.Read(fileData, 0, streamLength);
+
+            BitmapImage objBitmap = new BitmapImage();
+            MemoryStream objBitmapStream = new MemoryStream(fileData);
+            MemoryStream objBitmapStreamResized = new MemoryStream();
+            WriteableBitmap objWB;
+            objBitmap.SetSource(stream);
+            objWB = new WriteableBitmap(objBitmap);
+
+            // resize the photo with user defined TargetWidth & TargetHeight
+            Extensions.SaveJpeg(objWB, objBitmapStreamResized, cameraOptions.TargetWidth, cameraOptions.TargetHeight, 0, cameraOptions.Quality);
+
+            //Convert the resized stream to a byte array. 
+            streamLength = (int)objBitmapStreamResized.Length;
+            resizedFile = new Byte[streamLength]; //-1 
+            objBitmapStreamResized.Position = 0;
+            //for some reason we have to set Position to zero, but we don't have to earlier when we get the bytes from the chosen photo... 
+            intResult = objBitmapStreamResized.Read(resizedFile, 0, streamLength);
+
+            return resizedFile;
+        }
+        
         /// <summary>
         /// Saves captured image in isolated storage
         /// </summary>
