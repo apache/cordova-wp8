@@ -323,7 +323,6 @@ namespace WP7CordovaClassLib.Cordova.Commands
             }
         }
 
-
         /// <summary>
         /// Returns image content in a form of base64 string
         /// </summary>
@@ -344,7 +343,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
             else
             {
                 // resize photo
-                byte[] resizedFile = resizePhoto(stream, fileData);
+                byte[] resizedFile = ResizePhoto(stream, fileData);
                 stream.Close();
                 return Convert.ToBase64String(resizedFile);
             }
@@ -356,7 +355,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
         /// <param name="stream">Image stream</param>
         /// <param name="fileData">File data</param>
         /// <returns>resized image</returns>
-        private byte[] resizePhoto(Stream stream, byte[] fileData)
+        private byte[] ResizePhoto(Stream stream, byte[] fileData)
         {
             int streamLength = (int)stream.Length;
             int intResult = 0;
