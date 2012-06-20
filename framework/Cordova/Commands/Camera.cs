@@ -209,12 +209,9 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
                         if (cameraOptions.DestinationType == FILE_URI)
                         {
-                            //WriteableBitmap image = PictureDecoder.DecodeJpeg(e.ChosenPhoto);
-                            //imagePathOrContent = this.SaveImageToLocalStorage(image, Path.GetFileName(e.OriginalFileName));
                             // Save image in media library
-                            MediaLibrary library = new MediaLibrary();
-                            Picture pict = library.SavePicture(e.OriginalFileName, e.ChosenPhoto);
-                            Debug.WriteLine("Picture image width = " + pict.Width.ToString());
+                            // MediaLibrary library = new MediaLibrary();
+                            // Picture pict = library.SavePicture(e.OriginalFileName, e.ChosenPhoto); // to save to photo-roll ...
 
                             int orient = ImageExifHelper.getImageOrientationFromStream(e.ChosenPhoto);
                             int newAngle = 0;
@@ -240,15 +237,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
                             WriteableBitmap image = PictureDecoder.DecodeJpeg(rotImageStream);
 
-                            //byte[] imageBytes = new byte[rotImageStream.Length];
-                            //rotImageStream.Read(imageBytes, 0, imageBytes.Length);
-                            //rotImageStream.Dispose();
-                            //imageBytes = null;
-
                             imagePathOrContent = this.SaveImageToLocalStorage(image, Path.GetFileName(e.OriginalFileName));
-
-                            
-
 
 
                         }
