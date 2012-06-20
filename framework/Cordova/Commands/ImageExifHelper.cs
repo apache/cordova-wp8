@@ -12,7 +12,7 @@
 	limitations under the License.
  * 
  * Portions of this code are based on Simon McKenzie's ExifLib 
- * http://www.codeproject.com/script/Articles/ListAlternatives.aspx?aid=36342
+ * http://www.codeproject.com/Articles/36342/ExifLib-A-Fast-Exif-Data-Extractor-for-NET-2-0
 */
 
 
