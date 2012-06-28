@@ -93,6 +93,17 @@ namespace WP7CordovaClassLib
         protected Border border;
         private bool firstMouseMove = false;
 
+        /// <summary>
+        /// Represents last known mouse down position. 
+        /// Used to determine mouse move delta to avoid duplicate mouse events.
+        /// </summary>
+        private Point mouseDownPos;
+
+        /// <summary>
+        /// Represent min delta value to consider event as a mouse move. Experimental calculated.
+        /// </summary>
+        private const int MouseMoveDeltaThreshold = 10;
+
 
         public BrowserMouseHelper(ref WebBrowser browser)
         {
@@ -114,6 +125,7 @@ namespace WP7CordovaClassLib
                 border.ManipulationDelta += Border_ManipulationDelta;
                 border.ManipulationCompleted += Border_ManipulationCompleted;
                 border.DoubleTap += Border_DoubleTap;
+                border.Tap += Border_Tap;
                 border.Hold += Border_Hold;
                 border.MouseLeftButtonDown += Border_MouseLeftButtonDown;
             }
@@ -217,6 +229,16 @@ namespace WP7CordovaClassLib
 
         #endregion
 
+        #region Tap
+
+        void Border_Tap(object sender, GestureEventArgs e)
+        {
+            // prevents generating duplicated mouse events
+            // firstMouseMove == FALSE means we already handled this situation and generated mouse events
+            e.Handled = ! this.firstMouseMove;
+        }
+        #endregion
+
         #region MouseEvents
 
         void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -224,6 +246,8 @@ namespace WP7CordovaClassLib
             //Debug.WriteLine("Border_MouseLeftButtonDown");
             border.MouseMove += new MouseEventHandler(Border_MouseMove);
             border.MouseLeftButtonUp += new MouseButtonEventHandler(Border_MouseLeftButtonUp);
+            
+            this.mouseDownPos = e.GetPosition(_browser);
             // don't fire the down event until we know if this is a 'move' or not
             firstMouseMove = true;
         }
@@ -235,6 +259,13 @@ namespace WP7CordovaClassLib
             // only the return value from the first mouse move event should be used to determine if scrolling is prevented.
             if (firstMouseMove)
             {
+                // even for simple tap there are situations where ui control generates move with some little delta value
+                // we should avoid such situations allowing to browser control generate native js mousedown/up/click events
+                if (Math.Abs(pos.X - mouseDownPos.X) + Math.Abs(pos.Y - mouseDownPos.Y) <= MouseMoveDeltaThreshold)
+                {
+                    return;
+                }
+                
                 InvokeSimulatedMouseEvent("mousedown", pos);
                 firstMouseMove = false;
                 ScrollDisabled = InvokeSimulatedMouseEvent("mousemove", pos);
