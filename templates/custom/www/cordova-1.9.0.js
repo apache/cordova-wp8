@@ -1,7 +1,6 @@
-// commit 79f8fb9057ae174c8b8c8b1414e247d9871c55e4 ( WP7 )
-// File generated at :: Tue Jun 05 2012 14:11:12 GMT-0700 (Pacific Daylight Time)
+// commit ec1cc3e911f1e1e3de91f8e9beae7afd54aee58b
 
-
+// File generated at :: Fri Jun 29 2012 11:35:38 GMT-0700 (Pacific Daylight Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -21,8 +20,6 @@
  specific language governing permissions and limitations
  under the License.
 */
-
-
 
 ;(function() {
 
@@ -193,7 +190,9 @@ var cordova = {
     fireDocumentEvent: function(type, data) {
         var evt = createEvent(type, data);
         if (typeof documentEventHandlers[type] != 'undefined') {
-            documentEventHandlers[type].fire(evt);
+            setTimeout(function() {
+                documentEventHandlers[type].fire(evt);
+            }, 0);
         } else {
             document.dispatchEvent(evt);
         }
@@ -201,7 +200,9 @@ var cordova = {
     fireWindowEvent: function(type, data) {
         var evt = createEvent(type,data);
         if (typeof windowEventHandlers[type] != 'undefined') {
-            windowEventHandlers[type].fire(evt);
+            setTimeout(function() {
+                windowEventHandlers[type].fire(evt);
+            }, 0);
         } else {
             window.dispatchEvent(evt);
         }
@@ -1109,6 +1110,9 @@ module.exports = {
         },
         console:{
           path: "cordova/plugin/wp7/console"
+        },
+        FileTransfer: {
+            path: 'cordova/plugin/wp7/FileTransfer'
         }
     }
 };
@@ -1235,6 +1239,10 @@ cameraExport.getPicture = function(successCallback, errorCallback, options) {
     }
 
     exec(successCallback, errorCallback, "Camera", "takePicture", [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType, mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions]);
+};
+
+cameraExport.cleanup = function(successCallback, errorCallback) {
+    exec(successCallback, errorCallback, "Camera", "cleanup", []);
 };
 
 module.exports = cameraExport;
@@ -2544,6 +2552,8 @@ var DirectoryEntry = require('cordova/plugin/DirectoryEntry');
 var FileSystem = function(name, root) {
     this.name = name || null;
     if (root) {
+        console.log('root.name ' + name);
+        console.log('root.root ' + root);
         this.root = new DirectoryEntry(root.name, root.fullPath);
     }
 };
@@ -2553,7 +2563,8 @@ module.exports = FileSystem;
 
 // file: lib\common\plugin\FileTransfer.js
 define("cordova/plugin/FileTransfer", function(require, exports, module) {
-var exec = require('cordova/exec');
+var exec = require('cordova/exec'),
+    FileTransferError = require('cordova/plugin/FileTransferError');
 
 /**
  * FileTransfer uploads a file to a remote server.
@@ -2572,6 +2583,8 @@ var FileTransfer = function() {};
 * @param trustAllHosts {Boolean} Optional trust all hosts (e.g. for self-signed certs), defaults to false
 */
 FileTransfer.prototype.upload = function(filePath, server, successCallback, errorCallback, options, trustAllHosts) {
+    // sanity parameter checking
+    if (!filePath || !server) throw new Error("FileTransfer.upload requires filePath and server URL parameters at the minimum.");
     // check for options
     var fileKey = null;
     var fileName = null;
@@ -2593,7 +2606,12 @@ FileTransfer.prototype.upload = function(filePath, server, successCallback, erro
         }
     }
 
-    exec(successCallback, errorCallback, 'FileTransfer', 'upload', [filePath, server, fileKey, fileName, mimeType, params, trustAllHosts, chunkedMode]);
+    var fail = function(e) {
+        var error = new FileTransferError(e.code, e.source, e.target, e.http_status);
+        errorCallback(error);
+    };
+
+    exec(successCallback, fail, 'FileTransfer', 'upload', [filePath, server, fileKey, fileName, mimeType, params, trustAllHosts, chunkedMode]);
 };
 
 /**
@@ -2604,6 +2622,8 @@ FileTransfer.prototype.upload = function(filePath, server, successCallback, erro
  * @param errorCallback {Function}    Callback to be invoked upon error
  */
 FileTransfer.prototype.download = function(source, target, successCallback, errorCallback) {
+    // sanity parameter checking
+    if (!source || !target) throw new Error("FileTransfer.download requires source URI and target URI parameters at the minimum.");
     var win = function(result) {
         var entry = null;
         if (result.isDirectory) {
@@ -2618,6 +2638,12 @@ FileTransfer.prototype.download = function(source, target, successCallback, erro
         entry.fullPath = result.fullPath;
         successCallback(entry);
     };
+
+    var fail = function(e) {
+        var error = new FileTransferError(e.code, e.source, e.target, e.http_status);
+        errorCallback(error);
+    };
+
     exec(win, errorCallback, 'FileTransfer', 'download', [source, target]);
 };
 
@@ -2631,8 +2657,11 @@ define("cordova/plugin/FileTransferError", function(require, exports, module) {
  * FileTransferError
  * @constructor
  */
-var FileTransferError = function(code) {
+var FileTransferError = function(code, source, target, status) {
     this.code = code || null;
+    this.source = source || null;
+    this.target = target || null;
+    this.http_status = status || null;
 };
 
 FileTransferError.FILE_NOT_FOUND_ERR = 1;
@@ -2640,6 +2669,7 @@ FileTransferError.INVALID_URL_ERR = 2;
 FileTransferError.CONNECTION_ERR = 3;
 
 module.exports = FileTransferError;
+
 });
 
 // file: lib\common\plugin\FileUploadOptions.js
@@ -4682,6 +4712,9 @@ define("cordova/plugin/splashscreen", function(require, exports, module) {
 var exec = require('cordova/exec');
 
 var splashscreen = {
+    show:function() {
+        exec(null, null, "SplashScreen", "show", []);
+    },
     hide:function() {
         exec(null, null, "SplashScreen", "hide", []);
     }
@@ -4852,7 +4885,7 @@ define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
             var retVal = null;
             if(this.keys.indexOf(key) > -1) {
                 window.external.Notify("DOMStorage/" + this._type + "/get/" + key);
-                retVal = this._result;
+                retVal = window.unescape(decodeURIComponent(this._result));
                 this._result = null;
             }
             return retVal;
@@ -4869,7 +4902,7 @@ define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
             if(!this.keys) {
                 this.initialize();
             }
-            window.external.Notify("DOMStorage/" + this._type + "/set/" + key + "/" + value);
+            window.external.Notify("DOMStorage/" + this._type + "/set/" + key + "/" + encodeURIComponent(window.escape(value)));
         },
 
     /*
@@ -4929,6 +4962,133 @@ define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
 })();
 
 module.exports = null;
+
+});
+
+// file: lib\wp7\plugin\wp7\FileTransfer.js
+define("cordova/plugin/wp7/FileTransfer", function(require, exports, module) {
+var exec = require('cordova/exec'),
+    FileTransferError = require('cordova/plugin/FileTransferError');
+
+/**
+ * FileTransfer uploads a file to a remote server.
+ * @constructor
+ */
+var FileTransfer = function() {};
+
+/**
+* Given an absolute file path, uploads a file on the device to a remote server
+* using a multipart HTTP request.
+* @param filePath {String}           Full path of the file on the device
+* @param server {String}             URL of the server to receive the file
+* @param successCallback (Function}  Callback to be invoked when upload has completed
+* @param errorCallback {Function}    Callback to be invoked upon error
+* @param options {FileUploadOptions} Optional parameters such as file name and mimetype
+* @param trustAllHosts {Boolean} Optional trust all hosts (e.g. for self-signed certs), defaults to false
+*/
+
+FileTransfer.prototype.upload = function(filePath, server, successCallback, errorCallback, options, trustAllHosts) {
+
+    // sanity parameter checking
+    if (!filePath || !server) throw new Error("FileTransfer.upload requires filePath and server URL parameters at the minimum.");
+    // check for options
+    var fileKey = null;
+    var fileName = null;
+    var mimeType = null;
+    var params = null;
+    var chunkedMode = true;
+
+    if (options) {
+        fileKey = options.fileKey;
+        fileName = options.fileName;
+        mimeType = options.mimeType;
+        if (options.chunkedMode !== null || typeof options.chunkedMode != "undefined") {
+            chunkedMode = options.chunkedMode;
+        }
+
+        // if options are specified, and NOT a string already, we will stringify it.
+        if(options.params && typeof options.params != typeof "") {
+            var arrParams = [];
+            for(var v in options.params) {
+                arrParams.push(v + "=" + options.params[v]);
+            }
+            params = encodeURI(arrParams.join("&"));
+        }
+    }
+
+    var fail = function(e) {
+        var error = new FileTransferError(e.code, e.source, e.target, e.http_status);
+        errorCallback(error);
+    };
+
+    exec(successCallback, fail, 'FileTransfer', 'upload', [filePath, server, fileKey, fileName, mimeType, params, trustAllHosts, chunkedMode]);
+};
+
+/**
+ * Downloads a file form a given URL and saves it to the specified directory.
+ * @param source {String}          URL of the server to receive the file
+ * @param target {String}         Full path of the file on the device
+ * @param successCallback (Function}  Callback to be invoked when upload has completed
+ * @param errorCallback {Function}    Callback to be invoked upon error
+ */
+FileTransfer.prototype.download = function(source, target, successCallback, errorCallback) {
+    // sanity parameter checking
+    if (!source || !target) throw new Error("FileTransfer.download requires source URI and target URI parameters at the minimum.");
+    var win = function(result) {
+        var entry = null;
+        if (result.isDirectory) {
+            entry = new (require('cordova/plugin/DirectoryEntry'))();
+        }
+        else if (result.isFile) {
+            entry = new (require('cordova/plugin/FileEntry'))();
+        }
+        entry.isDirectory = result.isDirectory;
+        entry.isFile = result.isFile;
+        entry.name = result.name;
+        entry.fullPath = result.fullPath;
+        successCallback(entry);
+    };
+
+    var fail = function(e) {
+        var error = new FileTransferError(e.code, e.source, e.target, e.http_status);
+        errorCallback(error);
+    };
+
+    exec(win, errorCallback, 'FileTransfer', 'download', [source, target]);
+};
+
+module.exports = FileTransfer;
+
+});
+
+// file: lib\wp7\plugin\wp7\FileUploadOptions.js
+define("cordova/plugin/wp7/FileUploadOptions", function(require, exports, module) {
+/**
+ * Options to customize the HTTP request used to upload files.
+ * @constructor
+ * @param fileKey {String}   Name of file request parameter.
+ * @param fileName {String}  Filename to be used by the server. Defaults to image.jpg.
+ * @param mimeType {String}  Mimetype of the uploaded file. Defaults to image/jpeg.
+ * @param params {Object}    Object with key: value params to send to the server.
+ */
+var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
+    this.fileKey = fileKey || null;
+    this.fileName = fileName || null;
+    this.mimeType = mimeType || null;
+
+    if(params && typeof params != typeof "") {
+        var arrParams = [];
+        for(var v in params) {
+            arrParams.push(v + "=" + params[v]);
+        }
+        this.params = encodeURIComponent(arrParams.join("&"));
+    }
+    else {
+        this.params = params || null;
+    }
+};
+
+module.exports = FileUploadOptions;
 });
 
 // file: lib\wp7\plugin\wp7\XHRPatch.js
@@ -5046,6 +5206,11 @@ if (!docDomain || docDomain.length === 0) {
                 if (newUrl.indexOf(":/") > -1) {
                     newUrl = newUrl.split(":/")[1];
                 }
+                // prefix relative urls to our physical root
+                if(newUrl.indexOf("app/www/") < 0)
+                {
+                    newUrl = "app/www/" + newUrl;
+                }
 
                 if (newUrl.lastIndexOf("/") === newUrl.length - 1) {
                     newUrl += "index.html"; // default page is index.html, when call is to a dir/ ( why not ...? )
@@ -5075,6 +5240,12 @@ if (!docDomain || docDomain.length === 0) {
         responseXML: "",
         onResult: function (res) {
             this.status = 200;
+            if(typeof res == "object")
+            {   // callback result handler may have already parsed this from a string-> a JSON object,
+                // if so, we need to restore it's stringyness, as handlers are expecting string data.
+                // especially if used with jQ -> $.getJSON
+                res = JSON.stringify(res);
+            }
             this.responseText = res;
             this.responseXML = res;
             this.changeReadyState(this.DONE);
