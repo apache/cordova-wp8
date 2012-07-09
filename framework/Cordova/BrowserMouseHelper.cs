@@ -62,7 +62,7 @@ namespace WP7CordovaClassLib
                     var yPos =  doc.body.scrollTop + Math.round(yMod * y);
                     var element = doc.elementFromPoint(xPos,yPos);
                     
-                    evt.initMouseEvent(type, true, true, win, 1, xPos, yPos, xPos, yPos, false, false, false, false, -1, null);
+                    evt.initMouseEvent(type, true, true, win, 1, xPos, yPos, xPos, yPos, false, false, false, false, 0, element);
                     evt.timeStamp = +new Date;
                     evt.isCordovaEvent = true;
                     
@@ -75,8 +75,8 @@ namespace WP7CordovaClassLib
         */
 
         private static string MinifiedMouseScript = "(function(g,a){var c=MouseEvent.prototype,d=Object.defineProperty;d(c,'pageX',{configurable:!0,get:function(){return this.clientX}});d(c,'pageY',{configurable:!0,get:function(){return this.clientY}});g.onNativeMouseEvent=function(c,d,i)"
-        + "{try{var j=screen.logicalXDPI/screen.deviceXDPI,k=screen.logicalYDPI/screen.deviceYDPI,b=a.createEvent('MouseEvents'),e=a.body.scrollLeft+Math.round(j*d),f=a.body.scrollTop+Math.round(k*i),h=a.elementFromPoint(e,f);b.initMouseEvent(c,!0,!0,g,1,e,f,e,f,!1,!1,!1,!1,-1,"
-        + "null);b.timeStamp=+new Date;b.isCordovaEvent=!0;return(h?!h.dispatchEvent(b):!a.dispatchEvent(b))?'true':'false'}catch(l){return l}}})(window,document);";
+        + "{try{var j=screen.logicalXDPI/screen.deviceXDPI,k=screen.logicalYDPI/screen.deviceYDPI,b=a.createEvent('MouseEvents'),e=a.body.scrollLeft+Math.round(j*d),f=a.body.scrollTop+Math.round(k*i),h=a.elementFromPoint(e,f);b.initMouseEvent(c,!0,!0,g,1,e,f,e,f,!1,!1,!1,!1,0,"
+        + "h);b.timeStamp=+new Date;b.isCordovaEvent=!0;return(h?!h.dispatchEvent(b):!a.dispatchEvent(b))?'true':'false'}catch(l){return l}}})(window,document);";
 
 
         private WebBrowser _browser;
