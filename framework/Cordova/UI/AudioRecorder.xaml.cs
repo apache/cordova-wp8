@@ -173,6 +173,11 @@ namespace WP7CordovaClassLib.Cordova.UI
         {
             this.result = this.SaveAudioClipToLocalStorage();
 
+            if (Completed != null)
+            {
+                Completed(this, result);
+            }
+
             if (this.NavigationService.CanGoBack)
             {
                 this.NavigationService.GoBack();
@@ -185,20 +190,14 @@ namespace WP7CordovaClassLib.Cordova.UI
         /// <param name="e"></param>
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
-            if (this.IsRecording)
+            if (IsRecording)
             {
                 StopRecording();
             }
 
             this.FinalizeXnaGameLoop();
 
-            if (this.Completed != null)
-            {
-                this.Completed(this, result);
-            }
-
             base.OnNavigatedFrom(e);
-
         }
 
         /// <summary>
@@ -296,8 +295,11 @@ namespace WP7CordovaClassLib.Cordova.UI
         private void FinalizeXnaGameLoop()
         {
             // Timer to simulate the XNA game loop (Microphone is from XNA)
-            this.dtXna.Stop();
-            this.dtXna = null;
+            if (dtXna != null)
+            {
+                dtXna.Stop();
+                dtXna = null;
+            }
         }
 
 

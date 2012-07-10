@@ -62,7 +62,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
         public class CaptureAudioOptions
         {
             /// <summary>
-            /// The maximum number of images the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+            /// The maximum number of audio files the device user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
             /// </summary>
             [DataMember(IsRequired = false, Name = "limit")]
             public int Limit { get; set; }
