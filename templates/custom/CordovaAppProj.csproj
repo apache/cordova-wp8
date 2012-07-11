@@ -108,6 +108,7 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="VERSION" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
