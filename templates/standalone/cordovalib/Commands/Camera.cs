@@ -107,12 +107,39 @@ namespace WP7CordovaClassLib.Cordova.Commands
             [DataMember(IsRequired = false, Name = "saveToPhotoAlbum")]
             public bool SaveToPhotoAlbum { get; set; }
 
+            /// <summary>
+            /// Ignored
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "correctOrientation")]
+            public bool CorrectOrientation { get; set; }
+
+            
+
+            /// <summary>
+            /// Ignored
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "allowEdit")]
+            public bool AllowEdit { get; set; }
+
+                        /// <summary>
+            /// Height in pixels to scale image
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "encodingType")]
+            public int EncodingType { get; set; }
+
+                        /// <summary>
+            /// Height in pixels to scale image
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "mediaType")]
+            public int MediaType { get; set; }
+
 
             /// <summary>
             /// Height in pixels to scale image
             /// </summary>
             [DataMember(IsRequired = false, Name = "targetHeight")]
             public int TargetHeight { get; set; }
+
 
             /// <summary>
             /// Width in pixels to scale image
@@ -142,8 +169,11 @@ namespace WP7CordovaClassLib.Cordova.Commands
                 TargetHeight = -1;
                 TargetWidth = -1;
                 SaveToPhotoAlbum = false;
+                CorrectOrientation = true;
+                AllowEdit = false;
+                MediaType = -1;
+                EncodingType = -1;
             }
-
         }
 
         /// <summary>
