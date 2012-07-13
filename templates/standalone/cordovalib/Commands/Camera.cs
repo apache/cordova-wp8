@@ -101,6 +101,12 @@ namespace WP7CordovaClassLib.Cordova.Commands
             [DataMember(IsRequired = false, Name = "quality")]
             public int Quality { get; set; }
 
+            /// <summary>
+            /// Controls whether or not the image is also added to the device photo album.
+            /// </summary>
+            [DataMember(IsRequired = false, Name = "saveToPhotoAlbum")]
+            public bool SaveToPhotoAlbum { get; set; }
+
 
             /// <summary>
             /// Height in pixels to scale image
@@ -135,6 +141,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
                 Quality = 80;
                 TargetHeight = -1;
                 TargetWidth = -1;
+                SaveToPhotoAlbum = false;
             }
 
         }
@@ -210,8 +217,11 @@ namespace WP7CordovaClassLib.Cordova.Commands
                         if (cameraOptions.DestinationType == FILE_URI)
                         {
                             // Save image in media library
-                            // MediaLibrary library = new MediaLibrary();
-                            // Picture pict = library.SavePicture(e.OriginalFileName, e.ChosenPhoto); // to save to photo-roll ...
+                            if (cameraOptions.SaveToPhotoAlbum)
+                            {
+                                MediaLibrary library = new MediaLibrary();
+                                Picture pict = library.SavePicture(e.OriginalFileName, e.ChosenPhoto); // to save to photo-roll ...
+                            }
 
                             int orient = ImageExifHelper.getImageOrientationFromStream(e.ChosenPhoto);
                             int newAngle = 0;
