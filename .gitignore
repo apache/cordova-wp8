@@ -38,6 +38,8 @@ httpd.parse.errors
 
 *.DS_Store
 
+test/MobileSpecUnitTests/CordovaSourceDictionary.xml
+example/CordovaSourceDictionary.xml
 
 
 
