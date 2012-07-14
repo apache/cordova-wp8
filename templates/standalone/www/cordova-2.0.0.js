@@ -1,6 +1,6 @@
-// commit ec1cc3e911f1e1e3de91f8e9beae7afd54aee58b
+// commit fd00bff18daf29606d88263f7586f20cf9421861
 
-// File generated at :: Fri Jun 29 2012 11:35:38 GMT-0700 (Pacific Daylight Time)
+// File generated at :: Fri Jul 13 2012 16:48:42 GMT-0700 (Pacific Daylight Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -713,7 +713,6 @@ channel.create('onDestroy');
 
 // Channels that must fire before "deviceready" is fired.
 channel.waitForInitialization('onCordovaReady');
-channel.waitForInitialization('onCordovaInfoReady');
 channel.waitForInitialization('onCordovaConnectionReady');
 
 module.exports = channel;
@@ -848,6 +847,9 @@ module.exports = {
         Coordinates: {
             path: 'cordova/plugin/Coordinates'
         },
+        device: {
+            path: 'cordova/plugin/device'
+        },
         DirectoryEntry: {
             path: 'cordova/plugin/DirectoryEntry'
         },
@@ -981,7 +983,8 @@ var NamedArgs =  {
         confirm:["message","title","buttonLabel"]
     },
     Camera:{
-        takePicture:["quality", "destinationType", "sourceType", "targetWidth", "targetHeight", "encodingType"]
+        takePicture:["quality", "destinationType", "sourceType", "targetWidth", "targetHeight", "encodingType",
+                     "mediaType", "allowEdit", "correctOrientation", "saveToPhotoAlbum" ]
     },
     Capture:{
         getFormatData:["fullPath","type"]
@@ -1065,22 +1068,21 @@ require("cordova/plugin/wp7/XHRPatch");
 module.exports = {
     id: "wp7",
     initialize:function() {
+        window.alert = require("cordova/plugin/notification").alert;
 
-    window.alert = require("cordova/plugin/notification").alert;
-
-    // INject a lsitener for the backbutton, and tell native to override the flag (true/false) when we have 1 or more, or 0, listeners
-    var backButtonChannel = cordova.addDocumentEventHandler('backbutton', {
-      onSubscribe:function() {
-        if (this.numHandlers === 1) {
-            exec(null, null, "CoreEvents", "overridebackbutton", [true]);
-        }
-      },
-      onUnsubscribe:function() {
-        if (this.numHandlers === 0) {
-          exec(null, null, "CoreEvents", "overridebackbutton", [false]);
-        }
-      }
-    });
+        // Inject a listener for the backbutton, and tell native to override the flag (true/false) when we have 1 or more, or 0, listeners
+        var backButtonChannel = cordova.addDocumentEventHandler('backbutton', {
+          onSubscribe:function() {
+            if (this.numHandlers === 1) {
+                exec(null, null, "CoreEvents", "overridebackbutton", [true]);
+            }
+          },
+          onUnsubscribe:function() {
+            if (this.numHandlers === 0) {
+              exec(null, null, "CoreEvents", "overridebackbutton", [false]);
+            }
+          }
+        });
     },
     objects: {
         CordovaCommandResult: {
@@ -1092,7 +1094,6 @@ module.exports = {
         navigator: {
             children: {
                 device: {
-                    path: "cordova/plugin/wp7/device",
                     children:{
                         capture:{
                             path:"cordova/plugin/capture"
@@ -1105,9 +1106,6 @@ module.exports = {
                 }
             }
         },
-        device:{
-          path:"cordova/plugin/wp7/device"
-        },
         console:{
           path: "cordova/plugin/wp7/console"
         },
@@ -1116,6 +1114,7 @@ module.exports = {
         }
     }
 };
+
 });
 
 // file: lib\common\plugin\Acceleration.js
@@ -1238,7 +1237,10 @@ cameraExport.getPicture = function(successCallback, errorCallback, options) {
         popoverOptions = options.popoverOptions;
     }
 
-    exec(successCallback, errorCallback, "Camera", "takePicture", [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType, mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions]);
+    var args = [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType,
+                mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions];
+
+    exec(successCallback, errorCallback, "Camera", "takePicture", args);
 };
 
 cameraExport.cleanup = function(successCallback, errorCallback) {
@@ -1827,7 +1829,7 @@ var utils = require('cordova/utils'),
  * {boolean} isDirectory always true (readonly)
  * {DOMString} name of the directory, excluding the path leading to it (readonly)
  * {DOMString} fullPath the absolute full path to the directory (readonly)
- * {FileSystem} filesystem on which the directory resides (readonly)
+ * TODO: implement this!!! {FileSystem} filesystem on which the directory resides (readonly)
  */
 var DirectoryEntry = function(name, fullPath) {
      DirectoryEntry.__super__.constructor.apply(this, [false, true, name, fullPath]);
@@ -2552,13 +2554,12 @@ var DirectoryEntry = require('cordova/plugin/DirectoryEntry');
 var FileSystem = function(name, root) {
     this.name = name || null;
     if (root) {
-        console.log('root.name ' + name);
-        console.log('root.root ' + root);
         this.root = new DirectoryEntry(root.name, root.fullPath);
     }
 };
 
 module.exports = FileSystem;
+
 });
 
 // file: lib\common\plugin\FileTransfer.js
@@ -4061,6 +4062,74 @@ module.exports = contacts;
 
 });
 
+// file: lib\common\plugin\device.js
+define("cordova/plugin/device", function(require, exports, module) {
+var channel = require('cordova/channel'),
+    utils = require('cordova/utils'),
+    exec = require('cordova/exec');
+
+// Tell cordova channel to wait on the CordovaInfoReady event
+channel.waitForInitialization('onCordovaInfoReady');
+
+/**
+ * This represents the mobile device, and provides properties for inspecting the model, version, UUID of the
+ * phone, etc.
+ * @constructor
+ */
+function Device() {
+    this.available = false;
+    this.platform = null;
+    this.version = null;
+    this.name = null;
+    this.uuid = null;
+    this.cordova = null;
+
+    var me = this;
+
+    channel.onCordovaReady.subscribeOnce(function() {
+        me.getInfo(function(info) {
+            me.available = true;
+            me.platform = info.platform;
+            me.version = info.version;
+            me.name = info.name;
+            me.uuid = info.uuid;
+            me.cordova = info.cordova;
+            channel.onCordovaInfoReady.fire();
+        },function(e) {
+            me.available = false;
+            utils.alert("[ERROR] Error initializing Cordova: " + e);
+        });
+    });
+}
+
+/**
+ * Get device info
+ *
+ * @param {Function} successCallback The function to call when the heading data is available
+ * @param {Function} errorCallback The function to call when there is an error getting the heading data. (OPTIONAL)
+ */
+Device.prototype.getInfo = function(successCallback, errorCallback) {
+
+    // successCallback required
+    if (typeof successCallback !== "function") {
+        console.log("Device Error: successCallback is not a function");
+        return;
+    }
+
+    // errorCallback optional
+    if (errorCallback && (typeof errorCallback !== "function")) {
+        console.log("Device Error: errorCallback is not a function");
+        return;
+    }
+
+    // Get info
+    exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
+};
+
+module.exports = new Device();
+
+});
+
 // file: lib\common\plugin\geolocation.js
 define("cordova/plugin/geolocation", function(require, exports, module) {
 var utils = require('cordova/utils'),
@@ -4799,7 +4868,17 @@ module.exports = function(args) {
 
 // file: lib\wp7\plugin\wp7\DOMStorage.js
 define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
-(function() {
+(function(win,doc) {
+
+var docDomain = null;
+try {
+    docDomain = doc.domain;
+} catch (err) {
+    //console.log("caught exception trying to access document.domain");
+}
+
+// conditionally patch the window.localStorage and window.sessionStorage objects
+if (!docDomain || docDomain.length === 0) {
 
     var DOMStorage = function(type) {
         // default type is local
@@ -4846,7 +4925,8 @@ define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
         },
 
     /*
-        The length attribute must return the number of key/value pairs currently present in the list associated with the object.
+        The length attribute must return the number of key/value pairs currently present
+        in the list associated with the object.
     */
         getLength:function() {
             if(!this.keys) {
@@ -4957,9 +5037,9 @@ define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
         value:new DOMStorage("sessionStorage")
     });
     window.sessionStorage.initialize();
+}
 
-
-})();
+})(window, document);
 
 module.exports = null;
 
@@ -5324,70 +5404,6 @@ var debugConsole = {
 };
 
 module.exports = debugConsole;
-});
-
-// file: lib\wp7\plugin\wp7\device.js
-define("cordova/plugin/wp7/device", function(require, exports, module) {
-var channel = require('cordova/channel'),
-    utils = require('cordova/utils'),
-    exec = require('cordova/exec');
-
-/**
- * This represents the mobile device, and provides properties for inspecting the model, version, UUID of the
- * phone, etc.
- * @constructor
- */
-function Device() {
-    this.available = false;
-    this.platform = null;
-    this.version = null;
-    this.name = null;
-    this.uuid = null;
-    this.cordova = null;
-
-    var me = this;
-
-    channel.onCordovaReady.subscribeOnce(function() {
-        me.getInfo(function(info) {
-            me.available = true;
-            me.platform = info.platform;
-            me.version = info.version;
-            me.name = info.name;
-            me.uuid = info.uuid;
-            me.cordova = info.cordova;
-            channel.onCordovaInfoReady.fire();
-        },function(e) {
-            me.available = false;
-            utils.alert("[ERROR] Error initializing Cordova: " + e);
-        });
-    });
-}
-
-/**
- * Get device info
- *
- * @param {Function} successCallback The function to call when the heading data is available
- * @param {Function} errorCallback The function to call when there is an error getting the heading data. (OPTIONAL)
- */
-Device.prototype.getInfo = function(successCallback, errorCallback) {
-
-    // successCallback required
-    if (typeof successCallback !== "function") {
-        console.log("Device Error: successCallback is not a function");
-        return;
-    }
-
-    // errorCallback optional
-    if (errorCallback && (typeof errorCallback !== "function")) {
-        console.log("Device Error: errorCallback is not a function");
-        return;
-    }
-
-    // Get info
-    exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
-};
-
-module.exports = new Device();
 });
 
 // file: lib\common\utils.js
