@@ -89,7 +89,11 @@ namespace WP7CordovaClassLib.Cordova.Commands
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
+                AlertOptions alertOpts = new AlertOptions();// JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                alertOpts.message = args[0];
+                alertOpts.title = args[1];
+                alertOpts.buttonLabel = args[2];
 
                 PhoneApplicationPage page = Page;
                 if (page != null)
@@ -120,7 +124,12 @@ namespace WP7CordovaClassLib.Cordova.Commands
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                //AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
+                AlertOptions alertOpts = new AlertOptions();// JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                alertOpts.message = args[0];
+                alertOpts.title = args[1];
+                alertOpts.buttonLabel = args[2];
 
                 PhoneApplicationPage page = Page;
                 if (page != null)
@@ -197,9 +206,10 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
 
 
-        public void beep(string count)
+        public void beep(string options)
         {
-            int times = int.Parse(count);
+            string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
+            int times = int.Parse(args[0]);
 
             StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WP7CordovaClassLib;component/resources/notification-beep.wav", UriKind.Relative));
             if (sri != null)
