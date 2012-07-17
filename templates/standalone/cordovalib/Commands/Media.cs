@@ -198,8 +198,18 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
                 if (Media.players.ContainsKey(id))
                 {
-                    AudioPlayer player = Media.players[id];
-                    player.setVolume(volume);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        try
+                        {
+                            AudioPlayer player = Media.players[id];
+                            player.setVolume(volume);
+                        }
+                        catch (Exception e)
+                        {
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, e.Message));
+                        }
+                    });
                 }
             }
             catch (Exception)
