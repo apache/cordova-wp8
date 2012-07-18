@@ -124,9 +124,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                //AlertOptions alertOpts = JSON.JsonHelper.Deserialize<AlertOptions>(options);
                 string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
-                AlertOptions alertOpts = new AlertOptions();// JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                AlertOptions alertOpts = new AlertOptions();
                 alertOpts.message = args[0];
                 alertOpts.title = args[1];
                 alertOpts.buttonLabel = args[2];
@@ -296,11 +295,14 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
         public void vibrate(string vibrateDuration)
         {
+            
             int msecs = 200; // set default
 
             try
             {
-                msecs = int.Parse(vibrateDuration);
+                string[] args = JSON.JsonHelper.Deserialize<string[]>(vibrateDuration);
+
+                msecs = int.Parse(args[0]);
                 if (msecs < 1)
                 {
                     msecs = 1;
