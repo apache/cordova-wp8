@@ -165,7 +165,6 @@ namespace WP7CordovaClassLib.Cordova.Commands
             {
                 if (currentStatus != Running)
                 {
-
                     lock (compass)
                     {
                         compass.CurrentValueChanged += compass_SingleHeadingValueChanged;
@@ -188,11 +187,11 @@ namespace WP7CordovaClassLib.Cordova.Commands
                 }
                 lock (compass)
                 {
-
                     compass.CurrentValueChanged -= compass_SingleHeadingValueChanged;
                     if (watchers.Count < 1)
                     {
                         compass.Stop();
+                        this.SetStatus(Stopped);
                     }
                 }
             }
