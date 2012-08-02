@@ -1018,10 +1018,9 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
         public void resolveLocalFileSystemURI(string options)
         {
-            string uri = getSingleStringOption(options);
+            string uri = getSingleStringOption(options).Split('?')[0];
             if (uri != null)
             {
-
                 try
                 {
                     if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
