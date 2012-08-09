@@ -17,13 +17,9 @@
  specific language governing permissions and limitations
  under the License. 
  -->
-<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{252f4997-3d6c-4d7a-9d5b-59818888a810}" Title="CordovaExample" 
-       RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  
-       Author="CordovaExample author" 
-       Description="PhoneGap for Windows Phone 7" 
-       Publisher="CordovaExample">
-    
+<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
+  <DefaultLanguage xmlns="" code="&quot;en-US&quot;, UltimateResourceFallbackLocation.Satellite" />
+  <App xmlns="" ProductID="{fafc7e71-243d-49fc-a77a-d3b21b3aa5cf}" Title="CordovaExample" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="CordovaExample author" Description="PhoneGap for Windows Phone 7" Publisher="CordovaExample" PublisherID="{4e2a1a57-007f-4940-9fe5-37f92f5a27a2}">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />
@@ -31,29 +27,42 @@
       <Capability Name="ID_CAP_LOCATION" />
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
-      <Capability Name="ID_CAP_APPOINTMENTS"/>
-      <Capability Name="ID_CAP_CAMERA"/>
-      <Capability Name="ID_CAP_CONTACTS"/>
-      <Capability Name="ID_CAP_ISV_CAMERA"/>
-      <Capability Name="ID_CAP_MEDIALIB"/>
-      <Capability Name="ID_CAP_MICROPHONE"/>
-      <Capability Name="ID_CAP_PHONEDIALER"/>
-      <Capability Name="ID_CAP_PUSH_NOTIFICATION"/>
-      <Capability Name="ID_CAP_SENSORS"/>
-      <Capability Name="ID_HW_FRONTCAMERA"/>      
+      <Capability Name="ID_CAP_APPOINTMENTS" />
+      <Capability Name="ID_CAP_CAMERA" />
+      <Capability Name="ID_CAP_CONTACTS" />
+      <Capability Name="ID_CAP_ISV_CAMERA" />
+      <Capability Name="ID_CAP_MICROPHONE" />
+      <Capability Name="ID_CAP_PHONEDIALER" />
+      <Capability Name="ID_CAP_PUSH_NOTIFICATION" />
+      <Capability Name="ID_CAP_SENSORS" />
+      <Capability Name="ID_CAP_MEDIALIB_AUDIO" />
+      <Capability Name="ID_CAP_MEDIALIB_PHOTO" />
     </Capabilities>
-    
     <Tasks>
       <DefaultTask Name="_default" NavigationPage="MainPage.xaml" />
     </Tasks>
     <Tokens>
       <PrimaryToken TokenID="CordovaExampleToken" TaskName="_default">
-        <TemplateType5>
-          <BackgroundImageURI IsRelative="true" IsResource="false">Background.png</BackgroundImageURI>
+        <TemplateFlip>
+          <SmallImageURI IsResource="false" IsRelative="true">Background.png</SmallImageURI>
           <Count>0</Count>
+          <BackgroundImageURI IsResource="false" IsRelative="true">Background.png</BackgroundImageURI>
           <Title>CordovaExample</Title>
-        </TemplateType5>
+          <BackContent></BackContent>
+          <BackBackgroundImageURI></BackBackgroundImageURI>
+          <BackTitle></BackTitle>
+          <LargeBackgroundImageURI></LargeBackgroundImageURI>
+          <LargeBackContent></LargeBackContent>
+          <LargeBackBackgroundImageURI></LargeBackBackgroundImageURI>
+          <DeviceLockImageURI></DeviceLockImageURI>
+          <HasLarge>false</HasLarge>
+        </TemplateFlip>
       </PrimaryToken>
     </Tokens>
+    <ScreenResolutions>
+      <ScreenResolution Name="ID_RESOLUTION_WVGA" />
+      <ScreenResolution Name="ID_RESOLUTION_WXGA" />
+      <ScreenResolution Name="ID_RESOLUTION_HD720P" />
+    </ScreenResolutions>
   </App>
 </Deployment>
