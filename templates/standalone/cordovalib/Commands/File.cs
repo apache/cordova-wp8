@@ -340,6 +340,12 @@ namespace WP8CordovaClassLib.Cordova.Commands
                         throw new FileNotFoundException();
                     }
 
+                    //TODO WP8 throws UriFormatException if "/" is passed in Uri constructor. WP7 returns "file:///" for new Uri("/").LocalPath
+                    if(filePath.Equals("/"))
+                    {
+                        filePath = "file://";
+                    }
+
                     this.FullPath = new Uri(filePath).LocalPath;
                 }
             }
