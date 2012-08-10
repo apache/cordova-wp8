@@ -75,7 +75,7 @@ namespace WP7CordovaClassLib.Cordova.UI
                 root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
                 // dummy parameter is used to always open a fresh version
-                root.Navigate(new System.Uri("/WP7CordovaClassLib;component/Cordova/UI/VideoRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+                root.Navigate(new System.Uri("/WP7CordovaClassLib;component/CordovaLib/UI/VideoRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
             });
         }
 
