@@ -18,7 +18,7 @@ using System.Windows;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 
-namespace WP7CordovaClassLib.Cordova.UI
+namespace WP8CordovaClassLib.Cordova.UI
 {
     /// <summary>
     /// Allows an application to launch the Audio Recording application. 
@@ -28,7 +28,7 @@ namespace WP7CordovaClassLib.Cordova.UI
     {
         /// <summary>
         /// Represents recorded audio returned from a call to the Show method of
-        /// a WP7CordovaClassLib.Cordova.Controls.AudioCaptureTask object
+        /// a WP8CordovaClassLib.Cordova.Controls.AudioCaptureTask object
         /// </summary>
         public class AudioResult : TaskEventArgs
         {

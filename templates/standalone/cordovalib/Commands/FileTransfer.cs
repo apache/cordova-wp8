@@ -22,7 +22,7 @@ using System.Windows;
 using System.Security;
 using System.Diagnostics;
 
-namespace WP7CordovaClassLib.Cordova.Commands
+namespace WP8CordovaClassLib.Cordova.Commands
 {
     public class FileTransfer : BaseCommand
     {
@@ -379,7 +379,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
                     }
                 }
-                WP7CordovaClassLib.Cordova.Commands.File.FileEntry entry = new WP7CordovaClassLib.Cordova.Commands.File.FileEntry(reqState.options.FilePath);
+                WP8CordovaClassLib.Cordova.Commands.File.FileEntry entry = new WP8CordovaClassLib.Cordova.Commands.File.FileEntry(reqState.options.FilePath);
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK, entry));
             }
             catch (IsolatedStorageException)

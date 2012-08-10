@@ -31,16 +31,16 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.ComponentModel;
 using System.Xml.Linq;
-using WP7CordovaClassLib.Cordova.Commands;
+using WP8CordovaClassLib.Cordova.Commands;
 using System.Diagnostics;
 using System.Text;
-using WP7CordovaClassLib.Cordova;
+using WP8CordovaClassLib.Cordova;
 using System.Threading;
 using Microsoft.Phone.Shell;
 
 
 
-namespace WP7CordovaClassLib
+namespace WP8CordovaClassLib
 {
     public partial class CordovaView : UserControl
     {
@@ -420,7 +420,7 @@ namespace WP7CordovaClassLib
                 switch (commandCallParams.Action.ToLower())
                 {
                     case "overridebackbutton":
-                        string arg0 = WP7CordovaClassLib.Cordova.JSON.JsonHelper.Deserialize<string[]>(commandCallParams.Args)[0];
+                        string arg0 = WP8CordovaClassLib.Cordova.JSON.JsonHelper.Deserialize<string[]>(commandCallParams.Args)[0];
                         this.OverrideBackButton = (arg0 != null && arg0.Length > 0 && arg0.ToLower() == "true"); 
                         break;
                 }

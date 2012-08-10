@@ -19,7 +19,7 @@ using System.Windows;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 
-namespace WP7CordovaClassLib.Cordova.UI
+namespace WP8CordovaClassLib.Cordova.UI
 {
     public partial class ImageCapture : PhoneApplicationPage
     {
@@ -33,7 +33,7 @@ namespace WP7CordovaClassLib.Cordova.UI
     {
         /// <summary>
         /// Represents an image returned from a call to the Show method of
-        /// a WP7CordovaClassLib.Cordova.Controls.ImageCaptureTask object
+        /// a WP8CordovaClassLib.Cordova.Controls.ImageCaptureTask object
         /// </summary>
         //public class AudioResult : TaskEventArgs
         //{

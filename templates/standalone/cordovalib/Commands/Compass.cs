@@ -31,7 +31,7 @@ using System.Globalization;
 using System.Threading;
 using Microsoft.Devices.Sensors;
 
-namespace WP7CordovaClassLib.Cordova.Commands
+namespace WP8CordovaClassLib.Cordova.Commands
 {
 
     public class Compass : BaseCommand

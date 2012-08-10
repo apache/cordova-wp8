@@ -25,7 +25,7 @@ using System.Windows.Shapes;
 
 using Microsoft.Phone.Info;
 
-namespace WP7CordovaClassLib.Cordova.Commands
+namespace WP8CordovaClassLib.Cordova.Commands
 {
     /// <summary>
     /// Listens for changes to the state of the battery on the device.

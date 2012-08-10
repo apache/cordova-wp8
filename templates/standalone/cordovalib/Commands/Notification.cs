@@ -21,9 +21,9 @@ using System.Threading;
 using System.Windows.Resources;
 using Microsoft.Phone.Controls;
 using Microsoft.Xna.Framework.Audio;
-using WP7CordovaClassLib.Cordova.UI;
+using WP8CordovaClassLib.Cordova.UI;
 
-namespace WP7CordovaClassLib.Cordova.Commands
+namespace WP8CordovaClassLib.Cordova.Commands
 {
     public class Notification : BaseCommand
     {

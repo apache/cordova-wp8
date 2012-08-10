@@ -25,7 +25,7 @@ using System.Windows.Shapes;
 using System.Text;
 using System.Diagnostics;
 
-namespace WP7CordovaClassLib.Cordova
+namespace WP8CordovaClassLib.Cordova
 {
     /// <summary>
     /// Represents command execution result

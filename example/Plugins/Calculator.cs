@@ -18,9 +18,9 @@
  */
 
 using System.Runtime.Serialization;
-using WP7CordovaClassLib.Cordova;
-using WP7CordovaClassLib.Cordova.Commands;
-using WP7CordovaClassLib.Cordova.JSON;
+using WP8CordovaClassLib.Cordova;
+using WP8CordovaClassLib.Cordova.Commands;
+using WP8CordovaClassLib.Cordova.JSON;
 
 namespace Cordova.Extension.Commands
 {

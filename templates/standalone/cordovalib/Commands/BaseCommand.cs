@@ -17,7 +17,7 @@ using System.Reflection;
 using Microsoft.Phone.Shell;
 using System.Diagnostics;
 
-namespace WP7CordovaClassLib.Cordova.Commands
+namespace WP8CordovaClassLib.Cordova.Commands
 {
     public abstract class BaseCommand : IDisposable
     {

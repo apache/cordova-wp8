@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WP7CordovaClassLib")]
+[assembly: AssemblyTitle("WP8CordovaClassLib")]
 [assembly: AssemblyDescription("2.0")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Apache Cordova")]
-[assembly: AssemblyProduct("WP7CordovaClassLib")]
+[assembly: AssemblyProduct("WP8CordovaClassLib")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
