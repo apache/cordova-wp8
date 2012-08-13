@@ -266,8 +266,6 @@ namespace WP8CordovaClassLib.Cordova.Commands
                     mediaOptions = new MediaOptions();
                     mediaOptions.Id = optionsString[0];
                     mediaOptions.Src = optionsString[1];
-                    mediaOptions.Milliseconds = int.Parse(optionsString[2]);
-
                 }
                 catch (Exception)
                 {
