@@ -210,7 +210,7 @@ namespace WP8CordovaClassLib.Cordova.Commands
             string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
             int times = int.Parse(args[0]);
 
-            StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WP7CordovaClassLib;component/resources/notification-beep.wav", UriKind.Relative));
+            StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WP8CordovaClassLib;component/resources/notification-beep.wav", UriKind.Relative));
             if (sri != null)
             {
                 SoundEffect effect = SoundEffect.FromStream(sri.Stream);
