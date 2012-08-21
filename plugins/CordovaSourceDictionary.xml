@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is auto-generated, do not edit! -jm -->
+<CordovaSourceDictionary>
+    <FilePath Value="www\cordova-2.0.0.js"/>
+    <FilePath Value="www\index.html"/>
+    <FilePath Value="www\master.css"/>
+    <FilePath Value="www\plugins\ChildBrowser\browser.html"/>
+    <FilePath Value="www\plugins\ChildBrowser\ChildBrowser.js"/>
+    <FilePath Value="www\plugins\Facebook\facebook.html"/>
+    <FilePath Value="www\plugins\Facebook\FBConnect.js"/>
+    <FilePath Value="www\plugins\index.html"/>
+    <FilePath Value="www\plugins\LiveTiles\liveTiles.js"/>
+    <FilePath Value="www\plugins\LiveTiles\liveTilesExample.html"/>
+    <FilePath Value="www\plugins\PGMapLauncher\map.html"/>
+    <FilePath Value="www\plugins\PGMapLauncher\PGMapLauncher.js"/>
+    <FilePath Value="www\plugins\PGSocialShare\PGSocialShare.js"/>
+    <FilePath Value="www\plugins\PGSocialShare\share.html"/>
+</CordovaSourceDictionary>
