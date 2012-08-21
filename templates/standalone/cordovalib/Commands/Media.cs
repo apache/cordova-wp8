@@ -132,10 +132,9 @@ namespace WP8CordovaClassLib.Cordova.Commands
                         {
                             if (!Media.players.ContainsKey(mediaOptions.Id))
                             {
-                                AudioPlayer audio = new AudioPlayer(this, mediaOptions.Id);
-                                Media.players.Add(mediaOptions.Id, audio);
-                                audio.startRecording(mediaOptions.Src);
+                                Media.players.Add(mediaOptions.Id, new AudioPlayer(this, mediaOptions.Id));
                             }
+                            Media.players[mediaOptions.Id].startRecording(mediaOptions.Src);
                             DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                         }
                         catch (Exception e)
@@ -266,8 +265,6 @@ namespace WP8CordovaClassLib.Cordova.Commands
                     mediaOptions = new MediaOptions();
                     mediaOptions.Id = optionsString[0];
                     mediaOptions.Src = optionsString[1];
-                    mediaOptions.Milliseconds = int.Parse(optionsString[2]);
-
                 }
                 catch (Exception)
                 {

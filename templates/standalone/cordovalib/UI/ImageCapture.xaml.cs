@@ -80,7 +80,7 @@ namespace WP8CordovaClassLib.Cordova.UI
                 root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
                 // dummy parameter is used to always open a fresh version
-                root.Navigate(new System.Uri("/WP7CordovaClassLib;component/Cordova/UI/ImageCapture.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+                root.Navigate(new System.Uri("/WP8CordovaClassLib;component/Cordova/UI/ImageCapture.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
             });
         }
 

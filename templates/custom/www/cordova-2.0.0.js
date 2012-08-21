@@ -2419,6 +2419,8 @@ FileReader.prototype.readAsArrayBuffer = function(file) {
     console.log('This method is not supported at this time.');
 };
 
+window.FileReader = FileReader;
+
 module.exports = FileReader;
 });
 

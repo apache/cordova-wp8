@@ -341,11 +341,12 @@ namespace WP8CordovaClassLib
 
                     Uri uriBefore = this.Browser.Source;
                     // calling js history.back with result in a page change if history was valid.
-                    CordovaBrowser.InvokeScript("eval", new string[] { "(function(){window.history.back();})()" });
+                    //CordovaBrowser.InvokeScript("eval", new string[] { "(function(){window.history.back();})()" });
+                    this.Browser.GoBack();
 
                     Uri uriAfter = this.Browser.Source;
 
-                    e.Cancel = PageDidChange || (uriBefore != uriAfter);
+                    e.Cancel = PageDidChange || (uriBefore.ToString() != uriAfter.ToString());
                 }
                 catch (Exception)
                 {
