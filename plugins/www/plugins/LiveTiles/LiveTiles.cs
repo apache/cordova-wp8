@@ -6,16 +6,15 @@
  * Copyright (c) 2011, Microsoft Corporation
  */
 
+using System;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Windows;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
 using WP8CordovaClassLib.Cordova;
 using WP8CordovaClassLib.Cordova.Commands;
 using WP8CordovaClassLib.Cordova.JSON;
-using Microsoft.Phone.Shell;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Phone.Controls;
-using System.Windows;
 
 namespace Cordova.Extension.Commands
 {
@@ -246,6 +245,53 @@ namespace Cordova.Extension.Commands
             }
         }
 
+        /// <summary>
+        /// Creates cycle tile
+        /// </summary>
+        public void createCycleTile(string options)
+        {
+            LiveTilesOptions tileOptions;
+            try
+            {
+                tileOptions = JsonHelper.Deserialize<LiveTilesOptions[]>(options)[0];
+            }
+            catch 
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(tileOptions.SecondaryTileUri))
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+
+            try
+            {
+                ShellTile foundTile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains(tileOptions.SecondaryTileUri));
+                if (foundTile != null)
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Tile already exist"));
+                }
+                else
+                {
+                    CycleTileData cycleTile = CreateCycleTileData(tileOptions);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        PhoneApplicationPage currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content as PhoneApplicationPage;
+                        string currentUri = currentPage.NavigationService.Source.ToString().Split('?')[0];
+                        ShellTile.Create(new Uri(currentUri + "?Uri=" + tileOptions.SecondaryTileUri, UriKind.Relative), cycleTile, true);
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                    });   
+                }
+            }
+            catch
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error creating cycle tile"));
+            }
+        }
+
 
         /// <summary>
         /// Cerates tile data
@@ -278,6 +324,31 @@ namespace Cordova.Extension.Commands
                 standardTile.BackBackgroundImage = new Uri(liveTileOptions.BackImage, UriKind.RelativeOrAbsolute);
             }
             return standardTile;
+        }
+
+        private CycleTileData CreateCycleTileData(LiveTilesOptions liveTileOptions)
+        {
+            CycleTileData tileData = new CycleTileData();
+            if (!string.IsNullOrEmpty(liveTileOptions.Title))
+            {
+                tileData.Title = liveTileOptions.Title;
+            }
+            if (liveTileOptions.Count > 0)
+            {
+                tileData.Count = liveTileOptions.Count;
+            }
+            if (!string.IsNullOrEmpty(liveTileOptions.Image))
+            {
+                string[] imgs = liveTileOptions.Image.Split('|');
+                Uri[] imgUris = new Uri[imgs.Length];
+                for (int i = 0; i < imgs.Length; ++i)
+                {
+                    imgUris[i] = new Uri(imgs[i], UriKind.Relative);
+                }
+                tileData.CycleImages = imgUris;
+                tileData.SmallBackgroundImage = imgUris[0];
+            }
+            return tileData;
         }
 
     }
