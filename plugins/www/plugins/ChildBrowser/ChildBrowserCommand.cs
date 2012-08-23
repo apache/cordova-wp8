@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -9,12 +11,10 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
-using System.Diagnostics;
-using System.Runtime.Serialization;
+using Microsoft.Phone.Shell;
 using WP8CordovaClassLib.Cordova;
 using WP8CordovaClassLib.Cordova.Commands;
 using WP8CordovaClassLib.Cordova.JSON;
-using Microsoft.Phone.Shell;
 
 namespace WP8CordovaClassLib.Cordova.Commands
 {

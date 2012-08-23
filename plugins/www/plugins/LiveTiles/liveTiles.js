@@ -36,6 +36,12 @@
                 if(checkArgs(successCallback, errorCallback)) {
                     cdv.exec(successCallback, errorCallback, "LiveTiles", "deleteSecondaryTile", [options]);
                 }
+            },
+
+            createCycleTile: function (successCallback, errorCallback, options) {
+                if(checkArgs(successCallback, errorCallback)) {
+                    cdv.exec(successCallback, errorCallback, "LiveTiles", "createCycleTile", [options]);
+                }
             }
 
         };

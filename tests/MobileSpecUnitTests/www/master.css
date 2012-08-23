@@ -110,3 +110,22 @@
    padding:1.2em 0;
    margin:3px 5px 3px 5px;
   }
+  
+  #stage.theme .input{
+   border: 1px solid #555;
+   -webkit-border-radius: 5px;
+   border-radius: 5px;
+   text-align:center;
+   display:block;
+   float:light;
+   background:#888;
+   color:#9cd;
+   font-size:1.1em;
+   text-decoration:none;
+   padding:1.2em 0;
+   margin:3px 0px 3px 5px;    
+ }
+  
+  #stage.theme .numeric{
+   width:100%;
+  }
