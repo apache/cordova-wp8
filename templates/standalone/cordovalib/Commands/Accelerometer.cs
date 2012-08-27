@@ -20,7 +20,7 @@ using System.Threading;
 using Microsoft.Devices.Sensors;
 using System.Globalization;
 
-namespace WP8CordovaClassLib.Cordova.Commands
+namespace WPCordovaClassLib.Cordova.Commands
 {
     /// <summary>
     /// Captures device motion in the x, y, and z direction.

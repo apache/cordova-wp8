@@ -21,9 +21,9 @@ using System.Threading;
 using System.Windows.Resources;
 using Microsoft.Phone.Controls;
 using Microsoft.Xna.Framework.Audio;
-using WP8CordovaClassLib.Cordova.UI;
+using WPCordovaClassLib.Cordova.UI;
 
-namespace WP8CordovaClassLib.Cordova.Commands
+namespace WPCordovaClassLib.Cordova.Commands
 {
     public class Notification : BaseCommand
     {
@@ -210,7 +210,7 @@ namespace WP8CordovaClassLib.Cordova.Commands
             string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
             int times = int.Parse(args[0]);
 
-            StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WP8CordovaClassLib;component/resources/notification-beep.wav", UriKind.Relative));
+            StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WPCordovaClassLib;component/resources/notification-beep.wav", UriKind.Relative));
             if (sri != null)
             {
                 SoundEffect effect = SoundEffect.FromStream(sri.Stream);

@@ -31,7 +31,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
 
-namespace WP8CordovaClassLib.Cordova.Commands
+namespace WPCordovaClassLib.Cordova.Commands
 {
     public class ImageExifOrientation
     {
