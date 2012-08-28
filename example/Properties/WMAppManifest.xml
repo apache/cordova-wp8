@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="&quot;en-US&quot;, UltimateResourceFallbackLocation.Satellite" />
-  <App xmlns="" ProductID="{fafc7e71-243d-49fc-a77a-d3b21b3aa5cf}" Title="CordovaExample" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="CordovaExample author" Description="PhoneGap for Windows Phone 7" Publisher="CordovaExample" PublisherID="{4e2a1a57-007f-4940-9fe5-37f92f5a27a2}">
+  <App xmlns="" ProductID="{fafc7e71-243d-49fc-a77a-d3b21b3aa5cf}" Title="CordovaExample" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="CordovaExample author" Description="Cordova for Windows Phone" Publisher="CordovaExample" PublisherID="{4e2a1a57-007f-4940-9fe5-37f92f5a27a2}">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />

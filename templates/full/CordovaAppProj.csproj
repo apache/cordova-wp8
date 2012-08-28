@@ -141,7 +141,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CordovaLib\WP8CordovaClassLib.dll" />
+    <Content Include="CordovaLib\WPCordovaClassLib.dll" />
     <Content Include="CordovaSourceDictionary.xml" />
     <Content Include="www\js\index.js" />
     <None Include="BuildManifestProcessor.js" />
@@ -179,9 +179,7 @@
     <Folder Include="Plugins\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="WP8CordovaClassLib">
-      <HintPath>CordovaLib\WP8CordovaClassLib.dll</HintPath>
-    </Reference>
+    <Reference Include="WPCordovaClassLib, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

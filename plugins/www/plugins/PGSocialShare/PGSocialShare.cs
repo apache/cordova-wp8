@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using Microsoft.Phone.Tasks;
 
-namespace WP8CordovaClassLib.Cordova.Commands
+namespace WPCordovaClassLib.Cordova.Commands
 {
 
     public class PGSocialShare : BaseCommand

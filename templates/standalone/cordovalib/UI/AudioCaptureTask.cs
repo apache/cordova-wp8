@@ -18,7 +18,7 @@ using System.Windows;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 
-namespace WP8CordovaClassLib.Cordova.UI
+namespace WPCordovaClassLib.Cordova.UI
 {
     /// <summary>
     /// Allows an application to launch the Audio Recording application. 
@@ -28,7 +28,7 @@ namespace WP8CordovaClassLib.Cordova.UI
     {
         /// <summary>
         /// Represents recorded audio returned from a call to the Show method of
-        /// a WP8CordovaClassLib.Cordova.Controls.AudioCaptureTask object
+        /// a WPCordovaClassLib.Cordova.Controls.AudioCaptureTask object
         /// </summary>
         public class AudioResult : TaskEventArgs
         {
@@ -75,7 +75,7 @@ namespace WP8CordovaClassLib.Cordova.UI
                 root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
                 // dummy parameter is used to always open a fresh version
-                root.Navigate(new System.Uri("/WP8CordovaClassLib;component/CordovaLib/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+                root.Navigate(new System.Uri("/WPCordovaClassLib;component/CordovaLib/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
             });
         }
 

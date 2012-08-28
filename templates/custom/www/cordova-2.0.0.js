@@ -1,6 +1,6 @@
-// WP7 commit 2e33015f0e73540904abc05c4f726c3c9ce6879f
+// commit 7715e097d87735d08e832e5c81a04276c9f9d1fb
 
-// File generated at :: Wed Jul 18 2012 18:23:58 GMT-0700 (Pacific Daylight Time)
+// File generated at :: Mon Aug 27 2012 15:48:28 GMT-0700 (Pacific Daylight Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -29,6 +29,10 @@ var require,
 
 (function () {
     var modules = {};
+    // Stack of moduleIds currently being built.
+    var requireStack = [];
+    // Map of module ID -> index into requireStack of modules currently being built.
+    var inProgressModules = {};
 
     function build(module) {
         var factory = module.factory;
@@ -41,8 +45,21 @@ var require,
     require = function (id) {
         if (!modules[id]) {
             throw "module " + id + " not found";
+        } else if (id in inProgressModules) {
+            var cycle = requireStack.slice(inProgressModules[id]).join('->') + '->' + id;
+            throw "Cycle in require graph: " + cycle;
         }
-        return modules[id].factory ? build(modules[id]) : modules[id].exports;
+        if (modules[id].factory) {
+            try {
+                inProgressModules[id] = requireStack.length;
+                requireStack.push(id);
+                return build(modules[id]);
+            } finally {
+                delete inProgressModules[id];
+                requireStack.pop();
+            }
+        }
+        return modules[id].exports;
     };
 
     define = function (id, factory) {
@@ -67,6 +84,7 @@ if (typeof module === "object" && typeof require === "function") {
     module.exports.require = require;
     module.exports.define = define;
 }
+
 // file: lib/cordova.js
 define("cordova", function(require, exports, module) {
 var channel = require('cordova/channel');
@@ -207,10 +225,6 @@ var cordova = {
             window.dispatchEvent(evt);
         }
     },
-    // TODO: this is Android only; think about how to do this better
-    shuttingDown:false,
-    UsePolling:false,
-    // END TODO
 
     // TODO: iOS only
     // This queue holds the currently executing command and all pending
@@ -404,7 +418,8 @@ module.exports = {
 
 // file: lib\common\channel.js
 define("cordova/channel", function(require, exports, module) {
-var utils = require('cordova/utils');
+var utils = require('cordova/utils'),
+    nextGuid = 1;
 
 /**
  * Custom pub-sub "channel" that can have functions subscribed to it
@@ -456,7 +471,6 @@ var Channel = function(type, opts) {
     this.type = type;
     this.handlers = {};
     this.numHandlers = 0;
-    this.guid = 1;
     this.fired = false;
     this.enabled = true;
     this.events = {
@@ -549,19 +563,19 @@ Channel.prototype.subscribe = function(f, c, g) {
 
     g = g || func.observer_guid || f.observer_guid;
     if (!g) {
-        // first time we've seen this subscriber
-        g = this.guid++;
-    }
-    else {
-        // subscriber already handled; dont set it twice
-        return g;
+        // first time any channel has seen this subscriber
+        g = nextGuid++;
     }
     func.observer_guid = g;
     f.observer_guid = g;
-    this.handlers[g] = func;
-    this.numHandlers++;
-    if (this.events.onSubscribe) this.events.onSubscribe.call(this);
-    if (this.fired) func.call(this);
+
+    // Don't add the same handler more than once.
+    if (!this.handlers[g]) {
+        this.handlers[g] = func;
+        this.numHandlers++;
+        if (this.events.onSubscribe) this.events.onSubscribe.call(this);
+        if (this.fired) func.apply(this, this.fireArgs);
+    }
     return g;
 };
 
@@ -575,15 +589,14 @@ Channel.prototype.subscribeOnce = function(f, c) {
 
     var g = null;
     var _this = this;
-    var m = function() {
-        f.apply(c || null, arguments);
-        _this.unsubscribe(g);
-    };
     if (this.fired) {
-        if (typeof c == "object") { f = utils.close(c, f); }
-        f.apply(this, this.fireArgs);
+        f.apply(c || null, this.fireArgs);
     } else {
-        g = this.subscribe(m);
+        g = this.subscribe(function() {
+            _this.unsubscribe(g);
+            f.apply(c || null, arguments);
+        });
+        f.observer_guid = g;
     }
     return g;
 };
@@ -599,7 +612,6 @@ Channel.prototype.unsubscribe = function(g) {
     var handler = this.handlers[g];
     if (handler) {
         if (handler.observer_guid) handler.observer_guid=null;
-        this.handlers[g] = null;
         delete this.handlers[g];
         this.numHandlers--;
         if (this.events.onUnsubscribe) this.events.onUnsubscribe.call(this);
@@ -613,14 +625,17 @@ Channel.prototype.fire = function(e) {
     if (this.enabled) {
         var fail = false;
         this.fired = true;
-        for (var item in this.handlers) {
-            var handler = this.handlers[item];
-            if (typeof handler == 'function') {
-                var rv = (handler.apply(this, arguments)===false);
-                fail = fail || rv;
-            }
-        }
         this.fireArgs = arguments;
+        // Copy the values first so that it is safe to modify it from within
+        // callbacks.
+        var toCall = [];
+        for (var item in this.handlers) {
+            toCall.push(this.handlers[item]);
+        }
+        for (var i = 0; i < toCall.length; ++i) {
+            var rv = (toCall[i].apply(this, arguments)===false);
+            fail = fail || rv;
+        }
         return !fail;
     }
     return true;
@@ -874,7 +889,7 @@ module.exports = {
 
 });
 
-// file: lib\wp7\exec.js
+// file: lib\wp8\exec.js
 define("cordova/exec", function(require, exports, module) {
 var cordova = require('cordova');
 
@@ -882,7 +897,7 @@ var cordova = require('cordova');
  * Execute a cordova command.  It is up to the native side whether this action
  * is synchronous or asynchronous.  The native side can return:
  *      Synchronous: PluginResult object as a JSON string
- *      Asynchrounous: Empty string ""
+ *      Asynchronous: Empty string ""
  * If async, the native side will cordova.callbackSuccess or cordova.callbackError,
  * depending upon the result of the action.
  *
@@ -901,6 +916,13 @@ module.exports = function(success, fail, service, action, args) {
         cordova.callbacks[callbackId] = {success:success, fail:fail};
     }
     // generate a new command string, ex. DebugConsole/log/DebugConsole23/["wtf dude?"]
+    for(var n = 0; n < args.length; n++)
+    {
+        if(typeof args[n] !== "string")
+        {
+            args[n] = JSON.stringify(args[n]);
+        }
+    }
     var command = service + "/" + action + "/" + callbackId + "/" + JSON.stringify(args);
     // pass it on to Notify
     try {
@@ -919,24 +941,23 @@ module.exports = function(success, fail, service, action, args) {
 
 });
 
-// file: lib\wp7\platform.js
+// file: lib\wp8\platform.js
 define("cordova/platform", function(require, exports, module) {
 var cordova = require('cordova'),
       exec = require('cordova/exec');
 
 // specifically require the following patches :
 
-// localStorage+SessionStorage APIs
-require("cordova/plugin/wp7/DOMStorage");
 
 // Fix XHR calls to local file-system
-require("cordova/plugin/wp7/XHRPatch");
+require("cordova/plugin/wp/XHRPatch");
 
 
 module.exports = {
-    id: "wp7",
+    id: "wp8",
     initialize:function() {
         window.alert = require("cordova/plugin/notification").alert;
+        window.FileReader = require("cordova/plugin/FileReader");
 
         // Inject a listener for the backbutton, and tell native to override the flag (true/false) when we have 1 or more, or 0, listeners
         var backButtonChannel = cordova.addDocumentEventHandler('backbutton', {
@@ -950,14 +971,15 @@ module.exports = {
               exec(null, null, "CoreEvents", "overridebackbutton", [false]);
             }
           }
+
         });
     },
     objects: {
         CordovaCommandResult: {
-            path:"cordova/plugin/wp7/CordovaCommandResult"
+            path:"cordova/plugin/wp/CordovaCommandResult"
         },
         CordovaMediaonStatus: {
-            path:"cordova/plugin/wp7/CordovaMediaonStatus"
+            path:"cordova/plugin/wp/CordovaMediaonStatus"
         },
         navigator: {
             children: {
@@ -969,32 +991,19 @@ module.exports = {
                     }
                 },
                 console: {
-                    path: "cordova/plugin/wp7/console"
+                    path: "cordova/plugin/wp/console"
 
                 }
             }
         },
         console:{
-          path: "cordova/plugin/wp7/console"
+          path: "cordova/plugin/wp/console"
         },
         FileTransfer: {
-            path: 'cordova/plugin/wp7/FileTransfer'
-        },
-        DirectoryEntry: {
-            path: 'cordova/plugin/wp7/DirectoryEntry'
+            path: 'cordova/plugin/wp/FileTransfer'
         }
 
-    },
-    merges:{
-        navigator: {
-            children: {
-                contacts:{
-                    path:"cordova/plugin/wp7/contacts"
-                }
-            }
-        }
     }
-
 };
 
 });
@@ -2419,8 +2428,6 @@ FileReader.prototype.readAsArrayBuffer = function(file) {
     console.log('This method is not supported at this time.');
 };
 
-window.FileReader = FileReader;
-
 module.exports = FileReader;
 });
 
@@ -2476,10 +2483,12 @@ FileTransfer.prototype.upload = function(filePath, server, successCallback, erro
     var mimeType = null;
     var params = null;
     var chunkedMode = true;
+    var headers = null;
     if (options) {
         fileKey = options.fileKey;
         fileName = options.fileName;
         mimeType = options.mimeType;
+        headers = options.headers;
         if (options.chunkedMode !== null || typeof options.chunkedMode != "undefined") {
             chunkedMode = options.chunkedMode;
         }
@@ -2496,7 +2505,7 @@ FileTransfer.prototype.upload = function(filePath, server, successCallback, erro
         errorCallback(error);
     };
 
-    exec(successCallback, fail, 'FileTransfer', 'upload', [filePath, server, fileKey, fileName, mimeType, params, trustAllHosts, chunkedMode]);
+    exec(successCallback, fail, 'FileTransfer', 'upload', [filePath, server, fileKey, fileName, mimeType, params, trustAllHosts, chunkedMode, headers]);
 };
 
 /**
@@ -2566,15 +2575,19 @@ define("cordova/plugin/FileUploadOptions", function(require, exports, module) {
  * @param fileName {String}  Filename to be used by the server. Defaults to image.jpg.
  * @param mimeType {String}  Mimetype of the uploaded file. Defaults to image/jpeg.
  * @param params {Object}    Object with key: value params to send to the server.
+ * @param headers {Object}   Keys are header names, values are header values. Multiple
+ *                           headers of the same name are not supported.
  */
-var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
+var FileUploadOptions = function(fileKey, fileName, mimeType, params, headers) {
     this.fileKey = fileKey || null;
     this.fileName = fileName || null;
     this.mimeType = mimeType || null;
     this.params = params || null;
+    this.headers = headers || null;
 };
 
 module.exports = FileUploadOptions;
+
 });
 
 // file: lib\common\plugin\FileUploadResult.js
@@ -2762,7 +2775,7 @@ FileWriter.prototype.seek = function(offset) {
     if (offset < 0) {
         this.position = Math.max(offset + this.length, 0);
     }
-    // Offset is bigger then file size so set position
+    // Offset is bigger than file size so set position
     // to the end of the file.
     else if (offset > this.length) {
         this.position = this.length;
@@ -2969,7 +2982,6 @@ Media.prototype.stop = function() {
     var me = this;
     exec(function() {
         me._position = 0;
-        me.successCallback();
     }, this.errorCallback, "Media", "stopPlayingAudio", [this.id]);
 };
 
@@ -3015,14 +3027,14 @@ Media.prototype.getCurrentPosition = function(success, fail) {
  * Start recording audio file.
  */
 Media.prototype.startRecord = function() {
-    exec(this.successCallback, this.errorCallback, "Media", "startRecordingAudio", [this.id, this.src]);
+    exec(null, this.errorCallback, "Media", "startRecordingAudio", [this.id, this.src]);
 };
 
 /**
  * Stop recording audio file.
  */
 Media.prototype.stopRecord = function() {
-    exec(this.successCallback, this.errorCallback, "Media", "stopRecordingAudio", [this.id]);
+    exec(null, this.errorCallback, "Media", "stopRecordingAudio", [this.id]);
 };
 
 /**
@@ -3051,13 +3063,13 @@ Media.onStatus = function(id, msg, value) {
     var media = mediaObjects[id];
     // If state update
     if (msg === Media.MEDIA_STATE) {
+        if (media.statusCallback) {
+            media.statusCallback(value);
+        }
         if (value === Media.MEDIA_STOPPED) {
             if (media.successCallback) {
                 media.successCallback();
             }
-        }
-        if (media.statusCallback) {
-            media.statusCallback(value);
         }
     }
     else if (msg === Media.MEDIA_DURATION) {
@@ -3130,28 +3142,6 @@ MediaFile.prototype.getFormatData = function(successCallback, errorCallback) {
     } else {
         exec(successCallback, errorCallback, "Capture", "getFormatData", [this.fullPath, this.type]);
     }
-};
-
-// TODO: can we axe this?
-/**
- * Casts a PluginResult message property  (array of objects) to an array of MediaFile objects
- * (used in Objective-C and Android)
- *
- * @param {PluginResult} pluginResult
- */
-MediaFile.cast = function(pluginResult) {
-    var mediaFiles = [];
-    for (var i=0; i<pluginResult.message.length; i++) {
-        var mediaFile = new MediaFile();
-        mediaFile.name = pluginResult.message[i].name;
-        mediaFile.fullPath = pluginResult.message[i].fullPath;
-        mediaFile.type = pluginResult.message[i].type;
-        mediaFile.lastModifiedDate = pluginResult.message[i].lastModifiedDate;
-        mediaFile.size = pluginResult.message[i].size;
-        mediaFiles.push(mediaFile);
-    }
-    pluginResult.message = mediaFiles;
-    return pluginResult;
 };
 
 module.exports = MediaFile;
@@ -3412,7 +3402,7 @@ var accelerometer = {
 
         if (running) {
             // If we're already running then immediately invoke the success callback
-            // but only if we have retreived a value, sample code does not check for null ...
+            // but only if we have retrieved a value, sample code does not check for null ...
             if(accel) {
                 successCallback(accel);
             }
@@ -3930,7 +3920,7 @@ var contacts = {
      * This function creates a new contact, but it does not persist the contact
      * to device storage. To persist the contact to device storage, invoke
      * contact.save().
-     * @param properties an object who's properties will be examined to create a new Contact
+     * @param properties an object whose properties will be examined to create a new Contact
      * @returns new Contact object
      */
     create:function(properties) {
@@ -4014,6 +4004,25 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
 };
 
 module.exports = new Device();
+
+});
+
+// file: lib\common\plugin\echo.js
+define("cordova/plugin/echo", function(require, exports, module) {
+var exec = require('cordova/exec');
+
+/**
+ * Sends the given message through exec() to the Echo plugink, which sends it back to the successCallback.
+ * @param successCallback  invoked with a FileSystem object
+ * @param errorCallback  invoked if error occurs retrieving file system
+ * @param message  The string to be echoed.
+ * @param forceAsync  Whether to force an async return value (for testing native->js bridge).
+ */
+module.exports = function(successCallback, errorCallback, message, forceAsync) {
+    var action = forceAsync ? 'echoAsync' : 'echo';
+    exec(successCallback, errorCallback, "Echo", action, [message]);
+};
+
 
 });
 
@@ -4125,7 +4134,7 @@ var geolocation = {
         } else if (options.timeout === 0) {
             fail({
                 code:PositionError.TIMEOUT,
-                message:"timeout value in PositionOptions set to 0 and no cached Position object available, or cached Position object's age exceed's provided PositionOptions' maximumAge parameter."
+                message:"timeout value in PositionOptions set to 0 and no cached Position object available, or cached Position object's age exceeds provided PositionOptions' maximumAge parameter."
             });
         // Otherwise we have to call into native to retrieve a position.
         } else {
@@ -4289,7 +4298,7 @@ CurrentLevel = LevelsMap.WARN;
  *
  * The value used determines which messages get printed.  The logging
  * values above are in order, and only messages logged at the logging
- * level or above will actually be displayed to the user.  Eg, the
+ * level or above will actually be displayed to the user.  E.g., the
  * default level is WARN, so only messages logged with LOG, ERROR, or
  * WARN will be displayed; INFO and DEBUG messages will be ignored.
  */
@@ -4679,13 +4688,13 @@ var splashscreen = {
 module.exports = splashscreen;
 });
 
-// file: lib\wp7\plugin\wp7\CordovaCommandResult.js
-define("cordova/plugin/wp7/CordovaCommandResult", function(require, exports, module) {
+// file: lib\wp8\plugin\wp\CordovaCommandResult.js
+define("cordova/plugin/wp/CordovaCommandResult", function(require, exports, module) {
 
 var cordova = require('cordova');
 var channel = require('cordova/channel');
 
-// singular WP7 callback function attached to window, status is used to determin if it is a success or error
+// singular WP7 callback function attached to window, status is used to determine if it is a success or error
 module.exports = function(status,callbackId,args,cast) {
 
     if(status === "backbutton") {
@@ -4736,8 +4745,8 @@ module.exports = function(status,callbackId,args,cast) {
 
 });
 
-// file: lib\wp7\plugin\wp7\CordovaMediaonStatus.js
-define("cordova/plugin/wp7/CordovaMediaonStatus", function(require, exports, module) {
+// file: lib\wp8\plugin\wp\CordovaMediaonStatus.js
+define("cordova/plugin/wp/CordovaMediaonStatus", function(require, exports, module) {
 
 var cordova = require('cordova');
 var Media = require('cordova/plugin/Media');
@@ -4753,242 +4762,8 @@ module.exports = function(args) {
 };
 });
 
-// file: lib\wp7\plugin\wp7\DOMStorage.js
-define("cordova/plugin/wp7/DOMStorage", function(require, exports, module) {
-(function(win,doc) {
-
-var docDomain = null;
-try {
-    docDomain = doc.domain;
-} catch (err) {
-    //console.log("caught exception trying to access document.domain");
-}
-
-// conditionally patch the window.localStorage and window.sessionStorage objects
-if (!docDomain || docDomain.length === 0) {
-
-    var DOMStorage = function(type) {
-        // default type is local
-        if(type == "sessionStorage") {
-            this._type = type;
-        }
-        Object.defineProperty( this, "length", {
-            configurable: true,
-            get: function(){ return this.getLength(); }
-        });
-    };
-
-    DOMStorage.prototype = {
-        _type:"localStorage",
-        _result:null,
-        keys:null,
-
-        onResult:function(key,valueStr) {
-            if(!this.keys) {
-                this.keys = [];
-            }
-            this._result = valueStr;
-        },
-
-        onKeysChanged:function(jsonKeys) {
-            this.keys = JSON.parse(jsonKeys);
-
-            var key;
-            for(var n = 0,len = this.keys.length; n < len; n++) {
-                key = this.keys[n];
-                if(!this.hasOwnProperty(key)) {
-                    Object.defineProperty( this, key, {
-                        configurable: true,
-                        get: function(){ return this.getItem(key); },
-                        set: function(val){ return this.setItem(key,val); }
-                    });
-                }
-            }
-
-        },
-
-        initialize:function() {
-            window.external.Notify("DOMStorage/" + this._type + "/load/keys");
-        },
-
-    /*
-        The length attribute must return the number of key/value pairs currently present
-        in the list associated with the object.
-    */
-        getLength:function() {
-            if(!this.keys) {
-                this.initialize();
-            }
-            return this.keys.length;
-        },
-
-    /*
-        The key(n) method must return the name of the nth key in the list.
-        The order of keys is user-agent defined, but must be consistent within an object so long as the number of keys doesn't change.
-        (Thus, adding or removing a key may change the order of the keys, but merely changing the value of an existing key must not.)
-        If n is greater than or equal to the number of key/value pairs in the object, then this method must return null.
-    */
-        key:function(n) {
-            if(!this.keys) {
-                this.initialize();
-            }
-
-            if(n >= this.keys.length) {
-                return null;
-            } else {
-                return this.keys[n];
-            }
-        },
-
-    /*
-        The getItem(key) method must return the current value associated with the given key.
-        If the given key does not exist in the list associated with the object then this method must return null.
-    */
-        getItem:function(key) {
-            if(!this.keys) {
-                this.initialize();
-            }
-
-            var retVal = null;
-            if(this.keys.indexOf(key) > -1) {
-                window.external.Notify("DOMStorage/" + this._type + "/get/" + key);
-                retVal = window.unescape(decodeURIComponent(this._result));
-                this._result = null;
-            }
-            return retVal;
-        },
-    /*
-        The setItem(key, value) method must first check if a key/value pair with the given key already exists
-        in the list associated with the object.
-        If it does not, then a new key/value pair must be added to the list, with the given key and with its value set to value.
-        If the given key does exist in the list, then it must have its value updated to value.
-        If it couldn't set the new value, the method must raise an QUOTA_EXCEEDED_ERR exception.
-        (Setting could fail if, e.g., the user has disabled storage for the site, or if the quota has been exceeded.)
-    */
-        setItem:function(key,value) {
-            if(!this.keys) {
-                this.initialize();
-            }
-            window.external.Notify("DOMStorage/" + this._type + "/set/" + key + "/" + encodeURIComponent(window.escape(value)));
-        },
-
-    /*
-        The removeItem(key) method must cause the key/value pair with the given key to be removed from the list
-        associated with the object, if it exists.
-        If no item with that key exists, the method must do nothing.
-    */
-        removeItem:function(key) {
-            if(!this.keys) {
-                this.initialize();
-            }
-            var index = this.keys.indexOf(key);
-            if(index > -1) {
-                this.keys.splice(index,1);
-                // TODO: need sanity check for keys ? like 'clear','setItem', ...
-                window.external.Notify("DOMStorage/" + this._type + "/remove/" + key);
-                delete this[key];
-            }
-        },
-
-    /*
-        The clear() method must atomically cause the list associated with the object to be emptied of all
-        key/value pairs, if there are any.
-        If there are none, then the method must do nothing.
-    */
-        clear:function() {
-            if(!this.keys) {
-                this.initialize();
-            }
-
-            for(var n=0,len=this.keys.length; n < len;n++) {
-                // TODO: do we need a sanity check for keys ? like 'clear','setItem', ...
-                delete this[this.keys[n]];
-            }
-            this.keys = [];
-            window.external.Notify("DOMStorage/" + this._type + "/clear/");
-        }
-    };
-
-    // initialize DOMStorage
-
-    Object.defineProperty( window, "localStorage", {
-        writable: false,
-        configurable: false,
-        value:new DOMStorage("localStorage")
-    });
-    window.localStorage.initialize();
-
-    Object.defineProperty( window, "sessionStorage", {
-        writable: false,
-        configurable: false,
-        value:new DOMStorage("sessionStorage")
-    });
-    window.sessionStorage.initialize();
-}
-
-})(window, document);
-
-module.exports = null;
-
-});
-
-// file: lib\wp7\plugin\wp7\DirectoryEntry.js
-define("cordova/plugin/wp7/DirectoryEntry", function(require, exports, module) {
-
-var DirectoryEntry = require('cordova/plugin/DirectoryEntry'),
-    exec = require('cordova/exec'),
-    FileError = require('cordova/plugin/FileError');
-
-// Note, this is a special case, we need to overwrite the functions getDirectory + getFile.
-// Entry uses require at runtime, and will not find our patched version of the funks
-// so we have to overwrite the prototype manually -jm
-// In this case there is nothing to export.
-
-/**
- * Creates or looks up a directory
- *
- * @param {DOMString} path either a relative or absolute path from this directory in which to look up or create a directory
- * @param {Flags} options to create or excluively create the directory
- * @param {Function} successCallback is called with the new entry
- * @param {Function} errorCallback is called with a FileError
- */
-DirectoryEntry.prototype.getDirectory = function(path, options, successCallback, errorCallback) {
-
-    var win = typeof successCallback !== 'function' ? null : function(result) {
-        var entry = new DirectoryEntry(result.name, result.fullPath);
-        successCallback(entry);
-    };
-    var fail = typeof errorCallback !== 'function' ? null : function(code) {
-        errorCallback(new FileError(code));
-    };
-    exec(win, fail, "File", "getDirectory", [this.fullPath, path, JSON.stringify(options)]);
-};
-
-/**
- * Creates or looks up a file
- *
- * @param {DOMString} path either a relative or absolute path from this directory in which to look up or create a file
- * @param {Flags} options to create or excluively create the file
- * @param {Function} successCallback is called with the new entry
- * @param {Function} errorCallback is called with a FileError
- */
-DirectoryEntry.prototype.getFile = function(path, options, successCallback, errorCallback) {
-
-    var win = typeof successCallback !== 'function' ? null : function(result) {
-        var FileEntry = require('cordova/plugin/FileEntry');
-        var entry = new FileEntry(result.name, result.fullPath);
-        successCallback(entry);
-    };
-    var fail = typeof errorCallback !== 'function' ? null : function(code) {
-        errorCallback(new FileError(code));
-    };
-    exec(win, fail, "File", "getFile", [this.fullPath, path, JSON.stringify(options)]);
-};
-
-});
-
-// file: lib\wp7\plugin\wp7\FileTransfer.js
-define("cordova/plugin/wp7/FileTransfer", function(require, exports, module) {
+// file: lib\wp8\plugin\wp\FileTransfer.js
+define("cordova/plugin/wp/FileTransfer", function(require, exports, module) {
 var exec = require('cordova/exec'),
     FileTransferError = require('cordova/plugin/FileTransferError');
 
@@ -5094,8 +4869,8 @@ module.exports = FileTransfer;
 
 });
 
-// file: lib\wp7\plugin\wp7\FileUploadOptions.js
-define("cordova/plugin/wp7/FileUploadOptions", function(require, exports, module) {
+// file: lib\wp8\plugin\wp\FileUploadOptions.js
+define("cordova/plugin/wp/FileUploadOptions", function(require, exports, module) {
 /**
  * Options to customize the HTTP request used to upload files.
  * @constructor
@@ -5124,9 +4899,9 @@ var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
 module.exports = FileUploadOptions;
 });
 
-// file: lib\wp7\plugin\wp7\XHRPatch.js
-define("cordova/plugin/wp7/XHRPatch", function(require, exports, module) {
-// TODO: the build process implicitly will wrap this in a define() call
+// file: lib\wp8\plugin\wp\XHRPatch.js
+define("cordova/plugin/wp/XHRPatch", function(require, exports, module) {
+// TODO: the build process will implicitly wrap this in a define() call
 // with a closure of its own; do you need this extra closure?
 
 var LocalFileSystem = require('cordova/plugin/LocalFileSystem');
@@ -5275,7 +5050,7 @@ if (!docDomain || docDomain.length === 0) {
             this.status = 200;
             if(typeof res == "object")
             {   // callback result handler may have already parsed this from a string-> a JSON object,
-                // if so, we need to restore it's stringyness, as handlers are expecting string data.
+                // if so, we need to restore its stringyness, as handlers are expecting string data.
                 // especially if used with jQ -> $.getJSON
                 res = JSON.stringify(res);
             }
@@ -5337,8 +5112,8 @@ if (!docDomain || docDomain.length === 0) {
 module.exports = null;
 });
 
-// file: lib\wp7\plugin\wp7\console.js
-define("cordova/plugin/wp7/console", function(require, exports, module) {
+// file: lib\wp8\plugin\wp\console.js
+define("cordova/plugin/wp/console", function(require, exports, module) {
 
 var exec = require('cordova/exec'),
     channel = require('cordova/channel');
@@ -5357,69 +5132,6 @@ var debugConsole = {
 };
 
 module.exports = debugConsole;
-});
-
-// file: lib\wp7\plugin\wp7\contacts.js
-define("cordova/plugin/wp7/contacts", function(require, exports, module) {
-var exec = require('cordova/exec'),
-    ContactError = require('cordova/plugin/ContactError'),
-    utils = require('cordova/utils'),
-    Contact = require('cordova/plugin/Contact');
-
-/**
-* Represents a group of Contacts.
-* @constructor
-*/
-var contacts = {
-    /**
-     * Returns an array of Contacts matching the search criteria.
-     * @param fields that should be searched
-     * @param successCB success callback
-     * @param errorCB error callback
-     * @param {ContactFindOptions} options that can be applied to contact searching
-     * @return array of Contacts matching search criteria
-     */
-    find:function(fields, successCB, errorCB, options) {
-        if (!successCB) {
-            throw new TypeError("You must specify a success callback for the find command.");
-        }
-        if (!fields || (utils.isArray(fields) && fields.length === 0)) {
-            if (typeof errorCB === "function") {
-                errorCB(new ContactError(ContactError.INVALID_ARGUMENT_ERROR));
-            }
-        } else {
-            var win = function(result) {
-                var cs = [];
-                for (var i = 0, l = result.length; i < l; i++) {
-                    cs.push(contacts.create(result[i]));
-                }
-                successCB(cs);
-            };
-            exec(win, errorCB, "Contacts", "search", [{"fields":fields, "options":options}]);
-        }
-    },
-
-    /**
-     * This function creates a new contact, but it does not persist the contact
-     * to device storage. To persist the contact to device storage, invoke
-     * contact.save().
-     * @param properties an object who's properties will be examined to create a new Contact
-     * @returns new Contact object
-     */
-    create:function(properties) {
-        var i;
-        var contact = new Contact();
-        for (i in properties) {
-            if (typeof contact[i] !== 'undefined' && properties.hasOwnProperty(i)) {
-                contact[i] = properties[i];
-            }
-        }
-        return contact;
-    }
-};
-
-module.exports = contacts;
-
 });
 
 // file: lib\common\utils.js
