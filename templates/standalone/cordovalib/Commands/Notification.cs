@@ -22,6 +22,7 @@ using System.Windows.Resources;
 using Microsoft.Phone.Controls;
 using Microsoft.Xna.Framework.Audio;
 using WP7CordovaClassLib.Cordova.UI;
+using System.Diagnostics;
 
 namespace WP7CordovaClassLib.Cordova.Commands
 {
@@ -89,6 +90,12 @@ namespace WP7CordovaClassLib.Cordova.Commands
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+
+#if CORDOVA_CLASSLIB
+                Debug.WriteLine("CORDOVA_CLASSLIB IS defined");
+#else
+                Debug.WriteLine("CORDOVA_CLASSLIB is NOT defined");
+#endif
                 string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
                 AlertOptions alertOpts = new AlertOptions();// JSON.JsonHelper.Deserialize<AlertOptions>(options);
                 alertOpts.message = args[0];
