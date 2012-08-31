@@ -91,13 +91,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
 
-#if CORDOVA_CLASSLIB
-                Debug.WriteLine("CORDOVA_CLASSLIB IS defined");
-#else
-                Debug.WriteLine("CORDOVA_CLASSLIB is NOT defined");
-#endif
                 string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
-                AlertOptions alertOpts = new AlertOptions();// JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                AlertOptions alertOpts = new AlertOptions();
                 alertOpts.message = args[0];
                 alertOpts.title = args[1];
                 alertOpts.buttonLabel = args[2];
@@ -147,7 +142,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
                         notifBox.PageTitle.Text = alertOpts.title;
                         notifBox.SubTitle.Text = alertOpts.message;
 
-                        string[] labels = alertOpts.buttonLabel.Split(',');
+                        string[] labels = JSON.JsonHelper.Deserialize<string[]>(alertOpts.buttonLabel);
                         for (int n = 0; n < labels.Length; n++)
                         {
                             Button btn = new Button();
@@ -217,7 +212,10 @@ namespace WP7CordovaClassLib.Cordova.Commands
             string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
             int times = int.Parse(args[0]);
 
-            StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WP7CordovaClassLib;component/resources/notification-beep.wav", UriKind.Relative));
+            string resourcePath = BaseCommand.GetBaseURL() + "resources/notification-beep.wav";
+
+            StreamResourceInfo sri = Application.GetResourceStream(new Uri(resourcePath, UriKind.Relative));
+
             if (sri != null)
             {
                 SoundEffect effect = SoundEffect.FromStream(sri.Stream);

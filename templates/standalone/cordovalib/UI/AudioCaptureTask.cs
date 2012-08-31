@@ -74,12 +74,10 @@ namespace WP7CordovaClassLib.Cordova.UI
 
                 root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
+                string baseUrl = WP7CordovaClassLib.Cordova.Commands.BaseCommand.GetBaseURL();
                 // dummy parameter is used to always open a fresh version
-#if CORDOVA_CLASSLIB
-                root.Navigate(new System.Uri("/WP7CordovaClassLib;component/Cordova/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
-#else
-                root.Navigate(new System.Uri("component/Cordova/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
-#endif
+                root.Navigate(new System.Uri( baseUrl + "Cordova/UI/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+
             });
         }
 
