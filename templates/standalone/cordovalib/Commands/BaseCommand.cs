@@ -122,6 +122,15 @@ namespace WP7CordovaClassLib.Cordova.Commands
             service.Deactivated -= this.OnPause;
             this.OnCommandResult = null;
         }
+
+        public static string GetBaseURL()
+        {
+#if CORDOVA_CLASSLIB
+            return "/WP7CordovaClassLib;component/";
+#else
+            return "./";
+#endif
+        }
     }
 
 
