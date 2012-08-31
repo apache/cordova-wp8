@@ -219,13 +219,18 @@ namespace WP7CordovaClassLib.Cordova.Commands
             }
         }
 
+        // Some Audio Notes:
+        // In the Windows Phone Emulator, playback of video or audio content using the MediaElement control is not supported.
+        // While playing, a MediaElement stops all other media playback on the phone.
+        // Multiple MediaElement controls are NOT supported
+
         // Called when you create a new Media('blah') object in JS.
         public void create(string options)
         {
+            // Debug.WriteLine("Creating Audio :: " + options);
             try
             {
                 MediaOptions mediaOptions;
-
                 try
                 {
                     string[] optionsString = JSON.JsonHelper.Deserialize<string[]>(options);
@@ -259,14 +264,16 @@ namespace WP7CordovaClassLib.Cordova.Commands
             try
             {
                 MediaOptions mediaOptions;
-
                 try
                 {
                     string[] optionsString = JSON.JsonHelper.Deserialize<string[]>(options);
                     mediaOptions = new MediaOptions();
                     mediaOptions.Id = optionsString[0];
                     mediaOptions.Src = optionsString[1];
-                    mediaOptions.Milliseconds = int.Parse(optionsString[2]);
+                    if (optionsString.Length > 2 && optionsString[2] != null)
+                    {
+                        mediaOptions.Milliseconds = int.Parse(optionsString[2]);
+                    }
 
                 }
                 catch (Exception)
@@ -284,7 +291,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
                 }
                 else
                 {
-                    Debug.WriteLine("INFO: startPlayingAudio could not find mediaPlayer for " + mediaOptions.Id);
+                    Debug.WriteLine("INFO: startPlayingAudio FOUND mediaPlayer for " + mediaOptions.Id);
                     audio = Media.players[mediaOptions.Id];
                 }
 
@@ -323,7 +330,10 @@ namespace WP7CordovaClassLib.Cordova.Commands
                     string[] optionsString = JSON.JsonHelper.Deserialize<string[]>(options);
                     mediaOptions = new MediaOptions();
                     mediaOptions.Id = optionsString[0];
-                    mediaOptions.Milliseconds = int.Parse(optionsString[1]);
+                    if (optionsString.Length > 1 && optionsString[1] != null)
+                    {
+                        mediaOptions.Milliseconds = int.Parse(optionsString[1]);
+                    }
                 }
                 catch (Exception)
                 {

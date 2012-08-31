@@ -228,35 +228,43 @@ namespace WP7CordovaClassLib.Cordova.Commands
             }
 
 
-            if (this.player == null)
+            if (this.player == null || this.player.Source.AbsolutePath.LastIndexOf(filePath) < 0)
             {
                 try
                 {
-                    if (this.player == null)
+                    // this.player is a MediaElement, it must be added to the visual tree in order to play
+                    PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+                    if (frame != null)
                     {
-                        // this.player is a MediaElement, it must be added to the visual tree in order to play
-                        PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
-                        if (frame != null)
+                        PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
+                        if (page != null)
                         {
-                            PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
-                            if (page != null)
+                            Grid grid = page.FindName("LayoutRoot") as Grid;
+                            if (grid != null)
                             {
-                                Grid grid = page.FindName("LayoutRoot") as Grid;
-                                if (grid != null)
-                                {
 
+                                //Microsoft.Xna.Framework.Media.MediaPlayer.Play(
+                                this.player = grid.FindName("playerMediaElement") as MediaElement;
+                                if (this.player == null) // still null ?
+                                {
                                     this.player = new MediaElement();
                                     this.player.Name = "playerMediaElement";
                                     grid.Children.Add(this.player);
-                                    this.player.Visibility = Visibility.Collapsed;
-                                    this.player.MediaOpened += MediaOpened;
-                                    this.player.MediaEnded += MediaEnded;
-                                    this.player.MediaFailed += MediaFailed;
+                                    this.player.Visibility = Visibility.Visible;
                                 }
+                                if (this.player.CurrentState == System.Windows.Media.MediaElementState.Playing)
+                                {
+                                    this.player.Stop(); // stop it!
+                                }
+                                
+                                this.player.Source = null; // Garbage collect it.
+                                this.player.MediaOpened += MediaOpened;
+                                this.player.MediaEnded += MediaEnded;
+                                this.player.MediaFailed += MediaFailed;
                             }
                         }
-
                     }
+
                     this.audioFile = filePath;
 
                     Uri uri = new Uri(filePath, UriKind.RelativeOrAbsolute);
