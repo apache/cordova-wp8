@@ -142,7 +142,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
                         notifBox.PageTitle.Text = alertOpts.title;
                         notifBox.SubTitle.Text = alertOpts.message;
 
-                        string[] labels = JSON.JsonHelper.Deserialize<string[]>(alertOpts.buttonLabel);
+                        string[] labels = alertOpts.buttonLabel.Split(',');
                         for (int n = 0; n < labels.Length; n++)
                         {
                             Button btn = new Button();
