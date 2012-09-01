@@ -350,7 +350,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
                     {
                         this.FullPath = filePath;// new Uri(filePath).LocalPath;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                           
                     }
