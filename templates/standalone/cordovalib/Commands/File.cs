@@ -1,4 +1,4 @@
-﻿/*  
+/*  
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
@@ -650,7 +650,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                     using (FileStream stream = new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.ReadWrite, isoFile))
                     {
-                        if (0 <= size && size < stream.Length)
+                        if (0 <= size && size <= stream.Length)
                         {
                             stream.SetLength(size);
                         }
@@ -700,7 +700,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                     using (FileStream stream = new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.ReadWrite, isoFile))
                     {
-                        if (0 <= position && position < stream.Length)
+                        if (0 <= position && position <= stream.Length)
                         {
                             stream.SetLength(position);
                         }
