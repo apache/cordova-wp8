@@ -66,7 +66,9 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
                 try
                 {
-                    mediaOptions = JSON.JsonHelper.Deserialize<MediaOptions[]>(options)[0];
+                    string[] optionsString = JSON.JsonHelper.Deserialize<string[]>(options);
+                    mediaOptions = new MediaOptions();
+                    mediaOptions.Id = optionsString[0];
                 }
                 catch (Exception)
                 {
@@ -246,7 +248,6 @@ namespace WP7CordovaClassLib.Cordova.Commands
 
                 AudioPlayer audio = new AudioPlayer(this, mediaOptions.Id);
                 Media.players.Add(mediaOptions.Id, audio);
-
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
 
             }
@@ -300,7 +301,6 @@ namespace WP7CordovaClassLib.Cordova.Commands
                     try
                     {
                         audio.startPlaying(mediaOptions.Src);
-
                         DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                     }
                     catch (Exception e)

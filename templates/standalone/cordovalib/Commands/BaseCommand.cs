@@ -72,12 +72,15 @@ namespace WP7CordovaClassLib.Cordova.Commands
         }
 
 
-        public void InvokeCustomScript(ScriptCallback script)
+        public void InvokeCustomScript(ScriptCallback script, bool removeHandler)
         {
             if (this.OnCustomScript != null)
             {
                 this.OnCustomScript(this, script);
-                this.OnCustomScript = null;
+                if (removeHandler)
+                {
+                    this.OnCustomScript = null;
+                }
             }
         }
 
