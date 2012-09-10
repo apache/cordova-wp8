@@ -89,8 +89,9 @@ namespace WPCordovaClassLib.Cordova.Commands
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+
                 string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
-                AlertOptions alertOpts = new AlertOptions();// JSON.JsonHelper.Deserialize<AlertOptions>(options);
+                AlertOptions alertOpts = new AlertOptions();
                 alertOpts.message = args[0];
                 alertOpts.title = args[1];
                 alertOpts.buttonLabel = args[2];
@@ -210,7 +211,10 @@ namespace WPCordovaClassLib.Cordova.Commands
             string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
             int times = int.Parse(args[0]);
 
-            StreamResourceInfo sri = Application.GetResourceStream(new Uri("/WPCordovaClassLib;component/resources/notification-beep.wav", UriKind.Relative));
+            string resourcePath = BaseCommand.GetBaseURL() + "resources/notification-beep.wav";
+
+            StreamResourceInfo sri = Application.GetResourceStream(new Uri(resourcePath, UriKind.Relative));
+
             if (sri != null)
             {
                 SoundEffect effect = SoundEffect.FromStream(sri.Stream);

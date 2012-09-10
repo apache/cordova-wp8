@@ -244,8 +244,9 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 try
                 {
-                    string args = JSON.JsonHelper.Deserialize<string[]>(options)[0];
-                    this.captureImageOptions = String.IsNullOrEmpty(args) ? CaptureImageOptions.Default : JSON.JsonHelper.Deserialize<CaptureImageOptions>(args);                    
+                    this.captureImageOptions = String.IsNullOrEmpty(options) ?
+                        CaptureImageOptions.Default : JSON.JsonHelper.Deserialize<CaptureImageOptions[]>(options)[0];
+
                 }
                 catch (Exception ex)
                 {
@@ -274,8 +275,9 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 try
                 {
-                    string args = JSON.JsonHelper.Deserialize<string[]>(options)[0];
-                    this.captureAudioOptions = String.IsNullOrEmpty(args) ? CaptureAudioOptions.Default : JSON.JsonHelper.Deserialize<CaptureAudioOptions>(args);
+                    this.captureAudioOptions = String.IsNullOrEmpty(options) ?
+                        CaptureAudioOptions.Default : JSON.JsonHelper.Deserialize<CaptureAudioOptions[]>(options)[0];
+
                 }
                 catch (Exception ex)
                 {
@@ -304,9 +306,8 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 try
                 {
-                    string args = JSON.JsonHelper.Deserialize<string[]>(options)[0];
-                    this.captureVideoOptions = String.IsNullOrEmpty(args) ?
-                        CaptureVideoOptions.Default : JSON.JsonHelper.Deserialize<CaptureVideoOptions>(args);
+                    this.captureVideoOptions = String.IsNullOrEmpty(options) ?
+                        CaptureVideoOptions.Default : JSON.JsonHelper.Deserialize<CaptureVideoOptions[]>(options)[0];
 
                 }
                 catch (Exception ex)

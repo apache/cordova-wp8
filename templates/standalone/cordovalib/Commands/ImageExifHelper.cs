@@ -148,7 +148,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                 // Get the data length
                 ushort dLen = BitConverter.ToUInt16(reader.ReadBytes(2), 0);
                 // skip along
-                reader.ReadBytes(dLen - 2);
+                reader.BaseStream.Seek(dLen - 2, SeekOrigin.Current);
                 start = reader.ReadByte();
                 index = reader.ReadByte();
             }

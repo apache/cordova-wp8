@@ -251,8 +251,7 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 try 
                 {
-                    string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
-                    uploadOptions = JSON.JsonHelper.Deserialize<UploadOptions>(args[0]);
+                    uploadOptions = JSON.JsonHelper.Deserialize<UploadOptions[]>(options)[0];
                 }
                 catch (Exception)
                 {

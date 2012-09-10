@@ -199,7 +199,7 @@
     <Content Include="www\camera\index.html" />
     <Content Include="www\compass\index.html" />
     <Content Include="www\contacts\index.html" />
-    <Content Include="www\cordova-2.0.0.js" />
+    <Content Include="www\cordova-2.1.0.js" />
     <Content Include="www\cordova.js" />
     <Content Include="www\events\index.html" />
     <Content Include="www\index.html">
@@ -224,6 +224,9 @@
       <Project>{FC6A1A70-892D-46AD-9E4A-9793F72AF780}</Project>
       <Name>WPCordovaClassLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="www\execbenchmark\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

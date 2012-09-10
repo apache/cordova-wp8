@@ -143,7 +143,7 @@
     <Content Include="CordovaSourceDictionary.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="www\cordova-2.0.0.js" />
+    <Content Include="www\cordova-2.1.0.js" />
     <Content Include="www\network.html">
       <SubType>Designer</SubType>
     </Content>
