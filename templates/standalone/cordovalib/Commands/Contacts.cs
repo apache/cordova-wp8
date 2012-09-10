@@ -303,6 +303,10 @@ namespace WP7CordovaClassLib.Cordova.Commands
             {
                 foreach (JSONContactAddress address in contact.addresses)
                 {
+                    if (address.type == null)
+                    {
+                        address.type = "home"; // set a default
+                    }
                     string fieldType = address.type.ToLower();
                     if (fieldType == "work")
                     {
@@ -565,8 +569,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
                                                address.PhysicalAddress.PostalCode,
                                                address.PhysicalAddress.CountryRegion);
 
-
-            Debug.WriteLine("getFormattedJSONAddress returning :: " + jsonAddress);
+            //Debug.WriteLine("getFormattedJSONAddress returning :: " + jsonAddress);
 
             return "{" + jsonAddress + "}";
         }
@@ -579,7 +582,7 @@ namespace WP7CordovaClassLib.Cordova.Commands
                 retVal += this.getFormattedJSONAddress(address, false) + ",";
             }
 
-            Debug.WriteLine("FormatJSONAddresses returning :: " + retVal);
+            //Debug.WriteLine("FormatJSONAddresses returning :: " + retVal);
             return retVal.TrimEnd(',');
         }
 
@@ -647,9 +650,9 @@ namespace WP7CordovaClassLib.Cordova.Commands
                                                FormatJSONName(con),
                                                con.Notes.FirstOrDefault());
 
-            Debug.WriteLine("jsonContact = " + jsonContact);
-
-            return "{" + jsonContact + "}";
+            //Debug.WriteLine("jsonContact = " + jsonContact);
+            // JSON requires new line characters be escaped
+            return "{" + jsonContact.Replace("\n", "\\n") +"}";
         }
     }
 }
