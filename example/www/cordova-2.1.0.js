@@ -1,6 +1,6 @@
-// commit a91a8f60b9f12bb74fa3a7f6c640308903ab73bf
+// commit 143f5221a6251c9cbccdedc57005c61551b97f12
 
-// File generated at :: Tue Sep 11 2012 17:11:06 GMT-0700 (Pacific Daylight Time)
+// File generated at :: Wed Sep 12 2012 16:46:38 GMT-0700 (Pacific Daylight Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -700,13 +700,6 @@ module.exports = {
             }
         },
         Cordova: {
-            children: {
-                exec: {
-                    path: 'cordova/exec'
-                }
-            }
-        },
-        PhoneGap:{
             children: {
                 exec: {
                     path: 'cordova/exec'
