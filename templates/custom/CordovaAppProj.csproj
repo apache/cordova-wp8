@@ -93,7 +93,7 @@
   <ItemGroup>
     <Content Include="BuildManifestProcessor.js" />
     <Content Include="CordovaSourceDictionary.xml" />
-    <Content Include="www\cordova-2.0.0.js" />
+    <Content Include="www\cordova-2.1.0.js" />
     <Content Include="www\css\index.css" />
     <Content Include="www\js\index.js" />
     <Content Include="www\img\cordova.png" />
