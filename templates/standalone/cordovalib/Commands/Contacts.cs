@@ -12,24 +12,16 @@
 	limitations under the License.
 */
 
-using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.UserData;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using DeviceContacts = Microsoft.Phone.UserData.Contacts;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Windows;
+using DeviceContacts = Microsoft.Phone.UserData.Contacts;
 
 
 namespace WPCordovaClassLib.Cordova.Commands
@@ -176,23 +168,6 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         }
 
-        private void saveContactTask_Completed(object sender, SaveContactResult e)
-        {
-            switch (e.TaskResult)
-            {
-                case TaskResult.OK:
-                    // successful save
-                    MessageBoxResult res = MessageBox.Show("contact saved", "Alert", MessageBoxButton.OK);
-                    break;
-                case TaskResult.Cancel:
-                    // user cancelled
-                    break;
-                case TaskResult.None:
-                    // no info about result is available
-                    break;
-            }
-        }
-
         // refer here for contact properties we can access: http://msdn.microsoft.com/en-us/library/microsoft.phone.tasks.savecontacttask_members%28v=VS.92%29.aspx
         public void save(string jsonContact)
         {
@@ -265,13 +240,28 @@ namespace WPCordovaClassLib.Cordova.Commands
             #endregion
 
             #region contact.emails
+
             if (contact.emails != null && contact.emails.Length > 0)
             {
+
+                // set up different email types if they are not explicitly defined
+                foreach (string type in new string[] { "personal", "work", "other" })
+                {
+                    foreach (JSONContactField field in contact.emails)
+                    {
+                        if (field != null && String.IsNullOrEmpty(field.type))
+                        {
+                            field.type = type;
+                            break;
+                        }
+                    }
+                }
+
                 foreach (JSONContactField field in contact.emails)
                 {
                     if (field != null)
                     {
-                        if (field.type != null)
+                        if (field.type != null && field.type != "other")
                         {
                             string fieldType = field.type.ToLower();
                             if (fieldType == "work")
@@ -334,25 +324,32 @@ namespace WPCordovaClassLib.Cordova.Commands
             #endregion
 
 
-            contactTask.Completed += new EventHandler<SaveContactResult>(contactTask_Completed);
+            contactTask.Completed += new EventHandler<SaveContactResult>(ContactSaveTaskCompleted);
             contactTask.Show();
-
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, new string[] { }));
         }
 
-        void contactTask_Completed(object sender, SaveContactResult e)
+        void ContactSaveTaskCompleted(object sender, SaveContactResult e)
         {
             SaveContactTask task = sender as SaveContactTask;
 
             if (e.TaskResult == TaskResult.OK)
             {
-                DeviceContacts deviceContacts = new DeviceContacts();
-                deviceContacts.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(postAdd_SearchCompleted);
-                deviceContacts.SearchAsync(task.FirstName + " " + task.LastName, FilterKind.DisplayName, task);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    DeviceContacts deviceContacts = new DeviceContacts();
+                    deviceContacts.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(postAdd_SearchCompleted);
+
+                    string displayName = String.Format("{0}{2}{1}", task.FirstName, task.LastName, String.IsNullOrEmpty(task.FirstName) ? "" : " ");
+
+                    deviceContacts.SearchAsync(displayName, FilterKind.DisplayName, task);
+                });
+                
+
             }
             else if (e.TaskResult == TaskResult.Cancel)
             {
-
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Operation cancelled."));
             }
         }
 
@@ -637,7 +634,9 @@ namespace WPCordovaClassLib.Cordova.Commands
                                       "\"addresses\":[{5}]," +
                                       "\"urls\":[{6}]," +
                                       "\"name\":{7}," +
-                                      "\"note\":\"{8}\"";
+                                      "\"note\":\"{8}\"," +
+                                      "\"birthday\":\"{9}\"";
+
 
             string jsonContact = String.Format(contactFormatStr,
                                                con.GetHashCode(),
@@ -648,7 +647,8 @@ namespace WPCordovaClassLib.Cordova.Commands
                                                FormatJSONAddresses(con),
                                                FormatJSONWebsites(con),
                                                FormatJSONName(con),
-                                               con.Notes.FirstOrDefault());
+                                               con.Notes.FirstOrDefault(),
+                                               con.Birthdays.FirstOrDefault());
 
             //Debug.WriteLine("jsonContact = " + jsonContact);
             // JSON requires new line characters be escaped
