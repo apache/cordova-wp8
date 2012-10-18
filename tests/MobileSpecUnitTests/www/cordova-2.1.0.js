@@ -1,6 +1,6 @@
-// commit 318c7ebf77718327d5ce5e2d87c5705bc00f332e
+// commit 4a0b4a4a54a684414690147295ffae61eae24b71
 
-// File generated at :: Sun Sep 30 2012 00:17:38 GMT+0400 (Russian Standard Time)
+// File generated at :: Thu Oct 18 2012 14:08:34 GMT+0400 (Russian Standard Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -206,7 +206,7 @@ var cordova = {
     },
     /**
      * Method to fire event from native code
-     * bNoDetach is required for events which cause an exception which needs to be caught in native code     
+     * bNoDetach is required for events which cause an exception which needs to be caught in native code
      */
     fireDocumentEvent: function(type, data, bNoDetach) {
         var evt = createEvent(type, data);
@@ -234,14 +234,6 @@ var cordova = {
         }
     },
 
-    // TODO: iOS only
-    // This queue holds the currently executing command and all pending
-    // commands executed with cordova.exec().
-    commandQueue:[],
-    // Indicates if we're currently in the middle of flushing the command
-    // queue on the native side.
-    commandQueueFlushing:false,
-    // END TODO
     /**
      * Plugin callback mechanism.
      */
@@ -502,8 +494,8 @@ var Channel = function(type, sticky) {
                     if (!(--i)) h();
                 };
             for (var j=0; j<len; j++) {
-                if (c[j].state == 0) {
-                    throw Error('Can only use join with sticky channels.')
+                if (c[j].state === 0) {
+                    throw Error('Can only use join with sticky channels.');
                 }
                 c[j].subscribe(f);
             }
@@ -602,7 +594,7 @@ Channel.prototype.unsubscribe = function(f) {
     if (handler) {
         delete this.handlers[guid];
         this.numHandlers--;
-        if (this.numHandlers == 0) {
+        if (this.numHandlers === 0) {
             this.onHasSubscribersChange && this.onHasSubscribersChange();
         }
     }
@@ -672,6 +664,38 @@ channel.waitForInitialization('onCordovaReady');
 channel.waitForInitialization('onCordovaConnectionReady');
 
 module.exports = channel;
+
+});
+
+// file: lib\common\commandProxy.js
+define("cordova/commandProxy", function(require, exports, module) {
+
+
+// internal map of proxy function
+var CommandProxyMap = {};
+
+module.exports = {
+
+    // example: cordova.commandProxy.add("Accelerometer",{getCurrentAcceleration: function(successCallback, errorCallback, options) {...},...);
+    add:function(id,proxyObj) {
+        console.log("adding proxy for " + id);
+        CommandProxyMap[id] = proxyObj;
+        return proxyObj;
+    },
+
+    // cordova.commandProxy.remove("Accelerometer");
+    remove:function(id) {
+        var proxy = CommandProxyMap[id];
+        delete CommandProxyMap[id];
+        CommandProxyMap[id] = null;
+        return proxy;
+    },
+
+    get:function(service,action) {
+        return ( CommandProxyMap[service] ? CommandProxyMap[service][action] : null );
+    }
+};
+
 
 });
 
@@ -892,6 +916,7 @@ module.exports = {
 
 // file: lib\wp8\exec.js
 define("cordova/exec", function(require, exports, module) {
+
 var cordova = require('cordova');
 
 /**
@@ -944,15 +969,14 @@ module.exports = function(success, fail, service, action, args) {
 
 // file: lib\wp8\platform.js
 define("cordova/platform", function(require, exports, module) {
+
 var cordova = require('cordova'),
       exec = require('cordova/exec');
 
 // specifically require the following patches :
 
-
 // Fix XHR calls to local file-system
 require("cordova/plugin/wp/XHRPatch");
-
 
 module.exports = {
     id: "wp8",
@@ -961,19 +985,10 @@ module.exports = {
         window.FileReader = require("cordova/plugin/FileReader");
 
         // Inject a listener for the backbutton, and tell native to override the flag (true/false) when we have 1 or more, or 0, listeners
-        var backButtonChannel = cordova.addDocumentEventHandler('backbutton', {
-          onSubscribe:function() {
-            if (this.numHandlers === 1) {
-                exec(null, null, "CoreEvents", "overridebackbutton", [true]);
-            }
-          },
-          onUnsubscribe:function() {
-            if (this.numHandlers === 0) {
-              exec(null, null, "CoreEvents", "overridebackbutton", [false]);
-            }
-          }
-
-        });
+        var backButtonChannel = cordova.addDocumentEventHandler('backbutton');
+        backButtonChannel.onHasSubscribersChange = function() {
+            exec(null, null, "CoreEvents", "overridebackbutton", [this.numHandlers == 1]);
+        };
     },
     objects: {
         CordovaCommandResult: {
@@ -2078,6 +2093,9 @@ Entry.prototype.remove = function(successCallback, errorCallback) {
     var fail = typeof errorCallback !== 'function' ? null : function(code) {
         errorCallback(new FileError(code));
     };
+
+	console.log('remove entry (js): ' + JSON.stringify(this));
+
     exec(successCallback, fail, "File", "remove", [this.fullPath]);
 };
 
@@ -2633,7 +2651,7 @@ FileTransfer.prototype.download = function(source, target, successCallback, erro
  */
 FileTransfer.prototype.abort = function(successCallback, errorCallback) {
     exec(successCallback, errorCallback, 'FileTransfer', 'abort', [this._id]);
-}
+};
 
 module.exports = FileTransfer;
 
@@ -3206,13 +3224,13 @@ Media.onStatus = function(id, msgType, value) {
                 media._duration = value;
                 break;
             case Media.MEDIA_ERROR :
-                media.errorCallback && media.errorCallback(value); 
+                media.errorCallback && media.errorCallback(value);
                 break;
             case Media.MEDIA_POSITION :
                 media._position = Number(value);
                 break;
             default :
-                console && console.error && console.error("Unhandled Media.onStatus :: " + msgType); 
+                console && console.error && console.error("Unhandled Media.onStatus :: " + msgType);
                 break;
         }
     }
@@ -3243,23 +3261,26 @@ we should simply use a literal :
     errorCallbackFunction( {'code':3} );
  */
 
-if(!MediaError) {
-    var MediaError = function(code, msg) {
+ var _MediaError = window.MediaError;
+
+
+if(!_MediaError) {
+    window.MediaError = _MediaError = function(code, msg) {
         this.code = (typeof code != 'undefined') ? code : null;
         this.message = msg || ""; // message is NON-standard! do not use!
     };
 }
 
-MediaError.MEDIA_ERR_NONE_ACTIVE    = MediaError.MEDIA_ERR_NONE_ACTIVE    || 0;
-MediaError.MEDIA_ERR_ABORTED        = MediaError.MEDIA_ERR_ABORTED        || 1;
-MediaError.MEDIA_ERR_NETWORK        = MediaError.MEDIA_ERR_NETWORK        || 2;
-MediaError.MEDIA_ERR_DECODE         = MediaError.MEDIA_ERR_DECODE         || 3;
-MediaError.MEDIA_ERR_NONE_SUPPORTED = MediaError.MEDIA_ERR_NONE_SUPPORTED || 4;
-// TODO: MediaError.MEDIA_ERR_NONE_SUPPORTED is legacy, the W3 spec now defines it as below. 
+_MediaError.MEDIA_ERR_NONE_ACTIVE    = _MediaError.MEDIA_ERR_NONE_ACTIVE    || 0;
+_MediaError.MEDIA_ERR_ABORTED        = _MediaError.MEDIA_ERR_ABORTED        || 1;
+_MediaError.MEDIA_ERR_NETWORK        = _MediaError.MEDIA_ERR_NETWORK        || 2;
+_MediaError.MEDIA_ERR_DECODE         = _MediaError.MEDIA_ERR_DECODE         || 3;
+_MediaError.MEDIA_ERR_NONE_SUPPORTED = _MediaError.MEDIA_ERR_NONE_SUPPORTED || 4;
+// TODO: MediaError.MEDIA_ERR_NONE_SUPPORTED is legacy, the W3 spec now defines it as below.
 // as defined by http://dev.w3.org/html5/spec-author-view/video.html#error-codes
-MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED = MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED || 4;
+_MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED = _MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED || 4;
 
-module.exports = MediaError;
+module.exports = _MediaError;
 
 });
 
@@ -3625,7 +3646,6 @@ var Battery = function() {
     for (var key in this.channels) {
         this.channels[key].onHasSubscribersChange = Battery.onHasSubscribersChange;
     }
-
 };
 /**
  * Event handlers for when callbacks get registered for the battery.
@@ -5417,6 +5437,7 @@ module.exports = splashscreen;
 // file: lib\wp8\plugin\wp\CordovaCommandResult.js
 define("cordova/plugin/wp/CordovaCommandResult", function(require, exports, module) {
 
+
 var cordova = require('cordova');
 var channel = require('cordova/channel');
 
@@ -5424,7 +5445,8 @@ var channel = require('cordova/channel');
 module.exports = function(status,callbackId,args,cast) {
 
     if(status === "backbutton") {
-        cordova.fireDocumentEvent("backbutton");
+        // do not detach backbutton event, as we need to be able to catch exceptions
+        cordova.fireDocumentEvent("backbutton", undefined, true);
         return "true";
     }
     else if(status === "resume") {
@@ -5474,22 +5496,29 @@ module.exports = function(status,callbackId,args,cast) {
 // file: lib\wp8\plugin\wp\CordovaMediaonStatus.js
 define("cordova/plugin/wp/CordovaMediaonStatus", function(require, exports, module) {
 
+
 var cordova = require('cordova');
 var Media = require('cordova/plugin/Media');
 
 module.exports = function(args) {
     try {
+
         var res = JSON.parse(args);
+        if(res.msg == Media.MEDIA_ERROR) {
+            res.value = {'code':res.value};
+        }
         Media.onStatus(res.id, res.msg, res.value);
     }
     catch(e) {
         console.log("Error calling Media.onStatus :: " + e);
     }
 };
+
 });
 
 // file: lib\wp8\plugin\wp\FileTransfer.js
 define("cordova/plugin/wp/FileTransfer", function(require, exports, module) {
+
 var exec = require('cordova/exec'),
     FileTransferError = require('cordova/plugin/FileTransferError');
 
@@ -5597,6 +5626,15 @@ module.exports = FileTransfer;
 
 // file: lib\wp8\plugin\wp\FileUploadOptions.js
 define("cordova/plugin/wp/FileUploadOptions", function(require, exports, module) {
+
+/**
+ * Options to customize the HTTP request used to upload files.
+ * @constructor
+ * @param fileKey {String}   Name of file request parameter.
+ * @param fileName {String}  Filename to be used by the server. Defaults to image.jpg.
+ * @param mimeType {String}  Mimetype of the uploaded file. Defaults to image/jpeg.
+ * @param params {Object}    Object with key: value params to send to the server.
+ */
 var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
     this.fileKey = fileKey || null;
     this.fileName = fileName || null;
@@ -5615,10 +5653,12 @@ var FileUploadOptions = function(fileKey, fileName, mimeType, params) {
 };
 
 module.exports = FileUploadOptions;
+
 });
 
 // file: lib\wp8\plugin\wp\XHRPatch.js
 define("cordova/plugin/wp/XHRPatch", function(require, exports, module) {
+
 // TODO: the build process will implicitly wrap this in a define() call
 // with a closure of its own; do you need this extra closure?
 
@@ -5828,10 +5868,12 @@ if (!docDomain || docDomain.length === 0) {
 })(window, document);
 
 module.exports = null;
+
 });
 
 // file: lib\wp8\plugin\wp\console.js
 define("cordova/plugin/wp/console", function(require, exports, module) {
+
 
 var exec = require('cordova/exec'),
     channel = require('cordova/channel');
@@ -5849,7 +5891,14 @@ var debugConsole = {
     }
 };
 
+var oldOnError = window.onerror;
+window.onerror = function(msg,fileName,line) {
+    oldOnError && oldOnError(msg,fileName,line);
+    debugConsole.error(msg + " file:" + fileName + " Line:" + line);
+};
+
 module.exports = debugConsole;
+
 });
 
 // file: lib\common\utils.js
@@ -5955,8 +6004,8 @@ utils.extend = (function() {
  * Alerts a message in any available way: alert or console.log.
  */
 utils.alert = function(msg) {
-    if (alert) {
-        alert(msg);
+    if (window.alert) {
+        window.alert(msg);
     } else if (console && console.log) {
         console.log(msg);
     }
@@ -6064,7 +6113,7 @@ window.cordova = require('cordova');
     // Replace navigator before any modules are required(), to ensure it happens as soon as possible.
     // We replace it so that properties that can't be clobbered can instead be overridden.
     if (typeof navigator != 'undefined') {
-        function CordovaNavigator() {}
+        var CordovaNavigator = function () {};
         CordovaNavigator.prototype = navigator;
         navigator = new CordovaNavigator();
     }
