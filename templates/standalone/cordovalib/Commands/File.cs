@@ -348,11 +348,11 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                     try
                     {
-                        this.FullPath = filePath;// new Uri(filePath).LocalPath;
+                        this.FullPath = filePath.Replace('\\', '/'); // new Uri(filePath).LocalPath;
                     }
                     catch (Exception)
                     {
-                          
+                        this.FullPath = filePath;
                     }
                 }
             }

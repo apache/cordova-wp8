@@ -1,6 +1,6 @@
 // commit 4a0b4a4a54a684414690147295ffae61eae24b71
 
-// File generated at :: Thu Oct 18 2012 14:08:34 GMT+0400 (Russian Standard Time)
+// File generated at :: Tue Oct 23 2012 15:10:24 GMT+0400 (Russian Standard Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -983,6 +983,7 @@ module.exports = {
     initialize:function() {
         window.alert = require("cordova/plugin/notification").alert;
         window.FileReader = require("cordova/plugin/FileReader");
+        window.File = require("cordova/plugin/File");
 
         // Inject a listener for the backbutton, and tell native to override the flag (true/false) when we have 1 or more, or 0, listeners
         var backButtonChannel = cordova.addDocumentEventHandler('backbutton');
@@ -2093,9 +2094,6 @@ Entry.prototype.remove = function(successCallback, errorCallback) {
     var fail = typeof errorCallback !== 'function' ? null : function(code) {
         errorCallback(new FileError(code));
     };
-
-	console.log('remove entry (js): ' + JSON.stringify(this));
-
     exec(successCallback, fail, "File", "remove", [this.fullPath]);
 };
 

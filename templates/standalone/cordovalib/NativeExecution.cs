@@ -93,11 +93,9 @@ namespace WPCordovaClassLib.Cordova
 
                 bc.OnCustomScript += OnCustomScriptHandler;
 
-                // TODO: alternative way is using thread pool (ThreadPool.QueueUserWorkItem) instead of 
-                // new thread for every command call; but num threads are not sufficient - 2 threads per CPU core
-
-                Thread thread = new Thread(func =>
+                ThreadStart methodInvokation = () =>
                 {
+
                     try
                     {
                         bc.InvokeMethodNamed(commandCallParams.Action, commandCallParams.Args);
@@ -114,9 +112,20 @@ namespace WPCordovaClassLib.Cordova
 
                         return;
                     }
-                });
+                };
 
-                thread.Start();
+                if (bc is File)
+                {
+                    // Due to some issues with the IsolatedStorage in current version of WP8 SDK we have to run all File Api commands synchronously.
+                    // TODO: test this in WP8 RTM
+                    methodInvokation.Invoke();
+                }
+                else
+                {
+                    new Thread(methodInvokation).Start();
+                }
+
+                    
             }
             catch (Exception ex)
             {
