@@ -16,31 +16,31 @@
         navigator.plugins.liveTiles = {
             updateAppTile: function (successCallback, errorCallback, options) {
                 if(checkArgs(successCallback, errorCallback)) {
-                    cdv.exec(successCallback, errorCallback, "LiveTiles", "updateAppTile", [options]);
+                    cdv.exec(successCallback, errorCallback, "LiveTiles", "updateAppTile", options);
                 }
             },
 
             createSecondaryTile: function (successCallback, errorCallback, options) {
                 if(checkArgs(successCallback, errorCallback)) {
-                    cdv.exec(successCallback, errorCallback, "LiveTiles", "createSecondaryTile", [options]);
+                    cdv.exec(successCallback, errorCallback, "LiveTiles", "createSecondaryTile", options);
                 }
             },
 
             updateSecondaryTile: function (successCallback, errorCallback, options) {
                 if(checkArgs(successCallback, errorCallback)) {
-                    cdv.exec(successCallback, errorCallback, "LiveTiles", "updateSecondaryTile", [options]);
+                    cdv.exec(successCallback, errorCallback, "LiveTiles", "updateSecondaryTile", options);
                 }
             },
 
             deleteSecondaryTile: function (successCallback, errorCallback, options) {
                 if(checkArgs(successCallback, errorCallback)) {
-                    cdv.exec(successCallback, errorCallback, "LiveTiles", "deleteSecondaryTile", [options]);
+                    cdv.exec(successCallback, errorCallback, "LiveTiles", "deleteSecondaryTile", options);
                 }
             },
 
             createCycleTile: function (successCallback, errorCallback, options) {
                 if(checkArgs(successCallback, errorCallback)) {
-                    cdv.exec(successCallback, errorCallback, "LiveTiles", "createCycleTile", [options]);
+                    cdv.exec(successCallback, errorCallback, "LiveTiles", "createCycleTile", options);
                 }
             }
 
