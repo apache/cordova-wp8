@@ -48,7 +48,7 @@
     <FilePath Value="www\camera\index.html"/>
     <FilePath Value="www\compass\index.html"/>
     <FilePath Value="www\contacts\index.html"/>
-    <FilePath Value="www\cordova-2.1.0.js"/>
+    <FilePath Value="www\cordova-2.2.0.js"/>
     <FilePath Value="www\cordova.js"/>
     <FilePath Value="www\events\index.html"/>
     <FilePath Value="www\index.html"/>

@@ -199,7 +199,7 @@
     <Content Include="www\camera\index.html" />
     <Content Include="www\compass\index.html" />
     <Content Include="www\contacts\index.html" />
-    <Content Include="www\cordova-2.1.0.js" />
+    <Content Include="www\cordova-2.2.0.js" />
     <Content Include="www\cordova.js" />
     <Content Include="www\events\index.html" />
     <Content Include="www\index.html">
