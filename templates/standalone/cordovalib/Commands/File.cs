@@ -1226,6 +1226,12 @@ namespace WPCordovaClassLib.Cordova.Commands
                             DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, INVALID_MODIFICATION_ERR));
                             return;
                         }
+                        else if (isoFile.DirectoryExists(newPath)) 
+                        {
+                            // there is already a folder with the same name, operation is not allowed
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, INVALID_MODIFICATION_ERR));
+                            return;
+                        }
                         else if (isoFile.FileExists(newPath))
                         {   // remove destination file if exists, in other case there will be exception
                             isoFile.DeleteFile(newPath);
