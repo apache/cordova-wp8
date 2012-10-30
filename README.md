@@ -1,7 +1,7 @@
 Apache Cordova for Windows Phone 8
 ===
 
-Apache Cordova WP7 is a .net application library that lets you create Apache Cordova applications targeting Windows Phone 8 devices.
+Apache Cordova WP8 is a .net application library that lets you create Apache Cordova applications targeting Windows Phone 8 devices.
 Apache Cordova based applications are, at the core, an application written with web technology: HTML, CSS and JavaScript.
 
 Requires
