@@ -1125,21 +1125,21 @@ namespace WP7CordovaClassLib.Cordova.Commands
                 {
                     if (isoFile.DirectoryExists(fullPath))
                     {
-                        string path = File.AddSlashToDirectory(fullPath);
-                        string[] files = isoFile.GetFileNames(path + "*");
+                        string tempPath = File.AddSlashToDirectory(fullPath);
+                        string[] files = isoFile.GetFileNames(tempPath + "*");
                         if (files.Length > 0)
                         {
                             foreach (string file in files)
                             {
-                                isoFile.DeleteFile(path + file);
+                                isoFile.DeleteFile(tempPath + file);
                             }
                         }
-                        string[] dirs = isoFile.GetDirectoryNames(path + "*");
+                        string[] dirs = isoFile.GetDirectoryNames(tempPath + "*");
                         if (dirs.Length > 0)
                         {
                             foreach (string dir in dirs)
                             {
-                                removeDirRecursively(path + dir + "/");
+                                removeDirRecursively(tempPath + dir);
                             }
                         }
                         isoFile.DeleteDirectory(fullPath);

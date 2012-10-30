@@ -622,8 +622,11 @@ namespace WP7CordovaClassLib.Cordova.Commands
         private void FinalizeXnaGameLoop()
         {
             // Timer to simulate the XNA game loop (Microphone is from XNA)
-            this.dtXna.Stop();
-            this.dtXna = null;
+            if (this.dtXna != null)
+            {
+                this.dtXna.Stop();
+                this.dtXna = null;
+            }
         }
 
         #endregion
