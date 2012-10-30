@@ -1,4 +1,4 @@
-﻿/*  
+/*  
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
@@ -302,9 +302,9 @@ namespace WPCordovaClassLib.Cordova.Commands
                     entry = new FileEntry(filePath);
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception in GetEntry for filePath :: " + filePath);
+                    Debug.WriteLine("Exception in GetEntry for filePath :: " + filePath + " " + ex.Message);
                 }
                 return entry;
             }
@@ -319,6 +319,12 @@ namespace WPCordovaClassLib.Cordova.Commands
                 {
                     throw new ArgumentException();
                 }
+
+                if(filePath.Contains(" ")) 
+                {
+                    Debug.WriteLine("FilePath with spaces :: " +  filePath);
+                }
+
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     this.IsFile = isoFile.FileExists(filePath);
@@ -340,13 +346,14 @@ namespace WPCordovaClassLib.Cordova.Commands
                         throw new FileNotFoundException();
                     }
 
-                    //TODO WP8 throws UriFormatException if "/" is passed in Uri constructor. WP7 returns "file:///" for new Uri("/").LocalPath
-                    if(filePath.Equals("/"))
+                    try
                     {
-                        filePath = "file://";
+                        this.FullPath = filePath.Replace('\\', '/'); // new Uri(filePath).LocalPath;
                     }
-
-                    this.FullPath = new Uri(filePath).LocalPath;
+                    catch (Exception)
+                    {
+                        this.FullPath = filePath;
+                    }
                 }
             }
 
@@ -643,7 +650,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                     using (FileStream stream = new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.ReadWrite, isoFile))
                     {
-                        if (0 <= size && size < stream.Length)
+                        if (0 <= size && size <= stream.Length)
                         {
                             stream.SetLength(size);
                         }
@@ -693,7 +700,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                     using (FileStream stream = new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.ReadWrite, isoFile))
                     {
-                        if (0 <= position && position < stream.Length)
+                        if (0 <= position && position <= stream.Length)
                         {
                             stream.SetLength(position);
                         }
@@ -816,6 +823,8 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                         if (isoFile.FileExists(filePath) || isoFile.DirectoryExists(filePath))
                         {
+                           
+                             
                             string path = this.GetParentDirectory(filePath);
                             entry = FileEntry.GetEntry(path);
                             DispatchCommandResult(new PluginResult(PluginResult.Status.OK, entry));
@@ -844,6 +853,10 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 try
                 {
+                    if (filePath == "/" || filePath == "" || filePath == @"\")
+                    {
+                        throw new Exception("Cannot delete root file system") ;
+                    }
                     using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (isoFile.FileExists(filePath))
@@ -929,10 +942,6 @@ namespace WPCordovaClassLib.Cordova.Commands
                         }
                     }
                 }
-                //catch (SecurityException)
-                //{
-                //    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, SECURITY_ERR));
-                //}
                 catch (Exception ex)
                 {
                     if (!this.HandleException(ex))
@@ -950,6 +959,8 @@ namespace WPCordovaClassLib.Cordova.Commands
 
             double fileSystemType = optVals[0];
             double size = optVals[1];
+
+            IsolatedStorageFile.GetUserStoreForApplication();
 
             if (size > (10 * 1024 * 1024)) // 10 MB, compier will clean this up!
             {
@@ -1005,14 +1016,6 @@ namespace WPCordovaClassLib.Cordova.Commands
                 }
 
             }
-            //catch (SecurityException)
-            //{
-            //    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, SECURITY_ERR));
-            //}
-            //catch (FileNotFoundException)
-            //{
-            //    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NOT_FOUND_ERR));
-            //}
             catch (Exception ex)
             {
                 if (!this.HandleException(ex))
@@ -1024,25 +1027,21 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         public void resolveLocalFileSystemURI(string options)
         {
-            string uri = getSingleStringOption(options);
+            string uri = getSingleStringOption(options).Split('?')[0];
+
             if (uri != null)
             {
-
+                // a single '/' is valid, however, '/someDir' is not, but '/tmp//somedir' is valid
+                if (uri.StartsWith("/") && uri.IndexOf("//") < 0 && uri != "/")
+                {
+                     Debug.WriteLine("Starts with / ::: " + uri);
+                     DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ENCODING_ERR));
+                     return;
+                }
                 try
                 {
-                    if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
-                    {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ENCODING_ERR));
-                        return;
-                    }
-
-                    Uri fileUri = new Uri(Uri.UnescapeDataString(uri));
-                    string path = fileUri.LocalPath;
-
-                    // TODO: research this :
-                    //if (Uri.UriSchemeFile == fileUri.Scheme)
-                    //{
-                    //}
+                    // fix encoded spaces
+                    string path = Uri.UnescapeDataString(uri);
 
                     FileEntry uriEntry = FileEntry.GetEntry(path);
                     if (uriEntry != null)
@@ -1054,10 +1053,6 @@ namespace WPCordovaClassLib.Cordova.Commands
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NOT_FOUND_ERR));
                     }
                 }
-                //catch (SecurityException)
-                //{
-                //    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, SECURITY_ERR));
-                //}
                 catch (Exception ex)
                 {
                     if (!this.HandleException(ex))
@@ -1107,35 +1102,47 @@ namespace WPCordovaClassLib.Cordova.Commands
                 return this.GetParentDirectory(Path.GetDirectoryName(path));
             }
 
-            return Path.GetDirectoryName(path);
+            string result = Path.GetDirectoryName(path);
+            if (result == null)
+            {
+                result = "/";
+            }
+
+            return result;
         }
 
         private void removeDirRecursively(string fullPath)
         {
             try
             {
+                if (fullPath == "/")
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NO_MODIFICATION_ALLOWED_ERR));
+                    return;
+                }
+
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (isoFile.DirectoryExists(fullPath))
                     {
-                        string path = File.AddSlashToDirectory(fullPath);
-                        string[] files = isoFile.GetFileNames(path + "*");
+                        string tempPath = File.AddSlashToDirectory(fullPath);
+                        string[] files = isoFile.GetFileNames(tempPath + "*");
                         if (files.Length > 0)
                         {
                             foreach (string file in files)
                             {
-                                isoFile.DeleteFile(path + file);
+                                isoFile.DeleteFile(tempPath + file);
                             }
                         }
-                        string[] dirs = isoFile.GetDirectoryNames(path + "*");
+                        string[] dirs = isoFile.GetDirectoryNames(tempPath + "*");
                         if (dirs.Length > 0)
                         {
                             foreach (string dir in dirs)
                             {
-                                removeDirRecursively(path + dir + "/");
+                                removeDirRecursively(tempPath + dir);
                             }
                         }
-                        isoFile.DeleteDirectory(Path.GetDirectoryName(path));
+                        isoFile.DeleteDirectory(fullPath);
                     }
                     else
                     {
@@ -1152,6 +1159,14 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
         }
 
+        private bool CanonicalCompare(string pathA, string pathB)
+        {
+            string a = pathA.Replace("//", "/");
+            string b = pathB.Replace("//", "/");
+
+            return a.Equals(b, StringComparison.OrdinalIgnoreCase);
+        }
+
         /*
          *  copyTo:["fullPath","parent", "newName"],
          *  moveTo:["fullPath","parent", "newName"],
@@ -1163,6 +1178,14 @@ namespace WPCordovaClassLib.Cordova.Commands
             string fullPath = optStrings[0];
             string parent = optStrings[1];
             string newFileName = optStrings[2];
+
+            char[] invalids = Path.GetInvalidPathChars();
+            
+            if (newFileName.IndexOfAny(invalids) > -1 || newFileName.IndexOf(":") > -1 )
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ENCODING_ERR));
+                return;
+            }
 
             try
             {
@@ -1181,7 +1204,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     bool isDirectoryExist = isoFile.DirectoryExists(currentPath);
                     bool isParentExist = isoFile.DirectoryExists(parentPath);
 
-                    if (((!isFileExist) && (!isDirectoryExist)) || (!isParentExist))
+                    if ( ( !isFileExist && !isDirectoryExist ) || !isParentExist )
                     {
                         DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NOT_FOUND_ERR));
                         return;
@@ -1195,10 +1218,22 @@ namespace WPCordovaClassLib.Cordova.Commands
                                     : newFileName;
 
                         newPath = Path.Combine(parentPath, newName);
-
-                        // remove destination file if exists, in other case there will be exception
-                        if (!newPath.Equals(currentPath) && isoFile.FileExists(newPath))
+                        
+                        // sanity check ..
+                        // cannot copy file onto itself
+                        if (CanonicalCompare(newPath,currentPath)) //(parent + newFileName))
                         {
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, INVALID_MODIFICATION_ERR));
+                            return;
+                        }
+                        else if (isoFile.DirectoryExists(newPath)) 
+                        {
+                            // there is already a folder with the same name, operation is not allowed
+                            DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, INVALID_MODIFICATION_ERR));
+                            return;
+                        }
+                        else if (isoFile.FileExists(newPath))
+                        {   // remove destination file if exists, in other case there will be exception
                             isoFile.DeleteFile(newPath);
                         }
 
@@ -1221,7 +1256,6 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                         if (move)
                         {
-
                             // remove destination directory if exists, in other case there will be exception
                             // target directory should be empty
                             if (!newPath.Equals(currentPath) && isoFile.DirectoryExists(newPath))
@@ -1233,7 +1267,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                         }
                         else
                         {
-                            this.CopyDirectory(currentPath, newPath, isoFile);
+                            CopyDirectory(currentPath, newPath, isoFile);
                         }
                     }
                     FileEntry entry = FileEntry.GetEntry(newPath);
@@ -1292,17 +1326,22 @@ namespace WPCordovaClassLib.Cordova.Commands
         {
             string path = File.AddSlashToDirectory(sourceDir);
 
-            if (!isoFile.DirectoryExists(destDir))
+            bool bExists = isoFile.DirectoryExists(destDir);
+
+            if (!bExists)
             {
                 isoFile.CreateDirectory(destDir);
             }
+
             destDir = File.AddSlashToDirectory(destDir);
+               
             string[] files = isoFile.GetFileNames(path + "*");
+                
             if (files.Length > 0)
             {
                 foreach (string file in files)
                 {
-                    isoFile.CopyFile(path + file, destDir + file);
+                    isoFile.CopyFile(path + file, destDir + file,true);
                 }
             }
             string[] dirs = isoFile.GetDirectoryNames(path + "*");
@@ -1343,6 +1382,12 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                 string path;
 
+                if (fOptions.Path.Split(':').Length > 2)
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ENCODING_ERR));
+                    return;
+                }
+
                 try
                 {
                     path = Path.Combine(fOptions.FullPath + "/", fOptions.Path);
@@ -1380,7 +1425,6 @@ namespace WPCordovaClassLib.Cordova.Commands
                                 fileStream.Close();
                             }
                         }
-
                     }
                     else
                     {

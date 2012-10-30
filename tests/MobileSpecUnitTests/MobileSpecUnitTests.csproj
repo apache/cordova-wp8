@@ -166,14 +166,17 @@
     <Content Include="www\autotest\pages\accelerometer.html" />
     <Content Include="www\autotest\pages\all.html" />
     <Content Include="www\autotest\pages\battery.html" />
+    <Content Include="www\autotest\pages\bridge.html" />
     <Content Include="www\autotest\pages\camera.html" />
     <Content Include="www\autotest\pages\capture.html" />
     <Content Include="www\autotest\pages\compass.html" />
     <Content Include="www\autotest\pages\contacts.html" />
+    <Content Include="www\autotest\pages\datauri.html" />
     <Content Include="www\autotest\pages\device.html" />
     <Content Include="www\autotest\pages\file.html" />
     <Content Include="www\autotest\pages\filetransfer.html" />
     <Content Include="www\autotest\pages\geolocation.html" />
+    <Content Include="www\autotest\pages\globalization.html" />
     <Content Include="www\autotest\pages\media.html" />
     <Content Include="www\autotest\pages\network.html" />
     <Content Include="www\autotest\pages\notification.html" />
@@ -182,14 +185,17 @@
     <Content Include="www\autotest\test-runner.js" />
     <Content Include="www\autotest\tests\accelerometer.tests.js" />
     <Content Include="www\autotest\tests\battery.tests.js" />
+    <Content Include="www\autotest\tests\bridge.tests.js" />
     <Content Include="www\autotest\tests\camera.tests.js" />
     <Content Include="www\autotest\tests\capture.tests.js" />
     <Content Include="www\autotest\tests\compass.tests.js" />
     <Content Include="www\autotest\tests\contacts.tests.js" />
+    <Content Include="www\autotest\tests\datauri.tests.js" />
     <Content Include="www\autotest\tests\device.tests.js" />
     <Content Include="www\autotest\tests\file.tests.js" />
     <Content Include="www\autotest\tests\filetransfer.tests.js" />
     <Content Include="www\autotest\tests\geolocation.tests.js" />
+    <Content Include="www\autotest\tests\globalization.tests.js" />
     <Content Include="www\autotest\tests\media.tests.js" />
     <Content Include="www\autotest\tests\network.tests.js" />
     <Content Include="www\autotest\tests\notification.tests.js" />
@@ -199,7 +205,7 @@
     <Content Include="www\camera\index.html" />
     <Content Include="www\compass\index.html" />
     <Content Include="www\contacts\index.html" />
-    <Content Include="www\cordova-2.0.0.js" />
+    <Content Include="www\cordova-2.2.0.js" />
     <Content Include="www\cordova.js" />
     <Content Include="www\events\index.html" />
     <Content Include="www\index.html">
@@ -224,6 +230,9 @@
       <Project>{FC6A1A70-892D-46AD-9E4A-9793F72AF780}</Project>
       <Name>WPCordovaClassLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="www\execbenchmark\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

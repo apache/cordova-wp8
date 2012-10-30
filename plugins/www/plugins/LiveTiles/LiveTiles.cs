@@ -86,7 +86,7 @@ namespace Cordova.Extension.Commands
             LiveTilesOptions liveTileOptions;
             try
             {
-                liveTileOptions = JsonHelper.Deserialize<LiveTilesOptions[]>(options)[0];
+                liveTileOptions = JsonHelper.Deserialize<LiveTilesOptions>(options);
             }
             catch (Exception)
             {
@@ -123,7 +123,7 @@ namespace Cordova.Extension.Commands
             LiveTilesOptions liveTileOptions;
             try
             {
-                liveTileOptions = JsonHelper.Deserialize<LiveTilesOptions[]>(options)[0];
+                liveTileOptions = JsonHelper.Deserialize<LiveTilesOptions>(options);
             }
             catch (Exception)
             {
@@ -170,7 +170,7 @@ namespace Cordova.Extension.Commands
             LiveTilesOptions liveTileOptions;
             try
             {
-                liveTileOptions = JsonHelper.Deserialize<LiveTilesOptions[]>(options)[0];
+                liveTileOptions = JsonHelper.Deserialize<LiveTilesOptions>(options);
             }
             catch (Exception)
             {
@@ -213,7 +213,7 @@ namespace Cordova.Extension.Commands
             LiveTilesOptions liveTileOptions;
             try
             {
-                liveTileOptions = JsonHelper.Deserialize<LiveTilesOptions[]>(options)[0];
+                liveTileOptions = JsonHelper.Deserialize<LiveTilesOptions>(options);
             }
             catch (Exception)
             {
@@ -253,7 +253,7 @@ namespace Cordova.Extension.Commands
             LiveTilesOptions tileOptions;
             try
             {
-                tileOptions = JsonHelper.Deserialize<LiveTilesOptions[]>(options)[0];
+                tileOptions = JsonHelper.Deserialize<LiveTilesOptions>(options);
             }
             catch 
             {

@@ -145,7 +145,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CordovaLib\WP8CordovaClassLib.dll" />
+    <Content Include="CordovaLib\WPCordovaClassLib.dll" />
     <Content Include="CordovaSourceDictionary.xml" />
     <Content Include="Images\appbar.back.rest.png" />
     <Content Include="Images\appbar.close.rest.png" />
@@ -153,7 +153,7 @@
     <Content Include="Images\appbar.next.rest.png" />
     <Content Include="Images\appbar.save.rest.png" />
     <Content Include="Images\appbar.stop.rest.png" />
-    <Content Include="www\cordova-2.0.0.js" />
+    <Content Include="www\cordova-2.2.0.js" />
     <Content Include="www\index.html" />
     <Content Include="www\master.css" />
     <Content Include="www\plugins\ChildBrowser\browser.html" />

@@ -11,7 +11,10 @@ function ChildBrowser() {
 // called from native
 ChildBrowser._onLocationChange = function(newLoc)
 {
-  window.plugins.childBrowser.onLocationChange(newLoc);
+    // if there is event handler attached
+    if (typeof window.plugins.childBrowser.onLocationChange !== 'undefined') {
+        window.plugins.childBrowser.onLocationChange(newLoc);
+    }    
 };
 
 // Callback when the user chooses the 'Done' button
@@ -73,7 +76,7 @@ ChildBrowser.prototype.showWebPage = function(loc,geolocationEnabled)
 // close the browser, will NOT result in close callback
 ChildBrowser.prototype.close = function()
 {
-  Cordova.exec(null,null,"ChildBrowserCommand","close");
+  Cordova.exec(null,null,"ChildBrowserCommand","close", {});
 };
 
 // Not Implemented
