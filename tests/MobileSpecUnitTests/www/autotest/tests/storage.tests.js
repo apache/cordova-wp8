@@ -153,9 +153,22 @@ describe("Session Storage", function () {
             expect(window.openDatabase);
         });
 
-        it("Should open a database", function() {
-            var db = openDatabase("Database", "1.0", "HTML5 Database API example", 200000);
-            expect(db).toBeDefined();
+        it("Should be able to create and drop tables", function() {
+            var win = jasmine.createSpy('win');
+            var fail1 = createDoNotCallSpy('fail1');
+            var fail2 = createDoNotCallSpy('fail2');
+            var db = openDatabase("Database", "1.0", "HTML5 Database API example", 5*1024*1024);
+            db.transaction(function(t) {
+                t.executeSql('CREATE TABLE IF NOT EXISTS foo(id int, name varchar(255));');
+                t.executeSql('CREATE TABLE IF NOT EXISTS foo2(id int, name varchar(255));');
+            }, fail1, step2);
+            function step2() {
+              db.transaction(function(t) {
+                  t.executeSql('DROP TABLE foo;');
+                  t.executeSql('DROP TABLE foo2');
+              }, fail2, win);
+            }
+            waitsForAny(win, fail1, fail2);
         });
     });
 });

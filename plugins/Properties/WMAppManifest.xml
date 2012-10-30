@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
-  <DefaultLanguage xmlns="" code="&quot;en-US&quot;, UltimateResourceFallbackLocation.Satellite" />
+  <DefaultLanguage xmlns="" code="en-US" />
   <App xmlns="" ProductID="{a7c1275f-a896-4a78-b657-0d61eae22626}" Title="CordovaPlugins" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="CordovaPlugins author" BitsPerPixel="32" Description="PhoneGap for Windows Phone 8" Publisher="CordovaPlugins" PublisherID="{bec53173-b2c8-4590-a66f-6ee3f3ad3585}">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
@@ -31,13 +31,20 @@
           <Count>0</Count>
           <BackgroundImageURI IsResource="false" IsRelative="true">Background.png</BackgroundImageURI>
           <Title>CordovaPlugins</Title>
-          <BackContent></BackContent>
-          <BackBackgroundImageURI></BackBackgroundImageURI>
-          <BackTitle></BackTitle>
-          <LargeBackgroundImageURI></LargeBackgroundImageURI>
-          <LargeBackContent></LargeBackContent>
-          <LargeBackBackgroundImageURI></LargeBackBackgroundImageURI>
-          <DeviceLockImageURI></DeviceLockImageURI>
+          <BackContent>
+          </BackContent>
+          <BackBackgroundImageURI>
+          </BackBackgroundImageURI>
+          <BackTitle>
+          </BackTitle>
+          <LargeBackgroundImageURI>
+          </LargeBackgroundImageURI>
+          <LargeBackContent>
+          </LargeBackContent>
+          <LargeBackBackgroundImageURI>
+          </LargeBackBackgroundImageURI>
+          <DeviceLockImageURI>
+          </DeviceLockImageURI>
           <HasLarge>false</HasLarge>
         </TemplateFlip>
       </PrimaryToken>
@@ -47,8 +54,5 @@
       <ScreenResolution Name="ID_RESOLUTION_WXGA" />
       <ScreenResolution Name="ID_RESOLUTION_HD720P" />
     </ScreenResolutions>
-    <Requirements>
-      <Requirement Name="ID_REQ_FRONTCAMERA" />
-    </Requirements>
   </App>
 </Deployment>

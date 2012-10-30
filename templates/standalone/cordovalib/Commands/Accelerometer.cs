@@ -19,8 +19,9 @@ using System.Runtime.Serialization;
 using System.Threading;
 using Microsoft.Devices.Sensors;
 using System.Globalization;
+using System.Diagnostics;
 
-namespace WP8CordovaClassLib.Cordova.Commands
+namespace WPCordovaClassLib.Cordova.Commands
 {
     /// <summary>
     /// Captures device motion in the x, y, and z direction.
@@ -172,14 +173,14 @@ namespace WP8CordovaClassLib.Cordova.Commands
         private string GetCurrentAccelerationFormatted()
         {
             // convert to unix timestamp
-            long timestamp = ((accelerometer.CurrentValue.Timestamp.DateTime - StartOfEpoch).Ticks) / 10000;
-            string resultCoordinates = String.Format("\"x\":{0},\"y\":{1},\"z\":{2},\"timestamp\":{3}",
+            // long timestamp = ((accelerometer.CurrentValue.Timestamp.DateTime - StartOfEpoch).Ticks) / 10000;
+            // Note: Removed timestamp, to let the JS side create it using (new Date().getTime()) -jm
+            // this resolves an issue with inconsistencies between JS dates and Native DateTime 
+            string resultCoordinates = String.Format("\"x\":{0},\"y\":{1},\"z\":{2}",
                             (accelerometer.CurrentValue.Acceleration.X * gConstant).ToString("0.00000", CultureInfo.InvariantCulture),
                             (accelerometer.CurrentValue.Acceleration.Y * gConstant).ToString("0.00000", CultureInfo.InvariantCulture),
-                            (accelerometer.CurrentValue.Acceleration.Z * gConstant).ToString("0.00000", CultureInfo.InvariantCulture),
-                            timestamp.ToString());
-            resultCoordinates = "{" + resultCoordinates + "}";
-            return resultCoordinates;
+                            (accelerometer.CurrentValue.Acceleration.Z * gConstant).ToString("0.00000", CultureInfo.InvariantCulture));
+            return  "{" + resultCoordinates + "}";
         }
 
         /// <summary>

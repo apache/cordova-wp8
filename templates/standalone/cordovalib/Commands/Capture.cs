@@ -21,14 +21,14 @@ using System.Windows.Media.Imaging;
 using Microsoft.Phone;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.Media;
-using WP8CordovaClassLib.Cordova.UI;
-using AudioResult = WP8CordovaClassLib.Cordova.UI.AudioCaptureTask.AudioResult;
-using VideoResult = WP8CordovaClassLib.Cordova.UI.VideoCaptureTask.VideoResult;
+using WPCordovaClassLib.Cordova.UI;
+using AudioResult = WPCordovaClassLib.Cordova.UI.AudioCaptureTask.AudioResult;
+using VideoResult = WPCordovaClassLib.Cordova.UI.VideoCaptureTask.VideoResult;
 using System.Windows;
 using System.Diagnostics;
 using Microsoft.Phone.Controls;
 
-namespace WP8CordovaClassLib.Cordova.Commands
+namespace WPCordovaClassLib.Cordova.Commands
 {
     /// <summary>
     /// Provides access to the audio, image, and video capture capabilities of the device
@@ -244,8 +244,9 @@ namespace WP8CordovaClassLib.Cordova.Commands
             {
                 try
                 {
-                    this.captureImageOptions = String.IsNullOrEmpty(options) ?
-                        CaptureImageOptions.Default : JSON.JsonHelper.Deserialize<CaptureImageOptions[]>(options)[0];
+
+                    string args = JSON.JsonHelper.Deserialize<string[]>(options)[0];
+                    this.captureImageOptions = String.IsNullOrEmpty(args) ? CaptureImageOptions.Default : JSON.JsonHelper.Deserialize<CaptureImageOptions>(args);
 
                 }
                 catch (Exception ex)
@@ -275,8 +276,8 @@ namespace WP8CordovaClassLib.Cordova.Commands
             {
                 try
                 {
-                    this.captureAudioOptions = String.IsNullOrEmpty(options) ?
-                        CaptureAudioOptions.Default : JSON.JsonHelper.Deserialize<CaptureAudioOptions[]>(options)[0];
+                    string args = JSON.JsonHelper.Deserialize<string[]>(options)[0];
+                    this.captureAudioOptions = String.IsNullOrEmpty(args) ? CaptureAudioOptions.Default : JSON.JsonHelper.Deserialize<CaptureAudioOptions>(args);
 
                 }
                 catch (Exception ex)
@@ -306,8 +307,8 @@ namespace WP8CordovaClassLib.Cordova.Commands
             {
                 try
                 {
-                    this.captureVideoOptions = String.IsNullOrEmpty(options) ?
-                        CaptureVideoOptions.Default : JSON.JsonHelper.Deserialize<CaptureVideoOptions[]>(options)[0];
+                    string args = JSON.JsonHelper.Deserialize<string[]>(options)[0];
+                    this.captureVideoOptions = String.IsNullOrEmpty(args) ? CaptureVideoOptions.Default : JSON.JsonHelper.Deserialize<CaptureVideoOptions>(args);
 
                 }
                 catch (Exception ex)

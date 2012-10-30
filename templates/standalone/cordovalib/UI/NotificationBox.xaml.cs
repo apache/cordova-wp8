@@ -29,7 +29,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace WP8CordovaClassLib.Cordova.UI
+namespace WPCordovaClassLib.Cordova.UI
 {
     public partial class NotificationBox : UserControl
     {

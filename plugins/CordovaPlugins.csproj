@@ -145,9 +145,15 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CordovaLib\WP8CordovaClassLib.dll" />
+    <Content Include="CordovaLib\WPCordovaClassLib.dll" />
     <Content Include="CordovaSourceDictionary.xml" />
-    <Content Include="www\cordova-2.0.0.js" />
+    <Content Include="Images\appbar.back.rest.png" />
+    <Content Include="Images\appbar.close.rest.png" />
+    <Content Include="Images\appbar.feature.video.rest.png" />
+    <Content Include="Images\appbar.next.rest.png" />
+    <Content Include="Images\appbar.save.rest.png" />
+    <Content Include="Images\appbar.stop.rest.png" />
+    <Content Include="www\cordova-2.2.0.js" />
     <Content Include="www\index.html" />
     <Content Include="www\master.css" />
     <Content Include="www\plugins\ChildBrowser\browser.html" />
@@ -156,7 +162,9 @@
     <Content Include="www\plugins\Facebook\FBConnect.js" />
     <Content Include="www\plugins\index.html" />
     <Content Include="www\plugins\LiveTiles\liveTiles.js" />
-    <Content Include="www\plugins\LiveTiles\liveTilesExample.html" />
+    <Content Include="www\plugins\LiveTiles\liveTilesExample.html">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="www\plugins\PGMapLauncher\map.html" />
     <Content Include="www\plugins\PGMapLauncher\PGMapLauncher.js" />
     <Content Include="www\plugins\PGSocialShare\PGSocialShare.js" />
@@ -190,8 +198,8 @@
     <Folder Include="Plugins\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="WP8CordovaClassLib">
-      <HintPath>CordovaLib\WP8CordovaClassLib.dll</HintPath>
+    <Reference Include="WPCordovaClassLib">
+      <HintPath>CordovaLib\WPCordovaClassLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />

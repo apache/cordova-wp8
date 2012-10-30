@@ -19,7 +19,7 @@ using System.Windows;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 
-namespace WP8CordovaClassLib.Cordova.UI
+namespace WPCordovaClassLib.Cordova.UI
 {
     public partial class ImageCapture : PhoneApplicationPage
     {
@@ -33,7 +33,7 @@ namespace WP8CordovaClassLib.Cordova.UI
     {
         /// <summary>
         /// Represents an image returned from a call to the Show method of
-        /// a WP8CordovaClassLib.Cordova.Controls.ImageCaptureTask object
+        /// a WPCordovaClassLib.Cordova.Controls.ImageCaptureTask object
         /// </summary>
         //public class AudioResult : TaskEventArgs
         //{
@@ -79,8 +79,10 @@ namespace WP8CordovaClassLib.Cordova.UI
 
                 root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
+                string baseUrl = WPCordovaClassLib.Cordova.Commands.BaseCommand.GetBaseURL();
+
                 // dummy parameter is used to always open a fresh version
-                root.Navigate(new System.Uri("/WP8CordovaClassLib;component/Cordova/UI/ImageCapture.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+                root.Navigate(new System.Uri(baseUrl + "Cordova/UI/ImageCapture.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
             });
         }
 

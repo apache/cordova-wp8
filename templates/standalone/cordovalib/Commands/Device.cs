@@ -28,7 +28,7 @@ using System.Windows.Resources;
 using System.IO;
 using System.Diagnostics;
 
-namespace WP8CordovaClassLib.Cordova.Commands
+namespace WPCordovaClassLib.Cordova.Commands
 {
     public class Device : BaseCommand
     {
@@ -62,7 +62,7 @@ namespace WP8CordovaClassLib.Cordova.Commands
             get
             {
                 // TODO: should be able to dynamically read the Cordova version from somewhere...
-                return "2.0.0";
+                return "2.2.0";
             }
         }
 

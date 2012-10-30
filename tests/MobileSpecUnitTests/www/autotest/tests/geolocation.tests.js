@@ -45,7 +45,6 @@ describe('Geolocation (navigator.geolocation)', function () {
                 var win = jasmine.createSpy().andCallFake(function(p) {
                           expect(p.coords).toBeDefined();
                           expect(p.timestamp).toBeDefined();
-                          expect(p.timestamp instanceof Date).toBe(true);
                       }),
                       fail = jasmine.createSpy();
 
@@ -100,13 +99,12 @@ describe('Geolocation (navigator.geolocation)', function () {
                 var win = jasmine.createSpy().andCallFake(function(p) {
                           expect(p.coords).toBeDefined();
                           expect(p.timestamp).toBeDefined();
-                          expect(p.timestamp instanceof Date).toBe(true);
                       }),
                       fail = jasmine.createSpy();
 
                 runs(function () {
                     successWatch = navigator.geolocation.watchPosition(win, fail, {
-                        maximumAge:300000 // 5 minutes maximum age of cached position
+                        maximumAge:(5 * 60 * 1000) // 5 minutes maximum age of cached position
                     });
                 });
 
@@ -116,27 +114,6 @@ describe('Geolocation (navigator.geolocation)', function () {
                     expect(fail).not.toHaveBeenCalled();
                 });
             });
-        });
-    });
-
-    describe("Geolocation model", function () {
-        it("should be able to define a Position object with coords and timestamp properties", function() {
-            var pos = new Position({}, new Date());
-            expect(pos).toBeDefined();
-            expect(pos.coords).toBeDefined();
-            expect(pos.timestamp).toBeDefined();
-        });
-
-        it("should be able to define a Coordinates object with latitude, longitude, accuracy, altitude, heading, speed and altitudeAccuracy properties", function() {
-            var coords = new Coordinates(1,2,3,4,5,6,7);
-            expect(coords).toBeDefined();
-            expect(coords.latitude).toBeDefined();
-            expect(coords.longitude).toBeDefined();
-            expect(coords.accuracy).toBeDefined();
-            expect(coords.altitude).toBeDefined();
-            expect(coords.heading).toBeDefined();
-            expect(coords.speed).toBeDefined();
-            expect(coords.altitudeAccuracy).toBeDefined();
         });
     });
 });

@@ -17,10 +17,10 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.Devices;
 using Microsoft.Phone.Controls;
-using WP8CordovaClassLib.Cordova.Commands;
+using WPCordovaClassLib.Cordova.Commands;
 using System.Windows;
 
-namespace WP8CordovaClassLib.Cordova
+namespace WPCordovaClassLib.Cordova
 {
     /// <summary>
     /// Implements logic to execute native command and return result back.
@@ -93,11 +93,9 @@ namespace WP8CordovaClassLib.Cordova
 
                 bc.OnCustomScript += OnCustomScriptHandler;
 
-                // TODO: alternative way is using thread pool (ThreadPool.QueueUserWorkItem) instead of 
-                // new thread for every command call; but num threads are not sufficient - 2 threads per CPU core
-
-                Thread thread = new Thread(func =>
+                ThreadStart methodInvokation = () =>
                 {
+
                     try
                     {
                         bc.InvokeMethodNamed(commandCallParams.Action, commandCallParams.Args);
@@ -114,9 +112,20 @@ namespace WP8CordovaClassLib.Cordova
 
                         return;
                     }
-                });
+                };
 
-                thread.Start();
+                if ((bc is File) || (bc is Accelerometer))
+                {
+                    // Due to some issues with the IsolatedStorage in current version of WP8 SDK we have to run all File Api commands synchronously.
+                    // TODO: test this in WP8 RTM
+                    methodInvokation.Invoke();
+                }
+                else
+                {
+                    new Thread(methodInvokation).Start();
+                }
+
+                    
             }
             catch (Exception ex)
             {

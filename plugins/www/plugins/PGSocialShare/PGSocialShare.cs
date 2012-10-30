@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using Microsoft.Phone.Tasks;
 
-namespace WP8CordovaClassLib.Cordova.Commands
+namespace WPCordovaClassLib.Cordova.Commands
 {
 
     public class PGSocialShare : BaseCommand
@@ -32,7 +32,7 @@ namespace WP8CordovaClassLib.Cordova.Commands
 
         public void share(string options)
         {
-            ShareOptions opts = JSON.JsonHelper.Deserialize<ShareOptions[]>(options)[0];
+            ShareOptions opts = JSON.JsonHelper.Deserialize<ShareOptions>(options);
             switch (opts.shareType)
             {
                 case ShareType.Status :

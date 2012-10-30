@@ -95,6 +95,11 @@
   	padding:1.2em 0;
   }
   
+  #stage.theme .wide{
+    width:100%;
+    padding:1.2em 0;
+  }
+  
   #stage.theme .backBtn{
    border: 1px solid #555;
    -webkit-border-radius: 5px;
