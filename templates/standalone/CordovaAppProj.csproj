@@ -87,6 +87,7 @@
     <Compile Include="cordovalib\BrowserMouseHelper.cs" />
     <Compile Include="cordovalib\CommandFactory.cs" />
     <Compile Include="cordovalib\Commands\Accelerometer.cs" />
+    <Compile Include="cordovalib\Commands\AudioFormatsHelper.cs" />
     <Compile Include="cordovalib\Commands\AudioPlayer.cs" />
     <Compile Include="cordovalib\Commands\BaseCommand.cs" />
     <Compile Include="cordovalib\Commands\Battery.cs" />

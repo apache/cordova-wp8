@@ -86,6 +86,9 @@
     <Compile Include="..\templates\standalone\cordovalib\Commands\Accelerometer.cs">
       <Link>CordovaLib\Commands\Accelerometer.cs</Link>
     </Compile>
+    <Compile Include="..\templates\standalone\cordovalib\Commands\AudioFormatsHelper.cs">
+      <Link>CordovaLib\Commands\AudioFormatsHelper.cs</Link>
+    </Compile>
     <Compile Include="..\templates\standalone\cordovalib\Commands\AudioPlayer.cs">
       <Link>CordovaLib\Commands\AudioPlayer.cs</Link>
     </Compile>
@@ -184,7 +187,6 @@
       <Link>CordovaLib\UI\VideoRecorder.xaml.cs</Link>
       <DependentUpon>VideoRecorder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CordovaLib\Commands\AudioFormatsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
