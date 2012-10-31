@@ -184,6 +184,7 @@
       <Link>CordovaLib\UI\VideoRecorder.xaml.cs</Link>
       <DependentUpon>VideoRecorder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CordovaLib\Commands\AudioFormatsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
