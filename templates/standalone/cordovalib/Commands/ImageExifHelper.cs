@@ -10,26 +10,13 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
- * 
- * Portions of this code are based on Simon McKenzie's ExifLib 
- * http://www.codeproject.com/Articles/36342/ExifLib-A-Fast-Exif-Data-Extractor-for-NET-2-0
+ 
 */
 
-
-
 using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
-using System.Diagnostics;
 
 namespace WP7CordovaClassLib.Cordova.Commands
 {
