@@ -47,14 +47,8 @@ namespace WP7CordovaClassLib.Cordova.Commands
             }
         }
 
-        // alert, confirm, blink, vibrate, beep
         // blink api - doesn't look like there is an equivalent api we can use...
-        // vibrate api - http://msdn.microsoft.com/en-us/library/microsoft.devices.vibratecontroller(v=VS.92).aspx
-        // beep api - can probably use: http://msdn.microsoft.com/en-us/library/microsoft.phone.scheduler.alarm(v=VS.92).aspx
-        //          - examples of alarm class http://mkdot.net/blogs/filip/archive/2011/06/06/windows-phone-multitasking-part-2-2.aspx
-
-        //MessageBoxResult res = MessageBox.Show("Could not call script: " + ex.Message, "caption", MessageBoxButton.OKCancel);
-
+        
         [DataContract]
         public class AlertOptions
         {
