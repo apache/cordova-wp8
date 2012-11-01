@@ -150,7 +150,7 @@ describe("Session Storage", function () {
 
     describe("HTML 5 Storage", function () {
         it("should exist", function() {
-            expect(window.openDatabase);
+            expect(window.openDatabase).toBeDefined();
         });
 
         it("Should be able to create and drop tables", function() {
