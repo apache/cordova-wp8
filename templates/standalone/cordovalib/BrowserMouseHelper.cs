@@ -40,7 +40,10 @@ namespace WPCordovaClassLib
         /// Gets or sets whether to suppress the scrolling of
         /// the WebBrowser control;
         /// </summary>
-        private bool ScrollDisabled = true;
+        public bool ScrollDisabled {
+            get;
+            set;
+        }
 
         private bool userScalable = true;
         private double maxScale = 2.0;

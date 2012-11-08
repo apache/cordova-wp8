@@ -118,6 +118,16 @@ namespace WPCordovaClassLib
                 }
             }
         }
+       
+        /// <summary>
+        /// Gets or sets whether to suppress bouncy scrolling of
+        /// the WebBrowser control;
+        /// </summary>
+        public bool DisableBouncyScrolling
+        {
+            get;
+            set;
+        }
 
         public CordovaView()
         {
@@ -191,6 +201,8 @@ namespace WPCordovaClassLib
 
         void GapBrowser_Loaded(object sender, RoutedEventArgs e)
         {
+            this.bmHelper.ScrollDisabled = this.DisableBouncyScrolling;
+
             if (DesignerProperties.IsInDesignTool)
             {
                 return;
