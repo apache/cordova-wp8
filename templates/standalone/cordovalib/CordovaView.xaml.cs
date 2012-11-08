@@ -63,7 +63,7 @@ namespace WPCordovaClassLib
         /// </summary>
         private bool PageDidChange = false;
 
-        private static string AppRoot = "/app/";
+        private static string AppRoot = "";
 
 
         /// <summary>
@@ -235,61 +235,65 @@ namespace WPCordovaClassLib
 
                 }
 
-                StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("CordovaSourceDictionary.xml", UriKind.Relative));
+                /*
+                 * 11/08/12 Ruslan Kokorev
+                 * Copying files to isolated storage is no more required in WP8. WebBrowser control now works with files located in XAP.
+                */
+                //StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("CordovaSourceDictionary.xml", UriKind.Relative));
 
-                if (streamInfo != null)
-                {
-                    StreamReader sr = new StreamReader(streamInfo.Stream);
-                    //This will Read Keys Collection for the xml file
+                //if (streamInfo != null)
+                //{
+                //    StreamReader sr = new StreamReader(streamInfo.Stream);
+                //    //This will Read Keys Collection for the xml file
 
-                    XDocument document = XDocument.Parse(sr.ReadToEnd());
+                //    XDocument document = XDocument.Parse(sr.ReadToEnd());
 
-                    var files = from results in document.Descendants("FilePath")
-                                select new
-                                {
-                                    path = (string)results.Attribute("Value")
-                                };
-                    StreamResourceInfo fileResourceStreamInfo;
+                //    var files = from results in document.Descendants("FilePath")
+                //                select new
+                //                {
+                //                    path = (string)results.Attribute("Value")
+                //                };
+                //    StreamResourceInfo fileResourceStreamInfo;
 
-                    using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
-                    {
+                //    using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                //    {
 
-                        foreach (var file in files)
-                        {
-                            fileResourceStreamInfo = Application.GetResourceStream(new Uri(file.path, UriKind.Relative));
+                //        foreach (var file in files)
+                //        {
+                //            fileResourceStreamInfo = Application.GetResourceStream(new Uri(file.path, UriKind.Relative));
 
-                            if (fileResourceStreamInfo != null)
-                            {
-                                using (BinaryReader br = new BinaryReader(fileResourceStreamInfo.Stream))
-                                {
-                                    byte[] data = br.ReadBytes((int)fileResourceStreamInfo.Stream.Length);
+                //            if (fileResourceStreamInfo != null)
+                //            {
+                //                using (BinaryReader br = new BinaryReader(fileResourceStreamInfo.Stream))
+                //                {
+                //                    byte[] data = br.ReadBytes((int)fileResourceStreamInfo.Stream.Length);
 
-                                    string strBaseDir = AppRoot + file.path.Substring(0, file.path.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
+                //                    string strBaseDir = AppRoot + file.path.Substring(0, file.path.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
 
-                                    if (!appStorage.DirectoryExists(strBaseDir))
-                                    {
-                                        Debug.WriteLine("INFO: Creating Directory :: " + strBaseDir);
-                                        appStorage.CreateDirectory(strBaseDir);
-                                    }
+                //                    if (!appStorage.DirectoryExists(strBaseDir))
+                //                    {
+                //                        Debug.WriteLine("INFO: Creating Directory :: " + strBaseDir);
+                //                        appStorage.CreateDirectory(strBaseDir);
+                //                    }
 
-                                    // This will truncate/overwrite an existing file, or 
-                                    using (IsolatedStorageFileStream outFile = appStorage.OpenFile(AppRoot + file.path, FileMode.Create))
-                                    {
-                                        Debug.WriteLine("INFO: Writing data for " + AppRoot + file.path + " and length = " + data.Length);
-                                        using (var writer = new BinaryWriter(outFile))
-                                        {
-                                            writer.Write(data);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Debug.WriteLine("ERROR: Failed to write file :: " + file.path + " did you forget to add it to the project?");
-                            }
-                        }
-                    }
-                }
+                //                    // This will truncate/overwrite an existing file, or 
+                //                    using (IsolatedStorageFileStream outFile = appStorage.OpenFile(AppRoot + file.path, FileMode.Create))
+                //                    {
+                //                        Debug.WriteLine("INFO: Writing data for " + AppRoot + file.path + " and length = " + data.Length);
+                //                        using (var writer = new BinaryWriter(outFile))
+                //                        {
+                //                            writer.Write(data);
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //            else
+                //            {
+                //                Debug.WriteLine("ERROR: Failed to write file :: " + file.path + " did you forget to add it to the project?");
+                //            }
+                //        }
+                //    }
+                //}
 
                 CordovaBrowser.Navigate(StartPageUri);
                 IsBrowserInitialized = true;
