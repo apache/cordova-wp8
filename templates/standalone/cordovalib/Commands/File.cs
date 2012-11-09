@@ -1354,7 +1354,6 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
         }
 
-        // TODO: this is NOT working, object is not valid ...
         private void GetFileOrDirectory(string options, bool getDirectory)
         {
             FileOptions fOptions = new FileOptions();
@@ -1410,6 +1409,23 @@ namespace WPCordovaClassLib.Cordova.Commands
                         {
                             DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, PATH_EXISTS_ERR));
                             return;
+                        }
+
+
+                        // need to make sure the parent exists
+                        // it is an error to create a directory whose immediate parent does not yet exist
+			// see issue: https://issues.apache.org/jira/browse/CB-339
+                        string[] pathParts = path.Split('/');
+                        string builtPath = pathParts[0];
+                        for (int n = 1; n < pathParts.Length - 1; n++)
+                        {
+                            builtPath += "/" + pathParts[n];
+                            if (!isoFile.DirectoryExists(builtPath))
+                            {
+                                Debug.WriteLine(String.Format("Error :: Parent folder \"{0}\" does not exist, when attempting to create \"{1}\"",builtPath,path));
+                                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NOT_FOUND_ERR));
+                                return;
+                            }
                         }
 
                         if ((getDirectory) && (!isDirectory))
