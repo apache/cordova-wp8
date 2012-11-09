@@ -17,8 +17,8 @@ main wp7 color and fonts
   
 body, input, div
 {
-    background: black;
-    color: White;
+    background: Background;
+    color: Highlight;
     font-family: Segoe WP;
     font-size: 15pt; /* PhoneFontSizeNormal */
     margin-left:0.1em;
@@ -74,8 +74,8 @@ Buttons
 
 a.btn, div.btn
 {
-    background: black;
-    color: white;
+    background: Background;
+    color: Highlight;
     text-decoration: none;
     display:block;
     font-size: 15pt;
@@ -86,9 +86,9 @@ a.btn, div.btn
 
 a.backBtn, input[type="button"], input[type="submit"]
 {
-    background: black;
-    color: white;
-    border-color: white;
+    background: Background;
+    color: Highlight;
+    border-color: Highlight;
     border-style: solid;
     padding: 4px 10px;
     border-width: 3px; /* PhoneBorderThickness */
