@@ -91,8 +91,6 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BuildManifestProcessor.js" />
-    <Content Include="CordovaSourceDictionary.xml" />
     <Content Include="www\cordova-2.2.0.js" />
     <Content Include="www\css\index.css" />
     <Content Include="www\js\index.js" />
@@ -142,8 +140,7 @@
   </Target>
   -->
   <ProjectExtensions />
-  <PropertyGroup>
-    <PreBuildEvent>CScript "$(ProjectDir)/BuildManifestProcessor.js" "$(ProjectPath)"</PreBuildEvent>
+  <PropertyGroup>    
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

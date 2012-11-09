@@ -146,7 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CordovaLib\WPCordovaClassLib.dll" />
-    <Content Include="CordovaSourceDictionary.xml" />
     <Content Include="Images\appbar.back.rest.png" />
     <Content Include="Images\appbar.close.rest.png" />
     <Content Include="Images\appbar.feature.video.rest.png" />
@@ -169,7 +168,6 @@
     <Content Include="www\plugins\PGMapLauncher\PGMapLauncher.js" />
     <Content Include="www\plugins\PGSocialShare\PGSocialShare.js" />
     <Content Include="www\plugins\PGSocialShare\share.html" />
-    <None Include="BuildManifestProcessor.js" />
     <None Include="cordova\debug.bat" />
     <None Include="cordova\emulate.bat" />
     <None Include="Properties\AppManifest.xml">
@@ -213,7 +211,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>CScript "$(ProjectDir)/BuildManifestProcessor.js" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
