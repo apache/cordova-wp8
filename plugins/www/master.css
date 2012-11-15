@@ -11,7 +11,7 @@
 
 /** 
 
-main wp7 color and fonts 
+main wp color and fonts 
 
 */
   
@@ -84,7 +84,7 @@ a.btn, div.btn
     margin:3px 0px 3px 5px;
 }
 
-a.backBtn, input[type="button"], input[type="submit"]
+a.backBtn, input[type="button"], input[type="submit"], button
 {
     background: Background;
     color: Highlight;
@@ -99,16 +99,21 @@ a.backBtn, input[type="button"], input[type="submit"]
   
 }
 
-input[type="button"] {
+input[type="button"], button {
     display:block;
     margin:10px 0px;
     font-size: 15px;
 }
 
-input[type="button"]:active, input[type="submit"]:active
+input[type="button"]:active, input[type="submit"]:active, button:active
 {
     background: white;
     color: black;
+}
+
+button {
+    width: 95%;
+    margin: 10px 6px;
 }
 
 /** 

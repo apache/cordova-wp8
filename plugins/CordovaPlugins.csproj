@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="www\plugins\ChildBrowser\ChildBrowserCommand.cs" />
+    <Compile Include="www\plugins\Globalization\Globalization.cs" />
     <Compile Include="www\plugins\LiveTiles\LiveTiles.cs" />
     <Compile Include="www\plugins\PGMapLauncher\PGMapLauncher.cs" />
     <Compile Include="www\plugins\PGSocialShare\PGSocialShare.cs" />
@@ -159,6 +160,8 @@
     <Content Include="www\plugins\ChildBrowser\ChildBrowser.js" />
     <Content Include="www\plugins\Facebook\facebook.html" />
     <Content Include="www\plugins\Facebook\FBConnect.js" />
+    <Content Include="www\plugins\Globalization\globalization.js" />
+    <Content Include="www\plugins\Globalization\global.html" />
     <Content Include="www\plugins\index.html" />
     <Content Include="www\plugins\LiveTiles\liveTiles.js" />
     <Content Include="www\plugins\LiveTiles\liveTilesExample.html">
