@@ -75,7 +75,9 @@ FBConnect.prototype.logout = function () {
         window.plugins.childBrowser.close();
         self.resetSession();
         self.status = "notConnected";
-        self.onDisconnect(this);
+        if (typeof self.onDisconnect == 'function') {
+            self.onDisconnect(this);
+        }       
     };
 }
 
