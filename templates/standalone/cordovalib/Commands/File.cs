@@ -627,6 +627,53 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
         }
 
+        /// <summary>
+        /// Reads application resource as a text
+        /// </summary>
+        /// <param name="options">Path to a resource</param>
+        public void readResourceAsText(string options)
+        {
+            string pathToResource;
+            try 
+            {
+                string[] optStrings = JSON.JsonHelper.Deserialize<string[]>(options);
+                pathToResource = optStrings[0];
+            }
+            catch (Exception)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+            
+            try
+            {
+                if (pathToResource.StartsWith("/"))
+                {
+                    pathToResource = pathToResource.Remove(0, 1);
+                }
+                
+                var resource = System.Windows.Application.GetResourceStream(new Uri(pathToResource, UriKind.Relative));
+                
+                if (resource == null)
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NOT_FOUND_ERR));
+                    return;
+                }
+
+                string text;
+                StreamReader streamReader = new StreamReader(resource.Stream);
+                text = streamReader.ReadToEnd();
+                
+                DispatchCommandResult(new PluginResult(PluginResult.Status.OK, text));
+            }
+            catch (Exception ex)
+            {
+                if (!this.HandleException(ex))
+                {
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NOT_READABLE_ERR));
+                }
+            }
+        }
 
         public void truncate(string options)
         {

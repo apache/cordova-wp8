@@ -12,3 +12,8 @@ function backHome() {
 	    window.history.go(-1);
 	}
 }
+
+// extras and plugins
+
+// globalization.js
+document.write('<script type="text/javascript" charset="utf-8" src="' + cordovaPath.replace('cordova-' + VERSION + '.js', 'globalization.js') + '"></script>');

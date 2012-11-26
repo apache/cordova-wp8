@@ -140,9 +140,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CordovaSourceDictionary.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="www\cordova-2.2.0.js" />
     <Content Include="www\cordova-current.js" />
     <Content Include="www\network.html">
@@ -154,7 +151,6 @@
     <Content Include="www\storage.html">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="BuildManifestProcessor.js" />
     <Content Include="www\accelerometer.html">
       <SubType>Designer</SubType>
     </Content>
@@ -231,7 +227,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>CScript "$(ProjectDir)/BuildManifestProcessor.js" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

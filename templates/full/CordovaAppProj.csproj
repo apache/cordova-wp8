@@ -142,11 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CordovaLib\WPCordovaClassLib.dll" />
-    <Content Include="CordovaSourceDictionary.xml" />
     <Content Include="www\cordova-2.2.0.js" />
     <Content Include="www\img\logo.png" />
     <Content Include="www\js\index.js" />
-    <None Include="BuildManifestProcessor.js" />
     <Content Include="www\css\index.css" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
@@ -192,7 +190,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>CScript "$(ProjectDir)/BuildManifestProcessor.js" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

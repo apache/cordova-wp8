@@ -218,10 +218,6 @@
     <Resource Include="cordovalib\Images\appbar.save.rest.png" />
     <Resource Include="cordovalib\Images\appbar.stop.rest.png" />
     <Content Include="cordovalib\resources\notification-beep.wav" />
-    <Content Include="CordovaSourceDictionary.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="BuildManifestProcessor.js" />
     <Content Include="www\css\index.css" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
@@ -264,7 +260,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>CScript "$(ProjectDir)/BuildManifestProcessor.js" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

@@ -119,6 +119,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\plugins\www\plugins\Globalization\Globalization.cs">
+      <Link>Globalization.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -150,8 +153,6 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BuildManifestProcessor.js" />
-    <Content Include="CordovaSourceDictionary.xml" />
     <Content Include="www\accelerometer\index.html" />
     <Content Include="www\audio\index.html" />
     <Content Include="www\autotest\html\HtmlReporter.js" />
@@ -208,6 +209,7 @@
     <Content Include="www\cordova-2.2.0.js" />
     <Content Include="www\cordova.js" />
     <Content Include="www\events\index.html" />
+    <Content Include="www\globalization.js" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
     </Content>
@@ -245,6 +247,5 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PreBuildEvent>CScript "$(ProjectDir)/BuildManifestProcessor.js" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
