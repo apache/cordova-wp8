@@ -140,7 +140,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="www\cordova-2.2.0.js" />
+    <Content Include="www\cordova-2.3.0.js" />
     <Content Include="www\cordova-current.js" />
     <Content Include="www\network.html">
       <SubType>Designer</SubType>

@@ -91,7 +91,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="www\cordova-2.2.0.js" />
+    <Content Include="www\cordova-2.3.0.js" />
     <Content Include="www\css\index.css" />
     <Content Include="www\js\index.js" />
     <Content Include="www\img\cordova.png" />
@@ -140,7 +140,7 @@
   </Target>
   -->
   <ProjectExtensions />
-  <PropertyGroup>    
+  <PropertyGroup>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
