@@ -37,6 +37,7 @@ using System.Text;
 using WPCordovaClassLib.Cordova;
 using System.Threading;
 using Microsoft.Phone.Shell;
+using WPCordovaClassLib.Cordova.JSON;
 
 
 
@@ -395,7 +396,8 @@ namespace WPCordovaClassLib
         {
             this.PageDidChange = true;
             // Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
-            // TODO: tell any running plugins to stop doing what they are doing.
+            this.nativeExecution.ResetAllCommands();
+
             // TODO: check whitelist / blacklist
             // NOTE: Navigation can be cancelled by setting :        e.Cancel = true;
         }
@@ -436,7 +438,7 @@ namespace WPCordovaClassLib
                 switch (commandCallParams.Action.ToLower())
                 {
                     case "overridebackbutton":
-                        string arg0 = WPCordovaClassLib.Cordova.JSON.JsonHelper.Deserialize<string[]>(commandCallParams.Args)[0];
+                        string arg0 = JsonHelper.Deserialize<string[]>(commandCallParams.Args)[0];
                         this.OverrideBackButton = (arg0 != null && arg0.Length > 0 && arg0.ToLower() == "true"); 
                         break;
                 }
