@@ -38,6 +38,7 @@ using WPCordovaClassLib.Cordova;
 using System.Threading;
 using Microsoft.Phone.Shell;
 using WPCordovaClassLib.Cordova.JSON;
+using WPCordovaClassLib.CordovaLib;
 
 
 
@@ -73,9 +74,10 @@ namespace WPCordovaClassLib
         private NativeExecution nativeExecution;
 
         protected BrowserMouseHelper bmHelper;
-
         protected DOMStorageHelper domStorageHelper;
         protected OrientationHelper orientationHelper;
+
+        private ConfigHandler configHandler;
 
         public System.Windows.Controls.Grid _LayoutRoot
         {
@@ -157,8 +159,38 @@ namespace WPCordovaClassLib
             }
 
             // initializes native execution logic
-            this.nativeExecution = new NativeExecution(ref this.CordovaBrowser);
-            this.bmHelper = new BrowserMouseHelper(ref this.CordovaBrowser);
+            configHandler = new ConfigHandler();
+            configHandler.LoadAppPackageConfig();
+
+    configHandler.URLIsAllowed("http://app.google.com");
+    configHandler.URLIsAllowed("http://10.2.3.1/");
+    configHandler.URLIsAllowed("http://www.google.ca");
+    configHandler.URLIsAllowed("http://www.google.com/");
+    configHandler.URLIsAllowed("http://www.google.com?q=bobby");
+
+    configHandler.URLIsAllowed("https://app.google.com");
+    configHandler.URLIsAllowed("https://10.2.3.1/");
+    configHandler.URLIsAllowed("https://www.google.ca");
+    configHandler.URLIsAllowed("https://www.google.com/");
+    configHandler.URLIsAllowed("https://www.google.com?q=bobby");
+
+    configHandler.URLIsAllowed("http://build.apache.org");
+    configHandler.URLIsAllowed("http://build.apache.org/page.html?x=1&g=32");
+
+    configHandler.URLIsAllowed("http://apache.org" );
+    configHandler.URLIsAllowed("http://apache.org/page.html?x=1&g=32");
+
+    configHandler.URLIsAllowed("http://sub1.sub0.build.apache.org");
+    configHandler.URLIsAllowed("http://sub1.sub0.build.apache.org/page.html?x=1&g=32");
+
+    configHandler.URLIsAllowed("http://apache.org.ca");
+    configHandler.URLIsAllowed("http://apache.org.ca/page.html?x=1&g=32");
+
+    configHandler.URLIsAllowed("http://some.other.domain/page.html?x=1&g=http://build.apache.org/");
+
+
+            nativeExecution = new NativeExecution(ref this.CordovaBrowser);
+            bmHelper = new BrowserMouseHelper(ref this.CordovaBrowser);
         }
 
 
@@ -394,6 +426,12 @@ namespace WPCordovaClassLib
 
         void GapBrowser_Navigating(object sender, NavigatingEventArgs e)
         {
+            if (!configHandler.URLIsAllowed(e.Uri.ToString()))
+            {
+                e.Cancel = true;
+                return;
+            }
+
             this.PageDidChange = true;
             // Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
             this.nativeExecution.ResetAllCommands();
@@ -445,8 +483,20 @@ namespace WPCordovaClassLib
             }
             else
             {
-                this.nativeExecution.ProcessCommand(commandCallParams);
+                if (configHandler.IsPluginAllowed(commandCallParams.Service))
+                {
+                    nativeExecution.ProcessCommand(commandCallParams);
+                }
+                else
+                {
+                    Debug.WriteLine("Error::Plugin not allowed in config.xml. " + commandCallParams.Service); 
+                }
             }
+        }
+
+        public void LoadPage(string url)
+        {
+            this.configHandler.URLIsAllowed(url);
         }
 
         private void GapBrowser_Unloaded(object sender, RoutedEventArgs e)
