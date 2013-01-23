@@ -94,7 +94,6 @@ namespace WPCordovaClassLib.Cordova.Commands
         }
 
 
-        // Display an inderminate progress indicator
         private void ShowInAppBrowser(string url)
         {
             Uri loc = new Uri(url);

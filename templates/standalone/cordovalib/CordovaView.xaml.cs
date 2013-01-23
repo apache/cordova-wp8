@@ -162,33 +162,6 @@ namespace WPCordovaClassLib
             configHandler = new ConfigHandler();
             configHandler.LoadAppPackageConfig();
 
-    configHandler.URLIsAllowed("http://app.google.com");
-    configHandler.URLIsAllowed("http://10.2.3.1/");
-    configHandler.URLIsAllowed("http://www.google.ca");
-    configHandler.URLIsAllowed("http://www.google.com/");
-    configHandler.URLIsAllowed("http://www.google.com?q=bobby");
-
-    configHandler.URLIsAllowed("https://app.google.com");
-    configHandler.URLIsAllowed("https://10.2.3.1/");
-    configHandler.URLIsAllowed("https://www.google.ca");
-    configHandler.URLIsAllowed("https://www.google.com/");
-    configHandler.URLIsAllowed("https://www.google.com?q=bobby");
-
-    configHandler.URLIsAllowed("http://build.apache.org");
-    configHandler.URLIsAllowed("http://build.apache.org/page.html?x=1&g=32");
-
-    configHandler.URLIsAllowed("http://apache.org" );
-    configHandler.URLIsAllowed("http://apache.org/page.html?x=1&g=32");
-
-    configHandler.URLIsAllowed("http://sub1.sub0.build.apache.org");
-    configHandler.URLIsAllowed("http://sub1.sub0.build.apache.org/page.html?x=1&g=32");
-
-    configHandler.URLIsAllowed("http://apache.org.ca");
-    configHandler.URLIsAllowed("http://apache.org.ca/page.html?x=1&g=32");
-
-    configHandler.URLIsAllowed("http://some.other.domain/page.html?x=1&g=http://build.apache.org/");
-
-
             nativeExecution = new NativeExecution(ref this.CordovaBrowser);
             bmHelper = new BrowserMouseHelper(ref this.CordovaBrowser);
         }

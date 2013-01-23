@@ -140,6 +140,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="config.xml" />
     <Content Include="www\cordova-2.4.0.js" />
     <Content Include="www\cordova-current.js" />
     <Content Include="www\network.html">
