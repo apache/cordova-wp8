@@ -203,10 +203,9 @@
     <Content Include="www\camera\index.html" />
     <Content Include="www\compass\index.html" />
     <Content Include="www\contacts\index.html" />
-    <Content Include="www\cordova-2.3.0.js" />
+    <Content Include="www\cordova-2.4.0.js" />
     <Content Include="www\cordova.js" />
     <Content Include="www\events\index.html" />
-    <Content Include="www\globalization.js" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
     </Content>
