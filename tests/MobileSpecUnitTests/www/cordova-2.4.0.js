@@ -1,8 +1,8 @@
 ﻿// Platform: windowsphone
 
-// commit e784eee3ce02dbd475e3c3f70031668f1706f2ec
+// commit ac725f6ae0bd655789771e2a40b8d60cb4c8c221
 
-// File generated at :: Fri Feb 01 2013 14:32:23 GMT-0800 (Pacific Standard Time)
+// File generated at :: Mon Feb 04 2013 11:20:37 GMT-0800 (Pacific Standard Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -1154,6 +1154,12 @@ module.exports = {
         },
         console:{
           path: "cordova/plugin/windowsphone/console"
+        },
+        FileTransfer: {
+            path: 'cordova/plugin/windowsphone/FileTransfer'
+        },
+        open : {
+            path: 'cordova/plugin/InAppBrowser'
         }
     }
 };
@@ -1432,6 +1438,7 @@ module.exports = {
         CELL_2G: "2g",
         CELL_3G: "3g",
         CELL_4G: "4g",
+        CELL:"cellular",
         NONE: "none"
 };
 
