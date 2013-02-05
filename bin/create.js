@@ -159,7 +159,7 @@ WScript.Echo('newProjGuid ' + newProjGuid);
 
 //var fso=WScript.CreateObject("Scripting.FileSystemObject");
 //WScript.Echo("src = " + ROOT + "\\templates\\standalone");
-fso.CopyFolder(ROOT + "\\templates\\standalone", PROJECT_PATH); 
+fso.CopyFolder(ROOT + "\\templates\\full", PROJECT_PATH); 
 
 
 // replace the guid in the AppManifest
