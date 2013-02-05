@@ -401,16 +401,13 @@ namespace WPCordovaClassLib
         {
             if (!configHandler.URLIsAllowed(e.Uri.ToString()))
             {
+                Debug.WriteLine("Whitelist exception: Stopping browser from navigating to :: " + e.Uri.ToString());
                 e.Cancel = true;
                 return;
             }
 
             this.PageDidChange = true;
-            // Debug.WriteLine("GapBrowser_Navigating to :: " + e.Uri.ToString());
             this.nativeExecution.ResetAllCommands();
-
-            // TODO: check whitelist / blacklist
-            // NOTE: Navigation can be cancelled by setting :        e.Cancel = true;
         }
 
         /*
