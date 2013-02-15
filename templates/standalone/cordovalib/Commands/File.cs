@@ -235,19 +235,41 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    if ((string.IsNullOrEmpty(filePath)) || (!isoFile.FileExists(filePath)))
+                    if (string.IsNullOrEmpty(filePath))
                     {
                         throw new FileNotFoundException("File doesn't exist");
                     }
-                    //TODO get file size the other way if possible                
-                    using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.Read, isoFile))
+                    else if (!isoFile.FileExists(filePath))
                     {
-                        this.Size = stream.Length;
+                        // attempt to get it from the resources
+                        if (filePath.IndexOf("www") == 0)
+                        {
+                            Uri fileUri = new Uri(filePath, UriKind.Relative);
+                            StreamResourceInfo streamInfo = Application.GetResourceStream(fileUri);
+                            if (streamInfo != null)
+                            {
+                                this.Size = streamInfo.Stream.Length;
+                                this.FileName = filePath.Substring(filePath.LastIndexOf("/") + 1);
+                                this.FullPath = filePath;
+                            }
+                        }
+                        else
+                        {
+                            throw new FileNotFoundException("File doesn't exist");
+                        }
                     }
-                    this.FullPath = filePath;
-                    this.FileName = System.IO.Path.GetFileName(filePath);
-                    this.Type = MimeTypeMapper.GetMimeType(filePath);
-                    this.LastModifiedDate = isoFile.GetLastWriteTime(filePath).DateTime.ToString();
+                    else
+                    {
+                        //TODO get file size the other way if possible                
+                        using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.Read, isoFile))
+                        {
+                            this.Size = stream.Length;
+                        }
+                        this.FullPath = filePath;
+                        this.FileName = System.IO.Path.GetFileName(filePath);
+                        this.LastModifiedDate = isoFile.GetLastWriteTime(filePath).DateTime.ToString();
+                    }
+                    this.Type = MimeTypeMapper.GetMimeType(this.FileName);
                 }
             }
         }
@@ -620,7 +642,6 @@ namespace WPCordovaClassLib.Cordova.Commands
             string filePath = optStrings[0];
             string encStr = optStrings[1];
 
-
             try
             {
                 string text;
@@ -629,7 +650,8 @@ namespace WPCordovaClassLib.Cordova.Commands
                 {
                     if (!isoFile.FileExists(filePath))
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NOT_FOUND_ERR));
+                        //DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, NOT_FOUND_ERR));
+                        readResourceAsText(options);
                         return;
                     }
                     Encoding encoding = Encoding.GetEncoding(encStr);
@@ -676,7 +698,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     pathToResource = pathToResource.Remove(0, 1);
                 }
                 
-                var resource = System.Windows.Application.GetResourceStream(new Uri(pathToResource, UriKind.Relative));
+                var resource = Application.GetResourceStream(new Uri(pathToResource, UriKind.Relative));
                 
                 if (resource == null)
                 {
