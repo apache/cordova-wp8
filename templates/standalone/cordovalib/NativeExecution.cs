@@ -129,7 +129,7 @@ namespace WPCordovaClassLib.Cordova
                     }
                 };
 
-                if ((bc is File) || (bc is Accelerometer))
+                if (true || (bc is File) || (bc is Accelerometer))
                 {
                     // Due to some issues with the IsolatedStorage in current version of WP8 SDK we have to run all File Api commands synchronously.
                     // TODO: test this in WP8 RTM
@@ -176,21 +176,27 @@ namespace WPCordovaClassLib.Cordova
 
             #endregion
 
-            string status = ((int)result.Result).ToString();
             string jsonResult = result.ToJSONString();
 
-            ScriptCallback scriptCallback = null;
+            string callback;
+            string args = string.Format("('{0}',{1});", callbackId, jsonResult);
 
-            if (String.IsNullOrEmpty(result.Cast))
+            if (result.Result == PluginResult.Status.NO_RESULT ||
+               result.Result == PluginResult.Status.OK)
             {
-                scriptCallback = new ScriptCallback("CordovaCommandResult", new string[] { status, callbackId, jsonResult });
+                callback = @"(function(callbackId,args) {
+                try { args.message = JSON.parse(args.message); } catch (ex) { }
+                cordova.callbackSuccess(callbackId,args);
+                })" + args;
             }
             else
             {
-                scriptCallback = new ScriptCallback("CordovaCommandResult", new string[] { status, callbackId, jsonResult, result.Cast });
+                callback = @"(function(callbackId,args) {
+                try { args.message = JSON.parse(args.message); } catch (ex) { }
+                cordova.callbackError(callbackId,args);
+                })" + args;
             }
-
-            this.InvokeScriptCallback(scriptCallback);
+            this.InvokeScriptCallback(new ScriptCallback("eval", new string[] { callback }));
 
         }
 
@@ -213,7 +219,6 @@ namespace WPCordovaClassLib.Cordova
             //Debug.WriteLine("INFO:: About to invoke ::" + script.ScriptName + " with args ::" + script.Args[0]);
             this.webBrowser.Dispatcher.BeginInvoke((ThreadStart)delegate()
             {
-
                 try
                 {
                     //Debug.WriteLine("INFO:: InvokingScript::" + script.ScriptName + " with args ::" + script.Args[0]);
