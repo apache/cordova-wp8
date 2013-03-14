@@ -129,7 +129,7 @@ namespace WPCordovaClassLib.Cordova
                     }
                 };
 
-                if (true || (bc is File) || (bc is Accelerometer))
+                if ((bc is File) || (bc is Accelerometer))
                 {
                     // Due to some issues with the IsolatedStorage in current version of WP8 SDK we have to run all File Api commands synchronously.
                     // TODO: test this in WP8 RTM
