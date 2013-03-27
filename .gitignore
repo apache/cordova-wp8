@@ -16,6 +16,10 @@ Thumbs.db
 
 *.dll
 
+# Ignore template zip files
+*.zip
+
+
  
 # Other useful stuff
 *.bak
