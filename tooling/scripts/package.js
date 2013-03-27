@@ -42,7 +42,7 @@ var args = WScript.Arguments,
 // destination directory to package
 var BUILD_DESTINATION;
 // add templates to visual studio?
-var ADD_TO_VS = true;
+var ADD_TO_VS = false;
 
 // help function
 function Usage()
