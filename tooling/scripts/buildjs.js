@@ -36,7 +36,7 @@ var args = WScript.Arguments,
     //Subfolder containing example project
     EXAMPLE_PATH = '\\example',
     //Git Repositories
-    CORDOVA_JS = "git://github.com/apache/cordova-js.git",
+    CORDOVA_JS = "https://git-wip-us.apache.org/repos/asf/cordova-js.git",
     // get version
     VERSION = read(ROOT+'\\VERSION').replace(/\r\n/,'').replace(/\n/,''),
     BUILD_DESTINATION;
