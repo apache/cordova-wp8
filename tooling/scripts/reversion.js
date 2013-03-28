@@ -246,12 +246,12 @@ function cleanup()
             fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\www\\' + full_www.Item(i).Name);
         }
     }
-    var standalone_www = shell.NameSpace(BUILD_DESTINATION + FULL_PATH + '\\www').Items();
+    var standalone_www = shell.NameSpace(BUILD_DESTINATION + STANDALONE_PATH + '\\www').Items();
     for(var i = 0; i < standalone_www.Count; i++)
     {
         if(standalone_www.Item(i).Name.match(/cordova[-](\d+)[.](\d+)[.](\d+)(rc\d)?[.]js/))
         {
-            fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\www\\' + standalone_www.Item(i).Name);
+            fso.DeleteFile(BUILD_DESTINATION + STANDALONE_PATH + '\\www\\' + standalone_www.Item(i).Name);
         }
     }
         var custom_www = shell.NameSpace(BUILD_DESTINATION + CUSTOM_PATH + '\\www').Items();

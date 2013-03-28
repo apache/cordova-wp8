@@ -31,13 +31,11 @@ var args = WScript.Arguments,
     //Subfolder containing example project
     EXAMPLE_PATH = '\\example';
 // git repo for cordova-wp8
-var CORDOVA_WP8 = 'git://github.com/apache/cordova-wp8.git';
+var CORDOVA_WP8 = 'https://git-wip-us.apache.org/repos/asf/cordova-wp8.git';
 //Destination to build to
 var BUILD_DESTINATION;
 // pull the project down from github?
 var GET_NEW = false;
-//Add templates to visual studio?
-var ADD_TO_VS = false;
 
 // help function
 function Usage()
@@ -62,7 +60,7 @@ function read(filename) {
     }
     else
     {
-        WScript.StdOut.WriteLine('Cannot read non-existant file : ' + filename);
+        WScript.StdErr.WriteLine('Cannot read non-existant file : ' + filename);
         WScript.Quit(1);
     }
     return null;
@@ -102,7 +100,7 @@ if(args.Count() > 0)
 {
     if(fso.FolderExists(args(0)))
     {
-        WScript.StdOut.WriteLine("The given directory already exists!");
+        WScript.StdErr.WriteLine("The given directory already exists!");
         Usage();
         WScript.Quit(1);
     }
@@ -116,7 +114,7 @@ if(args.Count() > 0)
 
         if(fso.FolderExists(BUILD_DESTINATION))
         {
-            WScript.StdOut.WriteLine("The given directory already exists!");
+            WScript.StdErr.WriteLine("The given directory already exists!");
             Usage();
             WScript.Quit(1);
         }
@@ -138,7 +136,7 @@ if(args.Count() > 0)
         WScript.StdOut.WriteLine('Cloning cordova-wp8 from git, build destination now ' + BUILD_DESTINATION);
         if(fso.FolderExists(BUILD_DESTINATION))
         {
-            WScript.StdOut.WriteLine("Could not clone cordova-wp8 from git because it's directory already exists!");
+            WScript.StdErr.WriteLine("Could not clone cordova-wp8 from git because it's directory already exists!");
             WScript.Quit(1);
         }
 
