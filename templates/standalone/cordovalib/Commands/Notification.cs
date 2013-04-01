@@ -177,12 +177,17 @@ namespace WPCordovaClassLib.Cordova.Commands
         void btnOK_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
+            FrameworkElement notifBoxParent = null;
             int retVal = 0;
             if (btn != null)
             {
                 retVal = (int)btn.Tag + 1;
+
+                notifBoxParent = btn.Parent as FrameworkElement;
+                while ((notifBoxParent = notifBoxParent.Parent as FrameworkElement) != null &&
+                        !(notifBoxParent is NotificationBox)) ;
             }
-            if (notifBox != null)
+            if (notifBoxParent != null)
             {
                 PhoneApplicationPage page = Page;
                 if (page != null)
@@ -190,7 +195,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     Grid grid = page.FindName("LayoutRoot") as Grid;
                     if (grid != null)
                     {
-                        grid.Children.Remove(notifBox);
+                        grid.Children.Remove(notifBoxParent);
                     }
                 }
                 notifBox = null;
