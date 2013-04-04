@@ -462,7 +462,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     isoFile.CreateDirectory(isoFolder);
                 }
 
-                string filePath = System.IO.Path.Combine("/" + isoFolder + "/", imageFileName);
+                string filePath = System.IO.Path.Combine("///" + isoFolder + "/", imageFileName);
 
                 using (var stream = isoFile.CreateFile(filePath))
                 {
