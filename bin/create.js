@@ -34,6 +34,7 @@ var ROOT = WScript.ScriptFullName.split('\\bin\\create.js').join('');
 
 var args = WScript.Arguments,
     FRAMEWORK_PATH = '\\framework',
+    TOOLING_PATH = '\\tooling',
     TEMPLATES_PATH = '\\templates',
     // sub folder for standalone project
     STANDALONE_PATH = TEMPLATES_PATH + '\\standalone',
@@ -129,26 +130,26 @@ function genGuid() {
 }
 
 // builds the new cordova dll from the framework
-function build_dll() {
-    Log("Building dll...");
-    if (fso.FolderExists(ROOT + FRAMEWORK_PATH + '\\Bin')) {
-        fso.DeleteFolder(ROOT + FRAMEWORK_PATH + '\\Bin');
+function build_dll(path) {
+    if (fso.FolderExists(path + FRAMEWORK_PATH + '\\Bin')) {
+        fso.DeleteFolder(path + FRAMEWORK_PATH + '\\Bin');
     }
-    if (fso.FolderExists(ROOT + FRAMEWORK_PATH + '\\obj')) {
-        fso.DeleteFolder(ROOT + FRAMEWORK_PATH + '\\obj');
+    if (fso.FolderExists(path + FRAMEWORK_PATH + '\\obj')) {
+        fso.DeleteFolder(path + FRAMEWORK_PATH + '\\obj');
     }
     // move to framework directory
-    wscript_shell.CurrentDirectory = ROOT + FRAMEWORK_PATH;
+    wscript_shell.CurrentDirectory = path + FRAMEWORK_PATH;
     // build .dll in Release
-    exec_verbose('msbuild /p:Configuration=Release;VersionNumber=' + VERSION + ';BaseVersionNumber=' + BASE_VERSION);
+    exec_verbose('msbuild /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release;VersionNumber=' + VERSION + ';BaseVersionNumber=' + BASE_VERSION);
     //Check if file dll was created
-    if (!fso.FileExists(ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll')) {
+    if (!fso.FileExists(path + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll')) {
         Log('ERROR: MSBuild failed to create .dll when building WPCordovaClassLib.dll', true);
         WScript.Quit(1);
     }
     Log("SUCCESS BUILDING DLL");
 }
 
+// creates new project in path, with the given package and app name
 function create(path, namespace, name) {
     Log("Creating Cordova-WP7 Project:");
     Log("\tApp Name : " + name);
@@ -156,9 +157,6 @@ function create(path, namespace, name) {
     Log("\tPath : " + path);
 
     // Copy the template source files to the new destination
-
-    //var fso=WScript.CreateObject("Scripting.FileSystemObject");
-    //WScript.Echo("src = " + ROOT + "\\templates\\standalone");
     fso.CopyFolder(ROOT + CREATE_TEMPLATE, path);
 
     var newProjGuid = genGuid();
@@ -177,6 +175,7 @@ function create(path, namespace, name) {
     replaceInFile(path + "\\CordovaAppProj.csproj",/\$safeprojectname\$/g,namespace);
 
     //set up debug + emulate paths
+    // TODO : Remove (replaced by cordova scripts build/run/log/clean etc...)
     replaceInFile(path + "\\cordova\\debug.bat",/__PATH_TO_TOOLING_SCRIPTS__/g, ROOT + '\\tooling\\scripts');
     replaceInFile(path + "\\cordova\\emulate.bat",/__PATH_TO_TOOLING_SCRIPTS__/g, ROOT + '\\tooling\\scripts');
     replaceInFile(path + "\\cordova\\debug.bat",/__PATH_TO_PROJ__/g, path);
@@ -186,11 +185,12 @@ function create(path, namespace, name) {
     if (CREATE_TEMPLATE == FULL_PATH || CREATE_TEMPLATE == CUSTOM_PATH) {
         var dllPath = ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll';
         if (fso.FileExists(dllPath)) {
-            WScript.Echo(".dll File Exists");
+            Log("WPCordovaClassLib.dll Found,  creating project");
         }
         else {
-            WScript.Echo("Warning: Missing Library! Could not find the file: " + dllPath);
-            build_dll();
+            Log("WPCordovaClassLib.dll was not Found in " + dllPath);
+            Log('BUILDING: WPCordovaClassLib.dll');
+            build_dll(ROOT);
         }
 
         if (!fso.FolderExists(path + '\\CordovaLib')) {
@@ -206,11 +206,11 @@ function create(path, namespace, name) {
         }
     }
 
-    //TODO: remove cordova folder transfer once reorg of repo is finished
+    //TODO: remove cordova folder transfer once reorg of repo is finished and this is put into the template
     if (fso.FolderExists(path + '\\cordova')) {
         fso.DeleteFolder(path + '\\cordova');
     }
-    fso.CopyFolder(ROOT + FRAMEWORK_PATH + '\\cordova', path + '\\cordova');
+    fso.CopyFolder(ROOT + TOOLING_PATH + '\\cordova', path + '\\cordova');
 
     Log("CREATE SUCCESS : " + path);
 
@@ -220,7 +220,6 @@ function create(path, namespace, name) {
     // index.html title set to project name ?
 
 }
-    
 
 if (args.Count() > 0) {
     // support help flags

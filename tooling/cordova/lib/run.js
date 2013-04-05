@@ -35,10 +35,10 @@ function Usage() {
     Log("    run target=7988B8C3-3ADE-488d-BA3E-D052AC9DC710")
     Log("");
     Log("Flow for run command :");
-    Log("0. Are there any actual devices available? (use list-devices to determine this). If so, target the first one. If no, continue.");
-    Log("1. Are there any actual emulators available, i.e. started/running? (use list-started-emulators to determine this). If so, target the first one. If no, continue.");
-    Log("2. Are there any emulator images available to start? (use list-emulator-images to determine this). If so, call start-emulator <id> of the first available image, wait for it to become ready, then target it. If no, continue.");
-    Log("3. Fail horribly.");
+    Log("\t0. Are there any actual devices available? (use list-devices to determine this). If so, target the first one. If no, continue.");
+    Log("\t1. Are there any actual emulators available, i.e. started/running? (use list-started-emulators to determine this). If so, target the first one. If no, continue.");
+    Log("\t2. Are there any emulator images available to start? (use list-emulator-images to determine this). If so, call start-emulator <id> of the first available image, wait for it to become ready, then target it. If no, continue.");
+    Log("\t3. Fail horribly.");
 }
 
 // executes a commmand in the shell
@@ -74,14 +74,14 @@ function Log(msg, error) {
 
 // deploy to specified target
 function target(path, target) {
-    var cmd = 'cscript ' + path + '\\cordova\\lib\\deploy.js --target=' + target;
+    var cmd = 'cscript ' + path + '\\cordova\\lib\\deploy.js --target=' + target + ' //nologo';
     exec_verbose(cmd);
 }
 
 // deploy to availible device, if no device is availible, deploy to emulator.
 // TODO: implement list-devices (currenly not possible) and list-started-emulators and use device first then started emulator
 function deploy(path) {
-  var cmd = 'cscript ' + path + '\\cordova\\lib\\deploy.js --emulator';
+  var cmd = 'cscript ' + path + '\\cordova\\lib\\deploy.js --emulator //nologo';
   exec_verbose(cmd);
 }
 
@@ -101,7 +101,7 @@ if (args.Count() > 0) {
         WScript.Quit(1);
     }
     else if (fso.FolderExists(ROOT)) {
-        if (args(0).substring(0,9) == "--target=") {
+        if (args(0).substr(0,9) == "--target=") {
             target(ROOT, args(0));
         }
         else {

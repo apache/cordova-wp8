@@ -92,7 +92,7 @@ function build_xap_release(path) {
     Log("\tDirectory : " + path);
     
     wscript_shell.CurrentDirectory = path;
-    exec_verbose('msbuild /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release');
+    exec_verbose('msbuild CordovaSolution.sln /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release');
     
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Release')) {
@@ -105,7 +105,7 @@ function build_xap_release(path) {
             }
         }
     }
-    Log('ERROR: MSBuild failed to create .xap when building cordova-wp8.', true);
+    Log('ERROR: MSBuild failed to create .xap when building cordova-wp8 for release.', true);
     WScript.Quit(1);
 }
 
@@ -129,7 +129,7 @@ function build_xap_debug(path) {
             }
         }
     }
-    Log('ERROR: MSBuild failed to create .xap when building cordova-wp8.', true);
+    Log('ERROR: MSBuild failed to create .xap when building cordova-wp8 for debugging.', true);
     WScript.Quit(1);
 }
 
@@ -156,11 +156,15 @@ if (args.Count() > 0) {
         }
 
         if (args(0) == "--debug" || args(0) == "-d") {
-            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\clean');
+            if (fso.FolderExists(ROOT + '\\Bin\\Debug')) {
+                exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\clean --debug');
+            }
             build_xap_debug(ROOT);
         }
         else if (args(0) == "--release" || args(0) == "-r") {
-            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\clean');
+            if (fso.FolderExists(ROOT + '\\Bin\\Release')) {
+                exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\clean --release');
+            }
             build_xap_release(ROOT);
         }
         else {
