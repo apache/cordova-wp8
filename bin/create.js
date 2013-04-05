@@ -23,12 +23,12 @@
  * USAGE
  *  ./create [path package activity]
 
-    ./bin/create.bat ~/MyTestProj "test.proj" "TestProject"
+    ./bin/create.bat C:\Users\Me\MyTestProj "test.proj" "TestProject"
  */
 
 
-var fso=WScript.CreateObject("Scripting.FileSystemObject"),
-    wscript_shell = WScript.CreateObject("WScript.Shell");
+var fso=WScript.CreateObject("Scripting.FileSystemObject");
+var wscript_shell = WScript.CreateObject("WScript.Shell");
 // working dir
 var ROOT = WScript.ScriptFullName.split('\\bin\\create.js').join('');
 
@@ -44,30 +44,36 @@ var args = WScript.Arguments,
     CREATE_TEMPLATE = FULL_PATH,
     PROJECT_PATH, 
     PACKAGE, 
-    NAME,
+    NAME;
+
     // get version number
-    VERSION=read(ROOT+'\\VERSION').replace(/\r\n/,'').replace(/\n/,''),
-    BASE_VERSION = VERSION.split('rc', 1) + ".0";
+var VERSION=read(ROOT+'\\VERSION').replace(/\r\n/,'').replace(/\n/,'');
+var BASE_VERSION = VERSION.split('rc', 1) + ".0";
 
-function Usage()
-{
-
-    WScript.StdOut.WriteLine("Usage: create PathTONewProject [ PackageName AppName ]");
-    WScript.StdOut.WriteLine("    PathTONewProject : The path to where you wish to create the project");
-    WScript.StdOut.WriteLine("    PackageName      : The namespace for the project (default is CordovaAppProj)")
-    WScript.StdOut.WriteLine("    AppName          : The name of the application (default is CordovaAppProj)");
-    WScript.StdOut.WriteLine("examples:");
-    WScript.StdOut.WriteLine("    create C:\\Users\\anonymous\\Desktop\\MyProject");
-    WScript.StdOut.WriteLine("    create C:\\Users\\anonymous\\Desktop\\MyProject io.Cordova.Example AnApp");
+function Usage() {
+    Log("Usage: create PathTONewProject [ PackageName AppName ]");
+    Log("    PathTONewProject : The path to where you wish to create the project");
+    Log("    PackageName      : The namespace for the project (default is Cordova.Example)")
+    Log("    AppName          : The name of the application (default is CordovaAppProj)");
+    Log("examples:");
+    Log("    create C:\\Users\\anonymous\\Desktop\\MyProject");
+    Log("    create C:\\Users\\anonymous\\Desktop\\MyProject io.Cordova.Example AnApp");
 }
 
+// logs messaged to stdout and stderr
+function Log(msg, error) {
+    if (error) {
+        WScript.StdErr.WriteLine(msg);
+    }
+    else {
+        WScript.StdOut.WriteLine(msg);
+    }
+}
 
 var ForReading = 1, ForWriting = 2, ForAppending = 8;
 var TristateUseDefault = -2, TristateTrue = -1, TristateFalse = 0;
 
 function read(filename) {
-    //WScript.Echo('Reading in ' + filename);
-    
     var f=fso.OpenTextFile(filename, 1,2);
     var s=f.ReadAll();
     f.Close();
@@ -75,11 +81,11 @@ function read(filename) {
 }
 
 function write(filename, contents) {
-    //var fso=WScript.CreateObject("Scripting.FileSystemObject");
     var f=fso.OpenTextFile(filename, ForWriting, TristateTrue);
     f.Write(contents);
     f.Close();
 }
+
 function replaceInFile(filename, regexp, replacement) {
     write(filename,read(filename).replace(regexp,replacement));
 }
@@ -95,42 +101,40 @@ function exec(command) {
 
 // executes a commmand in the shell
 function exec_verbose(command) {
-    //WScript.StdOut.WriteLine("Command: " + command);
+    //Log("Command: " + command);
     var oShell=wscript_shell.Exec(command);
     while (oShell.Status == 0) {
         //Wait a little bit so we're not super looping
         WScript.sleep(100);
         //Print any stdout output from the script
-        if(!oShell.StdOut.AtEndOfStream) {
+        if (!oShell.StdOut.AtEndOfStream) {
             var line = oShell.StdOut.ReadLine();
-            WScript.StdOut.WriteLine(line);
+            Log(line);
         }
     }
     //Check to make sure our scripts did not encounter an error
-    if(!oShell.StdErr.AtEndOfStream)
-    {
+    if (!oShell.StdErr.AtEndOfStream) {
         var line = oShell.StdErr.ReadAll();
-        WScript.StdErr.WriteLine(line);
+        Log(line, true);
         WScript.Quit(1);
     }
 }
-function genGuid()
-{
+
+//generate guid for the project
+function genGuid() {
     var TypeLib = WScript.CreateObject("Scriptlet.TypeLib");
     strGuid = TypeLib.Guid.split("}")[0]; // there is extra crap after the } that is causing file streams to break, probably an EOF ... 
     strGuid = strGuid.replace(/[\{\}]/g,""); 
     return strGuid;
 }
+
 // builds the new cordova dll from the framework
-function build_dll()
-{
-    WScript.StdOut.WriteLine("Building dll...");
-    if(fso.FolderExists(ROOT + FRAMEWORK_PATH + '\\Bin'))
-    {
+function build_dll() {
+    Log("Building dll...");
+    if (fso.FolderExists(ROOT + FRAMEWORK_PATH + '\\Bin')) {
         fso.DeleteFolder(ROOT + FRAMEWORK_PATH + '\\Bin');
     }
-    if(fso.FolderExists(ROOT + FRAMEWORK_PATH + '\\obj'))
-    {
+    if (fso.FolderExists(ROOT + FRAMEWORK_PATH + '\\obj')) {
         fso.DeleteFolder(ROOT + FRAMEWORK_PATH + '\\obj');
     }
     // move to framework directory
@@ -138,20 +142,18 @@ function build_dll()
     // build .dll in Release
     exec_verbose('msbuild /p:Configuration=Release;VersionNumber=' + VERSION + ';BaseVersionNumber=' + BASE_VERSION);
     //Check if file dll was created
-    if(!fso.FileExists(ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll'))
-    {
-        WScript.StdErr.WriteLine('ERROR: MSBuild failed to create .dll when building WPCordovaClassLib.dll');
+    if (!fso.FileExists(ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll')) {
+        Log('ERROR: MSBuild failed to create .dll when building WPCordovaClassLib.dll', true);
         WScript.Quit(1);
     }
-    WScript.StdOut.WriteLine("SUCCESS BUILDING DLL");
+    Log("SUCCESS BUILDING DLL");
 }
 
-function create(path, namespace, name)
-{
-    WScript.StdOut.WriteLine("Creating Cordova-WP7 Project:");
-    WScript.StdOut.WriteLine("\tApp Name : " + name);
-    WScript.StdOut.WriteLine("\tNamespace : " + namespace);
-    WScript.StdOut.WriteLine("\tPath : " + path);
+function create(path, namespace, name) {
+    Log("Creating Cordova-WP7 Project:");
+    Log("\tApp Name : " + name);
+    Log("\tNamespace : " + namespace);
+    Log("\tPath : " + path);
 
     // Copy the template source files to the new destination
 
@@ -181,35 +183,36 @@ function create(path, namespace, name)
     replaceInFile(path + "\\cordova\\emulate.bat",/__PATH_TO_PROJ__/g, path);
 
     //copy .dll if necessary
-    if(CREATE_TEMPLATE == FULL_PATH)
-    {
+    if (CREATE_TEMPLATE == FULL_PATH || CREATE_TEMPLATE == CUSTOM_PATH) {
         var dllPath = ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll';
-        if(fso.FileExists(dllPath))
-        {
+        if (fso.FileExists(dllPath)) {
             WScript.Echo(".dll File Exists");
         }
-        else
-        {
+        else {
             WScript.Echo("Warning: Missing Library! Could not find the file: " + dllPath);
             build_dll();
         }
 
-        if(!fso.FolderExists(path + '\\CordovaLib'))
-        {
+        if (!fso.FolderExists(path + '\\CordovaLib')) {
             fso.CreateFolder(path + '\\CordovaLib');
         }
         exec('%comspec% /c xcopy ' + ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll ' + path + '\\CordovaLib');
-        if(!fso.FileExists(path + '\\CordovaLib\\WPCordovaClassLib.dll'))
-        {
-            WScript.StdErr.WriteLine('ERROR: Failed to copy WPCordovaClassLib.dll to project from');
-            WScript.StdErr.WriteLine('\t' + ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll');
-            WScript.StdErr.WriteLine('\tto');
-            WScript.StdErr.WriteLine('\t' + path + '\\CordovaLib')
+        if (!fso.FileExists(path + '\\CordovaLib\\WPCordovaClassLib.dll')) {
+            Log('ERROR: Failed to copy WPCordovaClassLib.dll to project from', true);
+            Log('\t' + ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll', true);
+            Log('\tto', true);
+            Log('\t' + path + '\\CordovaLib', true)
             WScript.Quit(1);
         }
     }
 
-     WScript.StdOut.WriteLine("CREATE SUCCESS : " + path);
+    //TODO: remove cordova folder transfer once reorg of repo is finished
+    if (fso.FolderExists(path + '\\cordova')) {
+        fso.DeleteFolder(path + '\\cordova');
+    }
+    fso.CopyFolder(ROOT + FRAMEWORK_PATH + '\\cordova', path + '\\cordova');
+
+    Log("CREATE SUCCESS : " + path);
 
     // TODO: Name the project according to the arguments
     // update the solution to include the new project by name
@@ -219,47 +222,39 @@ function create(path, namespace, name)
 }
     
 
-if(args.Count() > 0)
-{
+if (args.Count() > 0) {
     // support help flags
-    if(args(0) == "--help" || args(0) == "/?" ||
-            args(0) == "help" || args(0) == "-help" || args(0) == "/help" || args(0) == "-h")
-    {
+    if (args(0) == "--help" || args(0) == "/?" ||
+            args(0) == "help" || args(0) == "-help" || args(0) == "/help" || args(0) == "-h") {
         Usage();
         WScript.Quit(1);
     }
 
     PROJECT_PATH = args(0);
-    if(fso.FolderExists(PROJECT_PATH))
-    {
-        WScript.StdOut.WriteLine("Project directory already exists:");
-        WScript.StdOut.WriteLine("\t" + PROJECT_PATH);
-        WScript.StdOut.WriteLine("CREATE FAILED.");
+    if (fso.FolderExists(PROJECT_PATH)) {
+        Log("Project directory already exists:", true);
+        Log("\t" + PROJECT_PATH, true);
+        Log("CREATE FAILED.", true);
         WScript.Quit(1);
     }
 
-    if(args.Count() > 1)
-    {
+    if (args.Count() > 1) {
         PACKAGE = args(1);
     }
-    else
-    {
+    else {
         PACKAGE = "Cordova.Example";
     }
 
-    if(args.Count() > 2)
-    {
+    if (args.Count() > 2) {
         NAME = args(2);
     }
-    else
-    {
+    else {
         NAME = "CordovaAppProj";
     }
 
     create(PROJECT_PATH, PACKAGE, NAME);
 }
-else
-{
+else {
     Usage();
     WScript.Quit(1);
 }
