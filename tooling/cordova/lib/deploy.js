@@ -28,6 +28,7 @@ var ROOT = WScript.ScriptFullName.split('\\cordova\\lib\\deploy.js').join('');
 var CORDOVA_DEPLOY_EXE = '\\cordova\\lib\\CordovaDeploy\\CordovaDeploy\\bin\\Debug\\CordovaDeploy.exe';
     // path to CordovaDeploy
 var CORDOVA_DEPLOY = '\\cordova\\lib\\CordovaDeploy';
+var BUILD_RELEASE = false;
 
 
 // help function
@@ -137,15 +138,11 @@ function cordovaDeploy(path) {
     }
 }
 
-//TODO: Output errors from CordovaDeploy so user can troubleshoot problems
-
 // builds and launches project on device
 function device(path)
 {
     cordovaDeploy(path);
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
-        Log('Building project...');
-        exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
         Log('Deploying to device ...');
         exec_verbose('%comspec% /c ' + path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:0');
     }
@@ -162,8 +159,6 @@ function emulator(path)
 {
     cordovaDeploy(path);
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
-        Log('Building project...');
-        exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
         Log('Deploying to emulator ...');
         exec_verbose('%comspec% /c ' + path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:1');
     }
@@ -179,8 +174,6 @@ function emulator(path)
 function target(path, device_id) {
     cordovaDeploy(path);
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
-        Log('Building project...');
-        exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
         Log('Deploying to ' + device_id + ' ...');
         var out = wscript_shell.Exec('cscript ' + path + '\\cordova\\lib\\target-list.js //nologo');
         while(out.Status == 0) {
@@ -189,18 +182,19 @@ function target(path, device_id) {
         //Check to make sure our script did not encounter an error
         if (!out.StdErr.AtEndOfStream) {
             var line = out.StdErr.ReadAll();
+            Log('Error getting availible targets : ', true);
             Log(line, true);
             WScript.Quit(1);
         }
         else {
             if (!out.StdOut.AtEndOfStream) {
-                var line = out.StdErr.ReadAll();
+                var line = out.StdOut.ReadAll();
                 var targets = line.split('\r\n');
-                Log(targets);
+                var check_id = new RegExp(device_id);
                 for (target in targets) {
-                    if (targets[target].match('/' + device_id + '/')) {
+                    if (targets[target].match(check_id)) {
                         //TODO: this only gets single digit index, account for device index of 10+?
-                        var index = targets[target].substring(0,1);
+                        var index = targets[target].substr(0,1);
                         exec_verbose(path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:' + index);
                         return;
                     }
@@ -225,6 +219,15 @@ function target(path, device_id) {
     }
 }
 
+function build(path) {
+    if (!BUILD_RELEASE) {
+        exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
+    }
+    else {
+        exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --release');
+    }
+}
+
 
 
 Log("");
@@ -243,13 +246,17 @@ if (args.Count() > 0) {
     }
     else if (fso.FolderExists(ROOT)) {
         if (args(0) == "--emulator" || args(0) == "-e") {
+            build(ROOT);
             emulator(ROOT);
         }
         else if (args(0) == "--device" || args(0) == "-d") {
+            build(ROOT);
             device(ROOT);
         }
-        else if (args(0).substring(0,9) == "--target=") {
-            target(ROOT, args(0).substring(9, args(0).length));
+        else if (args(0).substr(0,9) == "--target=") {
+            build(ROOT);
+            var device_id = args(0).split('--target=').join('');
+            target(ROOT, device_id);
         }
         else {
             Log('Error: \"' + arg(0) + '\" is not recognized as a deploy option', true);

@@ -1,6 +1,8 @@
 var args = WScript.Arguments;
 var wscript_shell = WScript.CreateObject("WScript.Shell");
 
+var REQUIRE_GIT = false;
+
 function Usage() {
     Log("Usage: [ check_reqs | cscript check_reqs.js ]");
     Log("examples:");
@@ -11,94 +13,79 @@ function Usage() {
 
 // log to stdout or stderr
 function Log(msg, error) {
-    if(error) {
+    if (error) {
         WScript.StdErr.WriteLine(msg);
     }
-    else{
+    else {
         WScript.StdOut.WriteLine(msg);
+    }
+}
+
+// gets the output from a command, failing with the given error message
+function check_command(cmd, fail_msg) {
+    var out = wscript_shell.Exec(cmd);
+    while (out.Status == 0) {
+        WScript.Sleep(100);
+    }
+
+    //Check that command executed 
+    if (!out.StdErr.AtEndOfStream) {
+        var line = out.StdErr.ReadLine();
+        Log(fail_msg, true);
+        Log('Output : ' + line, true);
+        WScript.Quit(1);
+    }
+
+    if (!out.StdOut.AtEndOfStream) {
+        var line = out.StdOut.ReadAll();
+        return line;
+    }
+    else {
+         Log('Unable to get output from command "' + cmd + '"', true);
+         WScript.Quit(1);
     }
 }
 
 /* The tooling for cordova windows phone requires these commands
  *  in the environment PATH variable.
  * - msbuild (C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319)
+ * - git? (for dynamic cli loading of projects?)
  */
 function SystemRequiermentsMet() {
     var cmd = 'msbuild -version'
-    var out = wscript_shell.Exec(cmd);
-    while(out.Status == 0)
-    {
-        WScript.Sleep(100);
-    }
-
-    //Check that command executed 
-    if (!out.StdErr.AtEndOfStream) {
-        var line = out.StdOut.ReadLine();
-        Log('The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, and the `msbuild.exe` command (inside C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319) is added to your path.', true);
-        Log('Output: ' + output, true);
-        WScript.Quit(1);
-    }
-
-    //Get output
-    var line;
-    if (!out.StdOut.AtEndOfStream) {
-        line = oShell.StdErr.ReadAll();
-    }
-    else {
-        Log('Unable to get output from command "msbuild", check that you have it in your PATH');
-    }
+    var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, and the `msbuild.exe` command (inside C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319) is added to your path.'
+    var output = check_command(cmd, fail_msg);
     var msversion = output.match(/\.NET\sFramework\,\sversion\s4\.0/);
     if (!msversion) {
         Log('Please install the .NET Framwork v4.0.30319 (in the latest windows phone SDK\'s).', true);
         Log('Make sure the "msbuild" command in your path is pointing to  v4.0.30319 of msbuild as well (inside C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).', true);
         WScript.Quit(1);
     }
-    //TODO: Check git for other tooling?
+
+    if(REQUIRE_GIT) {
+        cmd = 'git --version';
+        fail_msg = 'The command `git` failed. Make sure you have git installed as well ad in your PATH environment so the tool can use it';
+        output = check_command(cmd, fail_msg);
+        var gitVersion = output.match(/git\sversion\s1\./);
+        if (!gitVersion) {
+            Log('Please ensure you have at least git v1 installed and added to you PATH so this tool can use it to get the latest codova.');
+        }
+    }
 }
 
 
-if(args.Count() > 0)
-{
+if (args.Count() > 0) {
     // support help flags
-    if(args(0) == "--help" || args(0) == "/?" ||
-            args(0) == "help" || args(0) == "-help" || args(0) == "/help" || args(0) == "-h")
-    {
+    if (args(0) == "--help" || args(0) == "/?" ||
+            args(0) == "help" || args(0) == "-help" || args(0) == "/help" || args(0) == "-h") {
         Usage();
         WScript.Quit(1);
     }
-    else
-    {
+    else {
         Log('Error : Did not recognize argument ' + args(0), true)
         Usage();
         WScript.Quit(1);
     }
-
-    PROJECT_PATH = args(0);
-    if(fso.FolderExists(PROJECT_PATH))
-    {
-        Log("Project directory already exists:");
-        Log("\t" + PROJECT_PATH);
-        Log("CREATE FAILED.");
-        WScript.Quit(1);
-    }
-
-    if(args.Count() > 1)
-    {
-        PACKAGE = args(1);
-    }
-    else
-    {
-        PACKAGE = "Cordova.Example";
-    }
-
-    if(args.Count() > 2)
-    {
-        NAME = args(2);
-    }
-    else
-    {
-        NAME = "CordovaAppProj";
-    }
-
-    create(PROJECT_PATH, PACKAGE, NAME);
 }
+
+SystemRequiermentsMet();

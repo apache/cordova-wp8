@@ -89,14 +89,21 @@ function get_targets(path) {
     //Check to make sure our script did not encounter an error
     if (!out.StdErr.AtEndOfStream) {
         var line = out.StdErr.ReadAll();
-        Log(line, true);
-        WScript.Quit(1);
+        if (line.substring(0, 1) == '0') {
+            var targets = line.split('\r\n');
+            return targets;
+        }
+        else {
+            Log("Error calling CordovaDeploy : ", true);
+            Log(line, true);
+            WScript.Quit(1);
+        }
     }
     else {
         if (!out.StdOut.AtEndOfStream) {
             var line = out.StdErr.ReadAll();
             var targets = line.split('\r\n');
-            Log(targets);
+            return targets;
         }
         else {
             Log('Error : CordovaDeploy Failed to find any devices', true);
@@ -105,21 +112,43 @@ function get_targets(path) {
     }
 }
 
-// builds the project and .xap in release mode
-function list_devices(path) {
-    //get_targets(path);
-    Log('ERROR : list-devices is not supported on Windows Phone.', true);
-    WScript.Quit(1);
+function list_targets(path) {
+    var targets = get_targets(path);
+    for (i in targets) {
+        Log(targets[i]);
+    }
 }
 
+// lists the Device returned by CordovaDeploy (NOTE: this does not indicate that a device is connected)
+function list_devices(path) {
+    var targets = get_targets(path);
+    var device_found = false;
+    for (i in targets) {
+        if (targets[i].match(/Device/)) {
+            Log(targets[i]);
+            device_found = true;
+        }
+    }
+    if (device_found) {
+        Log('');
+        Log('WARNING : This does not mean that a device is connected, make');
+        Log(' sure your device is connected before deploying to it.');
+    }
+}
+
+// lists the emulators availible to CordovaDeploy
+function list_emulator_images(path) {
+    var targets = get_targets(path);
+    for (i in targets) {
+        if (targets[i].match(/Emulator/)) {
+            Log(targets[i]);
+        }
+    }
+}
+
+// lists any started emulators *NOT IMPLEMENTED*
 function list_started_emulators(path) {
     Log('ERROR : list-started-emulators is not supported on Windows Phone.', true);
-    WScript.Quit(1);
-}
-
-// builds the project and .xap in release mode
-function list_emulator_images(path) {
-    Log('ERROR : list-emulator-images is not supported on Windows Phone.', true);
     WScript.Quit(1);
 }
 
@@ -185,11 +214,11 @@ if (args.Count() > 0) {
         else if (args(0) == "--started_emulators" || args(0) == "-s") {
             list_started_emulators(ROOT);
         }
-        else if (args(0) == "--started_emulators" || args(0) == "-s") {
-            get_targets(ROOT);
+        else if (args(0) == "--all" || args(0) == "-a") {
+            list_targets(ROOT);
         }
         else {
-            Log("Error: \"" + arg(1) + "\" is not recognized as a target-list option", true);
+            Log("Error: \"" + arg(0) + "\" is not recognized as a target-list option", true);
             Usage();
             WScript.Quit(1);
         }
@@ -202,5 +231,5 @@ if (args.Count() > 0) {
 }
 else {
     Log("WARNING: target list not specified, showing all targets...");
-    get_targets(args(0));
+    list_targets(ROOT);
 }
