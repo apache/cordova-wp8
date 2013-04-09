@@ -71,7 +71,7 @@ function exec(command) {
     if (!oShell.StdErr.AtEndOfStream) {
         var line = oShell.StdErr.ReadAll();
         Log(line, true);
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 
@@ -89,25 +89,24 @@ function get_targets(path) {
     //Check to make sure our script did not encounter an error
     if (!out.StdErr.AtEndOfStream) {
         var line = out.StdErr.ReadAll();
-        if (line.substring(0, 1) == '0') {
-            var targets = line.split('\r\n');
-            return targets;
-        }
-        else {
-            Log("Error calling CordovaDeploy : ", true);
-            Log(line, true);
-            WScript.Quit(1);
-        }
+        Log("Error calling CordovaDeploy : ", true);
+        Log(line, true);
+        WScript.Quit(2);
     }
     else {
         if (!out.StdOut.AtEndOfStream) {
-            var line = out.StdErr.ReadAll();
+            var line = out.StdOut.ReadAll();
             var targets = line.split('\r\n');
+            //format (ID DESCRIPTION)
+            for (i in targets) {
+                // remove device index and separator colen
+                targets[i] = targets[i].replace(/\d*\s\:\s/, '').replace(/\:\s/, '');
+            }
             return targets;
         }
         else {
             Log('Error : CordovaDeploy Failed to find any devices', true);
-            WScript.Quit(1);
+            WScript.Quit(2);
         }
     }
 }
@@ -175,34 +174,33 @@ function cordovaDeploy(path) {
         }
         else {
             Log("ERROR: MSBUILD FAILED TO COMPILE CordovaDeploy.exe", true);
-            WScript.Quit(1);
+            WScript.Quit(2);
         }
     }
     else {
         Log("ERROR: CordovaDeploy.sln not found, unable to compile CordovaDeploy tool.", true);
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 
-Log("");
 
 if (args.Count() > 0) {
     // support help flags
     if (args(0) == "--help" || args(0) == "/?" ||
             args(0) == "help" || args(0) == "-help" || args(0) == "/help") {
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
     else if (args.Count() > 1) {
         Log("Error: Too many arguments.", true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
     else if (fso.FolderExists(ROOT)) {
         if (!fso.FolderExists(ROOT + '\\cordova')) {
             Log("Error: cordova tooling folder not found in project directory,", true);
             Log("could not lsit targets.", true);
-            WScript.Quit(1);
+            WScript.Quit(2);
         }
 
         if (args(0) == "--emulators" || args(0) == "-e") {
@@ -218,15 +216,15 @@ if (args.Count() > 0) {
             list_targets(ROOT);
         }
         else {
-            Log("Error: \"" + arg(0) + "\" is not recognized as a target-list option", true);
+            Log("Error: \"" + args(0) + "\" is not recognized as a target-list option", true);
             Usage();
-            WScript.Quit(1);
+            WScript.Quit(2);
         }
     }
     else {
         Log("Error: Project directory not found,", true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 else {

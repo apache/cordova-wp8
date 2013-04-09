@@ -42,7 +42,7 @@ var args = WScript.Arguments,
     FULL_PATH = TEMPLATES_PATH + '\\full',
     CUSTOM_PATH = TEMPLATES_PATH + '\\custom',
     // default template to use when creating the project
-    CREATE_TEMPLATE = FULL_PATH,
+    CREATE_TEMPLATE = STANDALONE_PATH,
     PROJECT_PATH, 
     PACKAGE, 
     NAME;
@@ -174,13 +174,6 @@ function create(path, namespace, name) {
     replaceInFile(path + "\\MainPage.xaml.cs",/\$safeprojectname\$/g,namespace);
     replaceInFile(path + "\\CordovaAppProj.csproj",/\$safeprojectname\$/g,namespace);
 
-    //set up debug + emulate paths
-    // TODO : Remove (replaced by cordova scripts build/run/log/clean etc...)
-    replaceInFile(path + "\\cordova\\debug.bat",/__PATH_TO_TOOLING_SCRIPTS__/g, ROOT + '\\tooling\\scripts');
-    replaceInFile(path + "\\cordova\\emulate.bat",/__PATH_TO_TOOLING_SCRIPTS__/g, ROOT + '\\tooling\\scripts');
-    replaceInFile(path + "\\cordova\\debug.bat",/__PATH_TO_PROJ__/g, path);
-    replaceInFile(path + "\\cordova\\emulate.bat",/__PATH_TO_PROJ__/g, path);
-
     //copy .dll if necessary
     if (CREATE_TEMPLATE == FULL_PATH || CREATE_TEMPLATE == CUSTOM_PATH) {
         var dllPath = ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll';
@@ -205,12 +198,6 @@ function create(path, namespace, name) {
             WScript.Quit(1);
         }
     }
-
-    //TODO: remove cordova folder transfer once reorg of repo is finished and this is put into the template
-    if (fso.FolderExists(path + '\\cordova')) {
-        fso.DeleteFolder(path + '\\cordova');
-    }
-    fso.CopyFolder(ROOT + TOOLING_PATH + '\\cordova', path + '\\cordova');
 
     Log("CREATE SUCCESS : " + path);
 
