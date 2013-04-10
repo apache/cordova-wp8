@@ -28,21 +28,32 @@ var ROOT = WScript.ScriptFullName.split('\\cordova\\lib\\deploy.js').join('');
 var CORDOVA_DEPLOY_EXE = '\\cordova\\lib\\CordovaDeploy\\CordovaDeploy\\bin\\Debug\\CordovaDeploy.exe';
     // path to CordovaDeploy
 var CORDOVA_DEPLOY = '\\cordova\\lib\\CordovaDeploy';
-var BUILD_RELEASE = false;
+
+//build types
+var NONE = 0,
+    DEBUG = 1,
+    RELEASE = 2,
+    NO_BUILD = 3;
+var build_type = NONE;
 
 
 // help function
 function Usage() {
     Log("");
-    Log("Usage: run [ --device | --emulator | --target=<id> ]");
+    Log("Usage: run [ --device | --emulator | --target=<id> ] [ --debug | --release | --nobuild ]");
     Log("    --device      : Deploys and runs the project on the connected device.");
     Log("    --emulator    : Deploys and runs the project on an emulator.");
-    Log("    --target=<id> : Deploys and runs the project on the specified target.")
+    Log("    --target=<id> : Deploys and runs the project on the specified target.");
+    Log("    --debug       : Builds project in debug mode.");
+    Log("    --release     : Builds project in release mode.");
+    Log("    --nobuild     : Ueses pre-built xap, or errors if project is not built.");
     Log("examples:");
     Log("    run");
     Log("    run --emulator");
     Log("    run --device");
     Log("    run --target=7988B8C3-3ADE-488d-BA3E-D052AC9DC710");
+    Log("    run --device --release");
+    Log("    run --emulator --debug");
     Log("");
 }
 
@@ -85,7 +96,7 @@ function exec_verbose(command) {
     if (!oShell.StdErr.AtEndOfStream) {
         var line = oShell.StdErr.ReadAll();
         Log(line, true);
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 
@@ -99,7 +110,7 @@ function read(filename) {
     }
     else {
         Log('Cannot read non-existant file : ' + filename, true);
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
     return null;
 }
@@ -129,122 +140,143 @@ function cordovaDeploy(path) {
         }
         else {
             Log('ERROR: MSBUILD FAILED TO COMPILE CordovaDeploy.exe', true);
-            WScript.Quit(1);
+            WScript.Quit(2);
         }
     }
     else {
         Log('ERROR: CordovaDeploy.sln not found, unable to compile CordovaDeploy tool.', true);
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 
-// builds and launches project on device
+// launches project on device
 function device(path)
 {
     cordovaDeploy(path);
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
         Log('Deploying to device ...');
+        //TODO: get device ID from list-devices and deploy to first one
         exec_verbose('%comspec% /c ' + path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:0');
     }
     else
     {
         Log('Error: Failed to find CordovaDeploy.exe in ' + path, true);
         Log('DEPLOY FAILED.', true);
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 
-// builds and launches project on emulator
+// launches project on emulator
 function emulator(path)
 {
     cordovaDeploy(path);
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
         Log('Deploying to emulator ...');
+        //TODO: get emulator ID from list-emulators and deploy to first one
         exec_verbose('%comspec% /c ' + path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:1');
     }
     else
     {
         Log('Error: Failed to find CordovaDeploy.exe in ' + path, true);
         Log('DEPLOY FAILED.', true);
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 
 // builds and launches the project on the specified target
 function target(path, device_id) {
-    cordovaDeploy(path);
-    if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
-        Log('Deploying to ' + device_id + ' ...');
-        var out = wscript_shell.Exec('cscript ' + path + '\\cordova\\lib\\target-list.js //nologo');
-        while(out.Status == 0) {
-            WScript.Sleep(100);
-        }
-        //Check to make sure our script did not encounter an error
-        if (!out.StdErr.AtEndOfStream) {
-            var line = out.StdErr.ReadAll();
-            Log('Error getting availible targets : ', true);
-            Log(line, true);
-            WScript.Quit(1);
-        }
-        else {
-            if (!out.StdOut.AtEndOfStream) {
-                var line = out.StdOut.ReadAll();
-                var targets = line.split('\r\n');
-                var check_id = new RegExp(device_id);
-                for (target in targets) {
-                    if (targets[target].match(check_id)) {
-                        //TODO: this only gets single digit index, account for device index of 10+?
-                        var index = targets[target].substr(0,1);
-                        exec_verbose(path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:' + index);
-                        return;
-                    }
-                }
-                Log('Error : target ' + device_id + ' was not found.', true);
-                Log('DEPLOY FAILED.', true);
-                WScript.Quit(1);
-            }
-            else {
-                Log('Error : target-list.js Failed to find any devices', true);
-                Log('DEPLOY FAILED.', true);
-                WScript.Quit(1);
-            }
-
-        }
-        
+    if (!fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
+        cordovaDeploy(path);
+    }
+    wscript_shell.CurrentDirectory = path + CORDOVA_DEPLOY + '\\CordovaDeploy\\bin\\Debug';
+    var cmd = 'CordovaDeploy -devices';
+    var out = wscript_shell.Exec(cmd);
+    while(out.Status == 0) {
+        WScript.Sleep(100);
+    }
+    if (!out.StdErr.AtEndOfStream) {
+        var line = out.StdErr.ReadAll();
+        Log("Error calling CordovaDeploy : ", true);
+        Log(line, true);
+        WScript.Quit(2);
     }
     else {
-        Log('Error: Failed to find CordovaDeploy.exe in ' + path, true);
-        Log('DEPLOY FAILED.', true);
-        WScript.Quit(1);
+        if (!out.StdOut.AtEndOfStream) {
+            var line = out.StdOut.ReadAll();
+            var targets = line.split('\r\n');
+            var check_id = new RegExp(device_id);
+            for (target in targets) {
+                if (targets[target].match(check_id)) {
+                    //TODO: this only gets single digit index, account for device index of 10+?
+                    var index = targets[target].substr(0,1);
+                    exec_verbose(path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:' + index);
+                    return;
+                }
+            }
+            Log('Error : target ' + device_id + ' was not found.', true);
+            Log('DEPLOY FAILED.', true);
+            WScript.Quit(2);
+        }
+        else {
+            Log('Error : CordovaDeploy Failed to find any devices', true);
+            Log('DEPLOY FAILED.', true);
+            WScript.Quit(2);
+        }
     }
 }
 
 function build(path) {
-    if (!BUILD_RELEASE) {
-        exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
-    }
-    else {
-        exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --release');
+    switch (build_type) {
+        case DEBUG :
+            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
+            break;
+        case RELEASE :
+            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --release');
+            break;
+        case NO_BUILD :
+            break;
+        case NONE :
+            Log("WARNING: [ --debug | --release | --nobuild ] not specified, defaulting to --debug.");
+            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
+            break;
+        default :
+            Log("Build option not recognized: " + build_type, true);
+            WScript.Quit(2);
+            break;
     }
 }
 
-
-
-Log("");
 
 if (args.Count() > 0) {
     // support help flags
     if (args(0) == "--help" || args(0) == "/?" ||
             args(0) == "help" || args(0) == "-help" || args(0) == "/help") {
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
-    else if (args.Count() > 1) {
+    else if (args.Count() > 2) {
         Log('Error: Too many arguments.', true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
     else if (fso.FolderExists(ROOT)) {
+        if (args.Count() > 1) {
+            if (args(1) == "--release") {
+                build_type = RELEASE;
+            }
+            else if (args(1) == "--debug") {
+                build_type = DEBUG;
+            }
+            else if (args(1) == "--nobuild") {
+                build_type = NO_BUILD;
+            }
+            else {
+                Log('Error: \"' + args(1) + '\" is not recognized as a deploy option', true);
+                Usage();
+                WScript.Quit(2);
+            }
+        }
+
         if (args(0) == "--emulator" || args(0) == "-e") {
             build(ROOT);
             emulator(ROOT);
@@ -255,22 +287,40 @@ if (args.Count() > 0) {
         }
         else if (args(0).substr(0,9) == "--target=") {
             build(ROOT);
-            var device_id = args(0).split('--target=').join('');
+            var device_id = args(0).split("--target=").join("");
             target(ROOT, device_id);
         }
         else {
-            Log('Error: \"' + arg(0) + '\" is not recognized as a deploy option', true);
-            Usage();
-            WScript.Quit(1);
+            Log("WARNING: [ --target=<ID> | --emulator | --device ] not specified, defaulting to --emulator");
+            if (args(0) == "--release") {
+                build_type = RELEASE;
+                build(ROOT);
+                emulator(ROOT);
+            }
+            else if (args(0) == "--debug") {
+                build_type = DEBUG;
+                build(ROOT);
+                emulator(ROOT);
+            }
+            else if (args(0) == "--nobuild") {
+                build_type = NO_BUILD;
+                emulator(ROOT);
+            }
+            else {
+                Log('Error: \"' + args(0) + '\" is not recognized as a deploy option', true);
+                Usage();
+                WScript.Quit(2);
+            }
         }
     }
     else {
         Log('Error: Project directory not found,', true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 else {
-    Log('WARNING: [ --device | --emulator | --target=<id> ] not specified, defaulting to emulator...');
+    Log("WARNING: [ --target=<ID> | --emulator | --device ] not specified, defaulting to --emulator");
+    build(ROOT);
     emulator(ROOT);
 }

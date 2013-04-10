@@ -51,19 +51,18 @@ function log_output(path) {
     WScript.Quit(1);
 }
 
-Log("");
 
 if (args.Count() > 0) {
     // support help flags
     if (args(0) == "--help" || args(0) == "/?" ||
             args(0) == "help" || args(0) == "-help" || args(0) == "/help") {
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
     else {
-        Log("Error: \"" + arg(0) + "\" is not recognized as a log option.", true);
+        Log("Error: \"" + args(0) + "\" is not recognized as a log option.", true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 else {
@@ -73,6 +72,6 @@ else {
     else {
         Log("Error: Project directory not found,", true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }

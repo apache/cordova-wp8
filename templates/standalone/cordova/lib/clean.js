@@ -79,19 +79,18 @@ function clean_release(path) {
     }
 }
 
-Log("");
 
 if (args.Count() > 0) {
     // support help flags
     if (args(0) == "--help" || args(0) == "/?" ||
             args(0) == "help" || args(0) == "-help" || args(0) == "/help") {
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
     else if (args.Count() > 1) {
         Log("Error: Too many arguments.", true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
     else if (fso.FolderExists(ROOT)) {
         if (args(0) == "--debug" || args(0) == "-d") {
@@ -101,15 +100,15 @@ if (args.Count() > 0) {
             clean_release(ROOT);
         }
         else {
-            Log("Error: \"" + arg(0) + "\" is not recognized as a build option", true);
+            Log("Error: \"" + args(0) + "\" is not recognized as a build option", true);
             Usage();
-            WScript.Quit(1);
+            WScript.Quit(2);
         }
     }
     else {
         Log("Error: Project directory not found,", true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 else {
@@ -120,6 +119,6 @@ else {
     else {
         Log("Error: Project directory not found,", true);
         Usage();
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
