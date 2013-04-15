@@ -207,6 +207,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="www\**"/>
     <Content Include="config.xml" />
     <Content Include="Images\appbar.back.rest.png" />
     <Content Include="Images\appbar.close.rest.png" />
@@ -215,9 +216,6 @@
     <Content Include="Images\appbar.save.rest.png" />
     <Content Include="Images\appbar.stop.rest.png" />
     <Content Include="resources\notification-beep.wav" />
-    <Content Include="www\cordova-2.6.0.js" />
-    <Content Include="www\img\logo.png" />
-    <Content Include="www\js\index.js" />
     <None Include="VERSION" />
     <Resource Include="cordovalib\Images\appbar.back.rest.png" />
     <Resource Include="cordovalib\Images\appbar.close.rest.png" />
@@ -226,12 +224,6 @@
     <Resource Include="cordovalib\Images\appbar.save.rest.png" />
     <Resource Include="cordovalib\Images\appbar.stop.rest.png" />
     <Content Include="cordovalib\resources\notification-beep.wav" />
-    <Content Include="www\css\index.css" />
-    <Content Include="www\index.html">
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="cordova\debug.bat" />
-    <None Include="cordova\emulate.bat" />
     <None Include="Properties\AppManifest.xml">
       <SubType>Designer</SubType>
     </None>
