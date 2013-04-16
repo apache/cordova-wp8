@@ -38,11 +38,9 @@ var args = WScript.Arguments,
     TEMPLATES_PATH = '\\templates',
     // sub folder for standalone project
     STANDALONE_PATH = TEMPLATES_PATH + '\\standalone',
-    // sub folder for full project
-    FULL_PATH = TEMPLATES_PATH + '\\full',
-    CUSTOM_PATH = TEMPLATES_PATH + '\\custom',
     // default template to use when creating the project
     CREATE_TEMPLATE = STANDALONE_PATH,
+    USE_DLL = false,
     PROJECT_PATH, 
     PACKAGE, 
     NAME;
@@ -173,9 +171,15 @@ function create(path, namespace, name) {
     replaceInFile(path + "\\MainPage.xaml",/\$safeprojectname\$/g,namespace);
     replaceInFile(path + "\\MainPage.xaml.cs",/\$safeprojectname\$/g,namespace);
     replaceInFile(path + "\\CordovaAppProj.csproj",/\$safeprojectname\$/g,namespace);
+    if (NAME != "CordovaAppProj") {
+        replaceInFile(path + "\\CordovaSolution.sln",/CordovaAppProj/g,NAME);
+        // rename project and solution
+        exec('%comspec% /c ren ' + path + "\\CordovaSolution.sln " + NAME + '.sln');
+        exec('%comspec% /c ren ' + path + "\\CordovaAppProj.csproj " + NAME + '.csproj');
+    }
 
     //copy .dll if necessary
-    if (CREATE_TEMPLATE == FULL_PATH || CREATE_TEMPLATE == CUSTOM_PATH) {
+    if (USE_DLL) {
         var dllPath = ROOT + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll';
         if (fso.FileExists(dllPath)) {
             Log("WPCordovaClassLib.dll Found,  creating project");

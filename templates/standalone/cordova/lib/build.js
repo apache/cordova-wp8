@@ -92,7 +92,7 @@ function build_xap_release(path) {
     Log("\tDirectory : " + path);
     
     wscript_shell.CurrentDirectory = path;
-    exec_verbose('msbuild CordovaSolution.sln /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release');
+    exec_verbose('msbuild /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release');
     
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Release')) {
@@ -116,7 +116,7 @@ function build_xap_debug(path) {
     Log("\tDirectory : " + path);
     
     wscript_shell.CurrentDirectory = path;
-    exec_verbose('msbuild CordovaSolution.sln /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug');
+    exec_verbose('msbuild /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug');
     
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Debug')) {
