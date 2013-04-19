@@ -148,19 +148,21 @@ function updateVersionNumbers() {
     replaceInFile(BUILD_DESTINATION + STANDALONE_PATH + '\\CordovaAppProj.csproj', cordova_regex,  "cordova-" + VERSION);
     replaceInFile(BUILD_DESTINATION + STANDALONE_PATH + '\\www\\index.html', cordova_regex,  "cordova-" + VERSION);
     version_regex = /return\s*\"(\d+)[.](\d+)[.](\d+)(rc\d)?/; //Matches return "x.x.x[rcx]
-    replaceInFile(BUILD_DESTINATION + CORDOVA_LIB + '\\Commands\\Device.cs', version_regex,  "return \"" + VERSION);
+
+    WScript.StdOut.WriteLine("path = " + BUILD_DESTINATION + CORDOVA_LIB + '\\Plugins\\Device.cs');
+    replaceInFile(BUILD_DESTINATION + CORDOVA_LIB + '\\..\\Plugins\\Device.cs', version_regex,  "return \"" + VERSION);
 
     // update full project
-    exec('%comspec% /c copy /Y /V ' + BUILD_DESTINATION + "\\VERSION " + BUILD_DESTINATION + FULL_PATH + "\\VERSION");
-    replaceInFile(BUILD_DESTINATION + FULL_PATH + '\\CordovaAppProj.csproj', cordova_regex,  "cordova-" + VERSION);
-    replaceInFile(BUILD_DESTINATION + FULL_PATH + '\\www\\index.html', cordova_regex,  "cordova-" + VERSION);
-    version_regex = /\"WPCordovaClassLib\,\s*Version\=(\d+)[.](\d+)[.](\d+)[.](\d+)/; //Matches "WPCordovaClassLib, Version=x.x.x.x
-    replaceInFile(BUILD_DESTINATION + FULL_PATH + '\\CordovaAppProj.csproj', version_regex,  "\"WPCordovaClassLib, Version=" + BASE_VERSION);
+    // exec('%comspec% /c copy /Y /V ' + BUILD_DESTINATION + "\\VERSION " + BUILD_DESTINATION + FULL_PATH + "\\VERSION");
+    // replaceInFile(BUILD_DESTINATION + FULL_PATH + '\\CordovaAppProj.csproj', cordova_regex,  "cordova-" + VERSION);
+    // replaceInFile(BUILD_DESTINATION + FULL_PATH + '\\www\\index.html', cordova_regex,  "cordova-" + VERSION);
+    // version_regex = /\"WPCordovaClassLib\,\s*Version\=(\d+)[.](\d+)[.](\d+)[.](\d+)/; //Matches "WPCordovaClassLib, Version=x.x.x.x
+    // replaceInFile(BUILD_DESTINATION + FULL_PATH + '\\CordovaAppProj.csproj', version_regex,  "\"WPCordovaClassLib, Version=" + BASE_VERSION);
 
     // update custom project
-    exec('%comspec% /c copy /Y /V ' + BUILD_DESTINATION + "\\VERSION " + BUILD_DESTINATION + CUSTOM_PATH + "\\VERSION");
-    replaceInFile(BUILD_DESTINATION + CUSTOM_PATH + '\\CordovaAppProj.csproj', cordova_regex,  "cordova-" + VERSION);
-    replaceInFile(BUILD_DESTINATION + CUSTOM_PATH + '\\www\\index.html', cordova_regex,  "cordova-" + VERSION);
+    // exec('%comspec% /c copy /Y /V ' + BUILD_DESTINATION + "\\VERSION " + BUILD_DESTINATION + CUSTOM_PATH + "\\VERSION");
+    // replaceInFile(BUILD_DESTINATION + CUSTOM_PATH + '\\CordovaAppProj.csproj', cordova_regex,  "cordova-" + VERSION);
+    // replaceInFile(BUILD_DESTINATION + CUSTOM_PATH + '\\www\\index.html', cordova_regex,  "cordova-" + VERSION);
 
     // update example proj
     replaceInFile(BUILD_DESTINATION + EXAMPLE_PATH + '\\CordovaExample.csproj', cordova_regex,  "cordova-" + VERSION);
@@ -174,17 +176,17 @@ function updateVersionNumbers() {
     // update .vstemplate files for the template zips.
     var name_regex = /CordovaWP8[_](\d+)[_](\d+)[_](\d+)(rc\d)?/g
     var discript_regex = /Cordova\s*(\d+)[.](\d+)[.](\d+)(rc\d)?/
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateFull.vstemplate', name_regex,  'CordovaWP8_' + VERSION.replace(/\./g, '_'));
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateFull.vstemplate', discript_regex,  "Cordova " + VERSION);
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateFull.vstemplate', cordova_regex,  "cordova-" + VERSION);
+    // replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateFull.vstemplate', name_regex,  'CordovaWP8_' + VERSION.replace(/\./g, '_'));
+    // replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateFull.vstemplate', discript_regex,  "Cordova " + VERSION);
+    // replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateFull.vstemplate', cordova_regex,  "cordova-" + VERSION);
 
     replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate', name_regex,  'CordovaWP8_' + VERSION.replace(/\./g, '_'));
     replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate', discript_regex,  "Cordova " + VERSION);
     replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate', cordova_regex,  "cordova-" + VERSION);
 
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateCustom.vstemplate', name_regex,  'CordovaWP8_' + VERSION.replace(/\./g, '_'));
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateCustom.vstemplate', discript_regex,  "Cordova " + VERSION);
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateCustom.vstemplate', cordova_regex,  "cordova-" + VERSION);
+    // replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateCustom.vstemplate', name_regex,  'CordovaWP8_' + VERSION.replace(/\./g, '_'));
+    // replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateCustom.vstemplate', discript_regex,  "Cordova " + VERSION);
+    // replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateCustom.vstemplate', cordova_regex,  "cordova-" + VERSION);
 }
 
 // delete all cordova.js and generated files (templates) from old version numbers
@@ -238,14 +240,14 @@ function cleanup()
             fso.DeleteFile(BUILD_DESTINATION + EXAMPLE_PATH + '\\www\\' + example_www.Item(i).Name);
         }
     }
-    var full_www = shell.NameSpace(BUILD_DESTINATION + FULL_PATH + '\\www').Items();
-    for(var i = 0; i < full_www.Count; i++)
-    {
-        if(full_www.Item(i).Name.match(/cordova[-](\d+)[.](\d+)[.](\d+)(rc\d)?[.]js/))
-        {
-            fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\www\\' + full_www.Item(i).Name);
-        }
-    }
+    // var full_www = shell.NameSpace(BUILD_DESTINATION + FULL_PATH + '\\www').Items();
+    // for(var i = 0; i < full_www.Count; i++)
+    // {
+    //     if(full_www.Item(i).Name.match(/cordova[-](\d+)[.](\d+)[.](\d+)(rc\d)?[.]js/))
+    //     {
+    //         fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\www\\' + full_www.Item(i).Name);
+    //     }
+    // }
     var standalone_www = shell.NameSpace(BUILD_DESTINATION + STANDALONE_PATH + '\\www').Items();
     for(var i = 0; i < standalone_www.Count; i++)
     {
@@ -254,19 +256,21 @@ function cleanup()
             fso.DeleteFile(BUILD_DESTINATION + STANDALONE_PATH + '\\www\\' + standalone_www.Item(i).Name);
         }
     }
-        var custom_www = shell.NameSpace(BUILD_DESTINATION + CUSTOM_PATH + '\\www').Items();
-    for(var i = 0; i < standalone_www.Count; i++)
-    {
-        if(custom_www.Item(i).Name.match(/cordova[-](\d+)[.](\d+)[.](\d+)(rc\d)?[.]js/))
-        {
-            fso.DeleteFile(BUILD_DESTINATION + CUSTOM_PATH + '\\www\\' + custom_www.Item(i).Name);
-        }
-    }
+    //     var custom_www = shell.NameSpace(BUILD_DESTINATION + CUSTOM_PATH + '\\www').Items();
+    // for(var i = 0; i < standalone_www.Count; i++)
+    // {
+    //     if(custom_www.Item(i).Name.match(/cordova[-](\d+)[.](\d+)[.](\d+)(rc\d)?[.]js/))
+    //     {
+    //         fso.DeleteFile(BUILD_DESTINATION + CUSTOM_PATH + '\\www\\' + custom_www.Item(i).Name);
+    //     }
+    // }
 }
 
 // builds the new cordova dll and copys it to the full template (only done because of the version referance in Device.cs)
 function build_dll()
 {
+    return;
+    
     WScript.StdOut.WriteLine("Packaging .dll ...");
     // move to framework directory
     wscript_shell.CurrentDirectory = BUILD_DESTINATION + FRAMEWORK_PATH;

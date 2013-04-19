@@ -58,16 +58,19 @@ var current_script = "dist";
 /****************  FUNCTIONS  ********************/
 /*************************************************/
 
+function Log(msg) {
+    WScript.StdOut.WriteLine(msg);
+}
 
 // help function
 function Usage()
 {
-  WScript.StdOut.WriteLine("");
-  WScript.StdOut.WriteLine("This is a command line tool for building new releases.")
-  WScript.StdOut.WriteLine("Usage: dist <NEW_PATH_FOR_BUILD>");
-  WScript.StdOut.WriteLine("Creates and packages a new cordova/wp8 project, reversioning");
-  WScript.StdOut.WriteLine("it to match the VERSION file in the root directory.");
-  WScript.StdOut.WriteLine("");
+  Log("");
+  Log("This is a command line tool for building new releases.")
+  Log("Usage: dist <NEW_PATH_FOR_BUILD>");
+  Log("Creates and packages a new cordova/wp8 project, reversioning");
+  Log("it to match the VERSION file in the root directory.");
+  Log("");
 }
 
 
@@ -83,7 +86,7 @@ function read(filename) {
     }
     else
     {
-        WScript.StdOut.WriteLine('Cannot read non-existant file : ' + filename);
+        Log('Cannot read non-existant file : ' + filename);
         WScript.Quit(1);
     }
     return null;
@@ -91,7 +94,7 @@ function read(filename) {
 
 // executes a commmand in the shell
 function exec(command) {
-    //WScript.StdOut.WriteLine("Command: " + command);
+    Log("Command: " + command);
     var oShell=wscript_shell.Exec(command);
     while (oShell.Status == 0) {
         //Wait a little bit so we're not super looping
@@ -99,7 +102,7 @@ function exec(command) {
         //Print any stdout output from the script
         if(!oShell.StdOut.AtEndOfStream) {
             var line = oShell.StdOut.ReadLine();
-            WScript.StdOut.WriteLine(line);
+            Log(line);
         }
     }
     //Check to make sure our scripts did not encounter an error
@@ -114,9 +117,9 @@ function exec(command) {
 
 function space()
 {
-    WScript.StdOut.WriteLine("");
-    WScript.StdOut.WriteLine("*****************************************************");
-    WScript.StdOut.WriteLine("");
+    Log("");
+    Log("*****************************************************");
+    Log("");
 }
 
 
@@ -152,7 +155,7 @@ else
 /** - Copy source code to new directory         **/
 /*************************************************/
 current_script = "new.js";
-exec('cscript ' + ROOT + SCRIPTS + '\\new.js ' + BUILD_DESTINATION + ' //nologo');
+//exec('cscript ' + ROOT + SCRIPTS + '\\new.js ' + BUILD_DESTINATION + ' //nologo');
 space();
 
 /*************************************************/
@@ -187,4 +190,4 @@ space();
 current_script = "package.js";
 exec('cscript ' + BUILD_DESTINATION + SCRIPTS + '\\package.js //nologo');
 space();
-WScript.StdOut.WriteLine("Distribution Complete.");
+Log("Distribution Complete.");

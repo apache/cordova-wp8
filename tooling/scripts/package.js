@@ -29,8 +29,8 @@ var args = WScript.Arguments,
     // sub folder for standalone project
     STANDALONE_PATH = TEMPLATES_PATH + '\\standalone',
     // sub folder for full project
-    FULL_PATH = TEMPLATES_PATH + '\\full',
-    CUSTOM_PATH = TEMPLATES_PATH + '\\custom',
+    //FULL_PATH = TEMPLATES_PATH + '\\full',
+//    CUSTOM_PATH = TEMPLATES_PATH + '\\custom',
     // sub folder containing framework
     FRAMEWORK_PATH = '\\framework',
     // subfolder containing example project
@@ -44,21 +44,23 @@ var BUILD_DESTINATION;
 // add templates to visual studio?
 var ADD_TO_VS = false;
 
+function Log(msg) { WScript.StdOut.WriteLine(msg); }
+
 // help function
 function Usage()
 {
-    WScript.StdOut.WriteLine("");
-    WScript.StdOut.WriteLine("Usage: package [ PathToCordovaWP8 ]");
-    WScript.StdOut.WriteLine("    PathToCordovaWP8 : Cordova-wp8 repo you wish to package for release");
-    WScript.StdOut.WriteLine("examples:");
-    WScript.StdOut.WriteLine("    package C:\\Users\\anonymous\\Desktop\\cordova-wp8");
-    WScript.StdOut.WriteLine("    package     // packages current cordova directory");
-    WScript.StdOut.WriteLine("");
+    Log("");
+    Log("Usage: package [ PathToCordovaWP8 ]");
+    Log("    PathToCordovaWP8 : Cordova-wp8 repo you wish to package for release");
+    Log("examples:");
+    Log("    package C:\\Users\\anonymous\\Desktop\\cordova-wp8");
+    Log("    package     // packages current cordova directory");
+    Log("");
 }
 
 // returns the contents of a file
 function read(filename) {
-    //WScript.StdOut.WriteLine('Reading in ' + filename);
+    //Log('Reading in ' + filename);
     if(fso.FileExists(filename))
     {
         var f=fso.OpenTextFile(filename, 1,2);
@@ -68,7 +70,7 @@ function read(filename) {
     }
     else
     {
-        WScript.StdOut.WriteLine('ERROR: Cannot read non-existant file : ' + filename);
+        Log('ERROR: Cannot read non-existant file : ' + filename);
         WScript.Quit(1);
     }
     return null;
@@ -84,7 +86,7 @@ function exec(command) {
 
 // executes a commmand in the shell
 function exec_verbose(command) {
-    //WScript.StdOut.WriteLine("Command: " + command);
+    //Log("Command: " + command);
     var oShell=wscript_shell.Exec(command);
     while (oShell.Status == 0) {
         //Wait a little bit so we're not super looping
@@ -92,7 +94,7 @@ function exec_verbose(command) {
         //Print any stdout output from the script
         if(!oShell.StdOut.AtEndOfStream) {
             var line = oShell.StdOut.ReadLine();
-            WScript.StdOut.WriteLine(line);
+            Log(line);
         }
     }
     //Check to make sure our scripts did not encounter an error
@@ -107,47 +109,47 @@ function exec_verbose(command) {
 // packages templates into .zip
 function package_templates()
 {
-    WScript.StdOut.WriteLine("Creating template .zip files ...");
+    Log("Creating template .zip files ...");
 
     var standalone_zip = BUILD_DESTINATION + '\\CordovaWP8_' + VERSION.replace(/\./g, '_') + '_StandAlone.zip';
-    var full_zip = BUILD_DESTINATION + '\\CordovaWP8_' + VERSION.replace(/\./g, '_') + '_Full.zip';
-    var custom_zip = BUILD_DESTINATION + '\\CordovaWP8_' + VERSION.replace(/\./g, '_') + '_Custom.zip';
+    //var full_zip = BUILD_DESTINATION + '\\CordovaWP8_' + VERSION.replace(/\./g, '_') + '_Full.zip';
+    //var custom_zip = BUILD_DESTINATION + '\\CordovaWP8_' + VERSION.replace(/\./g, '_') + '_Custom.zip';
     if(fso.FileExists(standalone_zip))
     {
       fso.DeleteFile(standalone_zip);
     }
-    if(fso.FileExists(full_zip))
-    {
-      fso.DeleteFile(full_zip);
-    }
+    // if(fso.FileExists(full_zip))
+    // {
+    //   fso.DeleteFile(full_zip);
+    // }
 
-    exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateFull.vstemplate ' + BUILD_DESTINATION + FULL_PATH + '\\MyTemplate.vstemplate');
-    exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templateIcon.png ' + BUILD_DESTINATION + FULL_PATH + '\\__TemplateIcon.png');
-    exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templatePreview.jpg ' + BUILD_DESTINATION + FULL_PATH + '\\__PreviewImage.jpg');
-    exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + '\\VERSION ' + BUILD_DESTINATION + FULL_PATH);
-    if(fso.FileExists(BUILD_DESTINATION + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll'))
-    {
-        exec('%comspec% /c /Y copy Bin\\Release\\WPCordovaClassLib.dll ' + BUILD_DESTINATION + FULL_PATH + '\\CordovaLib');
-    }
-    else
-    {
-        WScript.StdOut.WriteLine("WARNING: WPCordovaClassLib.dll No found! Trying to build dll.");
-        build_dll();
-    }
+    // exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateFull.vstemplate ' + BUILD_DESTINATION + FULL_PATH + '\\MyTemplate.vstemplate');
+    // exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templateIcon.png ' + BUILD_DESTINATION + FULL_PATH + '\\__TemplateIcon.png');
+    // exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templatePreview.jpg ' + BUILD_DESTINATION + FULL_PATH + '\\__PreviewImage.jpg');
+    // exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + '\\VERSION ' + BUILD_DESTINATION + FULL_PATH);
+    // if(fso.FileExists(BUILD_DESTINATION + FRAMEWORK_PATH + '\\Bin\\Release\\WPCordovaClassLib.dll'))
+    // {
+    //     exec('%comspec% /c /Y copy Bin\\Release\\WPCordovaClassLib.dll ' + BUILD_DESTINATION + FULL_PATH + '\\CordovaLib');
+    // }
+    // else
+    // {
+    //     Log("WARNING: WPCordovaClassLib.dll No found! Trying to build dll.");
+    //     build_dll();
+    // }
 
     exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate ' + BUILD_DESTINATION + STANDALONE_PATH + '\\MyTemplate.vstemplate');
     exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templateIcon.png ' + BUILD_DESTINATION + STANDALONE_PATH + '\\__TemplateIcon.png');
     exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templatePreview.jpg ' + BUILD_DESTINATION + STANDALONE_PATH + '\\__PreviewImage.jpg');
     exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + '\\VERSION ' + BUILD_DESTINATION + STANDALONE_PATH);
 
-    exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateCustom.vstemplate ' + BUILD_DESTINATION + CUSTOM_PATH + '\\MyTemplate.vstemplate');
-    exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templateIcon.png ' + BUILD_DESTINATION + CUSTOM_PATH + '\\__TemplateIcon.png');
-    exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templatePreview.jpg ' + BUILD_DESTINATION + CUSTOM_PATH + '\\__PreviewImage.jpg');
-    exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + '\\VERSION ' + BUILD_DESTINATION + CUSTOM_PATH);
+    // exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateCustom.vstemplate ' + BUILD_DESTINATION + CUSTOM_PATH + '\\MyTemplate.vstemplate');
+    // exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templateIcon.png ' + BUILD_DESTINATION + CUSTOM_PATH + '\\__TemplateIcon.png');
+    // exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\pg_templatePreview.jpg ' + BUILD_DESTINATION + CUSTOM_PATH + '\\__PreviewImage.jpg');
+    // exec('%comspec% /c copy /Y ' + BUILD_DESTINATION + '\\VERSION ' + BUILD_DESTINATION + CUSTOM_PATH);
 
-    exec('cscript ' + BUILD_DESTINATION + '\\tooling\\scripts\\win-zip.js ' + full_zip + ' ' + BUILD_DESTINATION + FULL_PATH + '\\');
+    //exec('cscript ' + BUILD_DESTINATION + '\\tooling\\scripts\\win-zip.js ' + full_zip + ' ' + BUILD_DESTINATION + FULL_PATH + '\\');
     exec('cscript ' + BUILD_DESTINATION + '\\tooling\\scripts\\win-zip.js ' + standalone_zip + ' ' + BUILD_DESTINATION + STANDALONE_PATH + '\\');
-    exec('cscript ' + BUILD_DESTINATION + '\\tooling\\scripts\\win-zip.js ' + custom_zip + ' ' + BUILD_DESTINATION + CUSTOM_PATH + '\\');
+    //exec('cscript ' + BUILD_DESTINATION + '\\tooling\\scripts\\win-zip.js ' + custom_zip + ' ' + BUILD_DESTINATION + CUSTOM_PATH + '\\');
 
 
     if(ADD_TO_VS)
@@ -162,7 +164,7 @@ function package_templates()
         }
         else
         {
-            WScript.StdOut.WriteLine("WARNING: Could not find template directory in Visual Studio,\n you can manually copy over the template .zip files.")
+            Log("WARNING: Could not find template directory in Visual Studio,\n you can manually copy over the template .zip files.")
         }
   }
 }
@@ -170,7 +172,7 @@ function package_templates()
 // builds the new cordova dll and copys it to the full template (only done because of the version referance in Device.cs)
 function build_dll()
 {
-    WScript.StdOut.WriteLine("Packaging .dll ...");
+    Log("Packaging .dll ...");
     // move to framework directory
     wscript_shell.CurrentDirectory = BUILD_DESTINATION + FRAMEWORK_PATH;
     // build .dll in Release
@@ -182,50 +184,50 @@ function build_dll()
         WScript.Quit(1);
     }
 
-    if(!fso.FolderExists(BUILD_DESTINATION + FULL_PATH + '\\CordovaLib'))
-    {
-        fso.CreateFolder(BUILD_DESTINATION + FULL_PATH + '\\CordovaLib');
-    }
-    exec('%comspec% /c copy Bin\\Release\\WPCordovaClassLib.dll ' + BUILD_DESTINATION + FULL_PATH + '\\CordovaLib');
+    // if(!fso.FolderExists(BUILD_DESTINATION + FULL_PATH + '\\CordovaLib'))
+    // {
+    //     fso.CreateFolder(BUILD_DESTINATION + FULL_PATH + '\\CordovaLib');
+    // }
+    // exec('%comspec% /c copy Bin\\Release\\WPCordovaClassLib.dll ' + BUILD_DESTINATION + FULL_PATH + '\\CordovaLib');
 
-    WScript.StdOut.WriteLine("SUCESS");
+    Log("SUCESS");
 }
 
 // delete any unnessisary files when finished
 function cleanUp() {
 
-  if(fso.FileExists(BUILD_DESTINATION + FULL_PATH + '\\MyTemplate.vstemplate')) {
-      fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\MyTemplate.vstemplate');
-  }
+  // if(fso.FileExists(BUILD_DESTINATION + FULL_PATH + '\\MyTemplate.vstemplate')) {
+  //     fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\MyTemplate.vstemplate');
+  // }
   if(fso.FileExists(BUILD_DESTINATION + STANDALONE_PATH + '\\MyTemplate.vstemplate')) {
       fso.DeleteFile(BUILD_DESTINATION + STANDALONE_PATH + '\\MyTemplate.vstemplate');
   }
-  if(fso.FileExists(BUILD_DESTINATION + CUSTOM_PATH + '\\MyTemplate.vstemplate')) {
-      fso.DeleteFile(BUILD_DESTINATION + CUSTOM_PATH + '\\MyTemplate.vstemplate');
-  }
-  if(fso.FileExists(BUILD_DESTINATION + FULL_PATH + '\\__PreviewImage.jpg')) {
-      fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\__PreviewImage.jpg');
-  }
-  if(fso.FileExists(BUILD_DESTINATION + FULL_PATH + '\\__TemplateIcon.png')) {
-      fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\__TemplateIcon.png');
-  }
+  // if(fso.FileExists(BUILD_DESTINATION + CUSTOM_PATH + '\\MyTemplate.vstemplate')) {
+  //     fso.DeleteFile(BUILD_DESTINATION + CUSTOM_PATH + '\\MyTemplate.vstemplate');
+  // }
+  // if(fso.FileExists(BUILD_DESTINATION + FULL_PATH + '\\__PreviewImage.jpg')) {
+  //     fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\__PreviewImage.jpg');
+  // }
+  // if(fso.FileExists(BUILD_DESTINATION + FULL_PATH + '\\__TemplateIcon.png')) {
+  //     fso.DeleteFile(BUILD_DESTINATION + FULL_PATH + '\\__TemplateIcon.png');
+  // }
   if(fso.FileExists(BUILD_DESTINATION + STANDALONE_PATH + '\\__PreviewImage.jpg')) {
       fso.DeleteFile(BUILD_DESTINATION + STANDALONE_PATH + '\\__PreviewImage.jpg');
   }
   if(fso.FileExists(BUILD_DESTINATION + STANDALONE_PATH + '\\__TemplateIcon.png')) {
       fso.DeleteFile(BUILD_DESTINATION + STANDALONE_PATH + '\\__TemplateIcon.png');
   }
-  if(fso.FileExists(BUILD_DESTINATION + CUSTOM_PATH + '\\__PreviewImage.jpg')) {
-      fso.DeleteFile(BUILD_DESTINATION + CUSTOM_PATH + '\\__PreviewImage.jpg');
-  }
-  if(fso.FileExists(BUILD_DESTINATION + CUSTOM_PATH + '\\__TemplateIcon.png')) {
-      fso.DeleteFile(BUILD_DESTINATION + CUSTOM_PATH + '\\__TemplateIcon.png');
-  }
+  // if(fso.FileExists(BUILD_DESTINATION + CUSTOM_PATH + '\\__PreviewImage.jpg')) {
+  //     fso.DeleteFile(BUILD_DESTINATION + CUSTOM_PATH + '\\__PreviewImage.jpg');
+  // }
+  // if(fso.FileExists(BUILD_DESTINATION + CUSTOM_PATH + '\\__TemplateIcon.png')) {
+  //     fso.DeleteFile(BUILD_DESTINATION + CUSTOM_PATH + '\\__TemplateIcon.png');
+  // }
   //Add any other cleanup here
 }
 
 
-WScript.StdOut.WriteLine("");
+Log("");
 
 if(args.Count() > 0)
 {
@@ -243,7 +245,7 @@ if(args.Count() > 0)
     }
     else
     {
-        WScript.StdOut.WriteLine("ERROR: The given directory is not a cordova-wp8 repo.");
+        Log("ERROR: The given directory is not a cordova-wp8 repo.");
         Usage();
         WScript.Quit(1);
 

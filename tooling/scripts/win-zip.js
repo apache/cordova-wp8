@@ -23,11 +23,20 @@ file.Close();
 var objShell = new ActiveXObject("shell.application");
 var zipFolder = objShell.NameSpace(zipPath);
 var sourceItems = objShell.NameSpace(sourcePath).items();
+WScript.StdOut.WriteLine("sourceItems = " + sourceItems);
 if (zipFolder != null) {
     zipFolder.CopyHere(sourceItems, 4|20);
+    var maxTime = 5000;
     while(zipFolder.items().Count < sourceItems.Count)
     {
-        WScript.Sleep(100);
+        maxTime -= 100;
+        if(maxTime > 0 ) {    
+            WScript.Sleep(100);
+        }
+        else {
+            WScript.StdErr.WriteLine('Failed to create .zip file.');
+            break;
+        }
     }
 }
 else {
