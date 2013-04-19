@@ -66,10 +66,11 @@ function Log(msg) {
 function Usage()
 {
   Log("");
-  Log("This is a command line tool for building new releases.")
-  Log("Usage: dist <NEW_PATH_FOR_BUILD>");
-  Log("Creates and packages a new cordova/wp8 project, reversioning");
-  Log("it to match the VERSION file in the root directory.");
+  Log("This is a command line tool for building new releases. It will package a new release");
+  Log(" of a cordova-wp8 project, reversioning it to match the VERSION file in the root directory.");
+  Log("Usage: dist [ <NEW_PATH_FOR_BUILD> | -f ] ");
+  Log("                       -f : force tool to reversion the current repositoy.");
+  Log("     <NEW_PATH_FOR_BUILD> : path to create the new reversioned repositoy in.");
   Log("");
 }
 
@@ -96,7 +97,7 @@ function read(filename) {
 function exec(command) {
     Log("Command: " + command);
     var oShell=wscript_shell.Exec(command);
-    while (oShell.Status == 0) {
+    while (oShell.Status === 0) {
         //Wait a little bit so we're not super looping
         WScript.sleep(100);
         //Print any stdout output from the script
@@ -108,8 +109,8 @@ function exec(command) {
     //Check to make sure our scripts did not encounter an error
     if(!oShell.StdErr.AtEndOfStream)
     {
-        var line = oShell.StdErr.ReadAll();
-        WScript.StdErr.WriteLine(line);
+        var err_line = oShell.StdErr.ReadAll();
+        WScript.StdErr.WriteLine(err_line);
         WScript.StdErr.WriteLine("ERROR: Could not complete distribution, failed while running: " + current_script);
         WScript.Quit(1);
     }
@@ -133,7 +134,11 @@ if(REPLACE)
 }
 else if(args.Count() > 0)
 {
-    BUILD_DESTINATION = args(0);
+    if(args(0) == '-f') {
+        REPLACE = true;
+    } else {
+       BUILD_DESTINATION = args(0);
+    }
     //Support help flags
     if(BUILD_DESTINATION.indexOf("--help") > -1 ||
          BUILD_DESTINATION.indexOf("/?") > -1 )
@@ -154,9 +159,11 @@ else
 /*************************************************/
 /** - Copy source code to new directory         **/
 /*************************************************/
-current_script = "new.js";
-//exec('cscript ' + ROOT + SCRIPTS + '\\new.js ' + BUILD_DESTINATION + ' //nologo');
-space();
+if (!REPLACE) {
+  current_script = "new.js";
+  exec('cscript ' + ROOT + SCRIPTS + '\\new.js ' + BUILD_DESTINATION + ' //nologo');
+  space();
+}
 
 /*************************************************/
 /******************  Step 2  *********************/

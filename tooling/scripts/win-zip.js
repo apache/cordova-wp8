@@ -23,9 +23,8 @@ file.Close();
 var objShell = new ActiveXObject("shell.application");
 var zipFolder = objShell.NameSpace(zipPath);
 var sourceItems = objShell.NameSpace(sourcePath).items();
-WScript.StdOut.WriteLine("sourceItems = " + sourceItems);
-if (zipFolder != null) {
-    zipFolder.CopyHere(sourceItems, 4|20);
+if (zipFolder !== null) {
+    zipFolder.CopyHere(sourceItems, 4|20|16);
     var maxTime = 5000;
     while(zipFolder.items().Count < sourceItems.Count)
     {

@@ -49,7 +49,7 @@ function Log(msg) {
 function Usage()
 {
     Log("");
-    Log("This Script builds the given virsion of cordova.js and injects it into this or the given cordova-wp8 ")
+    Log("This Script builds the given virsion of cordova.js and injects it into this or the given cordova-wp8 ");
     Log("");
     Log("Usage: buildjs [ Version PathTOCordovaWP8 ]");
     Log("    Version : The version of cordova.js to build (must already be tagged)");
@@ -82,7 +82,7 @@ function read(filename) {
 // executes a commmand in the shell
 function exec(command) {
     var oShell=wscript_shell.Exec(command);
-    while (oShell.Status == 0) {
+    while (oShell.Status === 0) {
         WScript.sleep(100);
     }
 }
@@ -91,7 +91,7 @@ function exec(command) {
 function exec_verbose(command) {
     //Log("Command: " + command);
     var oShell=wscript_shell.Exec(command);
-    while (oShell.Status == 0) {
+    while (oShell.Status === 0) {
         //Wait a little bit so we're not super looping
         WScript.sleep(100);
         //Print any stdout output from the script
@@ -103,8 +103,8 @@ function exec_verbose(command) {
     //Check to make sure our scripts did not encounter an error
     if(!oShell.StdErr.AtEndOfStream)
     {
-        var line = oShell.StdErr.ReadAll();
-        WScript.StdErr.WriteLine(line);
+        var err_line = oShell.StdErr.ReadAll();
+        WScript.StdErr.WriteLine(err_line);
         WScript.Quit(1);
     }
 }
@@ -199,7 +199,7 @@ if(args.Count() > 0)
     else
     {
         Log("The provided version number is invalid, please provide");
-        Log(" a version number in the format Major.Minor.Fix[rc#]")
+        Log(" a version number in the format Major.Minor.Fix[rc#]");
         Usage();
         WScript.Quit(1);
     }
