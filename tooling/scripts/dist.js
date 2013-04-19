@@ -136,16 +136,18 @@ else if(args.Count() > 0)
 {
     if(args(0) == '-f') {
         REPLACE = true;
+        BUILD_DESTINATION = ROOT;
     } else {
        BUILD_DESTINATION = args(0);
+      //Support help flags
+      if(BUILD_DESTINATION.indexOf("--help") > -1 ||
+           BUILD_DESTINATION.indexOf("/?") > -1 )
+      {
+          Usage();
+          WScript.Quit(1);
+      }
     }
-    //Support help flags
-    if(BUILD_DESTINATION.indexOf("--help") > -1 ||
-         BUILD_DESTINATION.indexOf("/?") > -1 )
-    {
-        Usage();
-        WScript.Quit(1);
-    }
+
 }
 else
 {

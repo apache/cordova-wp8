@@ -14,6 +14,8 @@ Bin
 *.cache
 Thumbs.db
 
+/temp/*
+
 *.dll
 
 # Ignore template zip files
