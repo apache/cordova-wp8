@@ -1,8 +1,8 @@
 ﻿// Platform: windowsphone
 
-// commit 360bd3e65c33ce4f01e2efb82d641a565ef3c333
+// commit cd29cf0f224ccf25e9d422a33fd02ef67d3a78f4
 
-// File generated at :: Fri Apr 19 2013 17:45:28 GMT-0700 (Pacific Daylight Time)
+// File generated at :: Fri Apr 26 2013 14:56:24 GMT-0700 (Pacific Daylight Time)
 
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -6677,7 +6677,7 @@ window.cordova = require('cordova');
         xhr.onload = function() {
             // If the response is a JSON string which composes an array, call handlePluginsObject.
             // If the request fails, or the response is not a JSON array, just call finishPluginLoading.
-            var obj = JSON.parse(this.responseText);
+            var obj = this.responseText && JSON.parse(this.responseText);
             if (obj && obj instanceof Array && obj.length > 0) {
                 handlePluginsObject(obj);
             } else {
