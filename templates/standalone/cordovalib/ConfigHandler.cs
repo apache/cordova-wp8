@@ -29,6 +29,9 @@ namespace WPCordovaClassLib.CordovaLib
         protected List<string> AllowedDomains;
         protected Dictionary<string, string> Preferences;
 
+        public Dictionary<string, string> Content { get; private set; }
+
+
         protected bool AllowAllDomains = false;
         protected bool AllowAllPlugins = false;
 
@@ -37,6 +40,7 @@ namespace WPCordovaClassLib.CordovaLib
             AllowedPlugins = new Dictionary<string, PluginConfig>();
             AllowedDomains = new List<string>();
             Preferences = new Dictionary<string, string>();
+            Content = new Dictionary<string, string>();
         }
 
         public string GetPreference(string key)
@@ -229,6 +233,14 @@ namespace WPCordovaClassLib.CordovaLib
                 foreach (var accessElem in accessList)
                 {
                     AddWhiteListEntry(accessElem.origin, accessElem.subdomains);
+                }
+
+                var contentsTag = document.Descendants("content");
+                if (contentsTag.Count() > 0)
+                {
+                    var first = contentsTag.First();                    
+                    var src = first.Attribute("src");
+                    Content.Add("src", src.Value);
                 }
             }
             else

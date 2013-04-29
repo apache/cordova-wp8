@@ -106,6 +106,7 @@ namespace WPCordovaClassLib
                 if (_startPageUri == null)
                 {
                     // default
+
                     return new Uri(AppRoot + "www/index.html", UriKind.Relative);
                 }
                 else
@@ -161,6 +162,14 @@ namespace WPCordovaClassLib
             // initializes native execution logic
             configHandler = new ConfigHandler();
             configHandler.LoadAppPackageConfig();
+
+            if (configHandler.Content.ContainsKey("src"))
+            {
+                var src = configHandler.Content["src"];
+                {
+                    this.StartPageUri = new Uri(src);
+                }
+            }         
 
             nativeExecution = new NativeExecution(ref this.CordovaBrowser);
             bmHelper = new BrowserMouseHelper(ref this.CordovaBrowser);
