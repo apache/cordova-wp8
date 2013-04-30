@@ -58,7 +58,6 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         public object InvokeMethodNamed(string callbackId, string methodName, params object[] args)
         {
-            Debug.WriteLine(string.Format("InvokeMethodNamed:{0} callbackId:{1}",methodName,callbackId));
             this.CurrentCommandCallbackId = callbackId;
             return InvokeMethodNamed(methodName, args);
         }
