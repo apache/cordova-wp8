@@ -56,12 +56,23 @@ namespace WPCordovaClassLib.Cordova
             }
 
             CordovaCommandCall commandCallParameters = new CordovaCommandCall();
-
             commandCallParameters.Service = split[0];
             commandCallParameters.Action = split[1];
             commandCallParameters.CallbackId = split[2];
-            commandCallParameters.Args = split.Length <= 3 ? String.Empty : String.Join("/", split.Skip(3));
 
+
+            try
+            {
+                string arg = split.Length <= 3 ? String.Empty : String.Join("/", split.Skip(3));
+                //string[] _args = JSON.JsonHelper.Deserialize<string[]>(arg);
+                System.Collections.Generic.List<string> args = JSON.JsonHelper.Deserialize<System.Collections.Generic.List<string>>(arg);
+                args.Add(commandCallParameters.CallbackId);
+                commandCallParameters.Args = JSON.JsonHelper.Serialize(args.ToArray());
+            }
+            catch (Exception)
+            {
+                return null; 
+            }
             // sanity check for illegal names
             // was failing with ::
             // CordovaCommandResult :: 1, Device1, {"status":1,"message":"{\"name\":\"XD.....
