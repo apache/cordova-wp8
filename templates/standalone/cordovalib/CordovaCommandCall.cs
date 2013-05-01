@@ -23,6 +23,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace WPCordovaClassLib.Cordova
 {
@@ -43,10 +44,10 @@ namespace WPCordovaClassLib.Cordova
         /// <returns>New class instance or null of string does not represent Cordova command</returns>
         public static CordovaCommandCall Parse(string commandStr)
         {
+            System.Diagnostics.Debug.WriteLine("CommandString : " + commandStr);
             if (string.IsNullOrEmpty(commandStr))
             {
                 return null;
-                //throw new ArgumentNullException("commandStr");
             }
 
             string[] split = commandStr.Split('/');
@@ -60,12 +61,14 @@ namespace WPCordovaClassLib.Cordova
             commandCallParameters.Action = split[1];
             commandCallParameters.CallbackId = split[2];
 
-
             try
             {
-                string arg = split.Length <= 3 ? String.Empty : String.Join("/", split.Skip(3));
-                //string[] _args = JSON.JsonHelper.Deserialize<string[]>(arg);
-                System.Collections.Generic.List<string> args = JSON.JsonHelper.Deserialize<System.Collections.Generic.List<string>>(arg);
+                string arg = split.Length <= 3 ? "[]" : String.Join("/", split.Skip(3));
+                if (!arg.StartsWith("[")) // save the exception
+                {
+                    arg = string.Format("[{0}]", arg);
+                }
+                List<string> args = JSON.JsonHelper.Deserialize<List<string>>(arg);
                 args.Add(commandCallParameters.CallbackId);
                 commandCallParameters.Args = JSON.JsonHelper.Serialize(args.ToArray());
             }
@@ -80,7 +83,6 @@ namespace WPCordovaClassLib.Cordova
             {
                 return null;
             }
-
 
             return commandCallParameters;
         }
