@@ -58,6 +58,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         public object InvokeMethodNamed(string callbackId, string methodName, params object[] args)
         {
+            //Debug.WriteLine(string.Format("InvokeMethodNamed:{0} callbackId:{1}",methodName,callbackId));
             this.CurrentCommandCallbackId = callbackId;
             return InvokeMethodNamed(methodName, args);
         }
@@ -127,6 +128,10 @@ namespace WPCordovaClassLib.Cordova.Commands
             else if (this.OnCommandResult != null)
             {
                 OnCommandResult(this, result);
+            }
+            else
+            {
+                Debug.WriteLine("Failed to locate callback for id : " + result.CallbackId);
             }
 
             if (!result.KeepCallback)
