@@ -88,10 +88,7 @@ namespace WPCordovaClassLib.Cordova.Commands
             alertOpts.message = args[0];
             alertOpts.title = args[1];
             alertOpts.buttonLabel = args[2];
-
-            //Debug.WriteLine("this.CurrentCommandCallbackId = " + this.CurrentCommandCallbackId);
-
-            string aliasCurrentCommandCallbackId = args[args.Length - 1];// this.CurrentCommandCallbackId; // it may change by the time the new thread invokes
+            string aliasCurrentCommandCallbackId = args[3];
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -128,14 +125,15 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         public void confirm(string options)
         {
+            string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
+            AlertOptions alertOpts = new AlertOptions();
+            alertOpts.message = args[0];
+            alertOpts.title = args[1];
+            alertOpts.buttonLabel = args[2];
+            string aliasCurrentCommandCallbackId = args[3];
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
-                AlertOptions alertOpts = new AlertOptions();
-                alertOpts.message = args[0];
-                alertOpts.title = args[1];
-                alertOpts.buttonLabel = args[2];
-
                 PhoneApplicationPage page = Page;
                 if (page != null)
                 {
@@ -144,7 +142,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     {
                         var previous = notifyBox;
                         notifyBox = new NotificationBox();
-                        notifyBox.Tag = previous;
+                        notifyBox.Tag = new { previous = previous, callbackId = aliasCurrentCommandCallbackId };
                         notifyBox.PageTitle.Text = alertOpts.title;
                         notifyBox.SubTitle.Text = alertOpts.message;
 
