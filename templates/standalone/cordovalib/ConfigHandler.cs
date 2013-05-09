@@ -44,7 +44,7 @@ namespace WPCordovaClassLib.CordovaLib
             return Preferences[key];
         }
 
-        protected static string[] AllowedSchemes = {"http","https","ftp","ftps"};
+        protected static string[] AllowedSchemes = { "http", "https", "ftp", "ftps" };
         protected bool SchemeIsAllowed(string scheme)
         {
             return AllowedSchemes.Contains(scheme);
@@ -110,14 +110,14 @@ namespace WPCordovaClassLib.CordovaLib
         {
             // Debug.WriteLine("Testing URLIsAllowed : " + url);
             // easy case first
-            if (this.AllowAllDomains )
+            if (this.AllowAllDomains)
             {
                 return true;
             }
             else
             {
                 // start simple
-                Uri uri = new Uri(url,UriKind.RelativeOrAbsolute);
+                Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
                 if (uri.IsAbsoluteUri)
                 {
                     if (this.SchemeIsAllowed(uri.Scheme))
@@ -134,7 +134,7 @@ namespace WPCordovaClassLib.CordovaLib
                             {
                                 // make sure it is at the start, and not part of the query string
                                 // special case :: http://some.other.domain/page.html?x=1&g=http://build.apache.org/
-                                if ( Regex.IsMatch(uri.Scheme + "://" +  uri.Host + "/", pattern) ||
+                                if (Regex.IsMatch(uri.Scheme + "://" + uri.Host + "/", pattern) ||
                                      (!Regex.IsMatch(uri.PathAndQuery, pattern)))
                                 {
                                     return true;
@@ -156,13 +156,14 @@ namespace WPCordovaClassLib.CordovaLib
             return AllowAllPlugins || AllowedPlugins.Keys.Contains(key);
         }
 
-        public string[] AutoloadPlugins {
+        public string[] AutoloadPlugins
+        {
             get
             {
                 var res = from results in AllowedPlugins.TakeWhile(p => p.Value.isAutoLoad)
-                          select results.Value.Name ;
+                          select results.Value.Name;
 
-                foreach(var s in res)
+                foreach (var s in res)
                 {
                     Debug.WriteLine(s);
                 }
