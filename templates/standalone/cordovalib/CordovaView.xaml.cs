@@ -163,12 +163,9 @@ namespace WPCordovaClassLib
             configHandler = new ConfigHandler();
             configHandler.LoadAppPackageConfig();
 
-            if (configHandler.Content.ContainsKey("src"))
+            if (configHandler.ContentSrc != null)
             {
-                var src = configHandler.Content["src"];
-                {
-                    this.StartPageUri = new Uri(src);
-                }
+                //this.StartPageUri = new Uri(configHandler.ContentSrc);
             }         
 
             nativeExecution = new NativeExecution(ref this.CordovaBrowser);
@@ -391,7 +388,7 @@ namespace WPCordovaClassLib
             string[] autoloadPlugs = this.configHandler.AutoloadPlugins;
             foreach (string plugName in autoloadPlugs)
             {
-               // nativeExecution.ProcessCommand(commandCallParams); 
+               //nativeExecution.ProcessCommand(commandCallParams); 
             }
 
             string nativeReady = "(function(){ cordova.require('cordova/channel').onNativeReady.fire()})();";
@@ -407,8 +404,7 @@ namespace WPCordovaClassLib
 
             if (this.CordovaBrowser.Opacity < 1)
             {
-                this.CordovaBrowser.Opacity = 1;
-                RotateIn.Begin();
+                FadeIn.Begin();
             }
         }
 

@@ -29,7 +29,7 @@ namespace WPCordovaClassLib.CordovaLib
         protected List<string> AllowedDomains;
         protected Dictionary<string, string> Preferences;
 
-        public Dictionary<string, string> Content { get; private set; }
+        public string ContentSrc { get; private set; }
 
 
         protected bool AllowAllDomains = false;
@@ -40,7 +40,6 @@ namespace WPCordovaClassLib.CordovaLib
             AllowedPlugins = new Dictionary<string, PluginConfig>();
             AllowedDomains = new List<string>();
             Preferences = new Dictionary<string, string>();
-            Content = new Dictionary<string, string>();
         }
 
         public string GetPreference(string key)
@@ -178,6 +177,52 @@ namespace WPCordovaClassLib.CordovaLib
             }
         }
 
+        private void LoadPluginFeatures(XDocument document)
+        {
+            var plugins = from results in document.Descendants("plugin")
+                          select new
+                          {
+                              name = (string)results.Attribute("name"),
+                              autoLoad = results.Attribute("onload")
+                          };
+
+            foreach (var plugin in plugins)
+            {
+                Debug.WriteLine("plugin " + plugin.name);
+                PluginConfig pConfig = new PluginConfig(plugin.name, plugin.autoLoad != null && plugin.autoLoad.Value == "true");
+                if (pConfig.Name == "*")
+                {
+                    AllowAllPlugins = true;
+                    // break; wait, don't, some still could be autoload
+                }
+                else
+                {
+                    AllowedPlugins[pConfig.Name] = pConfig;
+                }
+            }
+
+            var features = document.Descendants("feature");
+    
+
+            foreach (var feature in features)
+            {
+                var name = feature.Attribute("name");
+                var values = from results in feature.Descendants("param")
+                             where ((string)results.Attribute("name") == "wp-package")
+                             select results;
+
+                var value = values.FirstOrDefault();
+                if(value != null)
+                {
+                    string key = (string)value.Attribute("value");
+                    Debug.WriteLine("Adding feature.value=" + key);
+                    var onload = value.Attribute("onload");
+                    PluginConfig pConfig = new PluginConfig(key,onload != null && onload.Value == "true");
+                    AllowedPlugins[key] = pConfig;
+                }
+            }
+        }
+
 
         public void LoadAppPackageConfig()
         {
@@ -189,27 +234,9 @@ namespace WPCordovaClassLib.CordovaLib
                 //This will Read Keys Collection for the xml file
                 XDocument document = XDocument.Parse(sr.ReadToEnd());
 
-                var plugins = from results in document.Descendants("plugin")
-                              select new
-                              {
-                                  name = (string)results.Attribute("name"),
-                                  autoLoad = results.Attribute("onload")
-                              };
+                LoadPluginFeatures(document);
 
-                foreach (var plugin in plugins)
-                {
-                    Debug.WriteLine("plugin " + plugin.name);
-                    PluginConfig pConfig = new PluginConfig(plugin.name, plugin.autoLoad != null && plugin.autoLoad.Value == "true");
-                    if (pConfig.Name == "*")
-                    {
-                        AllowAllPlugins = true;
-                        // break; wait, don't, some still could be autoload
-                    }
-                    else
-                    {
-                        AllowedPlugins.Add(pConfig.Name, pConfig);
-                    }
-                }
+
 
                 var preferences = from results in document.Descendants("preference")
                                   select new
@@ -235,12 +262,11 @@ namespace WPCordovaClassLib.CordovaLib
                     AddWhiteListEntry(accessElem.origin, accessElem.subdomains);
                 }
 
-                var contentsTag = document.Descendants("content");
-                if (contentsTag.Count() > 0)
+                var contentsTag = document.Descendants("content").FirstOrDefault();
+                if (contentsTag != null)
                 {
-                    var first = contentsTag.First();                    
-                    var src = first.Attribute("src");
-                    Content.Add("src", src.Value);
+                    var src = contentsTag.Attribute("src");
+                    ContentSrc = (string)src.Value;
                 }
             }
             else
