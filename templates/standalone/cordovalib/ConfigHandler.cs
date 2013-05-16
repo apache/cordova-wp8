@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Resources;
 using System.Xml.Linq;
@@ -30,7 +29,6 @@ namespace WPCordovaClassLib.CordovaLib
         protected Dictionary<string, string> Preferences;
 
         public string ContentSrc { get; private set; }
-
 
         protected bool AllowAllDomains = false;
         protected bool AllowAllPlugins = false;
@@ -111,7 +109,6 @@ namespace WPCordovaClassLib.CordovaLib
 
         public bool URLIsAllowed(string url)
         {
-            // Debug.WriteLine("Testing URLIsAllowed : " + url);
             // easy case first
             if (this.AllowAllDomains)
             {
@@ -163,15 +160,9 @@ namespace WPCordovaClassLib.CordovaLib
         {
             get
             {
+                // TODO:
                 var res = from results in AllowedPlugins.TakeWhile(p => p.Value.isAutoLoad)
                           select results.Value.Name;
-
-                foreach (var s in res)
-                {
-                    Debug.WriteLine(s);
-                }
-                //string[] res = from results in (AllowedPlugins.Where(p => p.Value.isAutoLoad) )
-                //                select (string)results.Key;
 
                 return new string[] { "", "asd" };
             }
@@ -188,7 +179,7 @@ namespace WPCordovaClassLib.CordovaLib
 
             foreach (var plugin in plugins)
             {
-                Debug.WriteLine("plugin " + plugin.name);
+                Debug.WriteLine("Warning: Deprecated use of <plugin> by plugin : " + plugin.name);
                 PluginConfig pConfig = new PluginConfig(plugin.name, plugin.autoLoad != null && plugin.autoLoad.Value == "true");
                 if (pConfig.Name == "*")
                 {
@@ -223,7 +214,6 @@ namespace WPCordovaClassLib.CordovaLib
             }
         }
 
-
         public void LoadAppPackageConfig()
         {
             StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("config.xml", UriKind.Relative));
@@ -236,8 +226,6 @@ namespace WPCordovaClassLib.CordovaLib
 
                 LoadPluginFeatures(document);
 
-
-
                 var preferences = from results in document.Descendants("preference")
                                   select new
                                   {
@@ -247,6 +235,7 @@ namespace WPCordovaClassLib.CordovaLib
 
                 foreach (var pref in preferences)
                 {
+                    Preferences[pref.name] = pref.value;
                     Debug.WriteLine("pref" + pref.name + ", " + pref.value);
                 }
 
