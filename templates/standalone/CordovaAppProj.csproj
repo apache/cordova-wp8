@@ -137,7 +137,6 @@
     <Compile Include="cordovalib\OrientationHelper.cs" />
     <Compile Include="cordovalib\PluginResult.cs" />
     <Compile Include="cordovalib\ScriptCallback.cs" />
-   
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -152,7 +151,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-
     <Page Include="Plugins\UI\AudioRecorder.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -174,15 +172,28 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
   <ItemGroup>
+    <None Include="cordova\lib\build.js" />
+    <None Include="cordova\lib\clean.js" />
+    <None Include="cordova\lib\deploy.js" />
+    <None Include="cordova\lib\log.js" />
+    <None Include="cordova\lib\target-list.js" />
     <Content Include="www\**" />
     <Content Include="config.xml" />
     <Content Include="Images\**" />
-
     <Content Include="resources\notification-beep.wav" />
+    <None Include="cordova\build.bat" />
+    <None Include="cordova\clean.bat" />
+    <None Include="cordova\lib\install-device.bat" />
+    <None Include="cordova\lib\install-emulator.bat" />
+    <None Include="cordova\lib\list-devices.bat" />
+    <None Include="cordova\lib\list-emulator-images.bat" />
+    <None Include="cordova\lib\list-started-emulators.bat" />
+    <None Include="cordova\lib\start-emulator.bat" />
+    <None Include="cordova\log.bat" />
+    <None Include="cordova\run.bat" />
+    <None Include="cordova\version.bat" />
     <None Include="VERSION" />
-
     <None Include="Properties\AppManifest.xml">
       <SubType>Designer</SubType>
     </None>
@@ -206,8 +217,8 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-      <Compile Include="Plugins\*" />
-      <Compile Include="Plugins\UI\*.cs" />
+    <Compile Include="Plugins\*" />
+    <Compile Include="Plugins\UI\*.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
