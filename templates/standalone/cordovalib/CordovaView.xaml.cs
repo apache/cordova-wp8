@@ -165,7 +165,14 @@ namespace WPCordovaClassLib
 
             if (configHandler.ContentSrc != null)
             {
-                //this.StartPageUri = new Uri(configHandler.ContentSrc);
+                if (Uri.IsWellFormedUriString(configHandler.ContentSrc, UriKind.Absolute))
+                {
+                    this.StartPageUri = new Uri(configHandler.ContentSrc, UriKind.Absolute);
+                }
+                else
+                {
+                    this.StartPageUri = new Uri(AppRoot + "www/" + configHandler.ContentSrc, UriKind.Relative);
+                } 
             }         
 
             nativeExecution = new NativeExecution(ref this.CordovaBrowser);
