@@ -173,12 +173,18 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="www\cordova.js" />
+    <Content Include="www\css\index.css" />
+    <Content Include="www\img\logo.png" />
+    <Content Include="www\index.html">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="www\js\index.js" />
     <None Include="cordova\lib\build.js" />
     <None Include="cordova\lib\clean.js" />
     <None Include="cordova\lib\deploy.js" />
     <None Include="cordova\lib\log.js" />
     <None Include="cordova\lib\target-list.js" />
-    <Content Include="www\**" />
     <Content Include="config.xml" />
     <Content Include="Images\**" />
     <Content Include="resources\notification-beep.wav" />
