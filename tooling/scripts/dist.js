@@ -206,9 +206,10 @@ space();
 /** - build cordova.js                          **/
 /** - windows.cordova.js -> templates + example **/
 /*************************************************/
-current_script = "buildjs.js";
-exec('cscript ' + BUILD_DESTINATION + SCRIPTS + '\\buildjs.js //nologo');
-space();
+// New Workflow does not require building the new js, it should already be in place.
+// current_script = "buildjs.js";
+// exec('cscript ' + BUILD_DESTINATION + SCRIPTS + '\\buildjs.js //nologo');
+// space();
 
 /*************************************************/
 /******************  Step 5  *********************/
