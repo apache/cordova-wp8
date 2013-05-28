@@ -396,11 +396,15 @@ namespace WPCordovaClassLib.Cordova.Commands
                 return;
             }
 
-            if (searchParams.options == null)
+            if (searchParams.options == null) //Deal with case where caller has specified no options
             {
                 searchParams.options = new SearchOptions();
                 searchParams.options.filter = "";
                 searchParams.options.multiple = true;
+            }
+            else if (searchParams.options.filter == null) // Deal with the case where caller has specified partial options
+            {
+                searchParams.options.filter = "";
             }
 
             DeviceContacts deviceContacts = new DeviceContacts();
