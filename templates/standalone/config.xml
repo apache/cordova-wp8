@@ -21,27 +21,65 @@
 -->
 <widget>
 
-  <plugins>
-    <plugin name="Device"/>
-    <plugin name="Logger"/>
-    <plugin name="Compass"/>
-    <plugin name="Accelerometer"/>
-    <plugin name="Camera"/>
-    <plugin name="NetworkStatus"/>
-    <plugin name="Contacts"/>
-    <plugin name="DebugConsole" />
-    <plugin name="Echo"/>
-    <plugin name="File"/>
-    <plugin name="FileTransfer"/>
-    <plugin name="Geolocation"/>
-    <plugin name="Notification"/>
-    <plugin name="Media"/>
-    <plugin name="Capture"/>
-    <plugin name="SplashScreen"/>
-    <plugin name="Battery"/>
-    <plugin name="Globalization"/>
-    <plugin name="InAppBrowser"/>
-  </plugins>
+  <features>
+    <feature name="Device">
+      <param name="wp-package" value="Device" onload="false"/>
+    </feature>
+    <feature name="Logger">
+      <param name="wp-package" value="Logger"/>
+    </feature>
+    <feature name="Compass">
+      <param name="wp-package" value="Compass" />
+    </feature>
+    <feature name="Accelerometer">
+      <param name="wp-package" value="Accelerometer"/>
+    </feature>
+    <feature name="Camera">
+      <param name="wp-package" value="Camera"/>
+    </feature>
+    <feature name="NetworkStatus">
+      <param name="wp-package" value="NetworkStatus"/>
+    </feature>
+    <feature name="Contacts">
+      <param name="wp-package" value="Contacts"/>
+    </feature>
+    <feature name="DebugConsole">
+      <param name="wp-package" value="DebugConsole"/>
+    </feature>
+    <feature name="Echo">
+      <param name="wp-package" value="Echo"/>
+    </feature>
+    <feature name="File">
+      <param name="wp-package" value="File"/>
+    </feature>
+    <feature name="FileTransfer">
+      <param name="wp-package" value="FileTransfer"/>
+    </feature>
+    <feature name="Geolocation">
+      <param name="wp-package" value="Geolocation"/>
+    </feature>
+    <feature name="Geolocation">
+      <param name="wp-package" value="Geolocation"/>
+    </feature>
+    <feature name="Media">
+      <param name="wp-package" value="Media"/>
+    </feature>
+    <feature name="Capture">
+      <param name="wp-package" value="Capture"/>
+    </feature>
+    <feature name="SplashScreen">
+      <param name="wp-package" value="SplashScreen"/>
+    </feature>
+    <feature name="Battery">
+      <param name="wp-package" value="Battery"/>
+    </feature>
+    <feature name="Globalization">
+      <param name="wp-package" value="Globalization"/>
+    </feature>
+    <feature name="InAppBrowser">
+      <param name="wp-package" value="InAppBrowser"/>
+    </feature>
+  </features>
 
 
   <access origin="*"/>
