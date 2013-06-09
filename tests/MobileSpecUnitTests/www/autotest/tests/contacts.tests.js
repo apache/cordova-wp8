@@ -53,7 +53,7 @@ describe("Contacts (navigator.contacts)", function () {
                 
             runs(function () {
                 navigator.contacts.find(["displayName", "name", "phoneNumbers", "emails"], win, fail, {
-                    filter: ""
+                    multiple: true
                 });
             });
 
