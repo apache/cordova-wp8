@@ -40,16 +40,20 @@ var replace = false;
 
 //Set up directory structure of current release
     //arguments passed in
-var args = WScript.Arguments,
-    //Root folder of cordova-wp7 (i.e C:\Cordova\cordova-wp7)
-    ROOT = WScript.ScriptFullName.split('\\tooling\\', 1),
-    // tooling scripts
-    SCRIPTS = '\\tooling\\scripts';
-    //Get version number
-    VERSION=read(ROOT+'\\VERSION').replace(/\r\n/,'').replace(/\n/,'');
+var args = WScript.Arguments;
+Log("args = " + args);
+    //Root folder of cordova-wp7 (i.e C:\Cordova\cordova-wp\cordova-wp7)
+var rootPath = WScript.ScriptFullName.split('\\tooling\\', 1);
+Log("rootPath = " + rootPath);
+// tooling scripts
+var scriptPath = '\\tooling\\scripts';
+Log("scriptPath = " + scriptPath);
+//Get version number
+var VERSION=read(rootPath+'\\..\\VERSION').replace(/\r\n/,'').replace(/\n/,'');
+Log("VERSION = " + VERSION);
 
 //Destination to build to
-var BUILD_DESTINATION;
+var buildDestination;
 //current script that is running
 var current_script = "dist";
 
@@ -84,7 +88,7 @@ function Log(msg, error) {
 
 // returns the contents of a file
 function read(filename) {
-    //Log('Reading in ' + filename);
+    Log('Reading in ' + filename);
     if(fso.FileExists(filename))
     {
         var f=fso.OpenTextFile(filename, 1,2);
@@ -144,20 +148,20 @@ if (args.Count() > 0) {
             WScript.Quit(1);
         }
         else if (args(0) == '-f') {
-          BUILD_DESTINATION = ROOT;
+          buildDestination = rootPath;
           replace = true;
         }
         else {
-          BUILD_DESTINATION = args(0);
+          buildDestination = args(0);
         }
 
     }
     else if (args.Count() == 2) {
         if (args(0) == '-f') {
             replace = true;
-            BUILD_DESTINATION = args(1);
+            buildDestination = args(1);
         } else {
-           BUILD_DESTINATION = args(0);
+           buildDestination = args(0);
            if (args(1) == '-f') {
               replace = true;
            }
@@ -183,8 +187,9 @@ else {
 /** - Copy source code to new directory         **/
 /*************************************************/
 if (!replace) {
+  Log("Step 1");
   current_script = "new.js";
-  exec('cscript ' + ROOT + SCRIPTS + '\\new.js ' + BUILD_DESTINATION + ' //nologo');
+  exec('cscript ' + rootPath + scriptPath + '\\new.js ' + buildDestination + ' //nologo');
   space();
 }
 
@@ -196,7 +201,8 @@ if (!replace) {
 /** - Rebuild dll                               **/
 /*************************************************/
 current_script = "reversion.js";
-exec('cscript ' + BUILD_DESTINATION + SCRIPTS + '\\reversion.js ' + VERSION + ' //nologo');
+Log("Step 2");
+exec('cscript ' + buildDestination + scriptPath + '\\reversion.js ' + VERSION + ' //nologo');
 space();
 
 /*************************************************/
@@ -208,7 +214,7 @@ space();
 /*************************************************/
 // New Workflow may not require building the new js, it should already be in place.
 current_script = "buildjs.js";
-exec('cscript ' + BUILD_DESTINATION + SCRIPTS + '\\buildjs.js //nologo');
+exec('cscript ' + buildDestination + scriptPath + '\\buildjs.js //nologo');
 space();
 
 /*************************************************/
@@ -219,6 +225,6 @@ space();
 /** - inject into Visual Studio                 **/
 /*************************************************/
 current_script = "package.js";
-exec('cscript ' + BUILD_DESTINATION + SCRIPTS + '\\package.js //nologo');
+exec('cscript ' + buildDestination + scriptPath + '\\package.js //nologo');
 space();
 Log("Distribution Complete.");

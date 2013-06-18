@@ -132,7 +132,7 @@ function updateVersionNumbers() {
     WScript.StdOut.WriteLine("Updating version numbers....");
     var version_regex = /(\d+)[.](\d+)[.](\d+)(rc\d)?/;
     replaceInFile(BUILD_DESTINATION + '\\VERSION', version_regex,  VERSION);
-    // replace assembaly versions in framework
+    // replace assembly versions in framework
     var framework_regex = /Description\(\"(\d+)[.](\d+)[.](\d+)(rc\d)?\"\)\]/; //Will match ("x.x.x[rcx]")]
     replaceInFile(BUILD_DESTINATION + FRAMEWORK_PATH + "\\Properties\\AssemblyInfo.cs", framework_regex, "Description(\"" + VERSION + "\")]");
     framework_regex = /Version\(\"(\d+)[.](\d+)[.](\d+)[.](\d+)\"\)\]/g;
@@ -191,15 +191,6 @@ function cleanup()
         if(root_folder.Item(i).Name.match(/CordovaWP7[_](\d+)[_](\d+)[_](\d+)(rc\d)?/))
         {
             fso.DeleteFile(BUILD_DESTINATION + '\\' + root_folder.Item(i).Name);
-        }
-    }
-    // remove old cordova.js
-    var example_www = shell.NameSpace(BUILD_DESTINATION + EXAMPLE_PATH + '\\www').Items();
-    for(i = 0; i < example_www.Count; i++)
-    {
-        if(example_www.Item(i).Name.match(/cordova\-(\d+)[.](\d+)[.](\d+)(rc\d)?[.]js/))
-        {
-            fso.DeleteFile(BUILD_DESTINATION + EXAMPLE_PATH + '\\www\\' + example_www.Item(i).Name);
         }
     }
 
