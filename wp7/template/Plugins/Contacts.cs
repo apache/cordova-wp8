@@ -396,16 +396,11 @@ namespace WPCordovaClassLib.Cordova.Commands
                 return;
             }
 
-            //Deal with case where caller has specified no options
             if (searchParams.options == null)
             {
                 searchParams.options = new SearchOptions();
                 searchParams.options.filter = "";
                 searchParams.options.multiple = true;
-            }
-            else if (searchParams.options.filter == null) // Deal with the case where caller has specified partial options
-            {
-                searchParams.options.filter = "";
             }
 
             DeviceContacts deviceContacts = new DeviceContacts();
@@ -542,7 +537,7 @@ namespace WPCordovaClassLib.Cordova.Commands
             return retVal.TrimEnd(',');
         }
 
-        private string getFormattedJSONAddress(ContactAddress address, bool isPreferred)
+        private string getFormattedJSONAddress(ContactAddress address, bool isPrefered)
         {
 
             string addressFormatString = "\"pref\":{0}," + // bool
@@ -562,7 +557,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                                     + address.PhysicalAddress.PostalCode;
 
             string jsonAddress = string.Format(addressFormatString,
-                                               isPreferred ? "\"true\"" : "\"false\"",
+                                               isPrefered ? "\"true\"" : "\"false\"",
                                                address.Kind.ToString(),
                                                formattedAddress,
                                                address.PhysicalAddress.AddressLine1 + " " + address.PhysicalAddress.AddressLine2,
@@ -628,7 +623,7 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
             else
             {
-                retVal = string.Format(formatStr, "", "", "", "", "", "");
+                retVal = string.Format(formatStr,"","","","","","");
             }
 
             return "{" + retVal + "}";

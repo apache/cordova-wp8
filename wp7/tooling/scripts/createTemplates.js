@@ -63,7 +63,12 @@ function deleteFileIfExists(path) {
     if(fso.FileExists(path)) {
         fso.DeleteFile(path);
    }
+}
 
+function deleteFolderIfExists(path) {
+    if(fso.FolderExists(path)) {
+        fso.DeleteFolder(path);
+    }
 }
 
 var ForReading = 1, ForWriting = 2, ForAppending = 8;
@@ -140,6 +145,10 @@ function exec_verbose(command) {
     }
 }
 
+function copyFile(src,dest) {
+    exec('%comspec% /c copy /Y ' + src + ' ' + dest);
+}
+
 
 // packages templates into .zip
 function package_templates()
@@ -147,14 +156,20 @@ function package_templates()
     Log("Creating template .zip files ...");
     var templateOutFilename = ROOT + '\\CordovaWP7_' + VERSION.replace(/\./g, '_') + '.zip';
     
+    // clear the destination
     deleteFileIfExists(templateOutFilename);
 
-    exec('xcopy /Y /E /I ' + ROOT + '\\Plugins ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\Plugins');
+    // clean the template folder, if the project was opened in VS, it creates some useless cruft.
+    deleteFolderIfExists(ROOT + "\\WP7" + TEMPLATES_PATH + '\\Bin');
+    deleteFolderIfExists(ROOT + "\\WP7" + TEMPLATES_PATH + '\\obj');
+    deleteFolderIfExists(ROOT + "\\WP7" + TEMPLATES_PATH + '\\Service\ References');
 
-    exec('%comspec% /c copy /Y ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\MyTemplate.vstemplate');
-    exec('%comspec% /c copy /Y ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\vs\\pg_templateIcon.png ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\__TemplateIcon.png');
-    exec('%comspec% /c copy /Y ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\vs\\pg_templatePreview.jpg ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\__PreviewImage.jpg');
-    exec('%comspec% /c copy /Y ' + ROOT + '\\VERSION ' + ROOT + "\\WP7" + TEMPLATES_PATH);
+    deleteFileIfExists(ROOT + "\\WP7" + TEMPLATES_PATH + "\\CordovaWP7Solution.v11.suo");
+    
+
+
+    exec('%comspec% /c xcopy /Y /E /I ' + ROOT + '\\Plugins ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\Plugins');
+    copyFile(ROOT + '\\VERSION',ROOT + "\\WP7" + TEMPLATES_PATH);
 
     // update .vstemplate files for the template zips.
     var name_regex = /CordovaWP7[_](\d+)[_](\d+)[_](\d+)(rc\d)?/g;

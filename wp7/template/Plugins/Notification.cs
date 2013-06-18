@@ -34,12 +34,6 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         private NotificationBox notifyBox;
 
-        private class NotifBoxData
-        {
-            public NotificationBox previous;
-            public string callbackId;
-        }
-
         private PhoneApplicationPage Page
         {
             get
@@ -106,7 +100,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     {
                         var previous = notifyBox;
                         notifyBox = new NotificationBox();
-                        notifyBox.Tag = new NotifBoxData{ previous = previous, callbackId = aliasCurrentCommandCallbackId };
+                        notifyBox.Tag = new { previous = previous, callbackId = aliasCurrentCommandCallbackId };
                         notifyBox.PageTitle.Text = alertOpts.title;
                         notifyBox.SubTitle.Text = alertOpts.message;
                         Button btnOK = new Button();
@@ -148,7 +142,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     {
                         var previous = notifyBox;
                         notifyBox = new NotificationBox();
-                        notifyBox.Tag = new NotifBoxData{ previous = previous, callbackId = aliasCurrentCommandCallbackId };
+                        notifyBox.Tag = new { previous = previous, callbackId = aliasCurrentCommandCallbackId };
                         notifyBox.PageTitle.Text = alertOpts.title;
                         notifyBox.SubTitle.Text = alertOpts.message;
 
@@ -192,9 +186,9 @@ namespace WPCordovaClassLib.Cordova.Commands
                 if (grid != null)
                 {
                     grid.Children.Remove(notifyBox);
-                    NotifBoxData notifBoxData = notifyBox.Tag as NotifBoxData;
-                    notifyBox = notifBoxData.previous;
-                    callbackId = notifBoxData.callbackId;
+                    dynamic notifBoxData = notifyBox.Tag;
+                    notifyBox = notifBoxData.previous as NotificationBox;
+                    callbackId = notifBoxData.callbackId as string;
                 }
                 if (notifyBox == null)
                 {
@@ -230,10 +224,10 @@ namespace WPCordovaClassLib.Cordova.Commands
                     {
                         grid.Children.Remove(notifBoxParent);
                     }
-
-                    NotifBoxData notifBoxData = notifBoxParent.Tag as NotifBoxData;
-                    notifyBox = notifBoxData.previous;
-                    callbackId = notifBoxData.callbackId;
+                    
+                    dynamic notifBoxData = notifBoxParent.Tag;
+                    notifyBox = notifBoxData.previous as NotificationBox;
+                    callbackId = notifBoxData.callbackId as string;
 
                     if (notifyBox == null)
                     {

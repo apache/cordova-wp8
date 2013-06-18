@@ -132,13 +132,28 @@ namespace WPCordovaClassLib.Cordova.Commands
                     {
                         try
                         {
+                            AudioPlayer audio;
                             if (!Media.players.ContainsKey(mediaOptions.Id))
                             {
-                                AudioPlayer audio = new AudioPlayer(this, mediaOptions.Id);
+                                audio = new AudioPlayer(this, mediaOptions.Id);
                                 Media.players.Add(mediaOptions.Id, audio);
-                                audio.startRecording(mediaOptions.Src);
                             }
-                            DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                            else
+                            {
+                                audio = Media.players[mediaOptions.Id];
+                            }
+
+                            if (audio != null)
+                            {
+                                audio.startRecording(mediaOptions.Src);
+                                DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+                            }
+                            else
+                            {
+                                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "Error accessing AudioPlayer for key " + mediaOptions.Id));
+                            }
+                            
+                            
                         }
                         catch (Exception e)
                         {
@@ -288,11 +303,11 @@ namespace WPCordovaClassLib.Cordova.Commands
                 if (!Media.players.ContainsKey(mediaOptions.Id))
                 {
                     audio = new AudioPlayer(this, mediaOptions.Id);
-                    Media.players[mediaOptions.Id] = audio;
+                    Media.players.Add(mediaOptions.Id, audio);
                 }
                 else
                 {
-                    Debug.WriteLine("INFO: startPlayingAudio FOUND mediaPlayer for " + mediaOptions.Id);
+                    //Debug.WriteLine("INFO: startPlayingAudio FOUND mediaPlayer for " + mediaOptions.Id);
                     audio = Media.players[mediaOptions.Id];
                 }
 
