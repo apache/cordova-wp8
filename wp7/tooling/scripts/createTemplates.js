@@ -34,7 +34,7 @@ var templatePath = '\\template';
 //Get version number
 var versionNum ='0.0.0';
 
-var platformRoot = WScript.ScriptFullName.split('\\tooling\\', 1);\
+var platformRoot = WScript.ScriptFullName.split('\\tooling\\', 1);
 
 //  set with the -install switch, default false 
 var addToVS = false; 
