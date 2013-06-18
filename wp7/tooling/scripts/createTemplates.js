@@ -147,10 +147,44 @@ function copyFile(src,dest) {
     exec('%comspec% /c copy /Y ' + src + ' ' + dest);
 }
 
+function copyCommonItemsToTemplate() {
+    var srcPath = repoRoot + '\\common-items';
+    var destPath = platformRoot + templatePath;
+    
+    var folder = fso.GetFolder(srcPath);
+    // iterate over the files in the folder
+    for (var files = new Enumerator(folder.files) ; !files.atEnd() ; files.moveNext()) {
+        //Log("File: " + srcPath + "\\" +  files.item().name);
+        copyFile(srcPath + "\\" + files.item().name, destPath + "\\" + files.item().name);
+    }
+    // iterate over the child folders in the folder
+    for (var subFlds = new Enumerator(folder.SubFolders) ; !subFlds.atEnd() ; subFlds.moveNext()) {
+        Log("Folder: " + srcPath + "\\" + subFlds.item().name);
+        exec('%comspec% /c xcopy /Y /E /I ' + srcPath + "\\" + subFlds.item().name + " " 
+            + destPath + "\\" + subFlds.item().name);
+    }
+}
+
+// delete desination items
+function removeCommonItems() {
+    var srcPath = repoRoot + '\\common-items';
+    var destPath = platformRoot + templatePath;
+    var folder = fso.GetFolder(srcPath);
+    // iterate over the files in the folder
+    for (var files = new Enumerator(folder.files) ; !files.atEnd() ; files.moveNext()) {
+        deleteFileIfExists(destPath + "\\" + files.item().name);
+    }
+    // iterate over the child folders in the folder
+    for (var subFlds = new Enumerator(folder.SubFolders) ; !subFlds.atEnd() ; subFlds.moveNext()) {
+        deleteFolderIfExists(destPath + "\\" + subFlds.item().name);
+    }
+}
+
 
 // packages templates into .zip
 function package_templates()
 {
+
     Log("Creating template .zip files ...");
     var templateOutFilename = repoRoot + '\\CordovaWP7_' + versionNum.replace(/\./g, '_') + '.zip';
     
@@ -165,6 +199,9 @@ function package_templates()
     deleteFileIfExists(platformRoot + templatePath + "\\CordovaWP7Solution.v11.suo");
 
     exec('%comspec% /c xcopy /Y /E /I ' + repoRoot + '\\Plugins ' + platformRoot + templatePath + '\\Plugins');
+
+    copyCommonItemsToTemplate();
+
     copyFile(repoRoot + '\\VERSION',platformRoot + templatePath);
 
     // update .vstemplate files for the template zips.
@@ -173,7 +210,6 @@ function package_templates()
 
     replaceInFile(platformRoot + templatePath + '\\MyTemplate.vstemplate', name_regex,  'CordovaWP7_' + versionNum.replace(/\./g, '_'));
     replaceInFile(platformRoot + templatePath + '\\MyTemplate.vstemplate', discript_regex,  "Cordova " + versionNum);
-
 
     zip_project(templateOutFilename, platformRoot + templatePath);
 
@@ -194,6 +230,7 @@ function package_templates()
 }
 
 function zip_project(zip_path, project_path) {
+
     // create empty ZIP file and open for adding
     var file = fso.CreateTextFile(zip_path, true);
 
@@ -235,10 +272,13 @@ function zip_project(zip_path, project_path) {
 
 // delete any unneeded files when finished
 function cleanUp() {
-
+    removeCommonItems();
+    deleteFileIfExists(platformRoot + templatePath + "\\VERSION");
+    deleteFolderIfExists(platformRoot + templatePath + '\\Plugins');
 }
 
 function parseArgs() {
+
     if(args.Count() > 0) {
 
         //Support help flags -help, --help, /? 
