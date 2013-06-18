@@ -196,7 +196,7 @@ function package_templates()
 
     deleteFileIfExists(platformRoot + templatePath + "\\CordovaWP8Solution.v11.suo");
 
-    exec('%comspec% /c xcopy /Y /E /I ' + repoRoot + '\\Plugins ' + platformRoot + templatePath + '\\Plugins');
+    //exec('%comspec% /c xcopy /Y /E /I ' + repoRoot + '\\Plugins ' + platformRoot + templatePath + '\\Plugins');
     
     copyCommonItemsToTemplate();
 
@@ -271,7 +271,6 @@ function zip_project(zip_path, project_path) {
 function cleanUp() {
     removeCommonItems();
     deleteFileIfExists(platformRoot + templatePath + "\\VERSION");
-    deleteFolderIfExists(platformRoot + templatePath + '\\Plugins');
 }
 
 function parseArgs() {
