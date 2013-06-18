@@ -74,7 +74,6 @@ var TristateUseDefault = -2, TristateTrue = -1, TristateFalse = 0;
 
 // returns the contents of a file
 function read(filename) {
-    WScript.Echo('Reading in ' + filename);
     if(fso.FileExists(filename))
     {
         var f=fso.OpenTextFile(filename, 1,2);
@@ -84,7 +83,7 @@ function read(filename) {
     }
     else
     {
-        WScript.StdErr.WriteLine('Cannot read non-existant file : ' + filename);
+        Log('Cannot read non-existant file : ' + filename,true);
         WScript.Quit(1);
     }
     return null;
@@ -99,15 +98,12 @@ function write(filename, contents) {
 
 // replaces the matches of regexp with replacement
 function replaceInFile(filename, regexp, replacement) {
-    //WScript.Echo("Replaceing with "+replacement+ " in:");
     var text = read(filename).replace(regexp,replacement);
-    //WScript.Echo(text);
     write(filename,text);
 }
 
 // executes a commmand in the shell
 function exec(command) {
-    Log("exec:" + command);
     var oShell=wscript_shell.Exec(command);
     var maxTime = 5000;
     while (oShell.Status === 0) {
@@ -148,7 +144,7 @@ function copyFile(src,dest) {
 }
 
 function copyCommonItemsToTemplate() {
-    var srcPath = repoRoot + '\\common-items';
+    var srcPath = repoRoot + '\\common';
     var destPath = platformRoot + templatePath;
     
     var folder = fso.GetFolder(srcPath);
@@ -159,7 +155,7 @@ function copyCommonItemsToTemplate() {
     }
     // iterate over the child folders in the folder
     for (var subFlds = new Enumerator(folder.SubFolders) ; !subFlds.atEnd() ; subFlds.moveNext()) {
-        Log("Folder: " + srcPath + "\\" + subFlds.item().name);
+        //Log("Folder: " + srcPath + "\\" + subFlds.item().name);
         exec('%comspec% /c xcopy /Y /E /I ' + srcPath + "\\" + subFlds.item().name + " " 
             + destPath + "\\" + subFlds.item().name);
     }
@@ -167,7 +163,7 @@ function copyCommonItemsToTemplate() {
 
 // delete desination items
 function removeCommonItems() {
-    var srcPath = repoRoot + '\\common-items';
+    var srcPath = repoRoot + '\\common';
     var destPath = platformRoot + templatePath;
     var folder = fso.GetFolder(srcPath);
     // iterate over the files in the folder
@@ -185,7 +181,7 @@ function removeCommonItems() {
 function package_templates()
 {
 
-    Log("Creating template .zip files ...");
+    Log("Creating template .zip files for wp7");
     var templateOutFilename = repoRoot + '\\CordovaWP7_' + versionNum.replace(/\./g, '_') + '.zip';
     
     // clear the destination
@@ -218,7 +214,6 @@ function package_templates()
         var template_dir = wscript_shell.ExpandEnvironmentStrings("%USERPROFILE%") + '\\Documents\\Visual Studio 2012\\Templates\\ProjectTemplates\\Testing';
         if(fso.FolderExists(template_dir ))
         {
-            Log("template_dir = " + template_dir);
             dest = shell.NameSpace(template_dir);
             dest.CopyHere(templateOutFilename, 4|20);
         }
@@ -243,15 +238,12 @@ function zip_project(zip_path, project_path) {
 
     // open .zip folder and copy contents of project_path to zip_path
     var zipFolder = shell.NameSpace(zip_path);
-    Log("zip_path = " + zip_path);
-    Log("zipFolder = " + zipFolder);
-    Log("project_path = " + project_path);
 
     var sourceItems = shell.NameSpace(project_path).items();
     if (zipFolder !== null) {
         zipFolder.CopyHere(sourceItems, 4|16|512|1024);
         var maxTime = 5000;
-        Log("sourceItems.Count = " + sourceItems.Count);
+        //Log("sourceItems.Count = " + sourceItems.Count);
         while(zipFolder.items().Count < sourceItems.Count)
         {
             maxTime -= 100;
@@ -263,7 +255,7 @@ function zip_project(zip_path, project_path) {
                 break;
             }
         }
-        Log("zipFolder.items().Count = " + zipFolder.items().Count);
+        //Log("zipFolder.items().Count = " + zipFolder.items().Count);
     }
     else {
         Log('Failed to create .zip file.', true);
