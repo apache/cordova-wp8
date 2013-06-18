@@ -23,23 +23,24 @@ var fso = WScript.CreateObject('Scripting.FileSystemObject'),
 
 //Set up directory structure of current release
 //arguments passed in
-var args = WScript.Arguments,
-    //Root folder of cordova-wp7 (i.e C:\Cordova\cordova-wp7)
-    ROOT = WScript.ScriptFullName.split('\\wp7\\tooling\\', 1),
-    //Sub folder containing templates
-    TEMPLATES_PATH = '\\template',
-    //Sub folder for standalone project
-    STANDALONE_PATH = TEMPLATES_PATH + '\\standalone',
-    //Sub folder containing framework
-    FRAMEWORK_PATH = '\\framework',
-    //Subfolder containing example project
-    EXAMPLE_PATH = '\\example',
-    //Path to cordovalib folder, containing source for .dll
-    CORDOVA_LIB = STANDALONE_PATH + '\\cordovalib',
-    //Get version number
-    VERSION='0.0.0';
+var args = WScript.Arguments;
 
-var ADD_TO_VS = false; // TODO: default is false
+var platformId = "wp7";
+var platformName = "WP7";
+
+//Root folder of cordova-windowsphone (i.e C:\Cordova\cordova-windowsphone)
+var repoRoot = WScript.ScriptFullName.split('\\wp7\\tooling\\', 1);
+
+//Sub folder containing templates
+var templatePath = '\\template';
+
+//Get version number
+var versionNum ='0.0.0';
+
+var platformRoot = WScript.ScriptFullName.split('\\tooling\\', 1);\
+
+//  set with the -install switch, default false 
+var addToVS = false; 
 
 // help function
 function Usage() {
@@ -154,34 +155,32 @@ function copyFile(src,dest) {
 function package_templates()
 {
     Log("Creating template .zip files ...");
-    var templateOutFilename = ROOT + '\\CordovaWP7_' + VERSION.replace(/\./g, '_') + '.zip';
+    var templateOutFilename = repoRoot + '\\CordovaWP7_' + versionNum.replace(/\./g, '_') + '.zip';
     
     // clear the destination
     deleteFileIfExists(templateOutFilename);
 
     // clean the template folder, if the project was opened in VS, it creates some useless cruft.
-    deleteFolderIfExists(ROOT + "\\WP7" + TEMPLATES_PATH + '\\Bin');
-    deleteFolderIfExists(ROOT + "\\WP7" + TEMPLATES_PATH + '\\obj');
-    deleteFolderIfExists(ROOT + "\\WP7" + TEMPLATES_PATH + '\\Service\ References');
+    deleteFolderIfExists(platformRoot + templatePath + '\\Bin');
+    deleteFolderIfExists(platformRoot + templatePath + '\\obj');
+    deleteFolderIfExists(platformRoot + templatePath + '\\Service\ References');
 
-    deleteFileIfExists(ROOT + "\\WP7" + TEMPLATES_PATH + "\\CordovaWP7Solution.v11.suo");
-    
+    deleteFileIfExists(platformRoot + templatePath + "\\CordovaWP7Solution.v11.suo");
 
-
-    exec('%comspec% /c xcopy /Y /E /I ' + ROOT + '\\Plugins ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\Plugins');
-    copyFile(ROOT + '\\VERSION',ROOT + "\\WP7" + TEMPLATES_PATH);
+    exec('%comspec% /c xcopy /Y /E /I ' + repoRoot + '\\Plugins ' + platformRoot + templatePath + '\\Plugins');
+    copyFile(repoRoot + '\\VERSION',platformRoot + templatePath);
 
     // update .vstemplate files for the template zips.
     var name_regex = /CordovaWP7[_](\d+)[_](\d+)[_](\d+)(rc\d)?/g;
     var discript_regex = /Cordova\s*(\d+)[.](\d+)[.](\d+)(rc\d)?/;
 
-    replaceInFile(ROOT + "\\WP7" + TEMPLATES_PATH + '\\MyTemplate.vstemplate', name_regex,  'CordovaWP7_' + VERSION.replace(/\./g, '_'));
-    replaceInFile(ROOT + "\\WP7" + TEMPLATES_PATH + '\\MyTemplate.vstemplate', discript_regex,  "Cordova " + VERSION);
+    replaceInFile(platformRoot + templatePath + '\\MyTemplate.vstemplate', name_regex,  'CordovaWP7_' + versionNum.replace(/\./g, '_'));
+    replaceInFile(platformRoot + templatePath + '\\MyTemplate.vstemplate', discript_regex,  "Cordova " + versionNum);
 
 
-    zip_project(templateOutFilename, ROOT + "\\wp7" + TEMPLATES_PATH);
+    zip_project(templateOutFilename, platformRoot + templatePath);
 
-    if(ADD_TO_VS)
+    if(addToVS)
     {
         var template_dir = wscript_shell.ExpandEnvironmentStrings("%USERPROFILE%") + '\\Documents\\Visual Studio 2012\\Templates\\ProjectTemplates\\Testing';
         if(fso.FolderExists(template_dir ))
@@ -237,13 +236,9 @@ function zip_project(zip_path, project_path) {
     }
 }
 
-// delete any unnessisary files when finished
+// delete any unneeded files when finished
 function cleanUp() {
 
-    //deleteFileIfExists(ROOT + STANDALONE_PATH + '\\MyTemplate.vstemplate');
-    //deleteFileIfExists(ROOT + STANDALONE_PATH + '\\__PreviewImage.jpg');
-    //deleteFileIfExists(ROOT + STANDALONE_PATH + '\\__TemplateIcon.png');
-  //Add any other cleanup here
 }
 
 function parseArgs() {
@@ -256,7 +251,7 @@ function parseArgs() {
             WScript.Quit(1);
         }
         else if(args(0).indexOf("-install") > -1) {
-            ADD_TO_VS = true;
+            addToVS = true;
         }
     }
 }
@@ -264,7 +259,6 @@ function parseArgs() {
 // MAIN
 parseArgs();
 // build/package the templates
-var versionNum = read(ROOT + "\\VERSION");
-Log("versionNum = " + versionNum);
-package_templates(ROOT);
+versionNum = read(repoRoot + "\\VERSION");
+package_templates(repoRoot);
 cleanUp();
