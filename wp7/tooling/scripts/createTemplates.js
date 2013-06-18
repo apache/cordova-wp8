@@ -25,9 +25,9 @@ var fso = WScript.CreateObject('Scripting.FileSystemObject'),
 //arguments passed in
 var args = WScript.Arguments,
     //Root folder of cordova-wp7 (i.e C:\Cordova\cordova-wp7)
-    ROOT = WScript.ScriptFullName.split('\\tooling\\', 1),
+    ROOT = WScript.ScriptFullName.split('\\wp7\\tooling\\', 1),
     //Sub folder containing templates
-    TEMPLATES_PATH = '\\templates',
+    TEMPLATES_PATH = '\\template',
     //Sub folder for standalone project
     STANDALONE_PATH = TEMPLATES_PATH + '\\standalone',
     //Sub folder containing framework
@@ -39,7 +39,7 @@ var args = WScript.Arguments,
     //Get version number
     VERSION='0.0.0';
 
-var ADD_TO_VS = true; // TODO: default is false
+var ADD_TO_VS = false; // TODO: default is false
 
 // help function
 function Usage() {
@@ -104,9 +104,17 @@ function replaceInFile(filename, regexp, replacement) {
 
 // executes a commmand in the shell
 function exec(command) {
+    Log("exec:" + command);
     var oShell=wscript_shell.Exec(command);
+    var maxTime = 5000;
     while (oShell.Status === 0) {
-        WScript.sleep(100);
+        if(maxTime > 0) {
+            maxTime -= 100;
+            WScript.sleep(100);
+        }
+        else {
+            Log("Exec timed out with command :: " + command);
+        }
     }
 }
 
@@ -137,27 +145,35 @@ function exec_verbose(command) {
 function package_templates()
 {
     Log("Creating template .zip files ...");
-
-    var template_path = ROOT + '\\CordovaWP7_' + VERSION.replace(/\./g, '_') + '.zip';
+    var templateOutFilename = ROOT + '\\CordovaWP7_' + VERSION.replace(/\./g, '_') + '.zip';
     
-    deleteFileIfExists(template_path);
+    deleteFileIfExists(templateOutFilename);
 
-    exec('%comspec% /c copy /Y ' + ROOT + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate ' + ROOT + STANDALONE_PATH + '\\MyTemplate.vstemplate');
-    exec('%comspec% /c copy /Y ' + ROOT + TEMPLATES_PATH + '\\vs\\pg_templateIcon.png ' + ROOT + STANDALONE_PATH + '\\__TemplateIcon.png');
-    exec('%comspec% /c copy /Y ' + ROOT + TEMPLATES_PATH + '\\vs\\pg_templatePreview.jpg ' + ROOT + STANDALONE_PATH + '\\__PreviewImage.jpg');
-    exec('%comspec% /c copy /Y ' + ROOT + '\\VERSION ' + ROOT + STANDALONE_PATH);
+    exec('xcopy /Y /E /I ' + ROOT + '\\Plugins ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\Plugins');
 
-    zip_project(template_path, ROOT + STANDALONE_PATH);
+    exec('%comspec% /c copy /Y ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\MyTemplate.vstemplate');
+    exec('%comspec% /c copy /Y ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\vs\\pg_templateIcon.png ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\__TemplateIcon.png');
+    exec('%comspec% /c copy /Y ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\vs\\pg_templatePreview.jpg ' + ROOT + "\\WP7" + TEMPLATES_PATH + '\\__PreviewImage.jpg');
+    exec('%comspec% /c copy /Y ' + ROOT + '\\VERSION ' + ROOT + "\\WP7" + TEMPLATES_PATH);
 
+    // update .vstemplate files for the template zips.
+    var name_regex = /CordovaWP7[_](\d+)[_](\d+)[_](\d+)(rc\d)?/g;
+    var discript_regex = /Cordova\s*(\d+)[.](\d+)[.](\d+)(rc\d)?/;
+
+    replaceInFile(ROOT + "\\WP7" + TEMPLATES_PATH + '\\MyTemplate.vstemplate', name_regex,  'CordovaWP7_' + VERSION.replace(/\./g, '_'));
+    replaceInFile(ROOT + "\\WP7" + TEMPLATES_PATH + '\\MyTemplate.vstemplate', discript_regex,  "Cordova " + VERSION);
+
+
+    zip_project(templateOutFilename, ROOT + "\\wp7" + TEMPLATES_PATH);
 
     if(ADD_TO_VS)
     {
-        var template_dir = wscript_shell.ExpandEnvironmentStrings("%USERPROFILE%") + '\\Documents\\Visual Studio 2012\\Templates\\ProjectTemplates';
+        var template_dir = wscript_shell.ExpandEnvironmentStrings("%USERPROFILE%") + '\\Documents\\Visual Studio 2012\\Templates\\ProjectTemplates\\Testing';
         if(fso.FolderExists(template_dir ))
         {
             Log("template_dir = " + template_dir);
-            //dest = shell.NameSpace(template_dir);
-            //dest.CopyHere(template_path, 4|20);
+            dest = shell.NameSpace(template_dir);
+            dest.CopyHere(templateOutFilename, 4|20);
         }
         else
         {
@@ -181,12 +197,13 @@ function zip_project(zip_path, project_path) {
     var zipFolder = shell.NameSpace(zip_path);
     Log("zip_path = " + zip_path);
     Log("zipFolder = " + zipFolder);
-    return;
+    Log("project_path = " + project_path);
 
     var sourceItems = shell.NameSpace(project_path).items();
     if (zipFolder !== null) {
-        zipFolder.CopyHere(sourceItems, 4|20|16);
+        zipFolder.CopyHere(sourceItems, 4|16|512|1024);
         var maxTime = 5000;
+        Log("sourceItems.Count = " + sourceItems.Count);
         while(zipFolder.items().Count < sourceItems.Count)
         {
             maxTime -= 100;
@@ -194,10 +211,11 @@ function zip_project(zip_path, project_path) {
                 WScript.Sleep(100);
             }
             else {
-                Log('Failed to create .zip file.', true);
+                Log('Timeout. Failed to create .zip file.', true);
                 break;
             }
         }
+        Log("zipFolder.items().Count = " + zipFolder.items().Count);
     }
     else {
         Log('Failed to create .zip file.', true);
@@ -207,14 +225,31 @@ function zip_project(zip_path, project_path) {
 // delete any unnessisary files when finished
 function cleanUp() {
 
-    deleteFileIfExists(ROOT + STANDALONE_PATH + '\\MyTemplate.vstemplate');
-    deleteFileIfExists(ROOT + STANDALONE_PATH + '\\__PreviewImage.jpg');
-    deleteFileIfExists(ROOT + STANDALONE_PATH + '\\__TemplateIcon.png');
+    //deleteFileIfExists(ROOT + STANDALONE_PATH + '\\MyTemplate.vstemplate');
+    //deleteFileIfExists(ROOT + STANDALONE_PATH + '\\__PreviewImage.jpg');
+    //deleteFileIfExists(ROOT + STANDALONE_PATH + '\\__TemplateIcon.png');
   //Add any other cleanup here
 }
 
+function parseArgs() {
+    if(args.Count() > 0) {
+
+        //Support help flags -help, --help, /? 
+        if(args(0).indexOf("-help") > -1 || 
+           args(0).indexOf("/?") > -1 ) {
+            Usage();
+            WScript.Quit(1);
+        }
+        else if(args(0).indexOf("-install") > -1) {
+            ADD_TO_VS = true;
+        }
+    }
+}
+
+// MAIN
+parseArgs();
 // build/package the templates
-var versionNum = read(ROOT + "\\..\\VERSION");
+var versionNum = read(ROOT + "\\VERSION");
 Log("versionNum = " + versionNum);
 package_templates(ROOT);
 cleanUp();
