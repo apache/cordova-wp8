@@ -174,7 +174,6 @@ function package_templates()
     replaceInFile(platformRoot + templatePath + '\\MyTemplate.vstemplate', name_regex,  'CordovaWP8_' + versionNum.replace(/\./g, '_'));
     replaceInFile(platformRoot + templatePath + '\\MyTemplate.vstemplate', discript_regex,  "Cordova " + versionNum);
 
-
     zip_project(templateOutFilename, platformRoot + templatePath);
 
     if(addToVS)
