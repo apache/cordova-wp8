@@ -6718,3 +6718,5 @@ window.cordova = require('cordova');
         finishPluginLoading();
     }
 }(window));
+
+})();
