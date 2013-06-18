@@ -25,9 +25,6 @@ var fso = WScript.CreateObject('Scripting.FileSystemObject'),
 //arguments passed in
 var args = WScript.Arguments;
 
-var platformId = "wp7";
-var platformName = "WP7";
-
 //Root folder of cordova-windowsphone (i.e C:\Cordova\cordova-windowsphone)
 var repoRoot = WScript.ScriptFullName.split('\\wp7\\tooling\\', 1);
 
