@@ -1,4 +1,4 @@
-﻿// Platform: windowsphone
+// Platform: windowsphone
 // 2.8.0rc1-0-g22bc4d8
 /*
  Licensed to the Apache Software Foundation (ASF) under one
@@ -6718,6 +6718,3 @@ window.cordova = require('cordova');
         finishPluginLoading();
     }
 }(window));
-
-
-})();
