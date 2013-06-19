@@ -162,7 +162,7 @@ function create(path, namespace, name) {
 
     if (name != "CordovaWP7AppProj") {
         var valid_name = name.replace(/(\.\s|\s\.|\s+|\.+)/g, '_');
-        replaceInFile(path + "\\CordovaSolution.sln", /CordovaAppProj/g, valid_name);
+        replaceInFile(path + "\\CordovaWP7Solution.sln", /CordovaWP7AppProj/g, valid_name);
         // rename project and solution
         exec('%comspec% /c ren ' + path + "\\CordovaWP7Solution.sln " + valid_name + '.sln');
         exec('%comspec% /c ren ' + path + "\\CordovaWP7AppProj.csproj " + valid_name + '.csproj');
