@@ -211,7 +211,7 @@ function package_templates()
 
     if(addToVS)
     {
-        var template_dir = wscript_shell.ExpandEnvironmentStrings("%USERPROFILE%") + '\\Documents\\Visual Studio 2012\\Templates\\ProjectTemplates\\Testing';
+        var template_dir = wscript_shell.ExpandEnvironmentStrings("%USERPROFILE%") + '\\Documents\\Visual Studio 2012\\Templates\\ProjectTemplates';
         if(fso.FolderExists(template_dir ))
         {
             dest = shell.NameSpace(template_dir);
