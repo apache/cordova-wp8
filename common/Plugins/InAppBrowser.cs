@@ -176,8 +176,11 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 try
                 {
+#if WP8
                     browser.GoForward();
-                    //browser.InvokeScript("execScript", "history.forward();");
+#else
+                    browser.InvokeScript("execScript", "history.forward();");
+#endif
                 }
                 catch (Exception)
                 {
@@ -192,8 +195,11 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 try
                 {
+#if WP8
                     browser.GoBack();
-                    //browser.InvokeScript("execScript", "history.back();");
+#else           
+                    browser.InvokeScript("execScript", "history.back();");
+#endif
                 }
                 catch (Exception)
                 {
@@ -239,12 +245,14 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         void browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
+#if WP8
             if (browser != null)
             {
                 backButton.IsEnabled = browser.CanGoBack;
                 fwdButton.IsEnabled = browser.CanGoForward;
 
             }
+#endif
             string message = "{\"type\":\"loadstop\", \"url\":\"" + e.Uri.AbsoluteUri + "\"}";
             PluginResult result = new PluginResult(PluginResult.Status.OK, message);
             result.KeepCallback = true;
