@@ -18,62 +18,77 @@
 # under the License.
 #
 -->
-Apache Cordova for Windows Phone 8
+
+
+Apache Cordova for Windows Phone 8 ( and Windows Phone 7.1)
 ===
 
-- Apache Cordova WP8 is a .net application library that lets you create Apache Cordova applications targeting Windows Phone 8 devices.
-- Apache Cordova based applications are, at the core, an application written with web technology: HTML, CSS and JavaScript.
+The Windows Phone 7 and Windows Phone 8 Cordova codebases are being merged to reduce redundancy.  This repo includes code to build Apache Cordova applications that target either Windows Phone SDK.
+
+An Apache Cordova based applications is, at the core, an application written with web technology: HTML, CSS and JavaScript.
 
 [Apache Cordova][] is a project at The Apache Software Foundation (ASF).
 
 Requires
 ---
 
+- [Windows Phone SDK 7.1][]
+-- to target Windows Phone 7 devices. (WP7 apps will also run on WP8 devices, in compatibility mode) 
+
 - [Windows Phone SDK 8][]
+-- to target Windows Phone 8 devices
+-- Windows Phone 8 development requires Windows 8 Professional, and Visual Studio 2012 ( express works )
 
 
-Getting Started from Visual Studio Project Template
+Getting Started 
 ---
 
-- Create the Visual Studio Cordova Starter Template
-    - Open the file templates\standalone\CordovaSolution.sln in Visual Studio
-    - From the file menu, select 'Export Template...' 
-    - Choose template type 'Project template'
-    - Give the exported template a name, ex. CordovaStarter-x.x.x will produce CordovaStarter-x.x.x.zip
-- Visual Studio will put a copy of CordovaStarter-x.x.x.zip in \My Documents\Visual Studio 2012\Templates\ProjectTemplates\
-    - if you prefer, you may add the project instead to the "Silverlight for Windows Phone" subfolder of "Visual C#".  This is up to you, and only affects where the project template is shown when creating a new project. Also, You may need to create this folder.
-- Launch Visual Studio 2012 and select to create a new project
-    - CordovaStarter should be listed under Templates->Other Languages->Visual C#
-    - Give your new project a name
-        - Note: The description will let you know the version of Cordova you are targetting, if you have multiple templates.
-    - If you do not see it, you may have to select the top level 'Visual C#' to see it or use the search box and type "Cordova"
-- Build and Run it!
+There are 2 ways to go about creating a new Apache Cordova WP7 or WP8 application.
 
+### Run the batch file to create and install the templates.
+
+
+- The root of the repo contains a file createTemplates.bat.  Double clicking this file will generate 2 .zip files. (CordovaWP7_x_x_x.zip + CordovaWP8_x_x_x.zip where x.x.x is the current version number)  To easily use these files in Visual Studio, copy them to 
+"My Documents\Visual Studio 2012\Templates\ProjectTemplates\" You will then be able to create new Apache Cordova Windows Phone apps from the Visual Studio File->New Project menu.
+- If you run the batch file from the command line, you can also call with a parameter to install automatically
+
+Run the script :
+
+    >createTemplates.bat -install
+
+## Use the create scripts on the command line
 
 Gettings Started from command line
 ---
 
-    >.\bin\create PathTONewProject [ PackageName ] [ AppName ]
+    >.\wp7\bin\create PathToNewProject [ PackageName ] [ AppName ]
+    >.\wp8\bin\create PathToNewProject [ PackageName ] [ AppName ]
 
-    >PathTONewProject : The path to where you wish to create the project
+    >PathToNewProject : The path to where you wish to create the project
     >PackageName      : The namespace for the project (default is Cordova.Example)
-    >AppName          : The name of the application (default is CordovaAppProj)
+    >AppName          : The name of the application (default is CordovaWP8AppProj or CordovaWP7AppProj)
 
     >examples:
-    >.\bin\create C:\Users\anonymous\Desktop\MyProject
-    >.\bin\create C:\Users\anonymous\Desktop\MyProject io.cordova.example CordovaApp
+    >.\wp7\bin\create C:\Users\anonymous\Desktop\MyWP7Project
+    >.\wp8\bin\create C:\Users\anonymous\Desktop\MyWP8Proj io.cordova.example CordovaWP8App
 
-    Launch Visual Studio and open Solution file (C:\Users\anonymous\Desktop\MyProject\MyProject.sln)
+    Launch Visual Studio and open Solution file (.sln) in (C:\Users\anonymous\Desktop\MyWP7Project)
 
     Built and Run it
 
+Important!!!
+---
+
+When you add or remove files/folders in the www folder you will need to do the following :
+
+- ensure the new item is included in the project ( Content ) This includes ALL images/css/html/js/* and anything that you want available at runtime.
+- For WP7 Projects, do not modify the CordovaSourceDictionary.xml file which is included in the project, it is auto-generated for you when you build.
 
 
 Known Problem Areas
 ---
 
-- Many of the Media APIs will not function as expected when debugging while connect to the device with the Zune software.
-- To get around this, you need to use the Windows Phone Connect tool. For details, please check out this [MSDN blog article][Tips for debugging WP7 media apps with WPConnect].
+- Some of the Media APIs will not function as expected when debugging while connect to the device with the Zune software. To get around this, you need to use the Windows Phone Connect tool. For details, please check out this [MSDN blog article][Tips for debugging WP7 media apps with WPConnect].
 
 
 BUGS?
@@ -88,7 +103,7 @@ Further Reading
 - [Apache Cordova Documentation][]
 - [Apache Cordova Wiki][]
 
-
+[Windows Phone SDK 7.1]: http://www.microsoft.com/en-us/download/details.aspx?id=27570 "Download Windows Phone SDK 7"
 [Windows Phone SDK 8]: http://www.microsoft.com/en-us/download/details.aspx?id=35471 "Download Windows Phone SDK 8"
 [Tips for debugging WP7 media apps with WPConnect]: http://blogs.msdn.com/b/jaimer/archive/2010/11/03/tips-for-debugging-wp7-media-apps-with-wpconnect.aspx "Tips for debugging WP7 media apps with WPConnect"
 
