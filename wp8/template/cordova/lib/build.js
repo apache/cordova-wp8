@@ -85,6 +85,19 @@ function is_cordova_project(path) {
     return false;
 }
 
+function get_solution_name(path) {
+    if (fso.FolderExists(path)) {
+        var proj_folder = fso.GetFolder(path);
+        var proj_files = new Enumerator(proj_folder.Files);
+        for (;!proj_files.atEnd(); proj_files.moveNext()) {
+            if (fso.GetExtensionName(proj_files.item()) == 'sln') {
+                return proj_files.item();
+            }
+        }
+    }
+    return null;
+}
+
 // builds the project and .xap in release mode
 function build_xap_release(path) {
     Log("Building Cordova-WP8 Project:");
@@ -92,7 +105,7 @@ function build_xap_release(path) {
     Log("\tDirectory : " + path);
     
     wscript_shell.CurrentDirectory = path;
-    exec_verbose('msbuild /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release');
+    exec_verbose('msbuild ' + get_solution_name(path) + ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release');
     
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Release')) {
@@ -116,7 +129,7 @@ function build_xap_debug(path) {
     Log("\tDirectory : " + path);
     
     wscript_shell.CurrentDirectory = path;
-    exec_verbose('msbuild /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug');
+    exec_verbose('msbuild ' + get_solution_name(path) + ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug');
     
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Debug')) {
