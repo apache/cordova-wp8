@@ -1,5 +1,5 @@
-﻿// Platform: windowsphone
-// 2.9.0rc1-0-g002f33d
+// Platform: windowsphone
+// 2.8.0rc1-0-g22bc4d8
 /*
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -19,7 +19,7 @@
  under the License.
 */
 ;(function() {
-var CORDOVA_JS_BUILD_LABEL = '2.9.0rc1-0-g002f33d';
+var CORDOVA_JS_BUILD_LABEL = '2.8.0rc1-0-g22bc4d8';
 // file: lib/scripts/require.js
 
 var require,
@@ -2206,7 +2206,11 @@ function initRead(reader, file) {
     reader._error = null;
     reader._readyState = FileReader.LOADING;
 
-    if (typeof file.fullPath == 'string') {
+    if (typeof file == 'string') {
+        // Deprecated in Cordova 2.4.
+        console.warn('Using a string argument with FileReader.readAs functions is deprecated.');
+        reader._fileName = file;
+    } else if (typeof file.fullPath == 'string') {
         reader._fileName = file.fullPath;
     } else {
         reader._fileName = '';
@@ -2869,31 +2873,9 @@ FileWriter.prototype.abort = function() {
 /**
  * Writes data to the file
  *
- * @param data text or blob to be written
+ * @param text to be written
  */
-FileWriter.prototype.write = function(data) {
-
-    var isBinary = false;
-
-    // If we don't have Blob or ArrayBuffer support, don't bother.
-    if (typeof window.Blob !== 'undefined' && typeof window.ArrayBuffer !== 'undefined') {
-
-        // Check to see if the incoming data is a blob
-        if (data instanceof Blob) {
-            var that=this;
-            var fileReader = new FileReader();
-            fileReader.onload = function() {
-                // Call this method again, with the arraybuffer as argument
-                FileWriter.prototype.write.call(that, this.result);
-            };
-            fileReader.readAsArrayBuffer(data);
-            return;
-        }
-
-        // Mark data type for safer transport over the binary bridge
-        isBinary = (data instanceof ArrayBuffer);
-    }
-
+FileWriter.prototype.write = function(text) {
     // Throw an exception if we are already writing a file
     if (this.readyState === FileWriter.WRITING) {
         throw new FileError(FileError.INVALID_STATE_ERR);
@@ -2959,7 +2941,7 @@ FileWriter.prototype.write = function(data) {
             if (typeof me.onwriteend === "function") {
                 me.onwriteend(new ProgressEvent("writeend", {"target":me}));
             }
-        }, "File", "write", [this.fileName, data, this.position, isBinary]);
+        }, "File", "write", [this.fileName, text, this.position]);
 };
 
 /**
@@ -3144,9 +3126,6 @@ InAppBrowser.prototype = {
     },
     close: function (eventname) {
         exec(null, null, "InAppBrowser", "close", []);
-    },
-    show: function (eventname) {
-      exec(null, null, "InAppBrowser", "show", []);
     },
     addEventListener: function (eventname,f) {
         if (eventname in this.channels) {
@@ -4346,6 +4325,7 @@ function Device() {
     this.available = false;
     this.platform = null;
     this.version = null;
+    this.name = null;
     this.uuid = null;
     this.cordova = null;
     this.model = null;
@@ -4361,6 +4341,7 @@ function Device() {
             me.available = true;
             me.platform = info.platform;
             me.version = info.version;
+            me.name = info.name;
             me.uuid = info.uuid;
             me.cordova = buildLabel;
             me.model = info.model;
@@ -5761,130 +5742,187 @@ modulemapper.clobbers('cordova/plugin/splashscreen', 'navigator.splashscreen');
 
 // file: lib/windowsphone/plugin/windowsphone/DOMStorage/plugininit.js
 define("cordova/plugin/windowsphone/DOMStorage/plugininit", function(require, exports, module) {
-(function(win, doc) {
-    var docDomain = null;
-    try {
-        docDomain = doc.domain;
-    } catch (err) {}
-    if (!docDomain || docDomain.length === 0) {
-        var DOMStorage = function(type) {
-            if (type == "sessionStorage") {
-                this._type = type;
-            }
-            Object.defineProperty(this, "length", {
-                configurable: true,
-                get: function() {
-                    return this.getLength();
-                }
-            });
-        };
-        DOMStorage.prototype = {
-            _type: "localStorage",
-            _result: null,
-            keys: null,
-            onResult: function(key, valueStr) {
-                if (!this.keys) {
-                    this.keys = [];
-                }
-                this._result = valueStr;
-            },
-            onKeysChanged: function(jsonKeys) {
-                this.keys = JSON.parse(jsonKeys);
-                var key;
-                for (var n = 0, len = this.keys.length; n < len; n++) {
-                    key = this.keys[n];
-                    if (!this.hasOwnProperty(key)) {
-                        Object.defineProperty(this, key, {
-                            configurable: true,
-                            get: function() {
-                                return this.getItem(key);
-                            },
-                            set: function(val) {
-                                return this.setItem(key, val);
-                            }
-                        });
-                    }
-                }
-            },
-            initialize: function() {
-                window.external.Notify("DOMStorage/" + this._type + "/load/keys");
-            },
-            getLength: function() {
-                if (!this.keys) {
-                    this.initialize();
-                }
-                return this.keys.length;
-            },
-            key: function(n) {
-                if (!this.keys) {
-                    this.initialize();
-                }
-                if (n >= this.keys.length) {
-                    return null;
-                } else {
-                    return this.keys[n];
-                }
-            },
-            getItem: function(key) {
-                if (!this.keys) {
-                    this.initialize();
-                }
-                var retVal = null;
-                if (this.keys.indexOf(key) > -1) {
-                    window.external.Notify("DOMStorage/" + this._type + "/get/" + key);
-                    retVal = window.unescape(decodeURIComponent(this._result));
-                    this._result = null;
-                }
-                return retVal;
-            },
-            setItem: function(key, value) {
-                if (!this.keys) {
-                    this.initialize();
-                }
-                window.external.Notify("DOMStorage/" + this._type + "/set/" + key + "/" + encodeURIComponent(window.escape(value)));
-            },
-            removeItem: function(key) {
-                if (!this.keys) {
-                    this.initialize();
-                }
-                var index = this.keys.indexOf(key);
-                if (index > -1) {
-                    this.keys.splice(index, 1);
-                    window.external.Notify("DOMStorage/" + this._type + "/remove/" + key);
-                    delete this[key];
-                }
-            },
-            clear: function() {
-                if (!this.keys) {
-                    this.initialize();
-                }
-                for (var n = 0, len = this.keys.length; n < len; n++) {
-                    delete this[this.keys[n]];
-                }
+
+(function(win,doc) {
+
+var docDomain = null;
+try {
+    docDomain = doc.domain;
+} catch (err) {
+    //console.log("caught exception trying to access document.domain");
+}
+
+// conditionally patch the window.localStorage and window.sessionStorage objects
+if (!docDomain || docDomain.length === 0) {
+
+    var DOMStorage = function(type) {
+        // default type is local
+        if(type == "sessionStorage") {
+            this._type = type;
+        }
+        Object.defineProperty( this, "length", {
+            configurable: true,
+            get: function(){ return this.getLength(); }
+        });
+    };
+
+    DOMStorage.prototype = {
+        _type:"localStorage",
+        _result:null,
+        keys:null,
+
+        onResult:function(key,valueStr) {
+            if(!this.keys) {
                 this.keys = [];
-                window.external.Notify("DOMStorage/" + this._type + "/clear/");
             }
-        };
-        if (typeof window.localStorage === "undefined") {
-            Object.defineProperty(window, "localStorage", {
-                writable: false,
-                configurable: false,
-                value: new DOMStorage("localStorage")
-            });
-            window.localStorage.initialize();
+            this._result = valueStr;
+        },
+
+        onKeysChanged:function(jsonKeys) {
+            this.keys = JSON.parse(jsonKeys);
+
+            var key;
+            for(var n = 0,len = this.keys.length; n < len; n++) {
+                key = this.keys[n];
+                if(!this.hasOwnProperty(key)) {
+                    Object.defineProperty( this, key, {
+                        configurable: true,
+                        get: function(){ return this.getItem(key); },
+                        set: function(val){ return this.setItem(key,val); }
+                    });
+                }
+            }
+
+        },
+
+        initialize:function() {
+            window.external.Notify("DOMStorage/" + this._type + "/load/keys");
+        },
+
+    /*
+        The length attribute must return the number of key/value pairs currently present
+        in the list associated with the object.
+    */
+        getLength:function() {
+            if(!this.keys) {
+                this.initialize();
+            }
+            return this.keys.length;
+        },
+
+    /*
+        The key(n) method must return the name of the nth key in the list.
+        The order of keys is user-agent defined, but must be consistent within an object so long as the number of keys doesn't change.
+        (Thus, adding or removing a key may change the order of the keys, but merely changing the value of an existing key must not.)
+        If n is greater than or equal to the number of key/value pairs in the object, then this method must return null.
+    */
+        key:function(n) {
+            if(!this.keys) {
+                this.initialize();
+            }
+
+            if(n >= this.keys.length) {
+                return null;
+            } else {
+                return this.keys[n];
+            }
+        },
+
+    /*
+        The getItem(key) method must return the current value associated with the given key.
+        If the given key does not exist in the list associated with the object then this method must return null.
+    */
+        getItem:function(key) {
+            if(!this.keys) {
+                this.initialize();
+            }
+
+            var retVal = null;
+            if(this.keys.indexOf(key) > -1) {
+                window.external.Notify("DOMStorage/" + this._type + "/get/" + key);
+                retVal = window.unescape(decodeURIComponent(this._result));
+                this._result = null;
+            }
+            return retVal;
+        },
+    /*
+        The setItem(key, value) method must first check if a key/value pair with the given key already exists
+        in the list associated with the object.
+        If it does not, then a new key/value pair must be added to the list, with the given key and with its value set to value.
+        If the given key does exist in the list, then it must have its value updated to value.
+        If it couldn't set the new value, the method must raise an QUOTA_EXCEEDED_ERR exception.
+        (Setting could fail if, e.g., the user has disabled storage for the site, or if the quota has been exceeded.)
+    */
+        setItem:function(key,value) {
+            if(!this.keys) {
+                this.initialize();
+            }
+            window.external.Notify("DOMStorage/" + this._type + "/set/" + key + "/" + encodeURIComponent(window.escape(value)));
+        },
+
+    /*
+        The removeItem(key) method must cause the key/value pair with the given key to be removed from the list
+        associated with the object, if it exists.
+        If no item with that key exists, the method must do nothing.
+    */
+        removeItem:function(key) {
+            if(!this.keys) {
+                this.initialize();
+            }
+            var index = this.keys.indexOf(key);
+            if(index > -1) {
+                this.keys.splice(index,1);
+                // TODO: need sanity check for keys ? like 'clear','setItem', ...
+                window.external.Notify("DOMStorage/" + this._type + "/remove/" + key);
+                delete this[key];
+            }
+        },
+
+    /*
+        The clear() method must atomically cause the list associated with the object to be emptied of all
+        key/value pairs, if there are any.
+        If there are none, then the method must do nothing.
+    */
+        clear:function() {
+            if(!this.keys) {
+                this.initialize();
+            }
+
+            for(var n=0,len=this.keys.length; n < len;n++) {
+                // TODO: do we need a sanity check for keys ? like 'clear','setItem', ...
+                delete this[this.keys[n]];
+            }
+            this.keys = [];
+            window.external.Notify("DOMStorage/" + this._type + "/clear/");
         }
-        if (typeof window.sessionStorage === "undefined") {
-            Object.defineProperty(window, "sessionStorage", {
-                writable: false,
-                configurable: false,
-                value: new DOMStorage("sessionStorage")
-            });
-            window.sessionStorage.initialize();
-        }
+    };
+
+    // initialize DOMStorage
+
+    if (typeof window.localStorage === "undefined") {
+
+        Object.defineProperty(window, "localStorage", {
+            writable: false,
+            configurable: false,
+            value: new DOMStorage("localStorage")
+        });
+        window.localStorage.initialize();
     }
+
+    if (typeof window.sessionStorage === "undefined") {
+        Object.defineProperty(window, "sessionStorage", {
+            writable: false,
+            configurable: false,
+            value: new DOMStorage("sessionStorage")
+        });
+        window.sessionStorage.initialize();
+    }
+}
+
 })(window, document);
 
 module.exports = null;
+
 });
 
 // file: lib/windowsphone/plugin/windowsphone/FileTransfer.js
@@ -6029,193 +6067,242 @@ module.exports = FileUploadOptions;
 
 // file: lib/windowsphone/plugin/windowsphone/XHRPatch/plugininit.js
 define("cordova/plugin/windowsphone/XHRPatch/plugininit", function(require, exports, module) {
-var LocalFileSystem = require("cordova/plugin/LocalFileSystem");
 
-(function(win, doc) {
-    var docDomain = null;
-    try {
-        docDomain = doc.domain;
-    } catch (err) {}
-    if (!docDomain || docDomain.length === 0) {
-        var aliasXHR = win.XMLHttpRequest;
-        win.XMLHttpRequest = function() {};
-        win.XMLHttpRequest.noConflict = aliasXHR;
-        win.XMLHttpRequest.UNSENT = 0;
-        win.XMLHttpRequest.OPENED = 1;
-        win.XMLHttpRequest.HEADERS_RECEIVED = 2;
-        win.XMLHttpRequest.LOADING = 3;
-        win.XMLHttpRequest.DONE = 4;
-        win.XMLHttpRequest.prototype = {
-            UNSENT: 0,
-            OPENED: 1,
-            HEADERS_RECEIVED: 2,
-            LOADING: 3,
-            DONE: 4,
-            isAsync: false,
-            onreadystatechange: null,
-            readyState: 0,
-            _url: "",
-            timeout: 0,
-            withCredentials: false,
-            _requestHeaders: null,
-            open: function(reqType, uri, isAsync, user, password) {
-                if (uri && uri.indexOf("http") === 0) {
-                    if (!this.wrappedXHR) {
-                        this.wrappedXHR = new aliasXHR();
-                        var self = this;
-                        if (this.timeout > 0) {
-                            this.wrappedXHR.timeout = this.timeout;
+// TODO: the build process will implicitly wrap this in a define() call
+// with a closure of its own; do you need this extra closure?
+
+var LocalFileSystem = require('cordova/plugin/LocalFileSystem');
+
+(function (win, doc) {
+
+var docDomain = null;
+try {
+    docDomain = doc.domain;
+} catch (err) {
+    //console.log("caught exception trying to access document.domain");
+}
+
+if (!docDomain || docDomain.length === 0) {
+
+    var aliasXHR = win.XMLHttpRequest;
+
+    win.XMLHttpRequest = function () { };
+    win.XMLHttpRequest.noConflict = aliasXHR;
+    win.XMLHttpRequest.UNSENT = 0;
+    win.XMLHttpRequest.OPENED = 1;
+    win.XMLHttpRequest.HEADERS_RECEIVED = 2;
+    win.XMLHttpRequest.LOADING = 3;
+    win.XMLHttpRequest.DONE = 4;
+
+    win.XMLHttpRequest.prototype = {
+        UNSENT: 0,
+        OPENED: 1,
+        HEADERS_RECEIVED: 2,
+        LOADING: 3,
+        DONE: 4,
+
+        isAsync: false,
+        onreadystatechange: null,
+        readyState: 0,
+        _url: "",
+        timeout: 0,
+        withCredentials: false,
+        _requestHeaders: null,
+        open: function (reqType, uri, isAsync, user, password) {
+
+            if (uri && uri.indexOf("http") === 0) {
+                if (!this.wrappedXHR) {
+                    this.wrappedXHR = new aliasXHR();
+                    var self = this;
+
+                    // timeout
+                    if (this.timeout > 0) {
+                        this.wrappedXHR.timeout = this.timeout;
+                    }
+                    Object.defineProperty(this, "timeout", {
+                        set: function (val) {
+                            this.wrappedXHR.timeout = val;
+                        },
+                        get: function () {
+                            return this.wrappedXHR.timeout;
                         }
-                        Object.defineProperty(this, "timeout", {
-                            set: function(val) {
-                                this.wrappedXHR.timeout = val;
-                            },
-                            get: function() {
-                                return this.wrappedXHR.timeout;
-                            }
-                        });
-                        if (this.withCredentials) {
-                            this.wrappedXHR.withCredentials = this.withCredentials;
+                    });
+
+
+
+                    if (this.withCredentials) {
+                        this.wrappedXHR.withCredentials = this.withCredentials;
+                    }
+                    Object.defineProperty(this, "withCredentials", {
+                        set: function (val) {
+                            this.wrappedXHR.withCredentials = val;
+                        },
+                        get: function () {
+                            return this.wrappedXHR.withCredentials;
                         }
-                        Object.defineProperty(this, "withCredentials", {
-                            set: function(val) {
-                                this.wrappedXHR.withCredentials = val;
-                            },
-                            get: function() {
-                                return this.wrappedXHR.withCredentials;
-                            }
-                        });
-                        Object.defineProperty(this, "status", {
-                            get: function() {
-                                return this.wrappedXHR.status;
-                            }
-                        });
-                        Object.defineProperty(this, "responseText", {
-                            get: function() {
-                                return this.wrappedXHR.responseText;
-                            }
-                        });
-                        Object.defineProperty(this, "statusText", {
-                            get: function() {
-                                return this.wrappedXHR.statusText;
-                            }
-                        });
-                        Object.defineProperty(this, "responseXML", {
-                            get: function() {
-                                return this.wrappedXHR.responseXML;
-                            }
-                        });
-                        this.getResponseHeader = function(header) {
-                            return this.wrappedXHR.getResponseHeader(header);
-                        };
-                        this.getAllResponseHeaders = function() {
-                            return this.wrappedXHR.getAllResponseHeaders();
-                        };
-                        this.wrappedXHR.onreadystatechange = function() {
-                            self.changeReadyState(self.wrappedXHR.readyState);
-                        };
+                    });
+
+
+                    Object.defineProperty(this, "status", { get: function () {
+                        return this.wrappedXHR.status;
                     }
-                    return this.wrappedXHR.open(reqType, uri, isAsync, user, password);
-                } else {
-                    var newUrl = uri;
-                    if (newUrl.indexOf(":/") > -1) {
-                        newUrl = newUrl.split(":/")[1];
+                    });
+                    Object.defineProperty(this, "responseText", { get: function () {
+                        return this.wrappedXHR.responseText;
                     }
-                    if (newUrl.indexOf("app/www/") < 0 && this.getContentLocation() == this.contentLocation.ISOLATED_STORAGE) {
-                        newUrl = "app/www/" + newUrl;
+                    });
+                    Object.defineProperty(this, "statusText", { get: function () {
+                        return this.wrappedXHR.statusText;
                     }
-                    if (newUrl.lastIndexOf("/") === newUrl.length - 1) {
-                        newUrl += "index.html";
+                    });
+
+                    Object.defineProperty(this, "responseXML", { get: function () {
+                        return this.wrappedXHR.responseXML;
                     }
-                    this._url = newUrl;
-                }
-            },
-            statusText: "",
-            changeReadyState: function(newState) {
-                this.readyState = newState;
-                if (this.onreadystatechange) {
-                    this.onreadystatechange();
-                }
-            },
-            setRequestHeader: function(header, value) {
-                if (this.wrappedXHR) {
-                    this.wrappedXHR.setRequestHeader(header, value);
-                }
-            },
-            getResponseHeader: function(header) {
-                return this.wrappedXHR ? this.wrappedXHR.getResponseHeader(header) : "";
-            },
-            getAllResponseHeaders: function() {
-                return this.wrappedXHR ? this.wrappedXHR.getAllResponseHeaders() : "";
-            },
-            responseText: "",
-            responseXML: "",
-            onResult: function(res) {
-                this.status = 200;
-                if (typeof res == "object") {
-                    res = JSON.stringify(res);
-                }
-                this.responseText = res;
-                this.responseXML = res;
-                this.changeReadyState(this.DONE);
-            },
-            onError: function(err) {
-                this.status = 404;
-                this.changeReadyState(this.DONE);
-            },
-            abort: function() {
-                if (this.wrappedXHR) {
-                    return this.wrappedXHR.abort();
-                }
-            },
-            send: function(data) {
-                if (this.wrappedXHR) {
-                    return this.wrappedXHR.send(data);
-                } else {
-                    this.changeReadyState(this.OPENED);
-                    var alias = this;
-                    var fail = function fail(evt) {
-                        alias.onError(evt.code);
+                    });
+
+                    this.getResponseHeader = function (header) {
+                        return this.wrappedXHR.getResponseHeader(header);
                     };
-                    if (alias.getContentLocation() == this.contentLocation.RESOURCES) {
-                        var exec = require("cordova/exec");
-                        exec(function(result) {
-                            alias.onResult.apply(alias, [ result ]);
-                        }, fail, "File", "readResourceAsText", [ alias._url ]);
-                    } else {
-                        var gotFile = function gotFile(file) {
-                            var reader = new FileReader();
-                            reader.onloadend = function(evt) {
-                                alias.onResult.apply(alias, [ evt.target.result ]);
-                            };
-                            reader.readAsText(file);
-                        };
-                        var gotEntry = function gotEntry(entry) {
-                            entry.file(gotFile, fail);
-                        };
-                        var gotFS = function gotFS(fs) {
-                            fs.root.getFile(alias._url, null, gotEntry, fail);
-                        };
-                        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
-                    }
+                    this.getAllResponseHeaders = function () {
+                        return this.wrappedXHR.getAllResponseHeaders();
+                    };
+
+                    this.wrappedXHR.onreadystatechange = function () {
+                        self.changeReadyState(self.wrappedXHR.readyState);
+                    };
                 }
-            },
-            getContentLocation: function() {
-                if (window.contentLocation === undefined) {
-                    window.contentLocation = navigator.userAgent.toUpperCase().indexOf("MSIE 10") > -1 ? this.contentLocation.RESOURCES : this.contentLocation.ISOLATED_STORAGE;
+                return this.wrappedXHR.open(reqType, uri, isAsync, user, password);
+            }
+            else {
+                // x-wmapp1://app/www/page2.html
+                // need to work some magic on the actual url/filepath
+                var newUrl = uri;
+                if (newUrl.indexOf(":/") > -1) {
+                    newUrl = newUrl.split(":/")[1];
                 }
-                return window.contentLocation;
-            },
-            contentLocation: {
-                ISOLATED_STORAGE: 0,
-                RESOURCES: 1
-            },
-            status: 404
-        };
-    }
+                // prefix relative urls to our physical root
+                if(newUrl.indexOf("app/www/") < 0 && this.getContentLocation() == this.contentLocation.ISOLATED_STORAGE)
+                {
+                    newUrl = "app/www/" + newUrl;
+                }
+
+                if (newUrl.lastIndexOf("/") === newUrl.length - 1) {
+                    newUrl += "index.html"; // default page is index.html, when call is to a dir/ ( why not ...? )
+                }
+                this._url = newUrl;
+            }
+        },
+        statusText: "",
+        changeReadyState: function (newState) {
+            this.readyState = newState;
+            if (this.onreadystatechange) {
+                this.onreadystatechange();
+            }
+        },
+        setRequestHeader: function (header, value) {
+            if (this.wrappedXHR) {
+                this.wrappedXHR.setRequestHeader(header, value);
+            }
+        },
+        getResponseHeader: function (header) {
+            return this.wrappedXHR ? this.wrappedXHR.getResponseHeader(header) : "";
+        },
+        getAllResponseHeaders: function () {
+            return this.wrappedXHR ? this.wrappedXHR.getAllResponseHeaders() : "";
+        },
+        responseText: "",
+        responseXML: "",
+        onResult: function (res) {
+            this.status = 200;
+            if(typeof res == "object")
+            {   // callback result handler may have already parsed this from a string-> a JSON object,
+                // if so, we need to restore its stringyness, as handlers are expecting string data.
+                // especially if used with jQ -> $.getJSON
+                res = JSON.stringify(res);
+            }
+            this.responseText = res;
+            this.responseXML = res;
+            this.changeReadyState(this.DONE);
+        },
+        onError: function (err) {
+            this.status = 404;
+            this.changeReadyState(this.DONE);
+        },
+
+        abort: function () {
+            if (this.wrappedXHR) {
+                return this.wrappedXHR.abort();
+            }
+        },
+
+        send: function (data) {
+            if (this.wrappedXHR) {
+                return this.wrappedXHR.send(data);
+            }
+            else {
+                this.changeReadyState(this.OPENED);
+
+                var alias = this;
+
+                var fail = function fail(evt) {
+                    alias.onError(evt.code);
+                };
+
+                if (alias.getContentLocation() == this.contentLocation.RESOURCES) {
+                    var exec = require('cordova/exec');
+                    exec(function(result) {
+                            alias.onResult.apply(alias, [result]);
+                        },
+                        fail,
+                        "File", "readResourceAsText", [alias._url]
+                    );
+                }
+                else {
+                    var gotFile = function gotFile(file) {
+                        var reader = new FileReader();
+                        reader.onloadend = function (evt) {
+                            alias.onResult.apply(alias,[evt.target.result]);
+                        };
+                        reader.readAsText(file);
+                    };
+
+                    var gotEntry = function gotEntry(entry) {
+                        entry.file(gotFile, fail);
+                    };
+
+                    var gotFS = function gotFS(fs) {
+                        fs.root.getFile(alias._url, null, gotEntry, fail);
+                    };
+
+                    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+                }
+            }
+        },
+
+        getContentLocation: function () {
+            if (window.contentLocation === undefined) {
+                window.contentLocation = (navigator.userAgent.toUpperCase().indexOf('MSIE 10') > -1) ?
+                    this.contentLocation.RESOURCES : this.contentLocation.ISOLATED_STORAGE;
+            }
+
+            return window.contentLocation;
+        },
+
+        contentLocation:{
+            ISOLATED_STORAGE: 0,
+            RESOURCES: 1
+        },
+
+        status: 404
+    };
+} // if doc domain
+
+// end closure wrap
 })(window, document);
 
 module.exports = null;
+
 });
 
 // file: lib/windowsphone/plugin/windowsphone/console.js
@@ -6446,11 +6533,6 @@ window.cordova = require('cordova');
 // file: lib/scripts/bootstrap.js
 
 (function (context) {
-    if (context._cordovaJsLoaded) {
-        throw new Error('cordova.js included multiple times.');
-    }
-    context._cordovaJsLoaded = true;
-
     var channel = require('cordova/channel');
     var platformInitChannelsArray = [channel.onNativeReady, channel.onPluginsReady];
 
@@ -6539,21 +6621,11 @@ window.cordova = require('cordova');
         }
     }
 
-    function scriptErrorCallback(err) {
-        // Open Question: If a script path specified in cordova_plugins.js does not exist, do we fail for all?
-        // this is currently just continuing.
-        scriptCounter--;
-        if (scriptCounter === 0) {
-            onScriptLoadingComplete && onScriptLoadingComplete();
-        }
-    }
-
     // Helper function to inject a <script> tag.
     function injectScript(path) {
         scriptCounter++;
         var script = document.createElement("script");
         script.onload = scriptLoadedCallback;
-        script.onerror = scriptErrorCallback;
         script.src = path;
         document.head.appendChild(script);
     }
@@ -6565,10 +6637,10 @@ window.cordova = require('cordova');
         context.cordova.require('cordova/channel').onPluginsReady.fire();
     }
 
-    // Handler for the cordova_plugins.js content.
+    // Handler for the cordova_plugins.json content.
     // See plugman's plugin_loader.js for the details of this object.
     // This function is only called if the really is a plugins array that isn't empty.
-    // Otherwise the onerror response handler will just call finishPluginLoading().
+    // Otherwise the XHR response handler will just call finishPluginLoading().
     function handlePluginsObject(modules, path) {
         // First create the callback for when all plugins are loaded.
         var mapper = context.cordova.require('cordova/modulemapper');
@@ -6576,30 +6648,25 @@ window.cordova = require('cordova');
             // Loop through all the plugins and then through their clobbers and merges.
             for (var i = 0; i < modules.length; i++) {
                 var module = modules[i];
-                if (module) {
-                    try { 
-                        if (module.clobbers && module.clobbers.length) {
-                            for (var j = 0; j < module.clobbers.length; j++) {
-                                mapper.clobbers(module.id, module.clobbers[j]);
-                            }
-                        }
+                if (!module) continue;
 
-                        if (module.merges && module.merges.length) {
-                            for (var k = 0; k < module.merges.length; k++) {
-                                mapper.merges(module.id, module.merges[k]);
-                            }
-                        }
+                if (module.clobbers && module.clobbers.length) {
+                    for (var j = 0; j < module.clobbers.length; j++) {
+                        mapper.clobbers(module.id, module.clobbers[j]);
+                    }
+                }
 
-                        // Finally, if runs is truthy we want to simply require() the module.
-                        // This can be skipped if it had any merges or clobbers, though,
-                        // since the mapper will already have required the module.
-                        if (module.runs && !(module.clobbers && module.clobbers.length) && !(module.merges && module.merges.length)) {
-                            context.cordova.require(module.id);
-                        }
+                if (module.merges && module.merges.length) {
+                    for (var k = 0; k < module.merges.length; k++) {
+                        mapper.merges(module.id, module.merges[k]);
                     }
-                    catch(err) {
-                        // error with module, most likely clobbers, should we continue?
-                    }
+                }
+
+                // Finally, if runs is truthy we want to simply require() the module.
+                // This can be skipped if it had any merges or clobbers, though,
+                // since the mapper will already have required the module.
+                if (module.runs && !(module.clobbers && module.clobbers.length) && !(module.merges && module.merges.length)) {
+                    context.cordova.require(module.id);
                 }
             }
 
@@ -6623,33 +6690,6 @@ window.cordova = require('cordova');
             break;
         }
     }
-
-    var plugins_json = path + 'cordova_plugins.json';
-    var plugins_js = path + 'cordova_plugins.js';
-
-    // One some phones (Windows) this xhr.open throws an Access Denied exception
-    // So lets keep trying, but with a script tag injection technique instead of XHR
-    var injectPluginScript = function injectPluginScript() {
-        try {
-            var script = document.createElement("script");
-            script.onload = function(){
-                var list = cordova.require("cordova/plugin_list");
-                handlePluginsObject(list,path);
-            };
-            script.onerror = function() {
-                // Error loading cordova_plugins.js, file not found or something
-                // this is an acceptable error, pre-3.0.0, so we just move on.
-                finishPluginLoading();
-            };
-            script.src = plugins_js;
-            document.head.appendChild(script);
-
-        } catch(err){
-            finishPluginLoading();
-        }
-    } 
-
-
     // Try to XHR the cordova_plugins.json file asynchronously.
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
@@ -6668,18 +6708,15 @@ window.cordova = require('cordova');
         }
     };
     xhr.onerror = function() {
-        // In this case, the json file was not present, but XHR was allowed, 
-        // so we should still try the script injection technique with the js file
-        // in case that is there.
-        injectPluginScript();
+        finishPluginLoading();
     };
+    var plugins_json = path + 'cordova_plugins.json';
     try { // we commented we were going to try, so let us actually try and catch
         xhr.open('GET', plugins_json, true); // Async
         xhr.send();
     } catch(err){
-        injectPluginScript();
+        finishPluginLoading();
     }
 }(window));
-
 
 })();
