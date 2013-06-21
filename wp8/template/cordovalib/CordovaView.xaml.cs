@@ -1,15 +1,15 @@
 /*  
-	Licensed under the Apache License, Version 2.0 (the "License");
-	you may not use this file except in compliance with the License.
-	You may obtain a copy of the License at
-	
-	http://www.apache.org/licenses/LICENSE-2.0
-	
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 */
 
 using System;
@@ -74,7 +74,6 @@ namespace WPCordovaClassLib
         private NativeExecution nativeExecution;
 
         protected BrowserMouseHelper bmHelper;
-        protected DOMStorageHelper domStorageHelper;
         protected OrientationHelper orientationHelper;
 
         private ConfigHandler configHandler;
@@ -122,7 +121,7 @@ namespace WPCordovaClassLib
                 }
             }
         }
-       
+
         /// <summary>
         /// Gets or sets whether to suppress bouncy scrolling of
         /// the WebBrowser control;
@@ -172,8 +171,8 @@ namespace WPCordovaClassLib
                 else
                 {
                     this.StartPageUri = new Uri(AppRoot + "www/" + configHandler.ContentSrc, UriKind.Relative);
-                } 
-            }         
+                }
+            }
 
             nativeExecution = new NativeExecution(ref this.CordovaBrowser);
             bmHelper = new BrowserMouseHelper(ref this.CordovaBrowser);
@@ -230,9 +229,6 @@ namespace WPCordovaClassLib
             // prevents refreshing web control to initial state during pages transitions
             if (this.IsBrowserInitialized) return;
 
-
-
-            this.domStorageHelper = new DOMStorageHelper(this.CordovaBrowser);
 
             try
             {
@@ -395,7 +391,7 @@ namespace WPCordovaClassLib
             string[] autoloadPlugs = this.configHandler.AutoloadPlugins;
             foreach (string plugName in autoloadPlugs)
             {
-               //nativeExecution.ProcessCommand(commandCallParams); 
+                //nativeExecution.ProcessCommand(commandCallParams); 
             }
 
             string nativeReady = "(function(){ cordova.require('cordova/channel').onNativeReady.fire()})();";
@@ -442,12 +438,7 @@ namespace WPCordovaClassLib
         {
             string commandStr = e.Value;
 
-            if (commandStr.IndexOf("DOMStorage") == 0)
-            {
-                this.domStorageHelper.HandleStorageCommand(commandStr);
-                return;
-            }
-            else if (commandStr.IndexOf("Orientation") == 0)
+            if (commandStr.IndexOf("Orientation") == 0)
             {
                 this.orientationHelper.HandleCommand(commandStr);
                 return;
@@ -466,7 +457,7 @@ namespace WPCordovaClassLib
                 {
                     case "overridebackbutton":
                         string arg0 = JsonHelper.Deserialize<string[]>(commandCallParams.Args)[0];
-                        this.OverrideBackButton = (arg0 != null && arg0.Length > 0 && arg0.ToLower() == "true"); 
+                        this.OverrideBackButton = (arg0 != null && arg0.Length > 0 && arg0.ToLower() == "true");
                         break;
                 }
             }
@@ -478,7 +469,7 @@ namespace WPCordovaClassLib
                 }
                 else
                 {
-                    Debug.WriteLine("Error::Plugin not allowed in config.xml. " + commandCallParams.Service); 
+                    Debug.WriteLine("Error::Plugin not allowed in config.xml. " + commandCallParams.Service);
                 }
             }
         }

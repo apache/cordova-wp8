@@ -131,7 +131,6 @@
     <Compile Include="cordovalib\CordovaView.xaml.cs">
       <DependentUpon>CordovaView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="cordovalib\DOMStorageHelper.cs" />
     <Compile Include="cordovalib\JSON\JsonHelper.cs" />
     <Compile Include="cordovalib\NativeExecution.cs" />
     <Compile Include="cordovalib\OrientationHelper.cs" />
