@@ -146,7 +146,6 @@ namespace WPCordovaClassLib.Cordova
                 //    new Thread(methodInvokation).Start();
                 //}
 
-
             }
             catch (Exception ex)
             {
