@@ -36,8 +36,8 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         private class NotifBoxData
         {
-            public NotificationBox previous;
-            public string callbackId;
+            public NotificationBox previous {get;set;}
+            public string callbackId { get; set; }
         }
 
         private PhoneApplicationPage Page
