@@ -230,6 +230,7 @@
     <Compile Include="..\template\cordovalib\ScriptCallback.cs">
       <Link>CordovaLib\ScriptCallback.cs</Link>
     </Compile>
+    <Compile Include="CordovaLib\XHRProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
