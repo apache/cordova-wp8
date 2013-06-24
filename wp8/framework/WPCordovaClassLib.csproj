@@ -119,6 +119,84 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\common\Plugins\Accelerometer.cs">
+      <Link>Plugins\Accelerometer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\AudioFormatsHelper.cs">
+      <Link>Plugins\AudioFormatsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\AudioPlayer.cs">
+      <Link>Plugins\AudioPlayer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Battery.cs">
+      <Link>Plugins\Battery.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Camera.cs">
+      <Link>Plugins\Camera.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Capture.cs">
+      <Link>Plugins\Capture.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Compass.cs">
+      <Link>Plugins\Compass.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Contacts.cs">
+      <Link>Plugins\Contacts.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\DebugConsole.cs">
+      <Link>Plugins\DebugConsole.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Device.cs">
+      <Link>Plugins\Device.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\File.cs">
+      <Link>Plugins\File.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\FileTransfer.cs">
+      <Link>Plugins\FileTransfer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\GeoLocation.cs">
+      <Link>Plugins\GeoLocation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Globalization.cs">
+      <Link>Plugins\Globalization.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\ImageExifHelper.cs">
+      <Link>Plugins\ImageExifHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\InAppBrowser.cs">
+      <Link>Plugins\InAppBrowser.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Media.cs">
+      <Link>Plugins\Media.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\MimeTypeMapper.cs">
+      <Link>Plugins\MimeTypeMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\NetworkStatus.cs">
+      <Link>Plugins\NetworkStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\Notification.cs">
+      <Link>Plugins\Notification.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\UI\AudioCaptureTask.cs">
+      <Link>Plugins\UI\AudioCaptureTask.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\UI\AudioRecorder.xaml.cs">
+      <Link>Plugins\UI\AudioRecorder.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\UI\ImageCapture.xaml.cs">
+      <Link>Plugins\UI\ImageCapture.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\UI\NotificationBox.xaml.cs">
+      <Link>Plugins\UI\NotificationBox.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\UI\VideoCaptureTask.cs">
+      <Link>Plugins\UI\VideoCaptureTask.cs</Link>
+    </Compile>
+    <Compile Include="..\..\common\Plugins\UI\VideoRecorder.xaml.cs">
+      <Link>Plugins\UI\VideoRecorder.xaml.cs</Link>
+    </Compile>
     <Compile Include="..\template\cordovalib\BrowserMouseHelper.cs">
       <Link>CordovaLib\BrowserMouseHelper.cs</Link>
     </Compile>
@@ -181,6 +259,26 @@
     <Resource Include="resources\notification-beep.wav" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="..\..\common\Plugins\UI\AudioRecorder.xaml">
+      <Link>Plugins\UI\AudioRecorder.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\common\Plugins\UI\ImageCapture.xaml">
+      <Link>Plugins\UI\ImageCapture.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\common\Plugins\UI\NotificationBox.xaml">
+      <Link>Plugins\UI\NotificationBox.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\common\Plugins\UI\VideoRecorder.xaml">
+      <Link>Plugins\UI\VideoRecorder.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="..\template\cordovalib\CordovaView.xaml">
       <Link>CordovaLib\CordovaView.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
