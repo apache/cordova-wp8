@@ -59,6 +59,7 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="OrientationHelper.cs">OrientationHelper.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="PluginResult.cs">PluginResult.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="ScriptCallback.cs">ScriptCallback.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="XHRProxy.cs">XHRProxy.cs</ProjectItem>
       </Folder>
       <Folder Name="Images" TargetFolderName="Images">
         <ProjectItem ReplaceParameters="false" TargetFileName="appbar.back.rest.png">appbar.back.rest.png</ProjectItem>

@@ -65,6 +65,7 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="OrientationHelper.cs">OrientationHelper.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="PluginResult.cs">PluginResult.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="ScriptCallback.cs">ScriptCallback.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="XHRProxy.cs">XHRProxy.cs</ProjectItem>
       </Folder>
       <ProjectItem ReplaceParameters="true" TargetFileName="CordovaSourceDictionary.xml">CordovaSourceDictionary.xml</ProjectItem>
       <Folder Name="Images" TargetFolderName="Images">
