@@ -77,6 +77,7 @@ namespace WPCordovaClassLib
 
         protected DOMStorageHelper domStorageHelper;
         protected OrientationHelper orientationHelper;
+        protected XHRProxy xhrProxy;
 
         private ConfigHandler configHandler;
 
@@ -167,6 +168,7 @@ namespace WPCordovaClassLib
             // initializes native execution logic
             nativeExecution = new NativeExecution(ref this.CordovaBrowser);
             bmHelper = new BrowserMouseHelper(ref this.CordovaBrowser);
+            xhrProxy = new XHRProxy(ref this.CordovaBrowser);
         }
 
 
@@ -431,6 +433,11 @@ namespace WPCordovaClassLib
             else if (commandStr.IndexOf("Orientation") == 0)
             {
                 this.orientationHelper.HandleCommand(commandStr);
+                return;
+            }
+            else if (commandStr.IndexOf("XHRLOCAL") == 0)
+            {
+                // XHRProxy listens for this itself
                 return;
             }
 

@@ -133,17 +133,18 @@ namespace WPCordovaClassLib.Cordova
                     }
                 };
 
-                if ((bc is File) || (bc is Accelerometer))
-                {
-                    // Due to some issues with the IsolatedStorage in current version of WP8 SDK we have to run all File Api commands synchronously.
-                    // TODO: test this in WP8 RTM
-                    methodInvokation.Invoke();
-                }
-                else
-                {
-                    new Thread(methodInvokation).Start();
-                }
+                //if ((bc is File) || (bc is Accelerometer))
+                //{
+                //    // Due to some issues with the IsolatedStorage in current version of WP8 SDK we have to run all File Api commands synchronously.
+                //    // TODO: test this in WP8 RTM
+                //    methodInvokation.Invoke();
+                //}
+                //else
+                //{
+                //    new Thread(methodInvokation).Start();
+                //}
 
+                new Thread(methodInvokation).Start();
 
             }
             catch (Exception ex)
