@@ -1,13 +1,13 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
-    <Name>CordovaWP8_0_0_0</Name>
+    <Name>CordovaWP8_9_9_9</Name>
     <Description>Starter project for building a Cordova app for Windows Phone 8 version: 0.0.0</Description>
     <ProjectType>CSharp</ProjectType>
     <ProjectSubType>
     </ProjectSubType>
     <SortOrder>1000</SortOrder>
     <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>CordovaWP8_0_0_0</DefaultName>
+    <DefaultName>CordovaWP8_9_9_9</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <LocationField>Enabled</LocationField>
     <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
@@ -51,7 +51,7 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="CordovaCommandCall.cs">CordovaCommandCall.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="CordovaView.xaml">CordovaView.xaml</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="CordovaView.xaml.cs">CordovaView.xaml.cs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="DOMStorageHelper.cs">DOMStorageHelper.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="IBrowserDecorator.cs">IBrowserDecorator.cs</ProjectItem>
         <Folder Name="JSON" TargetFolderName="JSON">
           <ProjectItem ReplaceParameters="true" TargetFileName="JsonHelper.cs">JsonHelper.cs</ProjectItem>
         </Folder>
@@ -59,7 +59,7 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="OrientationHelper.cs">OrientationHelper.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="PluginResult.cs">PluginResult.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="ScriptCallback.cs">ScriptCallback.cs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="XHRProxy.cs">XHRProxy.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="XHRHelper.cs">XHRHelper.cs</ProjectItem>
       </Folder>
       <Folder Name="Images" TargetFolderName="Images">
         <ProjectItem ReplaceParameters="false" TargetFileName="appbar.back.rest.png">appbar.back.rest.png</ProjectItem>

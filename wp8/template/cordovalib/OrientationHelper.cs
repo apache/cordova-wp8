@@ -23,28 +23,31 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
+using WPCordovaClassLib.CordovaLib;
 
 namespace WPCordovaClassLib.Cordova
 {
-    public class OrientationHelper
+    public class OrientationHelper : IBrowserDecorator
     {
-        protected WebBrowser CordovaBrowser;
-        protected PhoneApplicationPage Page;
+        public WebBrowser Browser { get; set; }
+
+        public PhoneApplicationPage Page
+        {
+            get
+            {
+                PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+                if (frame != null)
+                {
+                    return frame.Content as PhoneApplicationPage;
+                }
+                return null;
+            }
+        }
+
         // private PageOrientation CurrentOrientation = PageOrientation.PortraitUp;
         //private PageOrientation[] SupportedOrientations; // TODO:
 
-        public OrientationHelper(WebBrowser browser, PhoneApplicationPage page)
-        {
-            CordovaBrowser = browser;
-            Page = page;
-
-            Page.OrientationChanged += new EventHandler<OrientationChangedEventArgs>(page_OrientationChanged);
-            CordovaBrowser.LoadCompleted += new System.Windows.Navigation.LoadCompletedEventHandler(browser_LoadCompleted);
-
-
-        }
-
-        void browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        public void InjectScript()
         {
             int i = 0;
 
@@ -65,12 +68,11 @@ namespace WPCordovaClassLib.Cordova
                     i = 90;
                     break;
             }
-            // Cordova.fireEvent('orientationchange', window);
             string jsCallback = String.Format("window.orientation = {0};", i);
 
             try
             {
-                CordovaBrowser.InvokeScript("execScript", jsCallback);
+                Browser.InvokeScript("execScript", new string[] { jsCallback });
             }
             catch (Exception)
             {
@@ -104,23 +106,24 @@ namespace WPCordovaClassLib.Cordova
             try
             {
 
-                CordovaBrowser.InvokeScript("execScript", jsCallback);
+                Browser.InvokeScript("execScript", new string[] { jsCallback });
 
                 jsCallback = "var evt = document.createEvent('HTMLEvents');";
                 jsCallback += "evt.initEvent( 'orientationchange', true, false );";
                 jsCallback += "window.dispatchEvent(evt);";
                 jsCallback += "if(window.onorientationchange){window.onorientationchange(evt);}";
 
-                CordovaBrowser.InvokeScript("execScript", jsCallback);
+                Browser.InvokeScript("execScript", new string[] {jsCallback});
             }
             catch (Exception)
             {
             }
         }
 
-        public void HandleCommand(string commandStr)
+        public bool HandleCommand(string commandStr)
         {
-
+            // No commands are currently accepted.
+            return true;
         }
     }
 

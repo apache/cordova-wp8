@@ -10,19 +10,13 @@ using System.Windows;
 
 namespace WPCordovaClassLib.CordovaLib
 {
-    public class XHRProxy
+    public class XHRHelper : IBrowserDecorator
     {
 
-        private WebBrowser webBrowser;
+        public WebBrowser Browser { get; set; }
+        public PhoneApplicationPage Page { get; set; }
 
-        public XHRProxy(ref WebBrowser browser) 
-        {
-            this.webBrowser = browser;
-            browser.ScriptNotify += browser_ScriptNotify;
-            browser.Navigated += browser_Navigated;
-        }
-
-        void browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        public void InjectScript() 
         {
 
 
@@ -207,16 +201,11 @@ namespace WPCordovaClassLib.CordovaLib
 })(window, document); ";
 
 
-            webBrowser.InvokeScript("execScript", new string[] { script });
-
-
+            Browser.InvokeScript("execScript", new string[] { script });
         }
 
-        void browser_ScriptNotify(object sender, NotifyEventArgs e)
+        public bool HandleCommand(string commandStr) 
         {
-            Debug.WriteLine("ScriptNotify::" + e.Value);
-            string commandStr = e.Value;
-
             if (commandStr.IndexOf("XHRLOCAL") == 0)
             {
                 string url = commandStr.Replace("XHRLOCAL/", "");
@@ -230,8 +219,8 @@ namespace WPCordovaClassLib.CordovaLib
                         using (TextReader reader = new StreamReader(isoFile.OpenFile(uri.AbsolutePath, FileMode.Open, FileAccess.Read)))
                         {
                             string text = reader.ReadToEnd();
-                            webBrowser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
-                            return;
+                            Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
+                            return true;
                         }
                     }       
                 }
@@ -243,19 +232,21 @@ namespace WPCordovaClassLib.CordovaLib
                 if (resource == null)
                 {
                     // 404 ? 
-                    webBrowser.InvokeScript("__onXHRLocalCallback", new string[] { "404" });
-                    return;
+                    Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404" });
+                    return true;
                 }
                 else 
                 {
                     using (StreamReader streamReader = new StreamReader(resource.Stream))
                     {
                         string text = streamReader.ReadToEnd();
-                        webBrowser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
-                        return;
+                        Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
+                        return true;
                     }
                 }
             }
+
+            return false;
         }
     }
 }

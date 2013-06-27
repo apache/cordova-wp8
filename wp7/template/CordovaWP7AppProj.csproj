@@ -93,15 +93,14 @@
       <DependentUpon>CordovaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="cordovalib\DOMStorageHelper.cs" />
+    <Compile Include="cordovalib\IBrowserDecorator.cs" />
     <Compile Include="cordovalib\ImageExifHelper.cs" />
     <Compile Include="cordovalib\JSON\JsonHelper.cs" />
     <Compile Include="cordovalib\NativeExecution.cs" />
     <Compile Include="cordovalib\OrientationHelper.cs" />
     <Compile Include="cordovalib\PluginResult.cs" />
     <Compile Include="cordovalib\ScriptCallback.cs" />
-    <Compile Include="cordovalib\MimeTypeMapper.cs" />
-    <Compile Include="cordovalib\DebugConsole.cs" />
-    <Compile Include="cordovalib\XHRProxy.cs" />
+    <Compile Include="cordovalib\XHRHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

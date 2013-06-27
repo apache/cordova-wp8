@@ -155,9 +155,6 @@
     <Compile Include="..\..\common\Plugins\UI\VideoRecorder.xaml.cs">
       <Link>Plugins\UI\VideoRecorder.xaml.cs</Link>
     </Compile>
-    <Compile Include="..\..\wp8\template\cordovalib\XHRProxy.cs">
-      <Link>CordovaLib\XHRProxy.cs</Link>
-    </Compile>
     <Compile Include="..\template\cordovalib\BaseCommand.cs">
       <Link>CordovaLib\BaseCommand.cs</Link>
     </Compile>
@@ -179,6 +176,9 @@
     <Compile Include="..\template\cordovalib\DOMStorageHelper.cs">
       <Link>CordovaLib\DOMStorageHelper.cs</Link>
     </Compile>
+    <Compile Include="..\template\cordovalib\IBrowserDecorator.cs">
+      <Link>CordovaLib\IBrowserDecorator.cs</Link>
+    </Compile>
     <Compile Include="..\template\cordovalib\ImageExifHelper.cs">
       <Link>CordovaLib\ImageExifHelper.cs</Link>
     </Compile>
@@ -196,6 +196,9 @@
     </Compile>
     <Compile Include="..\template\cordovalib\ScriptCallback.cs">
       <Link>CordovaLib\ScriptCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\template\cordovalib\XHRHelper.cs">
+      <Link>CordovaLib\XHRHelper.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

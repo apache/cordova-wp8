@@ -215,6 +215,9 @@
     <Compile Include="..\template\cordovalib\CordovaView.xaml.cs">
       <Link>CordovaLib\CordovaView.xaml.cs</Link>
     </Compile>
+    <Compile Include="..\template\cordovalib\IBrowserDecorator.cs">
+      <Link>CordovaLib\IBrowserDecorator.cs</Link>
+    </Compile>
     <Compile Include="..\template\cordovalib\JSON\JsonHelper.cs">
       <Link>CordovaLib\JSON\JsonHelper.cs</Link>
     </Compile>
@@ -230,8 +233,8 @@
     <Compile Include="..\template\cordovalib\ScriptCallback.cs">
       <Link>CordovaLib\ScriptCallback.cs</Link>
     </Compile>
-    <Compile Include="..\template\cordovalib\XHRProxy.cs">
-      <Link>CordovaLib\XHRProxy.cs</Link>
+    <Compile Include="..\template\cordovalib\XHRHelper.cs">
+      <Link>CordovaLib\XHRHelper.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

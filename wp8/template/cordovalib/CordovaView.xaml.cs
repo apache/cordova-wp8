@@ -74,10 +74,10 @@ namespace WPCordovaClassLib
         private NativeExecution nativeExecution;
 
         protected BrowserMouseHelper bmHelper;
-        protected OrientationHelper orientationHelper;
-        protected XHRProxy xhrProxy;
 
         private ConfigHandler configHandler;
+
+        private Dictionary<string, IBrowserDecorator> browserDecorators;
 
         public System.Windows.Controls.Grid _LayoutRoot
         {
@@ -94,6 +94,8 @@ namespace WPCordovaClassLib
                 return CordovaBrowser;
             }
         }
+
+
 
         /*
          * Setting StartPageUri only has an effect if called before the view is loaded.
@@ -175,12 +177,31 @@ namespace WPCordovaClassLib
                 }
             }
 
+            browserDecorators = new Dictionary<string, IBrowserDecorator>();
+
             nativeExecution = new NativeExecution(ref this.CordovaBrowser);
             bmHelper = new BrowserMouseHelper(ref this.CordovaBrowser);
-            xhrProxy = new XHRProxy(ref this.CordovaBrowser);
+
+
+            CreateDecorators();
         }
 
+        /*
+         *   browserDecorators are a collection of plugin-like classes (IBrowserDecorator) that add some bit of functionality to the browser.
+         *   These are somewhat different than plugins in that they are usually not async and patch a browser feature that we would 
+         *   already expect to have.  Essentially these are browser polyfills that are patched from the outside in.
+         * */
+        void CreateDecorators()
+        {
+            XHRHelper xhrProxy = new XHRHelper();
+            xhrProxy.Browser = CordovaBrowser;
+            browserDecorators.Add("XHRLOCAL", xhrProxy);
 
+            OrientationHelper orientHelper = new OrientationHelper();
+            orientHelper.Browser = CordovaBrowser;
+            browserDecorators.Add("Orientation", orientHelper);
+
+        }
 
         void AppClosing(object sender, ClosingEventArgs e)
         {
@@ -345,9 +366,6 @@ namespace WPCordovaClassLib
                 if (page != null)
                 {
                     page.BackKeyPress += new EventHandler<CancelEventArgs>(page_BackKeyPress);
-
-                    this.orientationHelper = new OrientationHelper(this.CordovaBrowser, page);
-
                 }
             }
         }
@@ -390,6 +408,7 @@ namespace WPCordovaClassLib
 
         void CordovaBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
+            Debug.WriteLine("CordovaBrowser_LoadCompleted");
             string[] autoloadPlugs = this.configHandler.AutoloadPlugins;
             foreach (string plugName in autoloadPlugs)
             {
@@ -440,14 +459,11 @@ namespace WPCordovaClassLib
         {
             string commandStr = e.Value;
 
-            if (commandStr.IndexOf("Orientation") == 0)
+            string commandName = commandStr.Split('/').FirstOrDefault();
+
+            if (browserDecorators.ContainsKey(commandName))
             {
-                this.orientationHelper.HandleCommand(commandStr);
-                return;
-            }
-            else if (commandStr.IndexOf("XHRLOCAL") == 0)
-            {
-                // XHRProxy listens for this itself
+                browserDecorators[commandName].HandleCommand(commandStr);
                 return;
             }
 
@@ -505,7 +521,10 @@ namespace WPCordovaClassLib
 
         private void CordovaBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            Debug.WriteLine("CordovaBrowser_Navigated :: " + e.Uri.ToString());
+           foreach(IBrowserDecorator iBD in browserDecorators.Values)
+           {
+               iBD.InjectScript();
+           }
         }
 
 
