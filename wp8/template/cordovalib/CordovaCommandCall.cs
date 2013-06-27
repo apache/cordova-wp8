@@ -44,7 +44,7 @@ namespace WPCordovaClassLib.Cordova
         /// <returns>New class instance or null of string does not represent Cordova command</returns>
         public static CordovaCommandCall Parse(string commandStr)
         {
-            System.Diagnostics.Debug.WriteLine("CommandString : " + commandStr);
+            //System.Diagnostics.Debug.WriteLine("CommandString : " + commandStr);
             if (string.IsNullOrEmpty(commandStr))
             {
                 return null;
