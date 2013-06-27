@@ -30,18 +30,21 @@ namespace WPCordovaClassLib.Cordova.Commands
     public class DebugConsole : BaseCommand
     {
         // warn, error
-        public void log(string msg)
+        public void log(string args)
         {
+            string msg = JSON.JsonHelper.Deserialize<string[]>(args)[0];
             Debug.WriteLine("Log:" + msg);
         }
 
-        public void error(string msg)
+        public void error(string args)
         {
+            string msg = JSON.JsonHelper.Deserialize<string[]>(args)[0];
             Debug.WriteLine("Error:" + msg);
         }
 
-        public void warn(string msg)
+        public void warn(string args)
         {
+            string msg = JSON.JsonHelper.Deserialize<string[]>(args)[0];
             Debug.WriteLine("Warn:" + msg);
         }
 
