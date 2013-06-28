@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using Microsoft.Phone.Controls;
 using System.Linq;
 using WPCordovaClassLib.Cordova.JSON;
+using WPCordovaClassLib.CordovaLib;
 
 /*
  * Translates DOMStorage API between JS and Isolated Storage
@@ -35,13 +36,11 @@ using WPCordovaClassLib.Cordova.JSON;
 
 namespace WPCordovaClassLib
 {
-    public class DOMStorageHelper
+    public class DOMStorageHelper : IBrowserDecorator
     {
-        protected WebBrowser webBrowser1;
-
-        public DOMStorageHelper(WebBrowser gapBrowser)
+        public WebBrowser Browser { get; set; }
+        public DOMStorageHelper()
         {
-            this.webBrowser1 = gapBrowser;
             // always clear session at creation
             UserSettings["sessionStorage"] = new Dictionary<string, string>();
 
@@ -77,10 +76,137 @@ namespace WPCordovaClassLib
             return UserSettings[type] as Dictionary<string, string>;
         }
 
-
-        public void HandleStorageCommand(string commandStr)
+        public void InjectScript()
         {
+            string script = @"(function(win, doc) {
+var docDomain = null;
+try {
+    docDomain = doc.domain;
+} catch (err) {}
+if (!docDomain || docDomain.length === 0) {
+    var DOMStorage = function(type) {
+        if (type == 'sessionStorage') {
+            this._type = type;
+        }
+        Object.defineProperty(this, 'length', {
+            configurable: true,
+            get: function() {
+                return this.getLength();
+            }
+        });
+    };
+    DOMStorage.prototype = {
+        _type: 'localStorage',
+        _result: null,
+        keys: null,
+        onResult: function(key, valueStr) {
+            if (!this.keys) {
+                this.keys = [];
+            }
+            this._result = valueStr;
+        },
+        onKeysChanged: function(jsonKeys) {
+            this.keys = JSON.parse(jsonKeys);
+            var key;
+            for (var n = 0, len = this.keys.length; n < len; n++) {
+                key = this.keys[n];
+                if (!this.hasOwnProperty(key)) {
+                    Object.defineProperty(this, key, {
+                        configurable: true,
+                        get: function() {
+                            return this.getItem(key);
+                        },
+                        set: function(val) {
+                            return this.setItem(key, val);
+                        }
+                    });
+                }
+            }
+        },
+        initialize: function() {
+            window.external.Notify('DOMStorage/' + this._type + '/load/keys');
+        },
+        getLength: function() {
+            if (!this.keys) {
+                this.initialize();
+            }
+            return this.keys.length;
+        },
+        key: function(n) {
+            if (!this.keys) {
+                this.initialize();
+            }
+            if (n >= this.keys.length) {
+                return null;
+            } else {
+                return this.keys[n];
+            }
+        },
+        getItem: function(key) {
+            if (!this.keys) {
+                this.initialize();
+            }
+            var retVal = null;
+            if (this.keys.indexOf(key) > -1) {
+                window.external.Notify('DOMStorage/' + this._type + '/get/' + key);
+                retVal = window.unescape(decodeURIComponent(this._result));
+                this._result = null;
+            }
+            return retVal;
+        },
+        setItem: function(key, value) {
+            if (!this.keys) {
+                this.initialize();
+            }
+            window.external.Notify('DOMStorage/' + this._type + '/set/' + key + '/' + encodeURIComponent(window.escape(value)));
+        },
+        removeItem: function(key) {
+            if (!this.keys) {
+                this.initialize();
+            }
+            var index = this.keys.indexOf(key);
+            if (index > -1) {
+                this.keys.splice(index, 1);
+                window.external.Notify('DOMStorage/' + this._type + '/remove/' + key);
+                delete this[key];
+            }
+        },
+        clear: function() {
+            if (!this.keys) {
+                this.initialize();
+            }
+            for (var n = 0, len = this.keys.length; n < len; n++) {
+                delete this[this.keys[n]];
+            }
+            this.keys = [];
+            window.external.Notify('DOMStorage/' + this._type + '/clear/');
+        }
+    };
+    if (typeof window.localStorage === 'undefined') {
+        Object.defineProperty(window, 'localStorage', {
+            writable: false,
+            configurable: false,
+            value: new DOMStorage('localStorage')
+        });
+        window.localStorage.initialize();
+    }
+    if (typeof window.sessionStorage === 'undefined') {
+        Object.defineProperty(window, 'sessionStorage', {
+            writable: false,
+            configurable: false,
+            value: new DOMStorage('sessionStorage')
+        });
+        window.sessionStorage.initialize();
+    }
+}
+})(window, document);";
 
+            Browser.InvokeScript("execScript", new string[] { script });
+        }
+
+
+        public bool HandleCommand(string commandStr)
+        {
             string[] split = commandStr.Split('/');
             if (split.Length > 3)
             {
@@ -99,11 +225,11 @@ namespace WPCordovaClassLib
                             if (currentStorage.Keys.Contains(param))
                             {
                                 string value = currentStorage[param];
-                                webBrowser1.InvokeScript("execScript", "window." + type + ".onResult('" + param + "','" + value + "');");
+                                Browser.InvokeScript("execScript", "window." + type + ".onResult('" + param + "','" + value + "');");
                             }
                             else
                             {
-                                webBrowser1.InvokeScript("execScript", "window." + type + ".onResult('" + param + "');");
+                                Browser.InvokeScript("execScript", "window." + type + ".onResult('" + param + "');");
                             }
 
                         }
@@ -113,7 +239,7 @@ namespace WPCordovaClassLib
                             string[] keys = currentStorage.Keys.ToArray();
                             string jsonString = JsonHelper.Serialize(keys);
                             string callbackJS = "window." + type + ".onKeysChanged('" + jsonString + "');";
-                            webBrowser1.InvokeScript("execScript", callbackJS);
+                            Browser.InvokeScript("execScript", callbackJS);
                         }
                         break;
                     case "set":
@@ -124,7 +250,7 @@ namespace WPCordovaClassLib
                             string[] keys = currentStorage.Keys.ToArray();
                             string jsonString = JsonHelper.Serialize(keys);
                             string callbackJS = "window." + type + ".onKeysChanged('" + jsonString + "');";
-                            webBrowser1.InvokeScript("execScript", callbackJS);
+                            Browser.InvokeScript("execScript", callbackJS);
                         }
                         break;
                     case "remove":
@@ -139,7 +265,7 @@ namespace WPCordovaClassLib
                 }
 
             }
-
+            return true;
         }
     }
 }

@@ -188,6 +188,10 @@ namespace WPCordovaClassLib
             orientHelper.Browser = CordovaBrowser;
             browserDecorators.Add("Orientation", orientHelper);
 
+            DOMStorageHelper storageHelper = new DOMStorageHelper();
+            storageHelper.Browser = CordovaBrowser;
+            browserDecorators.Add("DOMStorage", storageHelper);
+
         }
 
 
@@ -241,7 +245,7 @@ namespace WPCordovaClassLib
 
 
 
-            //this.domStorageHelper = new DOMStorageHelper(this.CordovaBrowser);
+            
 
             try
             {
@@ -440,13 +444,6 @@ namespace WPCordovaClassLib
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
             string commandStr = e.Value;
-
-            if (commandStr.IndexOf("DOMStorage") == 0)
-            {
-               // this.domStorageHelper.HandleStorageCommand(commandStr);
-                return;
-            }
-
             string commandName = commandStr.Split('/').FirstOrDefault();
 
             if (browserDecorators.ContainsKey(commandName))
