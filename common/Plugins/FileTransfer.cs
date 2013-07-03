@@ -179,6 +179,31 @@ namespace WPCordovaClassLib.Cordova.Commands
         }
 
         /// <summary>
+        /// Represents file download progress.
+        /// </summary>
+        [DataContract]
+        public class FileDownloadResult
+        {
+            /// <summary>
+            /// Length computable.
+            /// </summary>
+            [DataMember(Name = "lengthComputable", IsRequired = true)]
+            public bool LengthComputable { get; set; }
+
+            /// <summary>
+            /// Total stream size.
+            /// </summary>
+            [DataMember(Name = "total", IsRequired = true)]
+            public long Total { get; set; }
+
+            /// <summary>
+            /// Total bytes read.
+            /// </summary>
+            [DataMember(Name = "loaded", IsRequired = true)]
+            public long Loaded { get; set; }
+        }
+        
+		/// <summary>
         /// Represents transfer error codes for callback
         /// </summary>
         [DataContract]
@@ -315,6 +340,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                 DownloadRequestState state = new DownloadRequestState();
                 state.options = downloadOptions;
                 state.request = webRequest;
+                webRequest.AllowReadStreamBuffering = false;
                 webRequest.BeginGetResponse(new AsyncCallback(downloadCallback), state);
             }
 
@@ -359,7 +385,15 @@ namespace WPCordovaClassLib.Cordova.Commands
                                 while (true)
                                 {
                                     buffer = reader.ReadBytes(BUFFER_SIZE);
-                                    // fire a progress event ?
+                                    // fire a progress event
+                                    FileDownloadResult progress = new FileDownloadResult();
+                                    progress.LengthComputable = true;
+                                    progress.Total = totalBytes;
+                                    progress.Loaded = bytesRead;
+                                    PluginResult result = new PluginResult(PluginResult.Status.OK, progress);
+                                    result.KeepCallback = true;
+                                    DispatchCommandResult(result);
+
                                     bytesRead += buffer.Length;
                                     if (buffer.Length > 0)
                                     {
