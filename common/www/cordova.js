@@ -5957,7 +5957,9 @@ var exec = require('cordova/exec'),
  * FileTransfer uploads a file to a remote server.
  * @constructor
  */
-var FileTransfer = function() {};
+var FileTransfer = function() {
+    this.onprogress = null; // optional callback to monitor download progress.
+};
 
 /**
 * Given an absolute file path, uploads a file on the device to a remote server
@@ -6024,19 +6026,26 @@ FileTransfer.prototype.upload = function(filePath, server, successCallback, erro
 FileTransfer.prototype.download = function(source, target, successCallback, errorCallback) {
     // sanity parameter checking
     if (!source || !target) throw new Error("FileTransfer.download requires source URI and target URI parameters at the minimum.");
-    var win = function(result) {
-        var entry = null;
-        if (result.isDirectory) {
-            entry = new (require('cordova/plugin/DirectoryEntry'))();
+    var filetransfer = this;
+    var win = function (result) {
+        if (typeof result.lengthComputable != "undefined") {
+            if (filetransfer.onprogress) {
+                return filetransfer.onprogress(result);
+            }
+        } else if (successCallback) {
+            var entry = null;
+            if (result.isDirectory) {
+                entry = new (require('cordova/plugin/DirectoryEntry'))();
+            }
+            else if (result.isFile) {
+                entry = new (require('cordova/plugin/FileEntry'))();
+            }
+            entry.isDirectory = result.isDirectory;
+            entry.isFile = result.isFile;
+            entry.name = result.name;
+            entry.fullPath = result.fullPath;
+            successCallback(entry);
         }
-        else if (result.isFile) {
-            entry = new (require('cordova/plugin/FileEntry'))();
-        }
-        entry.isDirectory = result.isDirectory;
-        entry.isFile = result.isFile;
-        entry.name = result.name;
-        entry.fullPath = result.fullPath;
-        successCallback(entry);
     };
 
     var fail = function(e) {
