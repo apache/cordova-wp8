@@ -106,7 +106,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     {
                         var previous = notifyBox;
                         notifyBox = new NotificationBox();
-                        notifyBox.Tag = new { previous = previous, callbackId = aliasCurrentCommandCallbackId };
+                        notifyBox.Tag = new NotifBoxData { previous = previous, callbackId = aliasCurrentCommandCallbackId };
                         notifyBox.PageTitle.Text = alertOpts.title;
                         notifyBox.SubTitle.Text = alertOpts.message;
                         Button btnOK = new Button();
@@ -148,7 +148,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     {
                         var previous = notifyBox;
                         notifyBox = new NotificationBox();
-                        notifyBox.Tag = new { previous = previous, callbackId = aliasCurrentCommandCallbackId };
+                        notifyBox.Tag = new NotifBoxData { previous = previous, callbackId = aliasCurrentCommandCallbackId };
                         notifyBox.PageTitle.Text = alertOpts.title;
                         notifyBox.SubTitle.Text = alertOpts.message;
 
@@ -242,7 +242,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                 }
 
             }
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, retVal),callbackId);
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, retVal), callbackId);
         }
 
 

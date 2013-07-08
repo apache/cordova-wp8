@@ -79,6 +79,9 @@
     <feature name="InAppBrowser">
       <param name="wp-package" value="InAppBrowser"/>
     </feature>
+    <feature name="Notification">
+      <param name="wp-package" value="Notification"/>
+    </feature>
   </features>
 
 
