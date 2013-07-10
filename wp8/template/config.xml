@@ -21,7 +21,4 @@
 -->
 <widget>
     <access origin="*"/>
-    <feature name="Logger">
-      <param name="wp-package" value="Logger"/>
-    </feature>
 </widget>
