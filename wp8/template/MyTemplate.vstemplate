@@ -1,13 +1,13 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
-    <Name>CordovaWP8_9_9_9</Name>
+    <Name>CordovaWP8_0_0_0</Name>
     <Description>Starter project for building a Cordova app for Windows Phone 8 version: 0.0.0</Description>
     <ProjectType>CSharp</ProjectType>
     <ProjectSubType>
     </ProjectSubType>
     <SortOrder>1000</SortOrder>
     <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>CordovaWP8_9_9_9</DefaultName>
+    <DefaultName>CordovaWP8_0_0_0</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <LocationField>Enabled</LocationField>
     <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
@@ -60,6 +60,7 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="PluginResult.cs">PluginResult.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="ScriptCallback.cs">ScriptCallback.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="XHRHelper.cs">XHRHelper.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="ConsoleHelper.cs">ConsoleHelper.cs</ProjectItem>
       </Folder>
       <Folder Name="Images" TargetFolderName="Images">
         <ProjectItem ReplaceParameters="false" TargetFileName="appbar.back.rest.png">appbar.back.rest.png</ProjectItem>
@@ -73,14 +74,12 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="MainPage.xaml.cs">MainPage.xaml.cs</ProjectItem>
       <Folder Name="Plugins" TargetFolderName="Plugins">
         <ProjectItem ReplaceParameters="true" TargetFileName="Accelerometer.cs">Accelerometer.cs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="AudioFormatsHelper.cs">AudioFormatsHelper.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="AudioPlayer.cs">AudioPlayer.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Battery.cs">Battery.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Camera.cs">Camera.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Capture.cs">Capture.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Compass.cs">Compass.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Contacts.cs">Contacts.cs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="DebugConsole.cs">DebugConsole.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Device.cs">Device.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="File.cs">File.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="FileTransfer.cs">FileTransfer.cs</ProjectItem>

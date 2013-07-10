@@ -192,6 +192,10 @@ namespace WPCordovaClassLib
             storageHelper.Browser = CordovaBrowser;
             browserDecorators.Add("DOMStorage", storageHelper);
 
+            ConsoleHelper console = new ConsoleHelper();
+            console.Browser = CordovaBrowser;
+            browserDecorators.Add("ConsoleLog", console);
+
         }
 
 
@@ -242,10 +246,6 @@ namespace WPCordovaClassLib
 
             // prevents refreshing web control to initial state during pages transitions
             if (this.IsBrowserInitialized) return;
-
-
-
-            
 
             try
             {
@@ -397,11 +397,11 @@ namespace WPCordovaClassLib
 
         void GapBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            string nativeReady = "(function(){ cordova.require('cordova/channel').onNativeReady.fire()})();";
+            string nativeReady = "(function(){ window.setTimeout(function(){cordova.require('cordova/channel').onNativeReady.fire()},0) })();";
 
             try
             {
-                CordovaBrowser.InvokeScript("eval", new string[] { nativeReady });
+                CordovaBrowser.InvokeScript("execScript", new string[] { nativeReady });
             }
             catch (Exception ex)
             {
