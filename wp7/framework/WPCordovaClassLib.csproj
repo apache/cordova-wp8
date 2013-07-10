@@ -167,6 +167,9 @@
     <Compile Include="..\template\cordovalib\ConfigHandler.cs">
       <Link>CordovaLib\ConfigHandler.cs</Link>
     </Compile>
+    <Compile Include="..\template\cordovalib\ConsoleHelper.cs">
+      <Link>CordovaLib\ConsoleHelper.cs</Link>
+    </Compile>
     <Compile Include="..\template\cordovalib\CordovaCommandCall.cs">
       <Link>CordovaLib\CordovaCommandCall.cs</Link>
     </Compile>
