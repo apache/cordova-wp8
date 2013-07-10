@@ -172,7 +172,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Plugins\Accelerometer.cs" />
-    <Compile Include="Plugins\AudioFormatsHelper.cs" />
     <Compile Include="Plugins\AudioPlayer.cs" />
     <Compile Include="Plugins\Battery.cs" />
     <Compile Include="Plugins\Camera.cs" />

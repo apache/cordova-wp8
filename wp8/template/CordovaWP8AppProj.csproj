@@ -210,14 +210,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Plugins\Accelerometer.cs" />
-    <Compile Include="Plugins\AudioFormatsHelper.cs" />
     <Compile Include="Plugins\AudioPlayer.cs" />
     <Compile Include="Plugins\Battery.cs" />
     <Compile Include="Plugins\Camera.cs" />
     <Compile Include="Plugins\Capture.cs" />
     <Compile Include="Plugins\Compass.cs" />
     <Compile Include="Plugins\Contacts.cs" />
-    <Compile Include="Plugins\DebugConsole.cs" />
     <Compile Include="Plugins\Device.cs" />
     <Compile Include="Plugins\File.cs" />
     <Compile Include="Plugins\FileTransfer.cs" />
