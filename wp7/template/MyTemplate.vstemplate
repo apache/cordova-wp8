@@ -1,6 +1,6 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
-    <Name>CordovaWP7_9_9_9
+    <Name>CordovaWP7_0_0_0
 
 
 </Name>
@@ -10,7 +10,7 @@
     </ProjectSubType>
     <SortOrder>1000</SortOrder>
     <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>CordovaWP7_9_9_9</DefaultName>
+    <DefaultName>CordovaWP7_0_0_0</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <LocationField>Enabled</LocationField>
     <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
@@ -85,7 +85,6 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="Capture.cs">Capture.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Compass.cs">Compass.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Contacts.cs">Contacts.cs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="DebugConsole.cs">DebugConsole.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Device.cs">Device.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="File.cs">File.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="FileTransfer.cs">FileTransfer.cs</ProjectItem>
