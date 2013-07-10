@@ -43,9 +43,6 @@
     <feature name="Contacts">
       <param name="wp-package" value="Contacts"/>
     </feature>
-    <feature name="DebugConsole">
-      <param name="wp-package" value="DebugConsole"/>
-    </feature>
     <feature name="Echo">
       <param name="wp-package" value="Echo"/>
     </feature>
