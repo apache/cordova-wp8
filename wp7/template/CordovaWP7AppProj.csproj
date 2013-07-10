@@ -88,6 +88,7 @@
     <Compile Include="cordovalib\BrowserMouseHelper.cs" />
     <Compile Include="cordovalib\CommandFactory.cs" />
     <Compile Include="cordovalib\ConfigHandler.cs" />
+    <Compile Include="cordovalib\ConsoleHelper.cs" />
     <Compile Include="cordovalib\CordovaCommandCall.cs" />
     <Compile Include="cordovalib\CordovaView.xaml.cs">
       <DependentUpon>CordovaView.xaml</DependentUpon>
@@ -177,7 +178,6 @@
     <Compile Include="Plugins\Camera.cs" />
     <Compile Include="Plugins\Compass.cs" />
     <Compile Include="Plugins\Contacts.cs" />
-    <Compile Include="Plugins\DebugConsole.cs" />
     <Compile Include="Plugins\Device.cs" />
     <Compile Include="Plugins\File.cs" />
     <Compile Include="Plugins\FileTransfer.cs" />
