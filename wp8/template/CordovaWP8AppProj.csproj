@@ -127,6 +127,7 @@
     <Compile Include="cordovalib\CommandFactory.cs" />
     <Compile Include="cordovalib\Commands\BaseCommand.cs" />
     <Compile Include="cordovalib\ConfigHandler.cs" />
+    <Compile Include="cordovalib\ConsoleHelper.cs" />
     <Compile Include="cordovalib\CordovaCommandCall.cs" />
     <Compile Include="cordovalib\CordovaView.xaml.cs">
       <DependentUpon>CordovaView.xaml</DependentUpon>
