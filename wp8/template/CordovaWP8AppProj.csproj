@@ -141,7 +141,6 @@
     <Compile Include="cordovalib\ScriptCallback.cs" />
     <Compile Include="cordovalib\XHRHelper.cs" />
     <Compile Include="cordovalib\MimeTypeMapper.cs" />
-    <Compile Include="Plugins\DebugConsole.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
