@@ -64,6 +64,7 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="PluginResult.cs">PluginResult.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="ScriptCallback.cs">ScriptCallback.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="XHRHelper.cs">XHRHelper.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="ConsoleHelper.cs">ConsoleHelper.cs</ProjectItem>
       </Folder>
       <ProjectItem ReplaceParameters="true" TargetFileName="CordovaSourceDictionary.xml">CordovaSourceDictionary.xml</ProjectItem>
       <Folder Name="Images" TargetFolderName="Images">
@@ -78,7 +79,6 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="MainPage.xaml.cs">MainPage.xaml.cs</ProjectItem>
       <Folder Name="Plugins" TargetFolderName="Plugins">
         <ProjectItem ReplaceParameters="true" TargetFileName="Accelerometer.cs">Accelerometer.cs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="AudioFormatsHelper.cs">AudioFormatsHelper.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="AudioPlayer.cs">AudioPlayer.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Battery.cs">Battery.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Camera.cs">Camera.cs</ProjectItem>
