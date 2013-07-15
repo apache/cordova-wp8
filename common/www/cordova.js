@@ -1,5 +1,5 @@
 ﻿// Platform: windowsphone
-// 2.7.0rc1-168-g1146c63
+// 3.0.0-dev-17-ge74c3f1
 /*
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -19,7 +19,7 @@
  under the License.
 */
 ;(function() {
-var CORDOVA_JS_BUILD_LABEL = '2.7.0rc1-168-g1146c63';
+var CORDOVA_JS_BUILD_LABEL = '3.0.0-dev-17-ge74c3f1';
 // file: lib/scripts/require.js
 
 var require,
@@ -1131,6 +1131,11 @@ function finishPluginLoading() {
 function handlePluginsObject(path, moduleList) {
     // Now inject the scripts.
     var scriptCounter = moduleList.length;
+
+    if (!scriptCounter) {
+        onScriptLoadingComplete();
+        return;
+    }
     function scriptLoadedCallback() {
         if (!--scriptCounter) {
             onScriptLoadingComplete(moduleList);
