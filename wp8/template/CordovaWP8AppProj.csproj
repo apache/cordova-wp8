@@ -161,15 +161,25 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="www\**" />
+    <Content Include="config.xml" />
+    <Content Include="www\cordova.js" />
+    <Content Include="www\index.html" />
+    <Content Include="www\css\index.css" />
+    <Content Include="www\js\index.js" />
+    <Content Include="www\img\logo.png" />
+    <Content Include="config.xml" />
+    <Content Include="Images\appbar.back.rest.png" />
+    <Content Include="Images\appbar.close.rest.png" />
+    <Content Include="Images\appbar.feature.video.rest.png" />
+    <Content Include="Images\appbar.next.rest.png" />
+    <Content Include="Images\appbar.save.rest.png" />
+    <Content Include="Images\appbar.stop.rest.png" />
+    <Content Include="resources\notification-beep.wav" />
     <None Include="cordova\lib\build.js" />
     <None Include="cordova\lib\clean.js" />
     <None Include="cordova\lib\deploy.js" />
     <None Include="cordova\lib\log.js" />
     <None Include="cordova\lib\target-list.js" />
-    <Content Include="config.xml" />
-    <Content Include="Images\**" />
-    <Content Include="resources\notification-beep.wav" />
     <None Include="cordova\build.bat" />
     <None Include="cordova\clean.bat" />
     <None Include="cordova\lib\install-device.bat" />
