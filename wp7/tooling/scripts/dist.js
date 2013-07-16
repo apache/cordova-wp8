@@ -43,13 +43,13 @@ var replace = false;
 var args = WScript.Arguments;
 Log("args = " + args);
     //Root folder of cordova-wp7 (i.e C:\Cordova\cordova-wp\cordova-wp7)
-var rootPath = WScript.ScriptFullName.split('\\tooling\\', 1);
+var rootPath = WScript.ScriptFullName.split('\\wp7\\tooling\\', 1);
 Log("rootPath = " + rootPath);
 // tooling scripts
 var scriptPath = '\\tooling\\scripts';
 Log("scriptPath = " + scriptPath);
 //Get version number
-var VERSION=read(rootPath+'\\..\\VERSION').replace(/\r\n/,'').replace(/\n/,'');
+var VERSION=read(rootPath+'\\VERSION').replace(/\r\n/,'').replace(/\n/,'');
 Log("VERSION = " + VERSION);
 
 //Destination to build to
@@ -148,7 +148,7 @@ if (args.Count() > 0) {
             WScript.Quit(1);
         }
         else if (args(0) == '-f') {
-          buildDestination = rootPath;
+          buildDestination = rootPath + '\\wp7';
           replace = true;
         }
         else {
