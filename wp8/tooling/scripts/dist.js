@@ -42,7 +42,7 @@ var replace = false;
     //arguments passed in
 var args = WScript.Arguments,
     //Root folder of cordova-wp8 (i.e C:\Cordova\cordova-wp8)
-    ROOT = WScript.ScriptFullName.split('\\tooling\\', 1),
+    ROOT = WScript.ScriptFullName.split('\\wp8\\tooling\\', 1),
     // tooling scripts
     SCRIPTS = '\\tooling\\scripts';
     //Get version number
@@ -144,7 +144,7 @@ if (args.Count() > 0) {
             WScript.Quit(1);
         }
         else if (args(0) == '-f') {
-          BUILD_DESTINATION = ROOT;
+          BUILD_DESTINATION = ROOT + '\\wp8';
           replace = true;
         }
         else {

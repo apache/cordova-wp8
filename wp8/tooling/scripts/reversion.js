@@ -33,9 +33,9 @@ var args = WScript.Arguments,
     //Root folder of cordova-wp8 (i.e C:\Cordova\cordova-wp8)
     ROOT = WScript.ScriptFullName.split('\\tooling\\', 1),
     //Sub folder containing templates
-    TEMPLATES_PATH = '\\templates',
+    TEMPLATE_PATH = '\\template',
     //Sub folder for standalone project
-    STANDALONE_PATH = TEMPLATES_PATH + '\\standalone',
+    STANDALONE_PATH = TEMPLATE_PATH,
     //Sub folder containing framework
     FRAMEWORK_PATH = '\\framework',
     //Subfolder containing example project
@@ -131,7 +131,7 @@ function exec_verbose(command) {
 function updateVersionNumbers() {
     WScript.StdOut.WriteLine("Updating version numbers....");
     var version_regex = /(\d+)[.](\d+)[.](\d+)(rc\d)?/;
-    replaceInFile(BUILD_DESTINATION + '\\VERSION', version_regex,  VERSION);
+    //replaceInFile(BUILD_DESTINATION + '\\VERSION', version_regex,  VERSION);
     // replace assembaly versions in framework
     var framework_regex = /Description\(\"(\d+)[.](\d+)[.](\d+)(rc\d)?\"\)\]/; //Will match ("x.x.x[rcx]")]
     replaceInFile(BUILD_DESTINATION + FRAMEWORK_PATH + "\\Properties\\AssemblyInfo.cs", framework_regex, "Description(\"" + VERSION + "\")]");
@@ -139,21 +139,17 @@ function updateVersionNumbers() {
     replaceInFile(BUILD_DESTINATION + FRAMEWORK_PATH + "\\Properties\\AssemblyInfo.cs", framework_regex, "Version(\"" + BASE_VERSION + "\")]");
 
     // update standalone project
-    exec('%comspec% /c copy /Y /V ' + BUILD_DESTINATION + "\\VERSION " + BUILD_DESTINATION + STANDALONE_PATH + "\\VERSION");
+    //exec('%comspec% /c copy /Y /V ' + BUILD_DESTINATION + "\\VERSION " + BUILD_DESTINATION + STANDALONE_PATH + "\\VERSION");
     var cordova_regex = /cordova-(\d+)[.](\d+)[.](\d+)(rc\d)?/g; //Matches *first* cordova-x.x.x[rcx] (just ad g at end to make global)
     version_regex = /return\s*\"(\d+)[.](\d+)[.](\d+)(rc\d)?/; //Matches return "x.x.x[rcx]
-    replaceInFile(BUILD_DESTINATION + CORDOVA_LIB + '\\..\\Plugins\\Device.cs', version_regex,  "return \"" + VERSION);
-
-    // update template discription
-    version_regex = /Cordova\s*(\d+)[.](\d+)[.](\d+)(rc\d)?\s*Windows/g; //Matches version: x.x.x[rcx]
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\description.txt', version_regex,  "Cordova " + VERSION + " Windows");
+    //replaceInFile(BUILD_DESTINATION + CORDOVA_LIB + '\\..\\Plugins\\Device.cs', version_regex,  "return \"" + VERSION);
 
     // update .vstemplate files for the template zips.
     var name_regex = /CordovaWP8[_](\d+)[_](\d+)[_](\d+)(rc\d)?/g;
-    var discript_regex = /Cordova\s*(\d+)[.](\d+)[.](\d+)(rc\d)?/;
+    var discript_regex = /version:\s*(\d+)[.](\d+)[.](\d+)(rc\d)?/;
 
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate', name_regex,  'CordovaWP8_' + VERSION.replace(/\./g, '_'));
-    replaceInFile(BUILD_DESTINATION + TEMPLATES_PATH + '\\vs\\MyTemplateStandAlone.vstemplate', discript_regex,  "Cordova " + VERSION);
+    replaceInFile(BUILD_DESTINATION + TEMPLATE_PATH + '\\MyTemplate.vstemplate', name_regex,  'CordovaWP8_' + VERSION.replace(/\./g, '_'));
+    replaceInFile(BUILD_DESTINATION + TEMPLATE_PATH + '\\MyTemplate.vstemplate', discript_regex,  "version: " + VERSION);
 }
 
 // delete all cordova.js and generated files (templates) from old version numbers
@@ -191,24 +187,6 @@ function cleanup()
         if(root_folder.Item(i).Name.match(/CordovaWP8[_](\d+)[_](\d+)[_](\d+)(rc\d)?/))
         {
             fso.DeleteFile(BUILD_DESTINATION + '\\' + root_folder.Item(i).Name);
-        }
-    }
-    // remove old cordova.js
-    var example_www = shell.NameSpace(BUILD_DESTINATION + EXAMPLE_PATH + '\\www').Items();
-    for(i = 0; i < example_www.Count; i++)
-    {
-        if(example_www.Item(i).Name.match(/cordova\-(\d+)[.](\d+)[.](\d+)(rc\d)?[.]js/))
-        {
-            fso.DeleteFile(BUILD_DESTINATION + EXAMPLE_PATH + '\\www\\' + example_www.Item(i).Name);
-        }
-    }
-
-    var standalone_www = shell.NameSpace(BUILD_DESTINATION + STANDALONE_PATH + '\\www').Items();
-    for(i = 0; i < standalone_www.Count; i++)
-    {
-        if(standalone_www.Item(i).Name.match(/cordova\-(\d+)[.](\d+)[.](\d+)(rc\d)?[.]js/))
-        {
-            fso.DeleteFile(BUILD_DESTINATION + STANDALONE_PATH + '\\www\\' + standalone_www.Item(i).Name);
         }
     }
 }
