@@ -162,6 +162,18 @@ namespace WPCordovaClassLib.CordovaLib
             return false;
         }
 
+        public string[] AutoloadPlugins
+        {
+            get
+            {
+                // TODO:
+                var res = from results in AllowedPlugins.TakeWhile(p => p.Value.isAutoLoad)
+                          select results.Value.Name;
+
+                return new string[] { "", "" };
+            }
+        }
+
         public bool IsPluginAllowed(string key)
         {
             return AllowAllPlugins || AllowedPlugins.Keys.Contains(key);
@@ -169,30 +181,7 @@ namespace WPCordovaClassLib.CordovaLib
 
         private void LoadPluginFeatures(XDocument document)
         {
-            var plugins = from results in document.Descendants("plugin")
-                          select new
-                          {
-                              name = (string)results.Attribute("name"),
-                              autoLoad = results.Attribute("onload")
-                          };
-
-            foreach (var plugin in plugins)
-            {
-                Debug.WriteLine("Warning: Deprecated use of <plugin> by plugin : " + plugin.name);
-                PluginConfig pConfig = new PluginConfig(plugin.name, plugin.autoLoad != null && plugin.autoLoad.Value == "true");
-                if (pConfig.Name == "*")
-                {
-                    AllowAllPlugins = true;
-                    // break; wait, don't, some still could be autoload
-                }
-                else
-                {
-                    AllowedPlugins[pConfig.Name] = pConfig;
-                }
-            }
-
             var features = document.Descendants("feature");
-
 
             foreach (var feature in features)
             {
