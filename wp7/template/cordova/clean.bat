@@ -1,7 +1,7 @@
 @ECHO OFF
-SET full_path=%~dp0
-IF EXIST %full_path%lib\clean.js (
-    cscript "%full_path%lib\clean.js" %* //nologo
+SET script_path="%~dp0lib\clean.js"
+IF EXIST %script_path% (
+    cscript %script_path% %* //nologo
 ) ELSE (
     ECHO.
     ECHO ERROR: Could not find 'clean.js' in cordova/lib, aborting...>&2
