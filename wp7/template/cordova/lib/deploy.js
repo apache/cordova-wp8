@@ -106,6 +106,7 @@ function exec_verbose(command) {
     //Check to make sure our scripts did not encounter an error
     if (!oShell.StdErr.AtEndOfStream) {
         var line = oShell.StdErr.ReadAll();
+        Log("ERROR: command failed in deploy.js : " + command);
         Log(line, true);
         WScript.Quit(2);
     }
@@ -144,7 +145,7 @@ function cordovaDeploy(path) {
         if (fso.FolderExists(path + CORDOVA_DEPLOY + '\\CordovaDeploy\\Bin')) {
             fso.DeleteFolder(path + CORDOVA_DEPLOY + '\\CordovaDeploy\\Bin');
         }
-        exec_verbose('msbuild ' + path + CORDOVA_DEPLOY + '\\CordovaDeploy.sln');
+        exec_verbose('msbuild "' + path + CORDOVA_DEPLOY + '\\CordovaDeploy.sln"');
 
         if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
             Log('CordovaDeploy.exe compiled, SUCCESS.');
@@ -167,7 +168,7 @@ function device(path)
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
         Log('Deploying to device ...');
         //TODO: get device ID from list-devices and deploy to first one
-        exec_verbose('%comspec% /c ' + path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:0');
+        exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + path + '" -d:0');
     }
     else
     {
@@ -184,7 +185,7 @@ function emulator(path)
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
         Log('Deploying to emulator ...');
         //TODO: get emulator ID from list-emulators and deploy to first one
-        exec_verbose('%comspec% /c ' + path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:1');
+        exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + path + '" -d:1');
     }
     else
     {
@@ -239,16 +240,16 @@ function target(path) {
 function build(path) {
     switch (build_type) {
         case DEBUG :
-            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
+            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\build" --debug');
             break;
         case RELEASE :
-            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --release');
+            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\build" --release');
             break;
         case NO_BUILD :
             break;
         case NONE :
             Log("WARNING: [ --debug | --release | --nobuild ] not specified, defaulting to --debug.");
-            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\build --debug');
+            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\build" --debug');
             break;
         default :
             Log("Build option not recognized: " + build_type, true);

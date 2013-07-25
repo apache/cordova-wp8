@@ -113,6 +113,7 @@ function exec_verbose(command) {
     //Check to make sure our scripts did not encounter an error
     if (!oShell.StdErr.AtEndOfStream) {
         var line = oShell.StdErr.ReadAll();
+        Log("ERROR: command failed in create.js : " + command);
         Log(line, true);
         WScript.Quit(1);
     }
@@ -168,7 +169,7 @@ function create(path, namespace, name) {
     }
 
     //clean up any Bin/obj or other generated files
-    exec('cscript ' + path + '\\cordova\\lib\\clean.js //nologo');
+    exec('cscript "' + path + '\\cordova\\lib\\clean.js" //nologo');
 
     // delete any .user and .sou files if any
     if (fso.FolderExists(path)) {

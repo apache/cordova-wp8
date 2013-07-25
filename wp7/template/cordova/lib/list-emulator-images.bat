@@ -1,7 +1,7 @@
 @ECHO OFF
-SET full_path=%~dp0
-IF EXIST %full_path%target-list.js (
-    cscript "%full_path%target-list.js" %* --emulators //nologo
+SET script_path="%~dp0target-list.js"
+IF EXIST %script_path% (
+    cscript %script_path% %* --emulators //nologo
 ) ELSE (
     ECHO. 
     ECHO ERROR: Could not find 'target-list.js' in cordova/lib, aborting...>&2

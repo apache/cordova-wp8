@@ -1,7 +1,7 @@
 @ECHO OFF
-SET full_path=%~dp0
-IF EXIST %full_path%lib\build.js (
-    cscript "%full_path%lib\build.js" %* //nologo
+SET script_path="%~dp0lib\build.js"
+IF EXIST %script_path% (
+    cscript %script_path% %* //nologo
 ) ELSE (
     ECHO.
     ECHO ERROR: Could not find 'build.js' in cordova/lib, aborting...>&2

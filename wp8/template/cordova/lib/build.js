@@ -66,6 +66,7 @@ function exec_verbose(command) {
     //Check to make sure our scripts did not encounter an error
     if (!oShell.StdErr.AtEndOfStream) {
         var line = oShell.StdErr.ReadAll();
+        Log("ERROR: command failed in build.js : " + command);
         Log(line, true);
         WScript.Quit(2);
     }
@@ -105,7 +106,8 @@ function build_xap_release(path) {
     Log("\tDirectory : " + path);
     
     wscript_shell.CurrentDirectory = path;
-    exec_verbose('msbuild ' + get_solution_name(path) + ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release');
+    var cmd = 'msbuild "' + get_solution_name(path) + '" /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release';
+    exec_verbose(cmd);
     
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Release')) {
@@ -129,7 +131,8 @@ function build_xap_debug(path) {
     Log("\tDirectory : " + path);
     
     wscript_shell.CurrentDirectory = path;
-    exec_verbose('msbuild ' + get_solution_name(path) + ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug');
+    var cmd = 'msbuild "' + get_solution_name(path) + '" /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug';
+    exec_verbose(cmd);
     
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Debug')) {
@@ -169,11 +172,11 @@ if (args.Count() > 0) {
         }
 
         if (args(0) == "--debug" || args(0) == "-d") {
-            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\clean');
+            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\clean"');
             build_xap_debug(ROOT);
         }
         else if (args(0) == "--release" || args(0) == "-r") {
-            exec_verbose('%comspec% /c ' + ROOT + '\\cordova\\clean');
+            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\clean"');
             build_xap_release(ROOT);
         }
         else {

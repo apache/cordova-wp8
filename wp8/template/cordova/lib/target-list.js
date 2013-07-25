@@ -70,6 +70,7 @@ function exec(command) {
     //Check to make sure our scripts did not encounter an error
     if (!oShell.StdErr.AtEndOfStream) {
         var line = oShell.StdErr.ReadAll();
+        Log("ERROR: command failed in target-list.js : " + command);
         Log(line, true);
         WScript.Quit(2);
     }
@@ -167,7 +168,7 @@ function cordovaDeploy(path) {
         if (fso.FolderExists(path + CORDOVA_DEPLOY + "\\CordovaDeploy\\Bin")) {
             fso.DeleteFolder(path + CORDOVA_DEPLOY + "\\CordovaDeploy\\Bin");
         }
-        exec('msbuild ' + path + CORDOVA_DEPLOY + '\\CordovaDeploy.sln');
+        exec('msbuild "' + path + CORDOVA_DEPLOY + '\\CordovaDeploy.sln"');
 
         if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
             return;
