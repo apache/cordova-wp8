@@ -26,7 +26,7 @@ var REQUIRE_GIT = false;
 function Usage() {
     Log("Usage: [ check_reqs | cscript check_reqs.js ]");
     Log("examples:");
-    Log("    cscript C:\\Users\\anonymous\\cordova-wp8\\bin\\check_reqs.js");
+    Log("    cscript C:\\Users\\anonymous\\cordova-wp7\\bin\\check_reqs.js");
     Log("    CordovaWindowsPhone\\bin\\check_reqs");
 
 }
@@ -43,7 +43,12 @@ function Log(msg, error) {
 
 // gets the output from a command, failing with the given error message
 function check_command(cmd, fail_msg) {
-    var out = wscript_shell.Exec(cmd);
+    try {
+        var out = wscript_shell.Exec(cmd);
+    } catch(exception) {
+        Log(fail_msg, true);
+        WScript.Quit(1);
+    }
     while (out.Status == 0) {
         WScript.Sleep(100);
     }
@@ -73,7 +78,7 @@ function check_command(cmd, fail_msg) {
  */
 function SystemRequiermentsMet() {
     var cmd = 'msbuild -version'
-    var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, and the `msbuild.exe` command (inside C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319) is added to your path.'
+    var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, AND have the latest .NET framework added to your path (i.e C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).'
     var output = check_command(cmd, fail_msg);
     var msversion = output.match(/\.NET\sFramework\,\sversion\s4\.0/);
     if (!msversion) {
