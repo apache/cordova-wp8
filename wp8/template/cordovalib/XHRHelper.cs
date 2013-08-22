@@ -16,7 +16,7 @@ namespace WPCordovaClassLib.CordovaLib
         public WebBrowser Browser { get; set; }
         public PhoneApplicationPage Page { get; set; }
 
-        public void InjectScript() 
+        public void InjectScript()
         {
 
 
@@ -30,7 +30,7 @@ namespace WPCordovaClassLib.CordovaLib
     if (!docDomain || docDomain.length === 0) {
 
         var aliasXHR = win.XMLHttpRequest;
-        
+
         var XHRShim = function() {};
         win.XMLHttpRequest = XHRShim;
         XHRShim.noConflict = aliasXHR;
@@ -48,7 +48,7 @@ namespace WPCordovaClassLib.CordovaLib
             withCredentials: false,
             _requestHeaders: null,
             open: function (reqType, uri, isAsync, user, password) {
-                
+
                 if (uri && uri.indexOf('http') === 0) {
                     if (!this.wrappedXHR) {
                         this.wrappedXHR = new aliasXHR();
@@ -156,7 +156,7 @@ namespace WPCordovaClassLib.CordovaLib
             send: function(data) {
                 if (this.wrappedXHR) {
                     return this.wrappedXHR.send(data);
-                } 
+                }
                 else {
                     this.changeReadyState(XHRShim.OPENED);
                     var alias = this;
@@ -172,10 +172,10 @@ namespace WPCordovaClassLib.CordovaLib
 
                             alias.changeReadyState(XHRShim.DONE);
                             alias.onload && alias.onload();
-                            
+
                         }
                         alias.changeReadyState(XHRShim.LOADING);
-                        window.external.Notify('XHRLOCAL/' + alias._url); 
+                        window.external.Notify('XHRLOCAL/' + alias._url);
                     }
                     if (this.isAsync) {
                         setTimeout(funk, 0);
@@ -204,7 +204,7 @@ namespace WPCordovaClassLib.CordovaLib
             Browser.InvokeScript("execScript", new string[] { script });
         }
 
-        public bool HandleCommand(string commandStr) 
+        public bool HandleCommand(string commandStr)
         {
             if (commandStr.IndexOf("XHRLOCAL") == 0)
             {
@@ -212,30 +212,34 @@ namespace WPCordovaClassLib.CordovaLib
 
                 Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
 
-                using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
+                if (uri.IsAbsoluteUri)
                 {
-                    if (isoFile.FileExists(uri.AbsolutePath))
+                    using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        using (TextReader reader = new StreamReader(isoFile.OpenFile(uri.AbsolutePath, FileMode.Open, FileAccess.Read)))
+                        if (isoFile.FileExists(uri.AbsolutePath))
                         {
-                            string text = reader.ReadToEnd();
-                            Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
-                            return true;
+                            using (TextReader reader = new StreamReader(isoFile.OpenFile(uri.AbsolutePath, FileMode.Open, FileAccess.Read)))
+                            {
+                                string text = reader.ReadToEnd();
+                                Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
+                                return true;
+                            }
                         }
-                    }       
+                    }
                 }
 
-                Uri relUri = new Uri(uri.AbsolutePath,UriKind.Relative);
-                
+
+                Uri relUri = new Uri(url, UriKind.Relative);
+
                 var resource = Application.GetResourceStream(relUri);
 
                 if (resource == null)
                 {
-                    // 404 ? 
+                    // 404 ?
                     Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404" });
                     return true;
                 }
-                else 
+                else
                 {
                     using (StreamReader streamReader = new StreamReader(resource.Stream))
                     {
