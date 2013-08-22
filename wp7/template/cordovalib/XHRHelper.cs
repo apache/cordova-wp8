@@ -16,7 +16,7 @@ namespace WPCordovaClassLib.CordovaLib
         public WebBrowser Browser { get; set; }
         public PhoneApplicationPage Page { get; set; }
 
-        public void InjectScript() 
+        public void InjectScript()
         {
 
 
@@ -111,8 +111,7 @@ namespace WPCordovaClassLib.CordovaLib
                 {
                     this.isAsync = isAsync;
                     this.reqType = reqType;
-                    var newUrl = uri;
-                    this._url = newUrl;
+                    this._url = uri;
                 }
             },
             statusText: '',
@@ -132,6 +131,9 @@ namespace WPCordovaClassLib.CordovaLib
             },
             getAllResponseHeaders: function() {
                 return this.wrappedXHR ? this.wrappedXHR.getAllResponseHeaders() : '';
+            },
+            overrideMimeType: function(mimetype) {
+                return this.wrappedXHR ? this.wrappedXHR.overrideMimeType(mimetype) : '';
             },
             responseText: '',
             responseXML: '',
@@ -160,6 +162,37 @@ namespace WPCordovaClassLib.CordovaLib
                 else {
                     this.changeReadyState(XHRShim.OPENED);
                     var alias = this;
+                    var root = window.location.href; 
+                    var basePath = root.substr(0,root.lastIndexOf('/')) + '/';
+                    
+
+                    var resolvedUrl = this._url.split('//').join('/');
+
+                    var wwwFolderPath = navigator.userAgent.indexOf('MSIE 9.0') > -1 ? 'app/www/' : 'www/';
+
+                    console.log('original resolvedUrl = ' + resolvedUrl);
+
+                    if(resolvedUrl.indexOf('/') == 0) {
+                        console.log('removing leading /');
+                        resolvedUrl = resolvedUrl.substr(1);
+                    }
+
+                    if( resolvedUrl.indexOf('app/www') == 0 ) {
+                        
+                        resolvedUrl = window.location.protocol  + wwwFolderPath + resolvedUrl.substr(7);
+                    }
+                    else if( resolvedUrl.indexOf('www') == 0) {
+
+                        resolvedUrl = window.location.protocol  + wwwFolderPath + resolvedUrl.substr(4);
+                    }
+
+                    if(resolvedUrl.indexOf(':') < 0) {
+                        resolvedUrl = basePath + resolvedUrl; // consider it relative
+                    }
+
+                    console.log('sanitized resolvedUrl = ' + resolvedUrl);
+
+
                     var funk = function () {
                         window.__onXHRLocalCallback = function (responseCode, responseText) {
                             alias.status = responseCode;
@@ -175,7 +208,7 @@ namespace WPCordovaClassLib.CordovaLib
                             
                         }
                         alias.changeReadyState(XHRShim.LOADING);
-                        window.external.Notify('XHRLOCAL/' + alias._url); 
+                        window.external.Notify('XHRLOCAL/' + resolvedUrl); 
                     }
                     if (this.isAsync) {
                         setTimeout(funk, 0);
@@ -184,16 +217,6 @@ namespace WPCordovaClassLib.CordovaLib
                         funk();
                     }
                 }
-            },
-            getContentLocation: function() {
-                if (window.contentLocation === undefined) {
-                    window.contentLocation = navigator.userAgent.toUpperCase().indexOf('MSIE 10') > -1 ? this.contentLocation.RESOURCES : this.contentLocation.ISOLATED_STORAGE;
-                }
-                return window.contentLocation;
-            },
-            contentLocation: {
-                ISOLATED_STORAGE: 0,
-                RESOURCES: 1
             },
             status: 404
         };
@@ -204,7 +227,7 @@ namespace WPCordovaClassLib.CordovaLib
             Browser.InvokeScript("execScript", new string[] { script });
         }
 
-        public bool HandleCommand(string commandStr) 
+        public bool HandleCommand(string commandStr)
         {
             if (commandStr.IndexOf("XHRLOCAL") == 0)
             {
@@ -222,11 +245,11 @@ namespace WPCordovaClassLib.CordovaLib
                             Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
                             return true;
                         }
-                    }       
+                    }
                 }
 
-                Uri relUri = new Uri(uri.AbsolutePath,UriKind.Relative);
-                
+                Uri relUri = new Uri(uri.AbsolutePath, UriKind.Relative);
+
                 var resource = Application.GetResourceStream(relUri);
 
                 if (resource == null)
@@ -235,7 +258,7 @@ namespace WPCordovaClassLib.CordovaLib
                     Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404" });
                     return true;
                 }
-                else 
+                else
                 {
                     using (StreamReader streamReader = new StreamReader(resource.Stream))
                     {
