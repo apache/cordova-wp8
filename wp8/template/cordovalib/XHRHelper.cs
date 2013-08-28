@@ -162,15 +162,12 @@ namespace WPCordovaClassLib.CordovaLib
                 else {
                     this.changeReadyState(XHRShim.OPENED);
                     var alias = this;
-                    var root = window.location.href; 
+                    var root = window.location.href.split('#')[0];   // remove hash
                     var basePath = root.substr(0,root.lastIndexOf('/')) + '/';
                     
-
-                    var resolvedUrl = this._url.split('//').join('/');
+                    var resolvedUrl = this._url.split('//').join('/').split('#')[0]; // remove hash
 
                     var wwwFolderPath = navigator.userAgent.indexOf('MSIE 9.0') > -1 ? 'app/www/' : 'www/';
-
-                    console.log('original resolvedUrl = ' + resolvedUrl);
 
                     if(resolvedUrl.indexOf('/') == 0) {
                         console.log('removing leading /');
@@ -178,20 +175,15 @@ namespace WPCordovaClassLib.CordovaLib
                     }
 
                     if( resolvedUrl.indexOf('app/www') == 0 ) {
-                        
                         resolvedUrl = window.location.protocol  + wwwFolderPath + resolvedUrl.substr(7);
                     }
                     else if( resolvedUrl.indexOf('www') == 0) {
-
                         resolvedUrl = window.location.protocol  + wwwFolderPath + resolvedUrl.substr(4);
                     }
 
                     if(resolvedUrl.indexOf(':') < 0) {
                         resolvedUrl = basePath + resolvedUrl; // consider it relative
                     }
-
-                    console.log('sanitized resolvedUrl = ' + resolvedUrl);
-
 
                     var funk = function () {
                         window.__onXHRLocalCallback = function (responseCode, responseText) {
