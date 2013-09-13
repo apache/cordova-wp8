@@ -79,7 +79,7 @@ function is_cordova_project(path) {
         var proj_files = new Enumerator(proj_folder.Files);
         for (;!proj_files.atEnd(); proj_files.moveNext()) {
             if (fso.GetExtensionName(proj_files.item()) == 'csproj') {
-                return true;  
+                return true;
             }
         }
     }
@@ -101,14 +101,17 @@ function get_solution_name(path) {
 
 // builds the project and .xap in release mode
 function build_xap_release(path) {
+
+    exec_verbose('%comspec% /c "' + path + '\\cordova\\clean"');
+
     Log("Building Cordova-WP8 Project:");
     Log("\tConfiguration : Release");
     Log("\tDirectory : " + path);
-    
+
     wscript_shell.CurrentDirectory = path;
     var cmd = 'msbuild "' + get_solution_name(path) + '" /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release';
     exec_verbose(cmd);
-    
+
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Release')) {
         var out_folder = fso.GetFolder(path + '\\Bin\\Release');
@@ -116,7 +119,7 @@ function build_xap_release(path) {
         for (;!out_files.atEnd(); out_files.moveNext()) {
             if (fso.GetExtensionName(out_files.item()) == 'xap') {
                 Log("BUILD SUCCESS.");
-                return;  
+                return;
             }
         }
     }
@@ -126,14 +129,17 @@ function build_xap_release(path) {
 
 // builds the project and .xap in debug mode
 function build_xap_debug(path) {
+
+    exec_verbose('%comspec% /c "' + path + '\\cordova\\clean"');
+
     Log("Building Cordova-WP8 Project:");
     Log("\tConfiguration : Debug");
     Log("\tDirectory : " + path);
-    
+
     wscript_shell.CurrentDirectory = path;
     var cmd = 'msbuild "' + get_solution_name(path) + '" /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug';
     exec_verbose(cmd);
-    
+
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Debug')) {
         var out_folder = fso.GetFolder(path + '\\Bin\\Debug');
@@ -141,7 +147,7 @@ function build_xap_debug(path) {
         for (;!out_files.atEnd(); out_files.moveNext()) {
             if (fso.GetExtensionName(out_files.item()) == 'xap') {
                 Log("BUILD SUCCESS.");
-                return;  
+                return;
             }
         }
     }
@@ -172,11 +178,9 @@ if (args.Count() > 0) {
         }
 
         if (args(0) == "--debug" || args(0) == "-d") {
-            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\clean"');
             build_xap_debug(ROOT);
         }
         else if (args(0) == "--release" || args(0) == "-r") {
-            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\clean"');
             build_xap_release(ROOT);
         }
         else {
