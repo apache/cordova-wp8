@@ -170,13 +170,15 @@ namespace WPCordovaClassLib.CordovaLib
 
         private void LoadPluginFeatures(XDocument document)
         {
-            var features = document.Descendants("feature");
+            var features = from feats in document.Descendants()
+                           where feats.Name.LocalName == "feature"
+                           select feats;
 
             foreach (var feature in features)
             {
                 var name = feature.Attribute("name");
-                var values = from results in feature.Descendants("param")
-                             where ((string)results.Attribute("name") == "wp-package")
+                var values = from results in feature.Descendants()
+                             where results.Name.LocalName == "param" && ((string)results.Attribute("name") == "wp-package")
                              select results;
 
                 var value = values.FirstOrDefault();
@@ -203,7 +205,8 @@ namespace WPCordovaClassLib.CordovaLib
 
                 LoadPluginFeatures(document);
 
-                var preferences = from results in document.Descendants("preference")
+                var preferences = from results in document.Descendants()
+                                  where results.Name.LocalName == "preference"
                                   select new
                                   {
                                       name = (string)results.Attribute("name"),
@@ -216,7 +219,8 @@ namespace WPCordovaClassLib.CordovaLib
                     Debug.WriteLine("pref" + pref.name + ", " + pref.value);
                 }
 
-                var accessList = from results in document.Descendants("access")
+                var accessList = from results in document.Descendants()
+                                 where results.Name.LocalName == "access"
                                  select new
                                  {
                                      origin = (string)results.Attribute("origin"),
@@ -228,7 +232,10 @@ namespace WPCordovaClassLib.CordovaLib
                     AddWhiteListEntry(accessElem.origin, accessElem.subdomains);
                 }
 
-                var contentsTag = document.Descendants("content").FirstOrDefault();
+                var contentsTag = (from results in document.Descendants()
+                                   where results.Name.LocalName == "content"
+                                   select results).FirstOrDefault();
+
                 if (contentsTag != null)
                 {
                     var src = contentsTag.Attribute("src");
