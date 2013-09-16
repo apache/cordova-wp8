@@ -120,6 +120,9 @@ namespace WPCordovaClassLib.CordovaLib
                 if (this.onreadystatechange) {
                     this.onreadystatechange();
                 }
+                if (this.readyState == XHRShim.DONE){
+                    this.onload && this.onload();
+                }
             },
             setRequestHeader: function(header, value) {
                 if (this.wrappedXHR) {
@@ -171,16 +174,15 @@ namespace WPCordovaClassLib.CordovaLib
                     var wwwFolderPath = navigator.userAgent.indexOf('MSIE 9.0') > -1 ? 'app/www/' : 'www/';
 
                     if(resolvedUrl.indexOf('/') == 0) {
-                        console.log('removing leading /');
+                        //console.log('removing leading /');
                         resolvedUrl = resolvedUrl.substr(1);
                     }
 
+                    // handle special case where url is of form app/www but we are loaded just from /www
                     if( resolvedUrl.indexOf('app/www') == 0 ) {
-
                         resolvedUrl = window.location.protocol  + wwwFolderPath + resolvedUrl.substr(7);
                     }
                     else if( resolvedUrl.indexOf('www') == 0) {
-
                         resolvedUrl = window.location.protocol  + wwwFolderPath + resolvedUrl.substr(4);
                     }
 
@@ -199,8 +201,6 @@ namespace WPCordovaClassLib.CordovaLib
                             }
 
                             alias.changeReadyState(XHRShim.DONE);
-                            alias.onload && alias.onload();
-
                         }
                         alias.changeReadyState(XHRShim.LOADING);
                         window.external.Notify('XHRLOCAL/' + resolvedUrl);

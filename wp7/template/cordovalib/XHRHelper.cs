@@ -30,7 +30,7 @@ namespace WPCordovaClassLib.CordovaLib
     if (!docDomain || docDomain.length === 0) {
 
         var aliasXHR = win.XMLHttpRequest;
-        
+
         var XHRShim = function() {};
         win.XMLHttpRequest = XHRShim;
         XHRShim.noConflict = aliasXHR;
@@ -48,7 +48,7 @@ namespace WPCordovaClassLib.CordovaLib
             withCredentials: false,
             _requestHeaders: null,
             open: function (reqType, uri, isAsync, user, password) {
-                
+
                 if (uri && uri.indexOf('http') === 0) {
                     if (!this.wrappedXHR) {
                         this.wrappedXHR = new aliasXHR();
@@ -120,6 +120,9 @@ namespace WPCordovaClassLib.CordovaLib
                 if (this.onreadystatechange) {
                     this.onreadystatechange();
                 }
+                if (this.readyState == XHRShim.DONE){
+                    this.onload && this.onload();
+                }
             },
             setRequestHeader: function(header, value) {
                 if (this.wrappedXHR) {
@@ -158,40 +161,34 @@ namespace WPCordovaClassLib.CordovaLib
             send: function(data) {
                 if (this.wrappedXHR) {
                     return this.wrappedXHR.send(data);
-                } 
+                }
                 else {
                     this.changeReadyState(XHRShim.OPENED);
                     var alias = this;
-                    var root = window.location.href; 
-                    var basePath = root.substr(0,root.lastIndexOf('/')) + '/';
-                    
 
-                    var resolvedUrl = this._url.split('//').join('/');
+                    var root = window.location.href.split('#')[0];   // remove hash
+                    var basePath = root.substr(0,root.lastIndexOf('/')) + '/';
+
+                    var resolvedUrl = this._url.split('//').join('/').split('#')[0]; // remove hash
 
                     var wwwFolderPath = navigator.userAgent.indexOf('MSIE 9.0') > -1 ? 'app/www/' : 'www/';
 
-                    console.log('original resolvedUrl = ' + resolvedUrl);
-
                     if(resolvedUrl.indexOf('/') == 0) {
-                        console.log('removing leading /');
+                        //console.log('removing leading /');
                         resolvedUrl = resolvedUrl.substr(1);
                     }
 
+                    // handle special case where url is of form app/www but we are loaded just from /www
                     if( resolvedUrl.indexOf('app/www') == 0 ) {
-                        
                         resolvedUrl = window.location.protocol  + wwwFolderPath + resolvedUrl.substr(7);
                     }
                     else if( resolvedUrl.indexOf('www') == 0) {
-
                         resolvedUrl = window.location.protocol  + wwwFolderPath + resolvedUrl.substr(4);
                     }
 
                     if(resolvedUrl.indexOf(':') < 0) {
                         resolvedUrl = basePath + resolvedUrl; // consider it relative
                     }
-
-                    console.log('sanitized resolvedUrl = ' + resolvedUrl);
-
 
                     var funk = function () {
                         window.__onXHRLocalCallback = function (responseCode, responseText) {
@@ -204,11 +201,9 @@ namespace WPCordovaClassLib.CordovaLib
                             }
 
                             alias.changeReadyState(XHRShim.DONE);
-                            alias.onload && alias.onload();
-                            
                         }
                         alias.changeReadyState(XHRShim.LOADING);
-                        window.external.Notify('XHRLOCAL/' + resolvedUrl); 
+                        window.external.Notify('XHRLOCAL/' + resolvedUrl);
                     }
                     if (this.isAsync) {
                         setTimeout(funk, 0);
@@ -254,7 +249,7 @@ namespace WPCordovaClassLib.CordovaLib
 
                 if (resource == null)
                 {
-                    // 404 ? 
+                    // 404 ?
                     Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404" });
                     return true;
                 }
