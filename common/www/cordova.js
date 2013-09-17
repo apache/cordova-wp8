@@ -1,5 +1,5 @@
 ﻿// Platform: windowsphone
-// 3.0.0-dev-56-g579d990
+// 3.1.0-rc1
 /*
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -19,7 +19,7 @@
  under the License.
 */
 ;(function() {
-var CORDOVA_JS_BUILD_LABEL = '3.0.0-dev-56-g579d990';
+var CORDOVA_JS_BUILD_LABEL = '3.1.0-rc1';
 // file: lib/scripts/require.js
 
 var require,
@@ -100,6 +100,7 @@ define("cordova", function(require, exports, module) {
 
 
 var channel = require('cordova/channel');
+var platform = require('cordova/platform');
 
 /**
  * Intercept calls to addEventListener + removeEventListener and handle deviceready,
@@ -172,6 +173,7 @@ var cordova = {
     define:define,
     require:require,
     version:CORDOVA_JS_BUILD_LABEL,
+    platformId:platform.id,
     /**
      * Methods to add/remove your own addEventListener hijacking on document + window.
      */
