@@ -80,7 +80,7 @@ function SystemRequiermentsMet() {
     var cmd = 'msbuild -version'
     var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, AND have the latest .NET framework added to your path (i.e C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).'
     var output = check_command(cmd, fail_msg);
-    var msversion = output.match(/\.NET\sFramework\,\sversion\s4\.0/);
+    var msversion = output.match(/\.NET\sFramework\,\sversion\s4\.0/i);
     if (!msversion) {
         Log('Please install the .NET Framwork v4.0.30319 (in the latest windows phone SDK\'s).', true);
         Log('Make sure the "msbuild" command in your path is pointing to  v4.0.30319 of msbuild as well (inside C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).', true);
@@ -91,7 +91,7 @@ function SystemRequiermentsMet() {
         cmd = 'git --version';
         fail_msg = 'The command `git` failed. Make sure you have git installed as well ad in your PATH environment so the tool can use it';
         output = check_command(cmd, fail_msg);
-        var gitVersion = output.match(/git\sversion\s1\./);
+        var gitVersion = output.match(/git\sversion\s1\./i);
         if (!gitVersion) {
             Log('Please ensure you have at least git v1 installed and added to you PATH so this tool can use it to get the latest codova.');
         }
