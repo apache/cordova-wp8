@@ -36,8 +36,8 @@ var versionNum ='0.0.0';
 
 var platformRoot = WScript.ScriptFullName.split('\\tooling\\', 1);
 
-//  set with the -install switch, default false 
-var addToVS = false; 
+//  set with the -install switch, default false
+var addToVS = false;
 
 // help function
 function Usage() {
@@ -145,7 +145,7 @@ function copyFile(src,dest) {
 function copyCommonItemsToTemplate() {
     var srcPath = repoRoot + '\\common';
     var destPath = platformRoot + templatePath;
-    
+
     var folder = fso.GetFolder(srcPath);
     // iterate over the files in the folder
     for (var files = new Enumerator(folder.files) ; !files.atEnd() ; files.moveNext()) {
@@ -155,7 +155,7 @@ function copyCommonItemsToTemplate() {
     // iterate over the child folders in the folder
     for (var subFlds = new Enumerator(folder.SubFolders) ; !subFlds.atEnd() ; subFlds.moveNext()) {
         //Log("Folder: " + srcPath + "\\" + subFlds.item().name);
-        exec('%comspec% /c xcopy /Y /E /I ' + srcPath + "\\" + subFlds.item().name + " " 
+        exec('%comspec% /c xcopy /Y /E /I ' + srcPath + "\\" + subFlds.item().name + " "
             + destPath + "\\" + subFlds.item().name);
     }
 }
@@ -180,7 +180,7 @@ function package_templates()
 {
     Log("Creating template .zip files for wp8");
     var templateOutFilename = repoRoot + '\\CordovaWP8_' + versionNum.replace(/\./g, '_') + '.zip';
-    
+
     // clear the destination
     deleteFileIfExists(templateOutFilename);
 
@@ -192,17 +192,67 @@ function package_templates()
     deleteFileIfExists(platformRoot + templatePath + "\\CordovaWP8Solution.v11.suo");
 
     //exec('%comspec% /c xcopy /Y /E /I ' + repoRoot + '\\Plugins ' + platformRoot + templatePath + '\\Plugins');
-    
+
     copyCommonItemsToTemplate();
 
     copyFile(repoRoot + '\\VERSION',platformRoot + templatePath);
 
     // update .vstemplate files for the template zips.
-    var name_regex = /CordovaWP8[_](\d+)[_](\d+)[_](\d+)(rc\d)?/g;
-    var discript_regex = /Cordova\s*(\d+)[.](\d+)[.](\d+)(rc\d)?/;
 
-    replaceInFile(platformRoot + templatePath + '\\MyTemplate.vstemplate', name_regex,  'CordovaWP8_' + versionNum.replace(/\./g, '_'));
-    replaceInFile(platformRoot + templatePath + '\\MyTemplate.vstemplate', discript_regex,  "Cordova " + versionNum);
+    var cleanVersionName = "CordovaWP8_" + versionNum.replace(/\./g, '_');
+
+    var projXml = WScript.CreateObject("Microsoft.XMLDOM");
+    projXml.async = false;
+    var fullTemplatePath = platformRoot + templatePath + '\\MyTemplate.vstemplate';
+    if (projXml.load(fullTemplatePath)) {
+
+        // <Name>CordovaWP8_ + versionNum.replace(/\./g, '_')</Name>
+        var xNode = projXml.selectSingleNode("VSTemplate/TemplateData/Name");
+        if(xNode != null)
+        {
+            // Log("replacing version in Name");
+            xNode.text = cleanVersionName;
+        }
+
+        // <DefaultName>CordovaWP8_ + versionNum</DefaultName>
+        xNode = projXml.selectSingleNode("VSTemplate/TemplateData/DefaultName");
+        if(xNode != null)
+        {
+            // Log("replacing version in DefaultName");
+            xNode.text = cleanVersionName  + '_';
+        }
+
+        xNode = projXml.selectSingleNode("VSTemplate/TemplateData/Description");
+        if(xNode != null)
+        {
+           xNode.text = xNode.text.replace("0.0.0", versionNum);
+        }
+        projXml.save(fullTemplatePath);
+
+    }
+
+
+    // Use proper XML-DOM named nodes and replace them with cordova current version
+    var projXml = WScript.CreateObject("Microsoft.XMLDOM");
+    projXml.async = false;
+    if (projXml.load(platformRoot + templatePath + '\\MyTemplate.vstemplate')) {
+
+        // <Name>CordovaWP7_ + versionNum.replace(/\./g, '_')</Name>
+        var xNode = projXml.selectSingleNode("VSTemplate/TemplateData/Name");
+        if(xNode != null)
+        {
+           xNode.text = "CordovaWP8_" + versionNum.replace(/\./g, '_');
+        }
+
+        // <DefaultName>CordovaWP7_ + versionNum</DefaultName>
+        xNode = projXml.selectSingleNode("VSTemplate/TemplateData/DefaultName");
+        if(xNode != null)
+        {
+           xNode.text = "CordovaWP8_" + versionNum;
+        }
+
+        projXml.save(platformRoot + templatePath + '\\MyTemplate.vstemplate');
+    }
 
     zip_project(templateOutFilename, platformRoot + templatePath);
 
@@ -267,8 +317,8 @@ function cleanUp() {
 function parseArgs() {
     if(args.Count() > 0) {
 
-        //Support help flags -help, --help, /? 
-        if(args(0).indexOf("-help") > -1 || 
+        //Support help flags -help, --help, /?
+        if(args(0).indexOf("-help") > -1 ||
            args(0).indexOf("/?") > -1 ) {
             Usage();
             WScript.Quit(1);
