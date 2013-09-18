@@ -1,13 +1,13 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
 	<TemplateData>
-		<Name>CordovaWP7_3_1_0-rc1</Name>
+		<Name>CordovaWP7_3_0_0dev</Name>
 		<Description>Starter project for building a Cordova app for Windows Phone version: 3.1.0-rc1</Description>
 		<ProjectType>CSharp</ProjectType>
 		<ProjectSubType>
 		</ProjectSubType>
 		<SortOrder>1000</SortOrder>
 		<CreateNewFolder>true</CreateNewFolder>
-		<DefaultName>CordovaWP7_3_1_0-rc1_</DefaultName>
+		<DefaultName>CordovaWP7_3_0_0dev_</DefaultName>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<LocationField>Enabled</LocationField>
 		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
