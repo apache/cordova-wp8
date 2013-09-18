@@ -1,10 +1,10 @@
-/*  
+/*
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
-	
+
 	http://www.apache.org/licenses/LICENSE-2.0
-	
+
 	Unless required by applicable law or agreed to in writing, software
 	distributed under the License is distributed on an "AS IS" BASIS,
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -161,9 +161,9 @@ namespace WPCordovaClassLib
                 {
                     this.StartPageUri = new Uri(AppRoot + "www/" + configHandler.ContentSrc, UriKind.Relative);
                 }
-            }  
+            }
 
-                                                                      
+
             browserDecorators = new Dictionary<string, IBrowserDecorator>();
 
             // initializes native execution logic
@@ -175,7 +175,7 @@ namespace WPCordovaClassLib
 
         /*
          *   browserDecorators are a collection of plugin-like classes (IBrowserDecorator) that add some bit of functionality to the browser.
-         *   These are somewhat different than plugins in that they are usually not async and patch a browser feature that we would 
+         *   These are somewhat different than plugins in that they are usually not async and patch a browser feature that we would
          *   already expect to have.  Essentially these are browser polyfills that are patched from the outside in.
          * */
         void CreateDecorators()
@@ -267,16 +267,14 @@ namespace WPCordovaClassLib
                     catch (Exception /*ex*/)
                     {
                         deviceUUID = Guid.NewGuid().ToString();
+                        Debug.WriteLine("Updating IsolatedStorage for APP:DeviceID :: " + deviceUUID);
+                        IsolatedStorageFileStream file = new IsolatedStorageFileStream("DeviceID.txt", FileMode.Create, FileAccess.Write, appStorage);
+                        using (StreamWriter writeFile = new StreamWriter(file))
+                        {
+                            writeFile.WriteLine(deviceUUID);
+                            writeFile.Close();
+                        }
                     }
-
-                    Debug.WriteLine("Updating IsolatedStorage for APP:DeviceID :: " + deviceUUID);
-                    IsolatedStorageFileStream file = new IsolatedStorageFileStream("DeviceID.txt", FileMode.Create, FileAccess.Write, appStorage);
-                    using (StreamWriter writeFile = new StreamWriter(file))
-                    {
-                        writeFile.WriteLine(deviceUUID);
-                        writeFile.Close();
-                    }
-
                 }
 
                 StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("CordovaSourceDictionary.xml", UriKind.Relative));
@@ -316,7 +314,7 @@ namespace WPCordovaClassLib
                                         appStorage.CreateDirectory(strBaseDir);
                                     }
 
-                                    // This will truncate/overwrite an existing file, or 
+                                    // This will truncate/overwrite an existing file, or
                                     using (IsolatedStorageFileStream outFile = appStorage.OpenFile(AppRoot + file.path, FileMode.Create))
                                     {
                                         Debug.WriteLine("INFO: Writing data for " + AppRoot + file.path + " and length = " + data.Length);
@@ -434,12 +432,12 @@ namespace WPCordovaClassLib
 
         /*
          *  This method does the work of routing commands
-         *  NotifyEventArgs.Value contains a string passed from JS 
+         *  NotifyEventArgs.Value contains a string passed from JS
          *  If the command already exists in our map, we will just attempt to call the method(action) specified, and pass the args along
          *  Otherwise, we create a new instance of the command, add it to the map, and call it ...
          *  This method may also receive JS error messages caught by window.onerror, in any case where the commandStr does not appear to be a valid command
          *  it is simply output to the debugger output, and the method returns.
-         * 
+         *
          **/
         void GapBrowser_ScriptNotify(object sender, NotifyEventArgs e)
         {
@@ -465,7 +463,7 @@ namespace WPCordovaClassLib
                 {
                     case "overridebackbutton":
                         string arg0 = JsonHelper.Deserialize<string[]>(commandCallParams.Args)[0];
-                        this.OverrideBackButton = (arg0 != null && arg0.Length > 0 && arg0.ToLower() == "true"); 
+                        this.OverrideBackButton = (arg0 != null && arg0.Length > 0 && arg0.ToLower() == "true");
                         break;
                 }
             }
@@ -484,7 +482,7 @@ namespace WPCordovaClassLib
 
         public void LoadPage(string url)
         {
-            try 
+            try
             {
                 Uri newLoc = new Uri(url,UriKind.RelativeOrAbsolute);
                 CordovaBrowser.Navigate(newLoc);
