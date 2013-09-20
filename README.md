@@ -43,38 +43,46 @@ Requires
 Getting Started 
 ---
 
-There are 2 ways to go about creating a new Apache Cordova WP7 or WP8 application.
+There are 2 approaches to scaffold your projects.
+- Create and install Visual Studio project templates.
+- or Command line tool
 
-### Run the batch file to create and install the templates.
+## 1. Create and install Visual Studio project templates.
+
+1. Get the code (2 options)
+  - **Clone** the code to your local machine `git clone https://github.com/apache/cordova-wp8.git`
+  - or **Download** a snapshot and unzip it on your machine. [Direct Download Link](https://github.com/apache/cordova-wp8/archive/master.zip)
+
+2. Install the templates.
+  - **Automatically:** Run the batch file with the `-install` argument to install the templates automatically
+    `createTemplates.bat -install`
+  - **Manually:** 
+        - Create templates: Execute `createTemplates.bat` (without the `-install` argument). Double clicking this file will generate 2 .zip files. (`CordovaWP7_x_x_x.zip` and `CordovaWP8_x_x_x.zip` where `x.x.x` is the current version number)
+        - Install the Visual Studio templates: copy the `Cordova**.zip` zips to `"My Documents\Visual Studio 2012\Templates\ProjectTemplates\"`
+
+3. You should now be able to create new Apache Cordova Windows Phone app from the Visual Studio File->New Project menu. *(hint: to find the templates in the File->New Project dialog, use the search box and type `cordova`)*
 
 
-- The root of the repo contains a file createTemplates.bat.  Double clicking this file will generate 2 .zip files. (CordovaWP7_x_x_x.zip + CordovaWP8_x_x_x.zip where x.x.x is the current version number)  To easily use these files in Visual Studio, copy them to 
-"My Documents\Visual Studio 2012\Templates\ProjectTemplates\" You will then be able to create new Apache Cordova Windows Phone apps from the Visual Studio File->New Project menu.
-- If you run the batch file from the command line, you can also call with a parameter to install automatically
+## 2. Use the create scripts on the command line
 
-Run the script :
-
-    >createTemplates.bat -install
-
-## Use the create scripts on the command line
-
-Gettings Started from command line
----
+   Gettings Started from command line
 
     >.\wp7\bin\create PathToNewProject [ PackageName ] [ AppName ]
     >.\wp8\bin\create PathToNewProject [ PackageName ] [ AppName ]
 
-    >PathToNewProject : The path to where you wish to create the project
-    >PackageName      : The namespace for the project (default is Cordova.Example)
-    >AppName          : The name of the application (default is CordovaWP8AppProj or CordovaWP7AppProj)
+  - PathToNewProject : The path to where you wish to create the project (*folder must not already exist*)
+  - PackageName      : The namespace for the project (default is Cordova.Example)
+  - AppName          : The name of the application (default is CordovaWP8AppProj or CordovaWP7AppProj)
 
-    >examples:
+Examples:
+
     >.\wp7\bin\create C:\Users\anonymous\Desktop\MyWP7Project
     >.\wp8\bin\create C:\Users\anonymous\Desktop\MyWP8Proj io.cordova.example CordovaWP8App
 
-    Launch Visual Studio and open Solution file (.sln) in (C:\Users\anonymous\Desktop\MyWP7Project)
+Launch Visual Studio and open Solution file (.sln) in (C:\Users\anonymous\Desktop\MyWP7Project)
 
     Built and Run it
+
 
 Important!!!
 ---
