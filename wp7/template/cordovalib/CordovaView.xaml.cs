@@ -364,7 +364,7 @@ namespace WPCordovaClassLib
             {
                 try
                 {
-                    CordovaBrowser.InvokeScript("eval", new string[] { "cordova.fireDocumentEvent('backbutton');" });
+                    CordovaBrowser.InvokeScript("eval", new string[] { "cordova.fireDocumentEvent('backbutton', {}, true);" });
                     e.Cancel = true;
                 }
                 catch (Exception ex)
