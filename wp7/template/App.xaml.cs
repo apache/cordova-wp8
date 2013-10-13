@@ -62,9 +62,6 @@ namespace $safeprojectname$
                 // Enable non-production analysis visualization mode, 
                 // which shows areas of a page that are being GPU accelerated with a colored overlay.
                 //Application.Current.Host.Settings.EnableCacheVisualization = true;
-                
-                // Avoid screen locks while debugging.
-                PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
             // Standard Silverlight initialization
@@ -78,6 +75,8 @@ namespace $safeprojectname$
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            // Avoid screen locks while debugging.
+            PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
         }
 
         // Code to execute when the application is activated (brought to foreground)
