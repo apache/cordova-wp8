@@ -1,5 +1,5 @@
 @ECHO OFF
-SET script_path="%~dp0win_os_version.js"
+SET script_path="%~dp0lib\win_os_version.js"
 IF EXIST %script_path% (
     cscript %script_path% %* //nologo
 ) ELSE (

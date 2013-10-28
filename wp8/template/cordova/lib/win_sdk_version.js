@@ -65,9 +65,9 @@ function getSdkVersion() {
     var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, AND have the latest .NET framework added to your path (i.e C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).'
     var output = check_command(cmd, fail_msg);
 	var msversion = '';
-	var msversion_reg = /\.NET\sFramework\,\sversion\s\d+\.\d+\.\d+\.\d+/g;
+	var msversion_reg = /\.NET\sFramework\,\sversion\s\d+\.\d+\.\d+/g;
 	if(msversion_reg.test(output)){
-		msversion = output.match(msversion_reg)[0].match(/\d+\.\d+\.\d+\.\d+/g);
+		msversion = output.match(msversion_reg)[0].match(/\d+\.\d+\.\d+/g);
 		Log(msversion);
 	}else {
 		Log('Unable to get the .NET Framework version.',true);
