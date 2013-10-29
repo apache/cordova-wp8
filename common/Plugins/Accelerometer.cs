@@ -114,6 +114,11 @@ namespace WPCordovaClassLib.Cordova.Commands
         /// <returns>status of listener</returns>
         public void start(string options)
         {
+            string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
+            string callbackId = args[0];
+
+            //Debug.WriteLine("start called with callbackId : " + callbackId);
+
             if ((currentStatus == Running) || (currentStatus == Starting))
             {
                 return;
@@ -137,23 +142,28 @@ namespace WPCordovaClassLib.Cordova.Commands
                 if (currentStatus != Running)
                 {
                     this.SetStatus(ErrorFailedToStart);
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart), callbackId);
                     return;
                 }
             }
             catch (Exception)
             {
                 this.SetStatus(ErrorFailedToStart);
-                DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
+                DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart), callbackId);
                 return;
             }
             PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
             result.KeepCallback = true;
-            DispatchCommandResult(result);
+            DispatchCommandResult(result, callbackId);
         }
 
         public void stop(string options)
         {
+            string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
+            string callbackId = args[0];
+
+            //Debug.WriteLine("stop called with callbackId : " + callbackId);
+
             if (currentStatus == Running)
             {
                 lock (accelerometer)
@@ -163,7 +173,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     this.SetStatus(Stopped);
                 }
             }
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK), callbackId);
         }
 
         /// <summary>
