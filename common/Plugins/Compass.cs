@@ -140,6 +140,9 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         public void getHeading(string options)
         {
+            string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
+            string callbackId = args[1];
+
             if (!DeviceCompass.IsSupported)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, "{code:" + Not_Supported + "}"));
@@ -180,7 +183,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 
                     if (currentStatus != Running)
                     {
-                        DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart));
+                        DispatchCommandResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, ErrorFailedToStart), callbackId);
                         return;
                     }
                 }
@@ -196,11 +199,11 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
             catch (UnauthorizedAccessException)
             {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, ErrorFailedToStart));
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, ErrorFailedToStart), callbackId);
             }
             catch (Exception)
             {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ErrorFailedToStart));
+                DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ErrorFailedToStart), callbackId);
             }
         }
 
@@ -252,6 +255,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         public void startWatch(string options)
         {
+
             if (!DeviceCompass.IsSupported)
             {
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, Not_Supported));
