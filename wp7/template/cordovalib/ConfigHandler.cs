@@ -83,7 +83,7 @@ namespace WPCordovaClassLib.CordovaLib
                 Uri uri = new Uri(origin.Replace("*", "replaced-text"), UriKind.Absolute);
 
                 string tempHostName = uri.Host.Replace("replaced-text", "*");
-                //if (uri.HostNameType == UriHostNameType.Dns){}        
+                //if (uri.HostNameType == UriHostNameType.Dns){}
                 // starts with wildcard match - we make the first '.' optional (so '*.org.apache.cordova' will match 'org.apache.cordova')
                 if (tempHostName.StartsWith("*."))
                 {    //"(\\s{0}|*.)"
@@ -107,15 +107,15 @@ namespace WPCordovaClassLib.CordovaLib
 
         }
 
-        /**   
-         
+        /**
+
          An access request is granted for a given URI if there exists an item inside the access-request list such that:
 
             - The URI's scheme component is the same as scheme; and
             - if subdomains is false or if the URI's host component is not a domain name (as defined in [RFC1034]), the URI's host component is the same as host; or
             - if subdomains is true, the URI's host component is either the same as host, or is a subdomain of host (as defined in [RFC1034]); and
             - the URI's port component is the same as port.
-         
+
          **/
 
         public bool URLIsAllowed(string url)
@@ -181,9 +181,32 @@ namespace WPCordovaClassLib.CordovaLib
 
         private void LoadPluginFeatures(XDocument document)
         {
+            var plugins = from results in document.Descendants("plugin")
+                          select new
+                          {
+                              name = (string)results.Attribute("name"),
+                              autoLoad = results.Attribute("onload")
+                          };
+
+            foreach (var plugin in plugins)
+            {
+                Debug.WriteLine("Warning: Deprecated use of <plugin> by plugin : " + plugin.name);
+                PluginConfig pConfig = new PluginConfig(plugin.name, plugin.autoLoad != null && plugin.autoLoad.Value == "true");
+                if (pConfig.Name == "*")
+                {
+                    AllowAllPlugins = true;
+                    // break; wait, don't, some still could be autoload
+                }
+                else
+                {
+                    AllowedPlugins[pConfig.Name] = pConfig;
+                }
+            }
+
             var features = from f in document.Descendants()
                            where f.Name.LocalName == "feature"
                            select f;
+
 
             foreach (var feature in features)
             {

@@ -45,10 +45,20 @@ namespace WPCordovaClassLib.CordovaLib
             return Preferences[key];
         }
 
-        protected static string[] AllowedSchemes = { "http", "https", "ftp", "ftps" };
+        protected static string[] AllowedSchemes = {"http","https","ftp","ftps"};
         protected bool SchemeIsAllowed(string scheme)
         {
             return AllowedSchemes.Contains(scheme);
+        }
+
+        protected string PathAndQuery(Uri uri)
+        {
+            string result = uri.LocalPath;
+            if (uri.Query.Length > 0)
+            {
+                result +=  uri.Query;
+            }
+            return result;
         }
 
         protected void AddWhiteListEntry(string origin, bool allowSubdomains)
@@ -73,7 +83,7 @@ namespace WPCordovaClassLib.CordovaLib
                 Uri uri = new Uri(origin.Replace("*", "replaced-text"), UriKind.Absolute);
 
                 string tempHostName = uri.Host.Replace("replaced-text", "*");
-                //if (uri.HostNameType == UriHostNameType.Dns){}        
+                //if (uri.HostNameType == UriHostNameType.Dns){}
                 // starts with wildcard match - we make the first '.' optional (so '*.org.apache.cordova' will match 'org.apache.cordova')
                 if (tempHostName.StartsWith("*."))
                 {    //"(\\s{0}|*.)"
@@ -83,8 +93,9 @@ namespace WPCordovaClassLib.CordovaLib
                 {
                     hostName = tempHostName.Replace(".", @"\.").Replace("*", @"\w*");
                 }
+
                 //  "^https?://"
-                hostMatchingRegex = uri.Scheme + "://" + hostName + uri.PathAndQuery;
+                hostMatchingRegex = uri.Scheme + "://" + hostName + PathAndQuery(uri);
                 //Debug.WriteLine("Adding regex :: " + hostMatchingRegex);
                 AllowedDomains.Add(hostMatchingRegex);
 
@@ -96,35 +107,35 @@ namespace WPCordovaClassLib.CordovaLib
 
         }
 
-        /**   
-         
+        /**
+
          An access request is granted for a given URI if there exists an item inside the access-request list such that:
 
             - The URI's scheme component is the same as scheme; and
             - if subdomains is false or if the URI's host component is not a domain name (as defined in [RFC1034]), the URI's host component is the same as host; or
             - if subdomains is true, the URI's host component is either the same as host, or is a subdomain of host (as defined in [RFC1034]); and
             - the URI's port component is the same as port.
-         
+
          **/
 
         public bool URLIsAllowed(string url)
         {
             // easy case first
-            if (this.AllowAllDomains)
+            if (AllowAllDomains )
             {
                 return true;
             }
             else
             {
                 // start simple
-                Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
+                Uri uri = new Uri(url,UriKind.RelativeOrAbsolute);
                 if (uri.IsAbsoluteUri)
                 {
                     if (this.SchemeIsAllowed(uri.Scheme))
                     {
                         // additional test because our pattern will always have a trailing '/'
                         string matchUrl = url;
-                        if (uri.PathAndQuery == "/")
+                        if (PathAndQuery(uri) == "/")
                         {
                             matchUrl = url + "/";
                         }
@@ -134,8 +145,8 @@ namespace WPCordovaClassLib.CordovaLib
                             {
                                 // make sure it is at the start, and not part of the query string
                                 // special case :: http://some.other.domain/page.html?x=1&g=http://build.apache.org/
-                                if (Regex.IsMatch(uri.Scheme + "://" + uri.Host + "/", pattern) ||
-                                     (!Regex.IsMatch(uri.PathAndQuery, pattern)))
+                                if ( Regex.IsMatch(uri.Scheme + "://" +  uri.Host + "/", pattern) ||
+                                     (!Regex.IsMatch(PathAndQuery(uri), pattern)))
                                 {
                                     return true;
                                 }
@@ -151,11 +162,6 @@ namespace WPCordovaClassLib.CordovaLib
             return false;
         }
 
-        public bool IsPluginAllowed(string key)
-        {
-            return AllowAllPlugins || AllowedPlugins.Keys.Contains(key);
-        }
-
         public string[] AutoloadPlugins
         {
             get
@@ -168,11 +174,39 @@ namespace WPCordovaClassLib.CordovaLib
             }
         }
 
+        public bool IsPluginAllowed(string key)
+        {
+            return AllowAllPlugins || AllowedPlugins.Keys.Contains(key);
+        }
+
         private void LoadPluginFeatures(XDocument document)
         {
-            var features = from feats in document.Descendants()
-                           where feats.Name.LocalName == "feature"
-                           select feats;
+            var plugins = from results in document.Descendants("plugin")
+                          select new
+                          {
+                              name = (string)results.Attribute("name"),
+                              autoLoad = results.Attribute("onload")
+                          };
+
+            foreach (var plugin in plugins)
+            {
+                Debug.WriteLine("Warning: Deprecated use of <plugin> by plugin : " + plugin.name);
+                PluginConfig pConfig = new PluginConfig(plugin.name, plugin.autoLoad != null && plugin.autoLoad.Value == "true");
+                if (pConfig.Name == "*")
+                {
+                    AllowAllPlugins = true;
+                    // break; wait, don't, some still could be autoload
+                }
+                else
+                {
+                    AllowedPlugins[pConfig.Name] = pConfig;
+                }
+            }
+
+            var features = from f in document.Descendants()
+                           where f.Name.LocalName == "feature"
+                           select f;
+
 
             foreach (var feature in features)
             {
@@ -182,12 +216,12 @@ namespace WPCordovaClassLib.CordovaLib
                              select results;
 
                 var value = values.FirstOrDefault();
-                if(value != null)
+                if (value != null)
                 {
                     string key = (string)value.Attribute("value");
                     Debug.WriteLine("Adding feature.value=" + key);
                     var onload = value.Attribute("onload");
-                    PluginConfig pConfig = new PluginConfig(key,onload != null && onload.Value == "true");
+                    PluginConfig pConfig = new PluginConfig(key, onload != null && onload.Value == "true");
                     AllowedPlugins[key] = pConfig;
                 }
             }
@@ -233,8 +267,8 @@ namespace WPCordovaClassLib.CordovaLib
                 }
 
                 var contentsTag = (from results in document.Descendants()
-                                   where results.Name.LocalName == "content"
-                                   select results).FirstOrDefault();
+                                  where results.Name.LocalName == "content"
+                                  select results).FirstOrDefault();
 
                 if (contentsTag != null)
                 {
