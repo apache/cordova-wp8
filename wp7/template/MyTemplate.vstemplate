@@ -1,13 +1,13 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
 	<TemplateData>
-		<Name>CordovaWP7_3_0_0dev</Name>
-		<Description>Starter project for building a Cordova app for Windows Phone version: 3.1.0-rc1</Description>
+		<Name>CordovaWP7_2_9_1</Name>
+		<Description>Starter project for building a Cordova app for Windows Phone 7.5 version: 2.9.1</Description>
 		<ProjectType>CSharp</ProjectType>
 		<ProjectSubType>
 		</ProjectSubType>
 		<SortOrder>1000</SortOrder>
 		<CreateNewFolder>true</CreateNewFolder>
-		<DefaultName>CordovaWP7_3_0_0dev_</DefaultName>
+		<DefaultName>CordovaWP7_2_9_1_</DefaultName>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<LocationField>Enabled</LocationField>
 		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
@@ -55,10 +55,7 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="CordovaView.xaml">CordovaView.xaml</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="CordovaView.xaml.cs">CordovaView.xaml.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="DOMStorageHelper.cs">DOMStorageHelper.cs</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="DOMStorageProxy.cs">DOMStorageProxy.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="IBrowserDecorator.cs">IBrowserDecorator.cs</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="ImageExifHelper.cs">ImageExifHelper.cs</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="MimeTypeMapper.cs">MimeTypeMapper.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="NativeExecution.cs">NativeExecution.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="OrientationHelper.cs">OrientationHelper.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="PluginResult.cs">PluginResult.cs</ProjectItem>
@@ -95,6 +92,39 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="index.html">index.html</ProjectItem>
 				<Folder Name="js" TargetFolderName="js">
 					<ProjectItem ReplaceParameters="true" TargetFileName="index.js">index.js</ProjectItem>
+				</Folder>
+			</Folder>
+			<Folder Name="Plugins" TargetFolderName="Plugins">
+				<ProjectItem ReplaceParameters="true" TargetFileName="Accelerometer.cs">Accelerometer.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="AudioFormatsHelper.cs">AudioFormatsHelper.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="AudioPlayer.cs">AudioPlayer.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Battery.cs">Battery.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Camera.cs">Camera.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Capture.cs">Capture.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Compass.cs">Compass.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Contacts.cs">Contacts.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Device.cs">Device.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="File.cs">File.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="FileTransfer.cs">FileTransfer.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="GeoLocation.cs">GeoLocation.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Globalization.cs">Globalization.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="ImageExifHelper.cs">ImageExifHelper.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="InAppBrowser.cs">InAppBrowser.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Media.cs">Media.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="MimeTypeMapper.cs">MimeTypeMapper.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="NetworkStatus.cs">NetworkStatus.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Notification.cs">Notification.cs</ProjectItem>
+				<Folder Name="UI" TargetFolderName="UI">
+					<ProjectItem ReplaceParameters="true" TargetFileName="AudioCaptureTask.cs">AudioCaptureTask.cs</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="AudioRecorder.xaml">AudioRecorder.xaml</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="AudioRecorder.xaml.cs">AudioRecorder.xaml.cs</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="ImageCapture.xaml">ImageCapture.xaml</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="ImageCapture.xaml.cs">ImageCapture.xaml.cs</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="NotificationBox.xaml">NotificationBox.xaml</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="NotificationBox.xaml.cs">NotificationBox.xaml.cs</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="VideoCaptureTask.cs">VideoCaptureTask.cs</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="VideoRecorder.xaml">VideoRecorder.xaml</ProjectItem>
+					<ProjectItem ReplaceParameters="true" TargetFileName="VideoRecorder.xaml.cs">VideoRecorder.xaml.cs</ProjectItem>
 				</Folder>
 			</Folder>
 		</Project>
