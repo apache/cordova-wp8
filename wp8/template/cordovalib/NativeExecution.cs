@@ -1,10 +1,10 @@
-﻿/*  
+﻿/*
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
-	
+
 	http://www.apache.org/licenses/LICENSE-2.0
-	
+
 	Unless required by applicable law or agreed to in writing, software
 	distributed under the License is distributed on an "AS IS" BASIS,
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ namespace WPCordovaClassLib.Cordova
         private readonly WebBrowser webBrowser;
 
         /// <summary>
-        /// Creates new instance of a NativeExecution class. 
+        /// Creates new instance of a NativeExecution class.
         /// </summary>
         /// <param name="browser">Reference to web part where application is hosted</param>
         public NativeExecution(ref WebBrowser browser)
@@ -135,22 +135,11 @@ namespace WPCordovaClassLib.Cordova
 
                 new Thread(methodInvokation).Start();
 
-                //if ((bc is File) || (bc is Accelerometer))
-                //{
-                //    // Due to some issues with the IsolatedStorage in current version of WP8 SDK we have to run all File Api commands synchronously.
-                //    // TODO: test this in WP8 RTM
-                //    methodInvokation.Invoke();
-                //}
-                //else
-                //{
-                //    new Thread(methodInvokation).Start();
-                //}
-
             }
             catch (Exception ex)
             {
                 // ERROR
-                Debug.WriteLine(String.Format("ERROR: Unable to execute command :: {0}:{1}:{3} ",
+                Debug.WriteLine(String.Format("ERROR: Unable to execute command :: {0}:{1}:{2} ",
                     commandCallParams.Service, commandCallParams.Action, ex.Message));
 
                 this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.ERROR));
