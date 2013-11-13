@@ -80,7 +80,7 @@ function SystemRequiermentsMet() {
     var cmd = 'msbuild -version'
     var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, AND have the latest .NET framework added to your path (i.e C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).'
     var output = check_command(cmd, fail_msg);
-    var msversion = output.match(/Microsoft\s\(R\)\s+Build\sEngine\s[a-z]+\s4\.0\.30319/i);
+    var msversion = output.match(/Microsoft\s\(R\)\s+Build\sEngine\s[a-z]+\s[0-9\.]/i);
     if (!msversion) {
         Log('Please install the .NET Framwork v4.0.30319 (in the latest windows phone SDK\'s).', true);
         Log('Make sure the "msbuild" command in your path is pointing to  v4.0.30319 of msbuild as well (inside C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).', true);
