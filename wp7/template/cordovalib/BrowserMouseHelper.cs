@@ -117,7 +117,15 @@ namespace WPCordovaClassLib
             var border1 = VisualTreeHelper.GetChild(border0, 0);
             var panZoom = VisualTreeHelper.GetChild(border1, 0);
             var grid = VisualTreeHelper.GetChild(panZoom, 0);
-            border = VisualTreeHelper.GetChild(grid, 0) as Border;
+            var gridChild = VisualTreeHelper.GetChild(grid, 0);
+
+            border = gridChild as Border;
+            // windows phone 7 sdk apps running on windows phone 8 os have an additional child in the visualtree
+            // if border is null, we probably need to go one deeper.
+            if (border == null)
+            {
+                border = VisualTreeHelper.GetChild(gridChild, 0) as Border;
+            }
 
             if (border != null)
             {
