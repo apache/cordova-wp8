@@ -42,7 +42,7 @@ namespace WPCordovaClassLib.CordovaLib
 
         public string GetPreference(string key)
         {
-            return Preferences[key];
+            return Preferences.ContainsKey(key) ? Preferences[key] : null;
         }
 
         protected static string[] AllowedSchemes = { "http", "https", "ftp", "ftps" };
@@ -73,7 +73,7 @@ namespace WPCordovaClassLib.CordovaLib
                 Uri uri = new Uri(origin.Replace("*", "replaced-text"), UriKind.Absolute);
 
                 string tempHostName = uri.Host.Replace("replaced-text", "*");
-                //if (uri.HostNameType == UriHostNameType.Dns){}        
+                //if (uri.HostNameType == UriHostNameType.Dns){}
                 // starts with wildcard match - we make the first '.' optional (so '*.org.apache.cordova' will match 'org.apache.cordova')
                 if (tempHostName.StartsWith("*."))
                 {    //"(\\s{0}|*.)"
@@ -96,15 +96,15 @@ namespace WPCordovaClassLib.CordovaLib
 
         }
 
-        /**   
-         
+        /**
+
          An access request is granted for a given URI if there exists an item inside the access-request list such that:
 
             - The URI's scheme component is the same as scheme; and
             - if subdomains is false or if the URI's host component is not a domain name (as defined in [RFC1034]), the URI's host component is the same as host; or
             - if subdomains is true, the URI's host component is either the same as host, or is a subdomain of host (as defined in [RFC1034]); and
             - the URI's port component is the same as port.
-         
+
          **/
 
         public bool URLIsAllowed(string url)

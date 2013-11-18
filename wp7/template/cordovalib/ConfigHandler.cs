@@ -42,7 +42,7 @@ namespace WPCordovaClassLib.CordovaLib
 
         public string GetPreference(string key)
         {
-            return Preferences[key];
+            return Preferences.ContainsKey(key) ? Preferences[key] : null;
         }
 
         protected static string[] AllowedSchemes = {"http","https","ftp","ftps"};
