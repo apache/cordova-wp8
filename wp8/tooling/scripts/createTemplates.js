@@ -198,9 +198,9 @@ function package_templates()
     copyFile(repoRoot + '\\VERSION',platformRoot + templatePath);
 
     // update .vstemplate files for the template zips.
-
     var cleanVersionName = "CordovaWP8_" + versionNum.replace(/\./g, '_');
 
+    // Use proper XML-DOM named nodes and replace them with cordova current version
     var projXml = WScript.CreateObject("Microsoft.XMLDOM");
     projXml.async = false;
     var fullTemplatePath = platformRoot + templatePath + '\\MyTemplate.vstemplate';
@@ -219,39 +219,19 @@ function package_templates()
         if(xNode != null)
         {
             // Log("replacing version in DefaultName");
-            xNode.text = cleanVersionName  + '_';
+            xNode.text = cleanVersionName;
         }
 
         xNode = projXml.selectSingleNode("VSTemplate/TemplateData/Description");
         if(xNode != null)
         {
-           xNode.text = xNode.text.replace("0.0.0", versionNum);
+            // 3.1.0-rc1 replace version number in the description
+            var regxVersionNum = /(\d+)[.](\d+)[.](\d+)(-)?(rc\d+)?/i;
+           xNode.text = xNode.text.replace(regxVersionNum, versionNum);
         }
+
         projXml.save(fullTemplatePath);
 
-    }
-
-
-    // Use proper XML-DOM named nodes and replace them with cordova current version
-    var projXml = WScript.CreateObject("Microsoft.XMLDOM");
-    projXml.async = false;
-    if (projXml.load(platformRoot + templatePath + '\\MyTemplate.vstemplate')) {
-
-        // <Name>CordovaWP7_ + versionNum.replace(/\./g, '_')</Name>
-        var xNode = projXml.selectSingleNode("VSTemplate/TemplateData/Name");
-        if(xNode != null)
-        {
-           xNode.text = "CordovaWP8_" + versionNum.replace(/\./g, '_');
-        }
-
-        // <DefaultName>CordovaWP7_ + versionNum</DefaultName>
-        xNode = projXml.selectSingleNode("VSTemplate/TemplateData/DefaultName");
-        if(xNode != null)
-        {
-           xNode.text = "CordovaWP8_" + versionNum;
-        }
-
-        projXml.save(platformRoot + templatePath + '\\MyTemplate.vstemplate');
     }
 
     zip_project(templateOutFilename, platformRoot + templatePath);

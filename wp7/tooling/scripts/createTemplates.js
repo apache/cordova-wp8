@@ -221,18 +221,19 @@ function package_templates()
         if(xNode != null)
         {
             // Log("replacing version in DefaultName");
-            xNode.text = cleanVersionName  + '_';
+            xNode.text = cleanVersionName;
         }
 
         xNode = projXml.selectSingleNode("VSTemplate/TemplateData/Description");
         if(xNode != null)
         {
-           xNode.text = xNode.text.replace("0.0.0", versionNum);
+            // 3.1.0-rc1 replace version number in the description
+            var regxVersionNum = /(\d+)[.](\d+)[.](\d+)(-)?(rc\d+)?/i;
+           xNode.text = xNode.text.replace(regxVersionNum, versionNum);
         }
         projXml.save(fullTemplatePath);
 
     }
-
 
     zip_project(templateOutFilename, platformRoot + templatePath);
 
