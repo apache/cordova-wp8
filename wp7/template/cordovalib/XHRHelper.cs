@@ -124,6 +124,22 @@ namespace WPCordovaClassLib.CordovaLib
                     this.onload && this.onload();
                 }
             },
+            addEventListener: function (type, listener, useCapture){
+                if (this.wrappedXHR) {
+                    this.wrappedXHR.addEventListener(type, listener, useCapture);
+                } else {
+                    this['on' + type] = listener;
+                }
+            },
+            removeEventListener: function (type, listener, useCapture){
+                if (this.wrappedXHR) {
+                    this.wrappedXHR.removeEventListener(type, listener, useCapture);
+                } else {
+                    if (this['on' + type] == listener) { // if listener is currently used
+                        delete this['on' + type];
+                    }
+                }
+            },
             setRequestHeader: function(header, value) {
                 if (this.wrappedXHR) {
                     this.wrappedXHR.setRequestHeader(header, value);
