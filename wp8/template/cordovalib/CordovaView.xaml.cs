@@ -368,6 +368,13 @@ namespace WPCordovaClassLib
                 if (page != null)
                 {
                     page.BackKeyPress += new EventHandler<CancelEventArgs>(page_BackKeyPress);
+                    // CB-2347 -jm
+                    string fullscreen = configHandler.GetPreference("fullscreen");
+                    bool bFullScreen = false;
+                    if (bool.TryParse(fullscreen, out bFullScreen) && bFullScreen)
+                    {
+                        SystemTray.SetIsVisible(page, false);
+                    }
                 }
             }
         }
