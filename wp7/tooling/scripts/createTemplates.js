@@ -143,6 +143,22 @@ function copyFile(src,dest) {
     exec('%comspec% /c copy /Y ' + src + ' ' + dest);
 }
 
+function copyCommonScripts() {
+    var srcPath = platformRoot + "\\bin";
+    var destPath = platformRoot + templatePath + "\\cordova";
+
+    copyFile(srcPath + "\\check_reqs.bat", destPath + "\\check_reqs.bat");
+    copyFile(srcPath + "\\check_reqs.js", destPath + "\\check_reqs.js");
+}
+
+function removeCommonScripts() {
+    var destPath = platformRoot + templatePath + "\\cordova";
+
+    deleteFileIfExists(destPath + "\\check_reqs.bat");
+    deleteFileIfExists(destPath + "\\check_reqs.js");
+}
+
+
 function copyCommonItemsToTemplate() {
     var srcPath = repoRoot + '\\common';
     var destPath = platformRoot + templatePath;
@@ -159,6 +175,8 @@ function copyCommonItemsToTemplate() {
         exec('%comspec% /c xcopy /Y /E /I ' + srcPath + "\\" + subFlds.item().name + " "
             + destPath + "\\" + subFlds.item().name);
     }
+
+    copyCommonScripts();
 }
 
 // delete desination items
@@ -174,6 +192,8 @@ function removeCommonItems() {
     for (var subFlds = new Enumerator(folder.SubFolders) ; !subFlds.atEnd() ; subFlds.moveNext()) {
         deleteFolderIfExists(destPath + "\\" + subFlds.item().name);
     }
+
+    removeCommonScripts();
 }
 
 
