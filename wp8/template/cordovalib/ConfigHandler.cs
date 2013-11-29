@@ -42,7 +42,7 @@ namespace WPCordovaClassLib.CordovaLib
 
         public string GetPreference(string key)
         {
-            return Preferences.ContainsKey(key) ? Preferences[key] : null;
+            return Preferences.ContainsKey(key.ToLowerInvariant()) ? Preferences[key.ToLowerInvariant()] : null;
         }
 
         protected static string[] AllowedSchemes = { "http", "https", "ftp", "ftps" };
@@ -215,8 +215,7 @@ namespace WPCordovaClassLib.CordovaLib
 
                 foreach (var pref in preferences)
                 {
-                    Preferences[pref.name] = pref.value;
-                    Debug.WriteLine("pref" + pref.name + ", " + pref.value);
+                    Preferences[pref.name.ToLowerInvariant()] = pref.value;
                 }
 
                 var accessList = from results in document.Descendants()
