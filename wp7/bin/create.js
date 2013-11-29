@@ -141,6 +141,9 @@ function create(path, namespace, name) {
     // copy the version file
     fso.CopyFile(repoRoot +'\\VERSION',path + "\\" );
 
+    fso.CopyFile(platformRoot +'\\bin\\check_reqs.bat',path + "\\cordova\\" );    
+    fso.CopyFile(platformRoot +'\\bin\\check_reqs.js',path + "\\cordova\\" );   
+
     // remove template cruft
     deleteFileIfExists(path + "\\__PreviewImage.jpg");
     deleteFileIfExists(path + "\\__TemplateIcon.png");
