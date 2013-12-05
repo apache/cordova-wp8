@@ -173,12 +173,18 @@ namespace CordovaDeploy
                 return;
             }
 
-            try {
+            try 
+            {
                 xapFilePath = Directory.GetFiles(root + @"\Bin\Debug", "*.xap").FirstOrDefault();
-            } catch (DirectoryNotFoundException e) {
-                try {
+            } 
+            catch (DirectoryNotFoundException) 
+            {
+                try 
+                {
                     xapFilePath = Directory.GetFiles(root + @"\Bin\Release", "*.xap").FirstOrDefault();
-                } catch (DirectoryNotFoundException ex) {
+                } 
+                catch (DirectoryNotFoundException) 
+                {
                     Log(string.Format("Error: could not find project build directoy in {0}", root), true);
                     Log("make sure your app has been successfully built before deploying.", true);
                 }
