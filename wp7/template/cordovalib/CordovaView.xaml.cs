@@ -408,7 +408,7 @@ namespace WPCordovaClassLib
             {
                 CordovaBrowser.InvokeScript("execScript", new string[] { nativeReady });
             }
-            catch (Exception ex)
+            catch (Exception /*ex*/)
             {
                 Debug.WriteLine("Error calling js to fire nativeReady event. Did you include cordova.js in your html script tag?");
             }
