@@ -23,8 +23,8 @@
 Apache Cordova for Windows Phone 8 ( and Windows Phone 7.1)
 ===
 
-Windows Phone 7 is deprecated as a target platform. Support will be removed in version 3.7.0, approx. May 2014.
-*** 
+> **Windows Phone 7 is deprecated as a target platform. Support will be removed in version 3.7.0, approx. May 2014.**
+====
 
 The Windows Phone 7 and Windows Phone 8 Cordova codebases are being merged to reduce redundancy.  This repo includes code to build Apache Cordova applications that target either Windows Phone SDK.
 
