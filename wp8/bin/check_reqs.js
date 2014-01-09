@@ -21,8 +21,6 @@
 var args = WScript.Arguments;
 var wscript_shell = WScript.CreateObject("WScript.Shell");
 
-var REQUIRE_GIT = false;
-
 function Usage() {
     Log("Usage: [ check_reqs | cscript check_reqs.js ]");
     Log("examples:");
@@ -71,34 +69,6 @@ function check_command(cmd, fail_msg) {
     }
 }
 
-/* The tooling for cordova windows phone requires these commands
- *  in the environment PATH variable.
- * - msbuild (C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319)
- * - git? (for dynamic cli loading of projects?)
- */
-function SystemRequiermentsMet() {
-    var cmd = 'msbuild -version'
-    var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, AND have the latest .NET framework added to your path (i.e C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).'
-    var output = check_command(cmd, fail_msg);
-    var msversion = output.match(/Microsoft\s\(R\)\s+Build\sEngine\s[a-z]+\s4\.0\.30319/i);
-    if (!msversion) {
-        Log('Please install the .NET Framwork v4.0.30319 (in the latest windows phone SDK\'s).', true);
-        Log('Make sure the "msbuild" command in your path is pointing to  v4.0.30319 of msbuild as well (inside C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).', true);
-        WScript.Quit(1);
-    }
-
-    if(REQUIRE_GIT) {
-        cmd = 'git --version';
-        fail_msg = 'The command `git` failed. Make sure you have git installed as well ad in your PATH environment so the tool can use it';
-        output = check_command(cmd, fail_msg);
-        var gitVersion = output.match(/git\sversion\s1\./i);
-        if (!gitVersion) {
-            Log('Please ensure you have at least git v1 installed and added to you PATH so this tool can use it to get the latest codova.');
-        }
-    }
-}
-
-
 if (args.Count() > 0) {
     // support help flags
     if (args(0) == "--help" || args(0) == "/?" ||
@@ -112,5 +82,19 @@ if (args.Count() > 0) {
         WScript.Quit(1);
     }
 }
+else {
+/* The tooling for cordova windows phone requires these commands
+ *  in the environment PATH variable.
+ * - msbuild (ex. C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319)
+ */
+    var cmd = 'GetMSBuildToolsVersion.bat';
+    var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, AND have the latest .NET framework added to your path (i.e C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).'
+    var output = check_command(cmd, fail_msg);
 
-SystemRequiermentsMet();
+    if(output.indexOf("4.0") != 0) {
+        Log('Please install the .NET Framework v4.0 (part of the latest windows phone SDK\'s).', true);
+        Log("Reported version is : " + output);
+        WScript.Quit(1);
+    }
+}
+
