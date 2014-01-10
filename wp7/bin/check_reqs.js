@@ -87,13 +87,20 @@ else {
  *  in the environment PATH variable.
  * - msbuild (ex. C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319)
  */
-    var cmd = 'GetMSBuildToolsVersion.bat';
-    var fail_msg = 'The command `msbuild` failed. Make sure you have the latest Windows Phone SDKs installed, AND have the latest .NET framework added to your path (i.e C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319).'
-    var output = check_command(cmd, fail_msg);
+    var version;
 
-    if(output.indexOf("4.0") != 0) {
+    try {
+        version = wscript_shell.RegRead("HKLM\\SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions\\4.0\\MSBuildRuntimeVersion");
+        if(version != null && version.indexOf("4.0") == 0) {
+            // All good!
+            Log(version);
+        }
+        else {
+            throw(new Error("version not 4.0"));
+        }
+    }
+    catch(err) {
         Log('Please install the .NET Framework v4.0 (part of the latest windows phone SDK\'s).', true);
-        Log("Reported version is : " + output);
         WScript.Quit(1);
     }
 }
