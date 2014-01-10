@@ -24,7 +24,7 @@ var wscript_shell = WScript.CreateObject("WScript.Shell");
 function Usage() {
     Log("Usage: [ check_reqs | cscript check_reqs.js ]");
     Log("examples:");
-    Log("    cscript C:\\Users\\anonymous\\cordova-wp7\\bin\\check_reqs.js");
+    Log("    cscript C:\\Users\\anonymous\\cordova-wp8\\bin\\check_reqs.js");
     Log("    CordovaWindowsPhone\\bin\\check_reqs");
 
 }
@@ -39,45 +39,14 @@ function Log(msg, error) {
     }
 }
 
-// gets the output from a command, failing with the given error message
-function check_command(cmd, fail_msg) {
-    try {
-        var out = wscript_shell.Exec(cmd);
-    } catch(exception) {
-        Log(fail_msg, true);
-        WScript.Quit(1);
-    }
-    while (out.Status == 0) {
-        WScript.Sleep(100);
-    }
-
-    //Check that command executed
-    if (!out.StdErr.AtEndOfStream) {
-        var line = out.StdErr.ReadLine();
-        Log(fail_msg, true);
-        Log('Output : ' + line, true);
-        WScript.Quit(1);
-    }
-
-    if (!out.StdOut.AtEndOfStream) {
-        var line = out.StdOut.ReadAll();
-        return line;
-    }
-    else {
-         Log('Unable to get output from command "' + cmd + '"', true);
-         WScript.Quit(1);
-    }
-}
-
 if (args.Count() > 0) {
     // support help flags
-    if (args(0) == "--help" || args(0) == "/?" ||
-            args(0) == "help" || args(0) == "-help" || args(0) == "/help" || args(0) == "-h") {
+    if (args(0).indexOf("help") > -1 || args(0) == "/?" || args(0) == "-h") {
         Usage();
         WScript.Quit(1);
     }
     else {
-        Log('Error : Did not recognize argument ' + args(0), true)
+        Log('Error : Did not recognize argument ' + args(0), true);
         Usage();
         WScript.Quit(1);
     }
