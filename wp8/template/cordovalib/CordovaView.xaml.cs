@@ -77,6 +77,8 @@ namespace WPCordovaClassLib
 
         private ConfigHandler configHandler;
 
+        protected bool IsExiting = false;
+
         private Dictionary<string, IBrowserDecorator> browserDecorators;
 
         public System.Windows.Controls.Grid _LayoutRoot
@@ -214,8 +216,7 @@ namespace WPCordovaClassLib
 
         void AppDeactivated(object sender, DeactivatedEventArgs e)
         {
-            Debug.WriteLine("INFO: AppDeactivated");
-
+            Debug.WriteLine("INFO: AppDeactivated because " + e.Reason);
             try
             {
                 CordovaBrowser.InvokeScript("eval", new string[] { "cordova.fireDocumentEvent('pause');" });
@@ -246,6 +247,7 @@ namespace WPCordovaClassLib
 
         void CordovaBrowser_Loaded(object sender, RoutedEventArgs e)
         {
+
             this.bmHelper.ScrollDisabled = this.DisableBouncyScrolling;
 
             if (DesignerProperties.IsInDesignTool)
@@ -286,67 +288,6 @@ namespace WPCordovaClassLib
                         }
                     }
                 }
-
-                /*
-                 * 11/08/12 Ruslan Kokorev
-                 * Copying files to isolated storage is no more required in WP8. WebBrowser control now works with files located in XAP.
-                */
-
-                //StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("CordovaSourceDictionary.xml", UriKind.Relative));
-
-                //if (streamInfo != null)
-                //{
-                //    StreamReader sr = new StreamReader(streamInfo.Stream);
-                //    //This will Read Keys Collection for the xml file
-
-                //    XDocument document = XDocument.Parse(sr.ReadToEnd());
-
-                //    var files = from results in document.Descendants("FilePath")
-                //                select new
-                //                {
-                //                    path = (string)results.Attribute("Value")
-                //                };
-                //    StreamResourceInfo fileResourceStreamInfo;
-
-                //    using (IsolatedStorageFile appStorage = IsolatedStorageFile.GetUserStoreForApplication())
-                //    {
-
-                //        foreach (var file in files)
-                //        {
-                //            fileResourceStreamInfo = Application.GetResourceStream(new Uri(file.path, UriKind.Relative));
-
-                //            if (fileResourceStreamInfo != null)
-                //            {
-                //                using (BinaryReader br = new BinaryReader(fileResourceStreamInfo.Stream))
-                //                {
-                //                    byte[] data = br.ReadBytes((int)fileResourceStreamInfo.Stream.Length);
-
-                //                    string strBaseDir = AppRoot + file.path.Substring(0, file.path.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
-
-                //                    if (!appStorage.DirectoryExists(strBaseDir))
-                //                    {
-                //                        Debug.WriteLine("INFO: Creating Directory :: " + strBaseDir);
-                //                        appStorage.CreateDirectory(strBaseDir);
-                //                    }
-
-                //                    // This will truncate/overwrite an existing file, or
-                //                    using (IsolatedStorageFileStream outFile = appStorage.OpenFile(AppRoot + file.path, FileMode.Create))
-                //                    {
-                //                        Debug.WriteLine("INFO: Writing data for " + AppRoot + file.path + " and length = " + data.Length);
-                //                        using (var writer = new BinaryWriter(outFile))
-                //                        {
-                //                            writer.Write(data);
-                //                        }
-                //                    }
-                //                }
-                //            }
-                //            else
-                //            {
-                //                Debug.WriteLine("ERROR: Failed to write file :: " + file.path + " did you forget to add it to the project?");
-                //            }
-                //        }
-                //    }
-                //}
 
                 CordovaBrowser.Navigate(StartPageUri);
                 IsBrowserInitialized = true;
@@ -417,6 +358,14 @@ namespace WPCordovaClassLib
 
         void CordovaBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
+            if (IsExiting)
+            {
+                // Special case, we navigate to about:blank when we are about to exit.
+                IsolatedStorageSettings.ApplicationSettings.Save();
+                Application.Current.Terminate();
+                return;
+            }
+
             Debug.WriteLine("CordovaBrowser_LoadCompleted");
             string[] autoloadPlugs = this.configHandler.AutoloadPlugins;
             foreach (string plugName in autoloadPlugs)
@@ -424,8 +373,8 @@ namespace WPCordovaClassLib
                 //nativeExecution.ProcessCommand(commandCallParams);
             }
 
+            // send js code to fire ready event
             string nativeReady = "(function(){ cordova.require('cordova/channel').onNativeReady.fire()})();";
-
             try
             {
                 CordovaBrowser.InvokeScript("execScript", new string[] { nativeReady });
@@ -433,6 +382,16 @@ namespace WPCordovaClassLib
             catch (Exception /*ex*/)
             {
                 Debug.WriteLine("Error calling js to fire nativeReady event. Did you include cordova.js in your html script tag?");
+            }
+            // attach js code to dispatch exitApp 
+            string appExitHandler = "(function(){navigator.app = navigator.app || {}; navigator.app.exitApp= function(){cordova.exec(null,null,'CoreEvents','__exitApp',[]); }})();";
+            try
+            {
+                CordovaBrowser.InvokeScript("execScript", new string[] { appExitHandler });
+            }
+            catch (Exception /*ex*/)
+            {
+                Debug.WriteLine("Error calling js to add appExit funtion.");
             }
 
             if (this.CordovaBrowser.Opacity < 1)
@@ -490,6 +449,17 @@ namespace WPCordovaClassLib
                     case "overridebackbutton":
                         string arg0 = JsonHelper.Deserialize<string[]>(commandCallParams.Args)[0];
                         this.OverrideBackButton = (arg0 != null && arg0.Length > 0 && arg0.ToLower() == "true");
+                        break;
+                    case "__exitapp":
+                        Debug.WriteLine("Received exitApp command from javascript, app will now exit.");
+                        CordovaBrowser.InvokeScript("eval", new string[] { "cordova.fireDocumentEvent('pause');" });
+                        CordovaBrowser.InvokeScript("eval", new string[] { "setTimeout(function(){ cordova.fireDocumentEvent('exit'); cordova.exec(null,null,'CoreEvents','__finalexit',[]); },0);" });
+                        break;
+                    case "__finalexit":
+                        IsExiting = true;
+                        // hide the browser to prevent white flashes, since about:blank seems to always be white
+                        CordovaBrowser.Opacity = 0d; 
+                        CordovaBrowser.Navigate(new Uri("about:blank", UriKind.Absolute));
                         break;
                 }
             }
