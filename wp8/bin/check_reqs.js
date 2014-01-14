@@ -70,7 +70,7 @@ else {
     }
     catch(err) {
         Log('Please install the .NET Framework v4.0 (part of the latest windows phone SDK\'s).', true);
-        WScript.Quit(1);
+        WScript.Quit(2);
     }
 }
 
