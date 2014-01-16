@@ -73,6 +73,11 @@ namespace WPCordovaClassLib.Cordova
 
                     if (t == null)
                     {
+                        t = Type.GetType(BaseCommandNamespacePrefix + alias);
+                    }
+
+                    if (t == null)
+                    {
                         t = Type.GetType(alias + "." + service);
                     }
                 }
