@@ -15,13 +15,15 @@ namespace WPCordovaClassLib.CordovaLib
     {
         public class PluginConfig
         {
-            public PluginConfig(string name, bool autoLoad = false)
+            public PluginConfig(string name, bool autoLoad = false, string className = "")
             {
                 Name = name;
                 isAutoLoad = autoLoad;
+                ClassName = className;
             }
             public string Name;
             public bool isAutoLoad;
+            public string ClassName;
         }
 
         protected Dictionary<string, PluginConfig> AllowedPlugins;
@@ -174,6 +176,16 @@ namespace WPCordovaClassLib.CordovaLib
             }
         }
 
+        public string GetNamespaceForCommand(string key)
+        {
+            if(AllowedPlugins.Keys.Contains(key))
+            {
+                return AllowedPlugins[key].Name;
+            }
+             
+            return "";
+        }
+
         public bool IsPluginAllowed(string key)
         {
             return AllowAllPlugins || AllowedPlugins.Keys.Contains(key);
@@ -187,7 +199,7 @@ namespace WPCordovaClassLib.CordovaLib
 
             foreach (var feature in features)
             {
-                var name = feature.Attribute("name");
+                string name = (string)feature.Attribute("name");
                 var values = from results in feature.Descendants()
                              where results.Name.LocalName == "param" && ((string)results.Attribute("name") == "wp-package")
                              select results;
@@ -199,7 +211,7 @@ namespace WPCordovaClassLib.CordovaLib
                     Debug.WriteLine("Adding feature.value=" + key);
                     var onload = value.Attribute("onload");
                     PluginConfig pConfig = new PluginConfig(key, onload != null && onload.Value == "true");
-                    AllowedPlugins[key] = pConfig;
+                    AllowedPlugins[name] = pConfig;
                 }
             }
         }
