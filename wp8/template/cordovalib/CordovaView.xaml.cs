@@ -467,6 +467,7 @@ namespace WPCordovaClassLib
             {
                 if (configHandler.IsPluginAllowed(commandCallParams.Service))
                 {
+                    commandCallParams.Namespace = configHandler.GetNamespaceForCommand(commandCallParams.Service);
                     nativeExecution.ProcessCommand(commandCallParams);
                 }
                 else
