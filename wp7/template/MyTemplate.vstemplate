@@ -55,7 +55,6 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="CordovaView.xaml">CordovaView.xaml</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="CordovaView.xaml.cs">CordovaView.xaml.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="DOMStorageHelper.cs">DOMStorageHelper.cs</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="DOMStorageProxy.cs">DOMStorageProxy.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="IBrowserDecorator.cs">IBrowserDecorator.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="ImageExifHelper.cs">ImageExifHelper.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="MimeTypeMapper.cs">MimeTypeMapper.cs</ProjectItem>
