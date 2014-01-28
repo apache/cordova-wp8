@@ -1,13 +1,13 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
 	<TemplateData>
-		<Name>CordovaWP7_3_0_0dev</Name>
+		<Name>CordovaWP7_3_4_0-rc1</Name>
 		<Description>Starter project for building a Cordova app for Windows Phone version: 3.1.0-rc1</Description>
 		<ProjectType>CSharp</ProjectType>
 		<ProjectSubType>
 		</ProjectSubType>
 		<SortOrder>1000</SortOrder>
 		<CreateNewFolder>true</CreateNewFolder>
-		<DefaultName>CordovaWP7_3_0_0dev_</DefaultName>
+		<DefaultName>CordovaWP7_3_4_0-rc1_</DefaultName>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<LocationField>Enabled</LocationField>
 		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
@@ -55,7 +55,6 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="CordovaView.xaml">CordovaView.xaml</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="CordovaView.xaml.cs">CordovaView.xaml.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="DOMStorageHelper.cs">DOMStorageHelper.cs</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="DOMStorageProxy.cs">DOMStorageProxy.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="IBrowserDecorator.cs">IBrowserDecorator.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="ImageExifHelper.cs">ImageExifHelper.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="MimeTypeMapper.cs">MimeTypeMapper.cs</ProjectItem>
