@@ -118,7 +118,9 @@ namespace WPCordovaClassLib.CordovaLib
             changeReadyState: function(newState) {
                 this.readyState = newState;
                 if (this.onreadystatechange) {
-                    this.onreadystatechange();
+                    // mimic simple 'readystatechange' event which should be passed as per spec
+                    var evt = {type: 'readystatechange', target: this, timeStamp: new Date().getTime()};
+                    this.onreadystatechange(evt);
                 }
                 if (this.readyState == XHRShim.DONE){
                     this.onload && this.onload();
