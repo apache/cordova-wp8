@@ -268,7 +268,14 @@ function package_templates()
         {
             Log("WARNING: Could not find template directory in Visual Studio,\n you can manually copy over the template .zip files.");
         }
-  }
+        // add to VS-2013 as well
+        template_dir = wscript_shell.ExpandEnvironmentStrings("%USERPROFILE%") + '\\Documents\\Visual Studio 2013\\Templates\\ProjectTemplates';
+        if(fso.FolderExists(template_dir ))
+        {
+            dest = shell.NameSpace(template_dir);
+            dest.CopyHere(templateOutFilename, 4|20);
+        }
+    }
 }
 
 function zip_project(zip_path, project_path) {
