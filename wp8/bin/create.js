@@ -167,8 +167,8 @@ function create(path, namespace, name) {
         var valid_name = name.replace(/(\.\s|\s\.|\s+|\.+)/g, '_');
         replaceInFile(path + "\\CordovaWP8Solution.sln", /CordovaWP8AppProj/g, valid_name);
         // rename project and solution
-        exec('%comspec% /c ren ' + path + "\\CordovaWP8Solution.sln " + valid_name + '.sln');
-        exec('%comspec% /c ren ' + path + "\\CordovaWP8AppProj.csproj " + valid_name + '.csproj');
+        exec('%comspec% /c ren "' + path + '\\CordovaWP8Solution.sln" ' + valid_name + '.sln');
+        exec('%comspec% /c ren "' + path + '\\CordovaWP8AppProj.csproj" ' + valid_name + '.csproj');
     }
 
     //clean up any Bin/obj or other generated files
