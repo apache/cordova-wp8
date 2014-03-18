@@ -187,14 +187,17 @@ namespace WPCordovaClassLib.CordovaLib
                     var root = window.location.href.split('#')[0];   // remove hash
                     var basePath = root.substr(0,root.lastIndexOf('/')) + '/';
 
-                    var resolvedUrl = this._url.split('//').join('/').split('#')[0]; // remove hash
+                    //console.log( 'Stripping protocol if present and removing leading / characters' );
+                    var resolvedUrl =
+                            // remove protocol from the beginning of the url if present
+                            ( this._url.indexOf( window.location.protocol ) === 0 ?
+                                this._url.substring( window.location.protocol.length ) :
+                                this._url )
+                            // get rid of all the starting slashes
+                            .replace(/^[/]*/, '')
+                            .split('#')[0]; // remove hash
 
                     var wwwFolderPath = navigator.userAgent.indexOf('MSIE 9.0') > -1 ? 'app/www/' : 'www/';
-
-                    if(resolvedUrl.indexOf('/') == 0) {
-                        //console.log('removing leading /');
-                        resolvedUrl = resolvedUrl.substr(1);
-                    }
 
                     // handle special case where url is of form app/www but we are loaded just from /www
                     if( resolvedUrl.indexOf('app/www') == 0 ) {
