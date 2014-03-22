@@ -95,6 +95,16 @@ namespace WPCordovaClassLib.CordovaLib
                                 return this.wrappedXHR.responseXML;
                             }
                         });
+                        Object.defineProperty(this, 'response', {
+                            get: function() {
+                                return this.wrappedXHR.response;
+                            }
+                        });
+                        Object.defineProperty(this, 'responseType', {
+                            set: function(val) {
+                                return this.wrappedXHR.responseType = val;
+                            }
+                        });
                         this.getResponseHeader = function(header) {
                             return this.wrappedXHR.getResponseHeader(header);
                         };
