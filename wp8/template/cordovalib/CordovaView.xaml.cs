@@ -179,20 +179,22 @@ namespace WPCordovaClassLib
         }
 
         /// <summary>
-        /// Applies configuration preferences. Only BackgroundColor is currently supported.
+        /// Applies configuration preferences. Only BackgroundColor+fullscreen is currently supported.
         /// </summary>
         private void ApplyConfigurationPreferences()
         {
             string bgColor = configHandler.GetPreference("backgroundcolor");
 
-            if (String.IsNullOrEmpty(bgColor)) return;
-            try
+            if (!String.IsNullOrEmpty(bgColor))
             {
-                Browser.Background = new SolidColorBrush(ColorFromHex(bgColor));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Unable to parse BackgroundColor value '{0}'. Error: {1}", bgColor, ex.Message);
+                try
+                {
+                    Browser.Background = new SolidColorBrush(ColorFromHex(bgColor));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Unable to parse BackgroundColor value '{0}'. Error: {1}", bgColor, ex.Message);
+                }
             }
         }
 
