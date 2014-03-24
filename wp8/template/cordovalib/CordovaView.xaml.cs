@@ -12,6 +12,7 @@
     limitations under the License.
 */
 
+using System.Globalization;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System;
@@ -23,6 +24,7 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using WPCordovaClassLib.Cordova;
 using WPCordovaClassLib.Cordova.JSON;
 using WPCordovaClassLib.CordovaLib;
@@ -171,8 +173,27 @@ namespace WPCordovaClassLib
             nativeExecution = new NativeExecution(ref this.CordovaBrowser);
             bmHelper = new BrowserMouseHelper(ref this.CordovaBrowser);
 
+            ApplyConfigurationPreferences();
 
             CreateDecorators();
+        }
+
+        /// <summary>
+        /// Applies configuration preferences. Only BackgroundColor is currently supported.
+        /// </summary>
+        private void ApplyConfigurationPreferences()
+        {
+            string bgColor = configHandler.GetPreference("backgroundcolor");
+
+            if (String.IsNullOrEmpty(bgColor)) return;
+            try
+            {
+                Browser.Background = new SolidColorBrush(ColorFromHex(bgColor));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Unable to parse BackgroundColor value '{0}'. Error: {1}", bgColor, ex.Message);
+            }
         }
 
         /*
@@ -494,6 +515,29 @@ namespace WPCordovaClassLib
            }
         }
 
-
+        /// <summary>
+        /// Converts hex color string to a new System.Windows.Media.Color structure.
+        /// If the hex is only rgb, it will be full opacity.
+        /// </summary>
+        protected Color ColorFromHex(string hexString)
+        {
+            string cleanHex = hexString.Replace("#", "").Replace("0x", "");
+            // turn #FFF into #FFFFFF
+            if (cleanHex.Length == 3)
+            {
+                cleanHex = "" + cleanHex[0] + cleanHex[0] + cleanHex[1] + cleanHex[1] + cleanHex[2] + cleanHex[2];
+            }
+            // add an alpha 100% if it is missing
+            if (cleanHex.Length == 6)
+            {
+                cleanHex = "FF" + cleanHex;
+            }
+            int argb = Int32.Parse(cleanHex, NumberStyles.HexNumber);
+            Color clr = Color.FromArgb((byte)((argb & 0xff000000) >> 0x18),
+                              (byte)((argb & 0xff0000) >> 0x10),
+                              (byte)((argb & 0xff00) >> 8),
+                              (byte)(argb & 0xff));
+            return clr;
+        }
     }
 }
