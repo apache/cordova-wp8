@@ -72,6 +72,11 @@ function exec_verbose(command) {
     }
 }
 
+// escapes a path so that it can be passed to shell command. 
+function escapePath(path) {
+    return '"' + path + '"';
+}
+
 // checks to see if a .csproj file exists in the project root
 function is_cordova_project(path) {
     if (fso.FolderExists(path)) {
@@ -99,6 +104,21 @@ function get_solution_name(path) {
     return null;
 }
 
+// returns full path to msbuild tools required to build the project
+function getMSBuildToolsPath() {
+    // use the latest version of the msbuild tools available on this machine
+    var toolsVersions = ['4.0'];          // for WP7 we REQUIRE 4.0 !!!
+    for (idx in toolsVersions) {
+        try {
+            return wscript_shell.RegRead('HKLM\\SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions\\' + toolsVersions[idx] + '\\MSBuildToolsPath');
+        } catch (err) {
+            Log("toolsVersion " + idx + " is not supported");
+        }
+    }
+    Log('MSBuild tools have not been found. Please install Microsoft Visual Studio 2012 or later', true);
+    WScript.Quit(2);
+}
+
 // builds the project and .xap in release mode
 function build_xap_release(path) {
 
@@ -109,8 +129,22 @@ function build_xap_release(path) {
     Log("\tDirectory : " + path);
 
     wscript_shell.CurrentDirectory = path;
-    var cmd = 'msbuild "' + get_solution_name(path) + '" /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release';
-    exec_verbose(cmd);
+    
+    var MSBuildToolsPath = getMSBuildToolsPath();
+    Log("\tMSBuildToolsPath: " + MSBuildToolsPath);
+
+    var buildCommand = escapePath(MSBuildToolsPath + 'msbuild') + ' ' + escapePath(get_solution_name(path)) +
+            ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release';
+        
+    // hack to get rid of 'Access is denied.' error when running the shell w/ access to C:\path..
+    buildCommand = 'cmd /c "' + buildCommand + '"';
+        
+    Log("buildCommand = " + buildCommand);
+
+    if (exec_verbose(buildCommand) != 0) {
+        // msbuild failed
+        WScript.Quit(2);
+    }
 
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Release')) {
@@ -137,8 +171,22 @@ function build_xap_debug(path) {
     Log("\tDirectory : " + path);
 
     wscript_shell.CurrentDirectory = path;
-    var cmd = 'msbuild "' + get_solution_name(path) + '" /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug';
-    exec_verbose(cmd);
+
+    var MSBuildToolsPath = getMSBuildToolsPath();
+    Log("\tMSBuildToolsPath: " + MSBuildToolsPath);
+
+    var buildCommand = escapePath(MSBuildToolsPath + 'msbuild') + ' ' + escapePath(get_solution_name(path)) +
+            ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug';
+
+    // hack to get rid of 'Access is denied.' error when running the shell w/ access to C:\path..
+    buildCommand = '%comspec% /c "' + buildCommand + '"';
+
+    Log("buildCommand = " + buildCommand);
+
+    if (exec_verbose(buildCommand) != 0) {
+        // msbuild failed
+        WScript.Quit(2);
+    }
 
     // check if file xap was created
     if (fso.FolderExists(path + '\\Bin\\Debug')) {
