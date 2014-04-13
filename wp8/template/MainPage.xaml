@@ -29,6 +29,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     Background="Black"
     SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    shell:SystemTray.ForegroundColor="Black" shell:SystemTray.Opacity="0"
     shell:SystemTray.IsVisible="True" d:DesignHeight="768" d:DesignWidth="480" 
     xmlns:my="clr-namespace:WPCordovaClassLib">
     <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Stretch">
