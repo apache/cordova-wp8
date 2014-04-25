@@ -226,6 +226,11 @@ namespace WPCordovaClassLib.CordovaLib
                             alias.status = responseCode;
                             if (responseCode == '200') {
                                 alias.responseText = responseText;
+                                Object.defineProperty(alias, 'responseXML', {
+                                    get: function () {
+                                        return new DOMParser().parseFromString(this.responseText, 'text/xml');
+                                    }
+                                });
                             }
                             else {
                                 alias.onerror && alias.onerror(responseCode);
