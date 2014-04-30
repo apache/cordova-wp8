@@ -1,0 +1,18 @@
+{
+  "name": "cordova-wp7",
+  "version": "3.4.0",
+  "description": "cordova-wp7 release",
+  "main": "bin/create",
+  "repository": {
+    "type": "git",
+    "url": "https://git-wip-us.apache.org/repos/asf/cordova-wp8.git"
+  },
+  "keywords": [
+    "wp7",
+    "windowsphone",
+    "cordova",
+    "apache"
+  ],
+  "author": "Apache Software Foundation",
+  "license": "Apache Version 2.0"
+}
