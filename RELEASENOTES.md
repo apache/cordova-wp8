@@ -4,7 +4,12 @@ Update these notes using: git log --pretty=format:'* %s' --topo-order --no-merge
 
 Cordova is a static library that enables developers to include the Cordova API in their WP8 application projects easily, and also create new Cordova-based WP8 application projects through the command-line.
 
+### 3.5.0 (201405XX) ###
 
+* Apply app-hello-world update
+* CB-6558: added package.json files for wp7 & wp8
+* CB-6491 add CONTRIBUTING.md
+* CB-6412 Include release notes in repo.
 * CB-6450 added support for local XHR.responseXML getter
 * CB-6341 don't rely on msbuild being in the path.
 * bumping version in prep for upcoming 3.5.0
