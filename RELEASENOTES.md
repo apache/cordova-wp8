@@ -6,6 +6,8 @@ Cordova is a static library that enables developers to include the Cordova API i
 
 ### 3.5.0 (201405XX) ###
 
+* Update releasenotes, and state that WP7 support is about to disappear
+* update VERSION for 3.5.0-rc1
 * Apply app-hello-world update
 * CB-6558: added package.json files for wp7 & wp8
 * CB-6491 add CONTRIBUTING.md
