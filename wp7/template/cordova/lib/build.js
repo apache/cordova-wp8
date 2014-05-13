@@ -70,6 +70,7 @@ function exec_verbose(command) {
         Log(line, true);
         WScript.Quit(2);
     }
+    return oShell.ExitCode;
 }
 
 // escapes a path so that it can be passed to shell command. 
