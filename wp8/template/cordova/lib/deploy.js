@@ -286,9 +286,9 @@ function run(path) {
 
 
 if (args.Count() > 0) {
-    // limit args
-    if (args.Count() > 2) {
-        Log('Error: Too many arguments.', true);
+    // support help flags
+    if (args(0) == "--help" || args(0) == "/?" ||
+            args(0) == "help" || args(0) == "-help" || args(0) == "/help") {
         Usage();
         WScript.Quit(2);
     }
@@ -313,12 +313,6 @@ if (args.Count() > 0) {
             else if (args(i).substr(0,9) == "--target=") {
                 device_id = args(i).split("--target=").join("");
                 deploy_type = TARGET;
-            }
-             // support help flags
-            else if (args(0) == "--help" || args(0) == "/?" ||
-                    args(0) == "help" || args(0) == "-help" || args(0) == "/help") {
-                Usage();
-                WScript.Quit(2);
             }
             else {
                 Log('Error: \"' + args(0) + '\" is not recognized as a deploy option', true);

@@ -214,11 +214,6 @@ if (args.Count() > 0) {
         Usage();
         WScript.Quit(2);
     }
-    else if (args.Count() > 1) {
-        Log("Error: Too many arguments.", true);
-        Usage();
-        WScript.Quit(2);
-    }
     else if (fso.FolderExists(ROOT)) {
         if (!is_cordova_project(ROOT)) {
             Log('Error: .csproj file not found in ' + ROOT, true);
