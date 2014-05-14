@@ -98,8 +98,8 @@ function exec_verbose(command) {
         //Wait a little bit so we're not super looping
         WScript.sleep(100);
         //Print any stdout output from the script
-        if (!oShell.StdOut.AtEndOfStream) {
-            var line = oShell.StdOut.ReadAll();
+        while (!oShell.StdOut.AtEndOfStream) {
+            var line = oShell.StdOut.ReadLine();
             Log(line);
         }
     }
@@ -110,6 +110,8 @@ function exec_verbose(command) {
         Log(line, true);
         WScript.Quit(2);
     }
+
+    return oShell.ExitCode;
 }
 
 // returns the contents of a file
@@ -125,6 +127,26 @@ function read(filename) {
         WScript.Quit(2);
     }
     return null;
+}
+
+// escapes a path so that it can be passed to shell command. 
+function escapePath(path) {
+    return '"' + path + '"';
+}
+
+// returns full path to msbuild tools required to build the project
+function getMSBuildToolsPath() {
+    // use the latest version of the msbuild tools available on this machine
+    var toolsVersions = ['12.0','4.0'];          // for WP8 we REQUIRE 4.0 !!!
+    for (idx in toolsVersions) {
+        try {
+            return wscript_shell.RegRead('HKLM\\SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions\\' + toolsVersions[idx] + '\\MSBuildToolsPath');
+        } catch (err) {
+            Log("toolsVersion " + idx + " is not supported");
+        }
+    }
+    Log('MSBuild tools have not been found. Please install Microsoft Visual Studio 2012 or later', true);
+    WScript.Quit(2);
 }
 
 // builds the CordovaDeploy.exe if it does not already exist 
@@ -145,15 +167,23 @@ function cordovaDeploy(path) {
         if (fso.FolderExists(path + CORDOVA_DEPLOY + '\\CordovaDeploy\\Bin')) {
             fso.DeleteFolder(path + CORDOVA_DEPLOY + '\\CordovaDeploy\\Bin');
         }
-        exec_verbose('msbuild "' + path + CORDOVA_DEPLOY + '\\CordovaDeploy.sln"');
 
-        if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
-            Log('CordovaDeploy.exe compiled, SUCCESS.');
-        }
-        else {
+        var MSBuildToolsPath = getMSBuildToolsPath();
+        Log("\tMSBuildToolsPath: " + MSBuildToolsPath);
+
+        var buildCommand = escapePath(MSBuildToolsPath + 'msbuild') + 
+            ' ' + escapePath(path + CORDOVA_DEPLOY + '\\CordovaDeploy.sln') +
+            ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo';
+
+        // hack to get rid of 'Access is denied.' error when running the shell w/ access to C:\path..
+        buildCommand = '%comspec% /c "' + buildCommand + '"';
+        Log("buildCommand = " + buildCommand);
+
+        if (exec_verbose(buildCommand) != 0 || !fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
             Log('ERROR: MSBUILD FAILED TO COMPILE CordovaDeploy.exe', true);
             WScript.Quit(2);
         }
+        Log('CordovaDeploy.exe compiled, SUCCESS.');
     }
     else {
         Log('ERROR: CordovaDeploy.sln not found, unable to compile CordovaDeploy tool.', true);
