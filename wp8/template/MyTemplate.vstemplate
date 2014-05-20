@@ -62,6 +62,7 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="OrientationHelper.cs">OrientationHelper.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="PluginResult.cs">PluginResult.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="ScriptCallback.cs">ScriptCallback.cs</ProjectItem>
+                <ProjectItem ReplaceParameters="true" TargetFileName="Version.cs">Version.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="XHRHelper.cs">XHRHelper.cs</ProjectItem>
 			</Folder>
 			<Folder Name="Images" TargetFolderName="Images">

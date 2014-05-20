@@ -149,6 +149,9 @@
     <Compile Include="..\template\cordovalib\NativeExecution.cs">
       <Link>CordovaLib\NativeExecution.cs</Link>
     </Compile>
+	<Compile Include="..\template\cordovalib\Version.cs">
+      <Link>CordovaLib\Version.cs</Link>
+    </Compile>
     <Compile Include="..\template\cordovalib\OrientationHelper.cs">
       <Link>CordovaLib\OrientationHelper.cs</Link>
     </Compile>

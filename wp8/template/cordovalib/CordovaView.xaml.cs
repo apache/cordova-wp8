@@ -65,7 +65,7 @@ namespace WPCordovaClassLib
         protected BrowserMouseHelper bmHelper;
 
         private ConfigHandler configHandler;
-
+        
         protected bool IsExiting = false;
 
         private Dictionary<string, IBrowserDecorator> browserDecorators;
@@ -367,7 +367,10 @@ namespace WPCordovaClassLib
         }
 
         void CordovaBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
+        {	
+			// Print out cordova version
+			Debug.WriteLine("Apache Cordova native platform version " + Version.CORDOVA_VERSION + " is starting");
+			
             if (IsExiting)
             {
                 // Special case, we navigate to about:blank when we are about to exit.

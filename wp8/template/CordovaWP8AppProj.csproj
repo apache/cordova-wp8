@@ -140,6 +140,7 @@
     <Compile Include="cordovalib\OrientationHelper.cs" />
     <Compile Include="cordovalib\PluginResult.cs" />
     <Compile Include="cordovalib\ScriptCallback.cs" />
+    <Compile Include="cordovalib\Version.cs" />
     <Compile Include="cordovalib\XHRHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
