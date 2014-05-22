@@ -20,6 +20,10 @@
 
 var fso = WScript.CreateObject('Scripting.FileSystemObject');
 var wscript_shell = WScript.CreateObject("WScript.Shell");
+var procEnv = wscript_shell.Environment("Process");
+// possible values and additional details: http://msdn.microsoft.com/en-us/library/aa384274.aspx
+var procArchitecture = procEnv("PROCESSOR_ARCHITECTURE").toLowerCase();
+var is64Mode = procArchitecture && procArchitecture != 'x86';
 
 var args = WScript.Arguments;
 
@@ -108,11 +112,14 @@ function get_solution_name(path) {
 
 // returns full path to msbuild tools required to build the project
 function getMSBuildToolsPath() {
+    // WP8 requires x86 version of MSBuild, CB-6732
+    var regRoot = is64Mode ? 'HKLM\\SOFTWARE\\Wow6432Node' : 'HKLM\\SOFTWARE';
+
     // use the latest version of the msbuild tools available on this machine
     var toolsVersions = ['12.0','4.0'];          // for WP8 we REQUIRE 4.0 !!!
     for (idx in toolsVersions) {
         try {
-            return wscript_shell.RegRead('HKLM\\SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions\\' + toolsVersions[idx] + '\\MSBuildToolsPath');
+            return wscript_shell.RegRead(regRoot + '\\Microsoft\\MSBuild\\ToolsVersions\\' + toolsVersions[idx] + '\\MSBuildToolsPath');
         } catch (err) {
             Log("toolsVersion " + idx + " is not supported");
         }
