@@ -387,7 +387,7 @@ namespace WPCordovaClassLib
             string nativeReady = "(function(){ cordova.require('cordova/channel').onNativeReady.fire()})();";
             try
             {
-                CordovaBrowser.InvokeScript("execScript", new string[] { nativeReady });
+                CordovaBrowser.InvokeScript("eval", new string[] { nativeReady });
             }
             catch (Exception /*ex*/)
             {
@@ -397,7 +397,7 @@ namespace WPCordovaClassLib
             string appExitHandler = "(function(){navigator.app = navigator.app || {}; navigator.app.exitApp= function(){cordova.exec(null,null,'CoreEvents','__exitApp',[]); }})();";
             try
             {
-                CordovaBrowser.InvokeScript("execScript", new string[] { appExitHandler });
+                CordovaBrowser.InvokeScript("eval", new string[] { appExitHandler });
             }
             catch (Exception /*ex*/)
             {

@@ -255,7 +255,7 @@ namespace WPCordovaClassLib.CordovaLib
 })(window, document); ";
 
 
-            Browser.InvokeScript("execScript", new string[] { script });
+            Browser.InvokeScript("eval", new string[] { script });
         }
 
         public bool HandleCommand(string commandStr)
