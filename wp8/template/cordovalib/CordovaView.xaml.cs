@@ -377,6 +377,18 @@ namespace WPCordovaClassLib
             }
 
             Debug.WriteLine("CordovaBrowser_LoadCompleted");
+
+            string version = "?";
+            System.Windows.Resources.StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri("VERSION", UriKind.Relative));
+            if (streamInfo != null)
+            {
+                using(StreamReader sr = new StreamReader(streamInfo.Stream))
+                {
+                    version = sr.ReadLine();
+                }
+            }
+            Debug.WriteLine("Apache Cordova native platform version " + version + " is starting");
+
             string[] autoloadPlugs = this.configHandler.AutoloadPlugins;
             foreach (string plugName in autoloadPlugs)
             {

@@ -189,7 +189,7 @@
     <None Include="cordova\log.bat" />
     <None Include="cordova\run.bat" />
     <None Include="cordova\version.bat" />
-    <None Include="VERSION" />
+    <Content Include="VERSION" />
     <None Include="Properties\AppManifest.xml">
       <SubType>Designer</SubType>
     </None>
