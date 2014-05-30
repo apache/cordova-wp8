@@ -176,7 +176,7 @@ namespace WPCordovaClassLib.CordovaLib
                 var res = from results in AllowedPlugins.TakeWhile(p => p.Value.isAutoLoad)
                           select results.Value.Name;
 
-                return new string[] { "", "" };
+                return res.ToArray<string>();
             }
         }
 
@@ -189,20 +189,30 @@ namespace WPCordovaClassLib.CordovaLib
             foreach (var feature in features)
             {
                 string name = (string)feature.Attribute("name");
-                var values = from results in feature.Descendants()
+                var value = (from results in feature.Descendants()
                              where results.Name.LocalName == "param" && ((string)results.Attribute("name") == "wp-package")
-                             select results;
+                             select results).FirstOrDefault();
 
-                var value = values.FirstOrDefault();
+                var autoloadNode = (from results in feature.Descendants()
+                                    where results.Name.LocalName == "param" && ((string)results.Attribute("name") == "onload")
+                                    select results).FirstOrDefault();
+                bool isAutoLoad = false;
+                if (autoloadNode != null)
+                {
+                    isAutoLoad = ((string)autoloadNode.Attribute("value") == "true");
+                }
+
                 if (value != null)
                 {
                     string key = (string)value.Attribute("value");
                     Debug.WriteLine("Adding feature.value=" + key);
-                    var onload = value.Attribute("onload");
-                  
-                    PluginConfig pConfig = new PluginConfig(key, onload != null && onload.Value == "true");
+                    PluginConfig pConfig = new PluginConfig(key, isAutoLoad);
                     AllowedPlugins[name] = pConfig;
+                  
+
                 }
+
+
             }
         }
 

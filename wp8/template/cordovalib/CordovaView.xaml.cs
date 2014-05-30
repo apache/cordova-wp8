@@ -392,7 +392,7 @@ namespace WPCordovaClassLib
             string[] autoloadPlugs = this.configHandler.AutoloadPlugins;
             foreach (string plugName in autoloadPlugs)
             {
-                //nativeExecution.ProcessCommand(commandCallParams);
+                nativeExecution.AutoLoadCommand(plugName);
             }
 
             // send js code to fire ready event
