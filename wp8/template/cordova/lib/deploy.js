@@ -230,8 +230,7 @@ function target(path) {
     if (!fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
         cordovaDeploy(path);
     }
-    wscript_shell.CurrentDirectory = path + CORDOVA_DEPLOY + '\\CordovaDeploy\\bin\\Debug';
-    var cmd = 'CordovaDeploy -devices';
+    var cmd = '"' + path + CORDOVA_DEPLOY_EXE + '" -devices';
     var out = wscript_shell.Exec(cmd);
     while(out.Status == 0) {
         WScript.Sleep(100);
@@ -251,7 +250,7 @@ function target(path) {
                 if (targets[target].match(check_id)) {
                     //TODO: this only gets single digit index, account for device index of 10+?
                     var index = targets[target].substr(0,1);
-                    exec_verbose(path + CORDOVA_DEPLOY_EXE + ' ' + path + ' -d:' + index);
+                    exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + path + '" -d:' + index);
                     return;
                 }
             }
