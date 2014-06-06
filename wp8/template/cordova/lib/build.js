@@ -25,6 +25,11 @@ var procEnv = wscript_shell.Environment("Process");
 var procArchitecture = procEnv("PROCESSOR_ARCHITECTURE").toLowerCase();
 var is64Mode = procArchitecture && procArchitecture != 'x86';
 
+// build type. Possible values: "debug", "release"
+var buildType = null,
+// list of build architectures. list of strings
+buildArchs = null;
+
 var args = WScript.Arguments;
 
 // working dir
@@ -33,14 +38,17 @@ var ROOT = WScript.ScriptFullName.split('\\cordova\\lib\\build.js').join('');
 // help/usage function
 function Usage() {
     Log("");
-    Log("Usage: build [ --debug | --release ]");
+    Log("Usage: build [ --debug | --release ] [--archs=\"<list of architectures...>\"]");
     Log("    --help    : Displays this dialog.");
     Log("    --debug   : Cleans and builds project in debug mode.");
     Log("    --release : Cleans and builds project in release mode.");
+    Log("    --release : Cleans and builds project in release mode.");
+    Log("    --archs   : Builds project binaries for specific chip architectures.");
     Log("examples:");
     Log("    build ");
     Log("    build --debug");
     Log("    build --release");
+    Log("    build --release --archs=\"arm x86\"");
     Log("");
 }
 
@@ -127,88 +135,119 @@ function getMSBuildToolsPath() {
     WScript.Quit(2);
 }
 
-// builds the project and .xap in release mode
-function build_xap_release(path) {
+// builds the project and .xap with buildtype and architectures specified
+function build_xap(path, buildtype, buildarchs) {
+
+    // check if file xap was created for specified buldtype and architecture
+    // raises error if xap not found
+    function checkForXap (path, mode, arch) {
+        var buildFolder = arch.toLowerCase() == 'any cpu' ? path + '\\Bin\\' + mode : path + '\\Bin\\' + arch + '\\' + mode;
+        Log('Checking for .xap in: ' + buildFolder);
+        if (fso.FolderExists(buildFolder)) {
+            var out_folder = fso.GetFolder(buildFolder);
+            var out_files = new Enumerator(out_folder.Files);
+            for (;!out_files.atEnd(); out_files.moveNext()) {
+                if (fso.GetExtensionName(out_files.item()) == 'xap') {
+                    Log("BUILD SUCCESS.\n");
+                    return;
+                }
+            }
+        }
+        Log('ERROR: MSBuild failed to create .xap when building cordova-wp8 for release.', true);
+        WScript.Quit(2);
+    }
+
+    if (!buildtype) {
+        Log("WARNING: [ --debug | --release ] not specified, defaulting to debug...");
+        buildtype = "debug";
+    }
+
+    if (!buildarchs) {
+        Log("WARNING: target architecture not specified, defaulting to AnyCPU...");
+        buildarchs = ["Any CPU"];
+    }
 
     exec_verbose('%comspec% /c "' + path + '\\cordova\\clean"');
-
-    Log("Building Cordova-WP8 Project:");
-    Log("\tConfiguration : Release");
-    Log("\tDirectory : " + path);
-
-    wscript_shell.CurrentDirectory = path;
     
     var MSBuildToolsPath = getMSBuildToolsPath();
     Log("\tMSBuildToolsPath: " + MSBuildToolsPath);
 
-    var buildCommand = escapePath(MSBuildToolsPath + 'msbuild') + ' ' + escapePath(get_solution_name(path)) +
-            ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Release';
-        
-    // hack to get rid of 'Access is denied.' error when running the shell w/ access to C:\path..
-    buildCommand = 'cmd /c "' + buildCommand + '"';
-        
-    Log("buildCommand = " + buildCommand);
+    for (var i = 0; i < buildarchs.length; i++) {
+        var buildarch = buildarchs[i];
 
-    if (exec_verbose(buildCommand) != 0) {
-        // msbuild failed
-        WScript.Quit(2);
-    }
+        Log("Building Cordova-WP8 Project:");
+        Log("\tConfiguration : " + buildtype);
+        Log("\tPlatform      : " + buildarch);
+        Log("\tDirectory     : " + path);
 
-    // check if file xap was created
-    if (fso.FolderExists(path + '\\Bin\\Release')) {
-        var out_folder = fso.GetFolder(path + '\\Bin\\Release');
-        var out_files = new Enumerator(out_folder.Files);
-        for (;!out_files.atEnd(); out_files.moveNext()) {
-            if (fso.GetExtensionName(out_files.item()) == 'xap') {
-                Log("BUILD SUCCESS.");
-                return;
-            }
+        wscript_shell.CurrentDirectory = path;
+
+        var buildCommand = escapePath(MSBuildToolsPath + 'msbuild') +
+                ' ' + escapePath(get_solution_name(path)) +
+                ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal' +
+                ' /nologo' +
+                ' /p:Configuration=' + buildtype +
+                ' /p:Platform="' + buildarch + '"';
+
+        // hack to get rid of 'Access is denied.' error when running the shell w/ access to C:\path..
+        buildCommand = '%comspec% /c "' + buildCommand + '"';
+
+        Log("buildCommand = " + buildCommand);
+
+        if (exec_verbose(buildCommand) !== 0) {
+            // msbuild failed
+            WScript.Quit(2);
         }
+
+        checkForXap(path, buildtype, buildarch);
     }
-    Log('ERROR: MSBuild failed to create .xap when building cordova-wp8 for release.', true);
-    WScript.Quit(2);
+
+    Log("WP8 builds successfully completed.");
 }
 
-// builds the project and .xap in debug mode
-function build_xap_debug(path) {
+// parses script args and set global variables for build
+// throws error if unknown argument specified.
+function parseArgs () {
 
-    exec_verbose('%comspec% /c "' + path + '\\cordova\\clean"');
-
-    Log("Building Cordova-WP8 Project:");
-    Log("\tConfiguration : Debug");
-    Log("\tDirectory : " + path);
-
-    wscript_shell.CurrentDirectory = path;
-
-    var MSBuildToolsPath = getMSBuildToolsPath();
-    Log("\tMSBuildToolsPath: " + MSBuildToolsPath);
-
-    var buildCommand = escapePath(MSBuildToolsPath + 'msbuild') + ' ' + escapePath(get_solution_name(path)) +
-            ' /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo /p:Configuration=Debug';
-
-    // hack to get rid of 'Access is denied.' error when running the shell w/ access to C:\path..
-    buildCommand = '%comspec% /c "' + buildCommand + '"';
-
-    Log("buildCommand = " + buildCommand);
-
-    if (exec_verbose(buildCommand) != 0) {
-        // msbuild failed
-        WScript.Quit(2);
+    // return build type, specified by input string, or null, if not build type parameter
+    function getBuildType (arg) {
+        arg = arg.toLowerCase();
+        if (arg == "--debug" || arg == "-d") {
+            return "debug";
+        }
+        else if (arg == "--release" || arg == "-r") {
+            return "release";
+        }
+        return null;
     }
 
-    // check if file xap was created
-    if (fso.FolderExists(path + '\\Bin\\Debug')) {
-        var out_folder = fso.GetFolder(path + '\\Bin\\Debug');
-        var out_files = new Enumerator(out_folder.Files);
-        for (;!out_files.atEnd(); out_files.moveNext()) {
-            if (fso.GetExtensionName(out_files.item()) == 'xap') {
-                Log("BUILD SUCCESS.");
-                return;
+    // returns build architectures list, specified by input string
+    // or null if nothing specified, or not --archs parameter
+    function getBuildArchs (arg) {
+        arg = arg.toLowerCase();
+        var archs = /--archs=(.+)/.exec(arg);
+        if (archs) {
+            // if architectures list contains commas, suppose that is comma delimited
+            if (archs[1].indexOf(',') != -1){
+                return archs[1].split(',');
             }
+            // else space delimited
+            return archs[1].split(/\s/);
+        }
+        return null;
+    }
+
+    for (var i = 0; i < args.Length; i++) {
+        if (getBuildType(args(i))) {
+            buildType = getBuildType(args(i));
+        } else if (getBuildArchs(args(i))) {
+            buildArchs = getBuildArchs(args(i));
+        } else {
+            Log("Error: \"" + args(i) + "\" is not recognized as a build option", true);
+            Usage();
+            WScript.Quit(2);
         }
     }
-    Log('ERROR: MSBuild failed to create .xap when building cordova-wp8 for debugging.', true);
-    WScript.Quit(2);
 }
 
 
@@ -221,32 +260,21 @@ if (args.Count() > 0) {
         Usage();
         WScript.Quit(2);
     }
-    else if (fso.FolderExists(ROOT)) {
-        if (!is_cordova_project(ROOT)) {
-            Log('Error: .csproj file not found in ' + ROOT, true);
-            Log('could not build project.', true);
-            WScript.Quit(2);
-        }
-
-        if (args(0) == "--debug" || args(0) == "-d") {
-            build_xap_debug(ROOT);
-        }
-        else if (args(0) == "--release" || args(0) == "-r") {
-            build_xap_release(ROOT);
-        }
-        else {
-            Log("Error: \"" + args(0) + "\" is not recognized as a build option", true);
-            Usage();
-            WScript.Quit(2);
-        }
-    }
-    else {
+    // Handle project errors
+    else if (!fso.FolderExists(ROOT)) {
         Log("Error: Project directory not found,", true);
         Usage();
         WScript.Quit(2);
     }
+    else if (!is_cordova_project(ROOT)) {
+        Log('Error: .csproj file not found in ' + ROOT, true);
+        Log('could not build project.', true);
+        WScript.Quit(2);
+    }
+    // Parse arguments
+    else {
+        parseArgs();
+    }
 }
-else {
-    Log("WARNING: [ --debug | --release ] not specified, defaulting to debug...");
-    build_xap_debug(ROOT);
-}
+
+build_xap(ROOT, buildType, buildArchs);
