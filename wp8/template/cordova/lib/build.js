@@ -43,7 +43,7 @@ function Usage() {
     Log("    --debug   : Cleans and builds project in debug mode.");
     Log("    --release : Cleans and builds project in release mode.");
     Log("    --release : Cleans and builds project in release mode.");
-    Log("    --archs   : Builds project binaries for specific chip architectures.");
+    Log("    --archs   : Builds project binaries for specific chip architectures. `arm` and `x86` are supported for wp8");
     Log("examples:");
     Log("    build ");
     Log("    build --debug");
