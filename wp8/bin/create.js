@@ -71,14 +71,40 @@ function read(filename) {
     return s;
 }
 
+// Reads content of utf-8 encoded file, removing BOM, if exist.
+function readUTF8 (filename) {
+    var inStream = WScript.CreateObject("ADODB.Stream");
+    inStream.Charset = "UTF-8";
+    inStream.Open();
+    inStream.LoadFromFile(filename);
+    var text = inStream.ReadText();
+    inStream.Close();
+    return text;
+}
+
 function write(filename, contents) {
     var f=fso.OpenTextFile(filename, ForWriting, TristateTrue);
     f.Write(contents);
     f.Close();
 }
 
+// Writes content to utf-8 encoded file. Adds BOM if necessary.
+function writeUTF8 (filename, contents) {
+    var outStream = WScript.CreateObject("ADODB.Stream");
+    outStream.Mode = 3;
+    outStream.Open();
+    outStream.Charset = "UTF-8";
+    outStream.WriteText(contents);
+    outStream.SaveToFile(filename, 2);
+    outStream.Close();
+}
+
 function replaceInFile(filename, regexp, replacement) {
     write(filename,read(filename).replace(regexp,replacement));
+}
+
+function replaceInUTF8 (filename, regexp, replacement) {
+    writeUTF8(filename, readUTF8(filename).replace(regexp, replacement));
 }
 
 // deletes file if it exists
@@ -151,21 +177,21 @@ function create(path, namespace, name) {
 
     var newProjGuid = genGuid();
     // replace the guid in the AppManifest
-    replaceInFile(path + "\\Properties\\WMAppManifest.xml","$guid1$",newProjGuid);
+    replaceInUTF8(path + "\\Properties\\WMAppManifest.xml","$guid1$",newProjGuid);
     // replace safe-project-name in AppManifest
-    replaceInFile(path + "\\Properties\\WMAppManifest.xml",/\$safeprojectname\$/g,name);
-    replaceInFile(path + "\\Properties\\WMAppManifest.xml",/\$projectname\$/g,name);
+    replaceInUTF8(path + "\\Properties\\WMAppManifest.xml",/\$safeprojectname\$/g,name);
+    replaceInUTF8(path + "\\Properties\\WMAppManifest.xml",/\$projectname\$/g,name);
 
-    replaceInFile(path + "\\App.xaml",/\$safeprojectname\$/g,namespace);
-    replaceInFile(path + "\\App.xaml.cs",/\$safeprojectname\$/g,namespace);
+    replaceInUTF8(path + "\\App.xaml",/\$safeprojectname\$/g,namespace);
+    replaceInUTF8(path + "\\App.xaml.cs",/\$safeprojectname\$/g,namespace);
 
-    replaceInFile(path + "\\MainPage.xaml",/\$safeprojectname\$/g,namespace);
-    replaceInFile(path + "\\MainPage.xaml.cs",/\$safeprojectname\$/g,namespace);
-    replaceInFile(path + "\\CordovaWP8AppProj.csproj",/\$safeprojectname\$/g,namespace);
+    replaceInUTF8(path + "\\MainPage.xaml",/\$safeprojectname\$/g,namespace);
+    replaceInUTF8(path + "\\MainPage.xaml.cs",/\$safeprojectname\$/g,namespace);
+    replaceInUTF8(path + "\\CordovaWP8AppProj.csproj",/\$safeprojectname\$/g,namespace);
 
     if (name != "CordovaWP8AppProj") {
         var valid_name = name.replace(/(\.\s|\s\.|\s+|\.+)/g, '_');
-        replaceInFile(path + "\\CordovaWP8Solution.sln", /CordovaWP8AppProj/g, valid_name);
+        replaceInUTF8(path + "\\CordovaWP8Solution.sln", /CordovaWP8AppProj/g, valid_name);
         // rename project and solution
         exec('%comspec% /c ren "' + path + '\\CordovaWP8Solution.sln" ' + valid_name + '.sln');
         exec('%comspec% /c ren "' + path + '\\CordovaWP8AppProj.csproj" ' + valid_name + '.csproj');
