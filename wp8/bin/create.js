@@ -156,9 +156,21 @@ function genGuid() {
 // creates new project in path, with the given package and app name
 function create(path, namespace, name) {
     Log("Creating Cordova-WP8 Project:");
-    Log("\tApp Name : " + name);
-    Log("\tNamespace : " + namespace);
-    Log("\tPath : " + path);
+    Log("\tPathToNewProject : " + path);
+    Log("\tPackageName : " + namespace);
+    Log("\tAppName : " + name);
+
+    // test for valid identifiers, alpha-numeric + _$
+    if(!/^[a-zA-Z0-9._$]+$/g.test(namespace)) {
+        namespace = namespace.replace("-","_");
+        Log("Replaced '-' with '_' in PackageName : " + namespace);
+    }
+    // if replacing the - with a _ does not work, give up
+    if(!/^[a-zA-Z0-9._$]+$/g.test(namespace)) {
+        Log("Error : Invalid identifier! PackageName may only include letters, numbers, _ and $");
+        Usage();
+        WScript.Quit(1);
+    }
 
     // Copy the template source files to the new destination
     fso.CopyFolder(platformRoot + templatePath, path);
