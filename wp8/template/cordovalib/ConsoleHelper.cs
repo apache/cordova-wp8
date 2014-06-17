@@ -71,6 +71,15 @@ namespace WPCordovaClassLib.CordovaLib
             }
         }
 
+        public void DetachHandler()
+        {
+            if (hasListener)
+            {
+                PhoneApplicationService.Current.Closing -= OnServiceClosing;
+                hasListener = false;
+            }
+        }
+
         public bool HandleCommand(string commandStr)
         {
             string output = commandStr.Substring("ConsoleLog/".Length);
