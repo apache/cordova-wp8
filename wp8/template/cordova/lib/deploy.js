@@ -31,20 +31,16 @@ var CORDOVA_DEPLOY = '\\cordova\\lib\\CordovaDeploy';
 //device_id for targeting specific device
 var device_id;
 
-//build types
-var NONE = 0,
-    DEBUG = 1,
-    RELEASE = 2,
-    NO_BUILD = 3;
-var build_type = NONE;
-
-//deploy tpyes
-var NONE = 0,
-    EMULATOR = 1,
-    DEVICE = 2,
-    TARGET = 3;
-var deploy_type = NONE;
-
+// build type. Possible values: "debug", "release"
+// required to determine which package should be deployed
+var buildType = null,
+    // nobuild flag
+    noBuild = false,
+    // list of build architectures. list of strings
+    // required to determine which package should be deployed
+    buildArchs = null,
+    // build target. Possible values: "device", "emulator", "<target_name>"
+    buildTarget = null;
 
 // help function
 function Usage() {
@@ -52,12 +48,16 @@ function Usage() {
     Log("Usage:");
     Log("  run [ --device || --emulator || --target=<id> ] ");
     Log("      [ --debug || --release || --nobuild ]");
+    Log("      [--archs=\"<list of architectures...>\"]");
     Log("    --device      : Deploys and runs the project on the connected device.");
     Log("    --emulator    : [DEFAULT] Deploys and runs the project on an emulator.");
     Log("    --target=<id> : Deploys and runs the project on the specified target.");
     Log("    --debug       : [DEFAULT] Builds project in debug mode.");
     Log("    --release     : Builds project in release mode.");
     Log("    --nobuild     : Ueses pre-built xap, or errors if project is not built.");
+    Log("    --archs       : Builds project binaries for specific chip architectures.");
+    Log("                    Deploys and runs package with first architecture specified.");
+    Log("                    arm` and `x86` are supported for wp8");
     Log("Examples:");
     Log("    run");
     Log("    run --emulator");
@@ -191,14 +191,40 @@ function cordovaDeploy(path) {
     }
 }
 
+// check if file xap was created for specified buldtype and architecture
+// raises error if xap not found
+function getXap (path, buildtype, buildarch) {
+    var buildFolder = buildarch.toLowerCase() == 'any cpu' ?
+        path + '\\Bin\\' + buildtype :
+        path + '\\Bin\\' + buildarch + '\\' + buildtype;
+
+    if (fso.FolderExists(buildFolder)) {
+        var out_folder = fso.GetFolder(buildFolder);
+        var out_files = new Enumerator(out_folder.Files);
+        for (;!out_files.atEnd(); out_files.moveNext()) {
+            // search for first .xap file in folder
+            if (fso.GetExtensionName(out_files.item()) == 'xap') {
+                Log('Found .xap: ' + out_files.item().Path);
+                return out_files.item().Path;
+            }
+        }
+    }
+    Log('No .xap found for ' + buildtype + ' build type and ' + buildarch + ' architecture', true);
+    WScript.Quit(2);
+}
+
 // launches project on device
-function device(path)
+function device(path, buildtype, buildarchs)
 {
+    // set default values
+    var build = buildtype ? buildtype : "debug";
+    var arch = buildarchs ? buildarchs[0] : "any cpu";
+
     cordovaDeploy(path);
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
         Log('Deploying to device ...');
         //TODO: get device ID from list-devices and deploy to first one
-        exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + path + '" -d:0');
+        exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + getXap(path, build, arch) + '" -d:0');
     }
     else
     {
@@ -209,13 +235,16 @@ function device(path)
 }
 
 // launches project on emulator
-function emulator(path)
+function emulator(path, buildtype, buildarchs)
 {
+    var build = buildtype ? buildtype : "debug";
+    var arch = buildarchs ? buildarchs[0] : "any cpu";
+
     cordovaDeploy(path);
     if (fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
         Log('Deploying to emulator ...');
         //TODO: get emulator ID from list-emulators and deploy to first one
-        exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + path + '" -d:1');
+        exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + getXap(path, build, arch) + '" -d:1');
     }
     else
     {
@@ -226,7 +255,7 @@ function emulator(path)
 }
 
 // builds and launches the project on the specified target
-function target(path) {
+function target(path, buildtarget, buildtype, buildarchs) {
     if (!fso.FileExists(path + CORDOVA_DEPLOY_EXE)) {
         cordovaDeploy(path);
     }
@@ -250,7 +279,9 @@ function target(path) {
                 if (targets[target].match(check_id)) {
                     //TODO: this only gets single digit index, account for device index of 10+?
                     var index = targets[target].substr(0,1);
-                    exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + path + '" -d:' + index);
+                    var build = buildtype ? buildtype : "debug";
+                    var arch = buildarchs ? buildarch[0] : "any cpu";
+                    exec_verbose('"' + path + CORDOVA_DEPLOY_EXE + '" "' + getXap(path, build, arch) + '" -d:' + index);
                     return;
                 }
             }
@@ -266,53 +297,110 @@ function target(path) {
     }
 }
 
-function build(path) {
-    switch (build_type) {
-        case DEBUG :
-            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\build" --debug');
-            break;
-        case RELEASE :
-            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\build" --release');
-            break;
-        case NO_BUILD :
-            break;
-        case NONE :
-            Log("WARNING: [ --debug | --release | --nobuild ] not specified, defaulting to --debug.");
-            exec_verbose('%comspec% /c "' + ROOT + '\\cordova\\build" --debug');
-            break;
-        default :
-            Log("Build option not recognized: " + build_type, true);
-            WScript.Quit(2);
-            break;
+function build(path, buildtype, buildarchs) {
+    // if --nobuild flag is specified, no action required here
+    if (noBuild) return;
+
+    var cmd = '%comspec% /c ""' + path + '\\cordova\\build"';
+    if (buildtype){
+        cmd += " --" + buildtype;
     }
+    if (buildarchs){
+        cmd += ' --archs="' + buildarchs.join(",") + '"';
+    }
+    cmd += '"';
+
+    exec_verbose(cmd);
 }
 
-function run(path) {
-    switch(deploy_type) {
-        case EMULATOR :
-            build(path);
-            emulator(path);
+function run(path, buildtarget, buildtype, buildarchs) {
+    switch(buildtarget) {
+        case "emulator" :
+            emulator(path, buildtype, buildarchs);
             break;
-        case DEVICE :
-            build(path);
-            device(path);
+        case "device" :
+            device(path, buildtype, buildarchs);
             break;
-        case TARGET :
-            build(path);
-            target(path);
-            break;
-        case NONE :
+        case null :
             Log("WARNING: [ --target=<ID> | --emulator | --device ] not specified, defaulting to --emulator");
-            build(path);
-            emulator(path);
+            emulator(path, buildtype, buildarchs);
             break;
         default :
-            Log("Deploy option not recognized: " + deploy_type, true);
-            WScript.Quit(2);
+            // if buildTarget is neither "device", "emulator" or null
+            // then it is a name of target
+            target(path, buildtarget, buildtype, buildarchs);
             break;
     }
 }
 
+// parses script args and set global variables for build/deploy
+// throws error if unknown argument specified.
+function parseArgs () {
+
+    // return build type, specified by input string, or null, if not build type parameter
+    function getBuildType (arg) {
+        arg = arg.toLowerCase();
+        if (arg == "--debug" || arg == "-d") {
+            return "debug";
+        }
+        else if (arg == "--release" || arg == "-r") {
+            return "release";
+        }
+        else if (arg == "--nobuild") {
+            noBuild = true;
+            return true;
+        }
+        return null;
+    }
+
+    // returns build architectures list, specified by input string
+    // or null if nothing specified, or not --archs parameter
+    function getBuildArchs (arg) {
+        arg = arg.toLowerCase();
+        var archs = /--archs=(.+)/.exec(arg);
+        if (archs) {
+            // if architectures list contains commas, suppose that is comma delimited
+            if (archs[1].indexOf(',') != -1){
+                return archs[1].split(',');
+            }
+            // else space delimited
+            return archs[1].split(/\s/);
+        }
+        return null;
+    }
+
+    // returns deploy target, specified by input string or null, if not deploy target parameter
+    function getBuildTarget (arg) {
+        arg = arg.toLowerCase();
+        if (arg == "--device"){
+            return "device";
+        }
+        else if (arg == "--emulator"){
+            return "emulator";
+        }
+        else {
+            var target = /--target=(.*)/.exec(arg);
+            if (target){
+                return target[1];
+            }
+        }
+        return null;
+    }
+
+    for (var i = 0; i < args.Length; i++) {
+        if (getBuildType(args(i))) {
+            buildType = getBuildType(args(i));
+        } else if (getBuildArchs(args(i))) {
+            buildArchs = getBuildArchs(args(i));
+        } else if (getBuildTarget(args(i))){
+            buildTarget = getBuildTarget(args(i));
+        } else {
+            Log("Error: \"" + args(i) + "\" is not recognized as a build/deploy option", true);
+            Usage();
+            WScript.Quit(2);
+        }
+    }
+}
 
 if (args.Count() > 0) {
     // support help flags
@@ -321,41 +409,14 @@ if (args.Count() > 0) {
         Usage();
         WScript.Quit(2);
     }
-    else if (fso.FolderExists(ROOT)) {
-        // parse arguments
-        for(var i = 0; i < args.Count(); i++) {
-            if (args(i) == "--release") {
-                build_type = RELEASE;
-            }
-            else if (args(i) == "--debug") {
-                build_type = DEBUG;
-            }
-            else if (args(i) == "--nobuild") {
-                build_type = NO_BUILD;
-            }
-            else if (args(i) == "--emulator" || args(i) == "-e") {
-                deploy_type = EMULATOR;
-            }
-            else if (args(i) == "--device" || args(i) == "-d") {
-                deploy_type = DEVICE;
-            }
-            else if (args(i).substr(0,9) == "--target=") {
-                device_id = args(i).split("--target=").join("");
-                deploy_type = TARGET;
-            }
-            else {
-                Log('Error: \"' + args(0) + '\" is not recognized as a deploy option', true);
-                Usage();
-                WScript.Quit(2);
-            }
-        }
-    }
-    else {
+    else if (!fso.FolderExists(ROOT)) {
         Log('Error: Project directory not found,', true);
         Usage();
         WScript.Quit(2);
     }
+    parseArgs();
 }
 
-// Finally run the project!
-run(ROOT);
+// build and run the project!
+build(ROOT, buildType, buildArchs);
+run(ROOT, buildTarget, buildType, buildArchs);

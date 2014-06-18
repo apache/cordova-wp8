@@ -173,7 +173,10 @@ function build_xap(path, buildtype, buildarchs) {
     Log("\tMSBuildToolsPath: " + MSBuildToolsPath);
 
     for (var i = 0; i < buildarchs.length; i++) {
-        var buildarch = buildarchs[i];
+
+        var buildarch = buildarchs[i].toLowerCase();
+        // support for "any cpu" specified with or without space
+        buildarch = buildarch !== "anycpu" ? buildarch : "any cpu";
 
         Log("Building Cordova-WP8 Project:");
         Log("\tConfiguration : " + buildtype);

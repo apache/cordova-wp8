@@ -131,8 +131,8 @@ namespace CordovaDeploy
             string iconFilePath = "";
             string xapFilePath = "";
             Guid appID = Guid.Empty;
-            bool uninstallFirst = false;
-            bool awaitAppClose = false;
+            bool uninstallFirst = args.Contains("-uninstall");
+            bool awaitAppClose = args.Contains("-wait");
 
             string root = Directory.GetCurrentDirectory();
 
@@ -153,20 +153,37 @@ namespace CordovaDeploy
                 deviceIndex = int.Parse(args[1].Substring(3));
             }
 
-            if (args.Contains("-uninstall"))
-            {
-                uninstallFirst = true;
-            }
-
-            if (args.Contains("-wait"))
-            {
-                awaitAppClose = true;
-            }
-
             if (Directory.Exists(args[0]))
             {
-                DirectoryInfo info = new DirectoryInfo(args[0]);
+                var info = new DirectoryInfo(args[0]);
                 root = info.FullName;
+
+                try
+                {
+                    xapFilePath = Directory.GetFiles(root + @"\Bin\Debug", "*.xap").FirstOrDefault();
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    try
+                    {
+                        xapFilePath = Directory.GetFiles(root + @"\Bin\Release", "*.xap").FirstOrDefault();
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        Log(string.Format("Error: could not find project build directoy in {0}", root), true);
+                        Log("make sure your app has been successfully built before deploying.", true);
+                    }
+                }
+            }
+
+            if (File.Exists(args[0]))
+            {
+                var info = new FileInfo(args[0]);
+                if (info.Extension == ".xap")
+                {
+                    root = info.DirectoryName;
+                    xapFilePath = info.FullName;
+                }
             }
 
             appID = ReadAppId(root);
@@ -184,23 +201,6 @@ namespace CordovaDeploy
                 Log(string.Format("Error: could not find application icon at {0}", root + @"\ApplicationIcon.png"), true);
                 ReadWait();
                 return;
-            }
-
-            try 
-            {
-                xapFilePath = Directory.GetFiles(root + @"\Bin\Debug", "*.xap").FirstOrDefault();
-            } 
-            catch (DirectoryNotFoundException) 
-            {
-                try 
-                {
-                    xapFilePath = Directory.GetFiles(root + @"\Bin\Release", "*.xap").FirstOrDefault();
-                } 
-                catch (DirectoryNotFoundException) 
-                {
-                    Log(string.Format("Error: could not find project build directoy in {0}", root), true);
-                    Log("make sure your app has been successfully built before deploying.", true);
-                }
             }
 
             if (string.IsNullOrEmpty(xapFilePath))
