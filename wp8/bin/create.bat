@@ -20,7 +20,7 @@ goto endheader
 #
 :endheader
 SET full_path=%~dp0
-IF EXIST %full_path%create.js (
+IF EXIST "%full_path%create.js" (
         cscript "%full_path%create.js" %* //nologo
 ) ELSE (
     ECHO.
