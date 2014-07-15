@@ -216,6 +216,8 @@ function package_templates()
 
     copyFile(repoRoot + '\\VERSION',platformRoot + templatePath);
 
+    copyFile(repoRoot + '\\wp8\\template\\cordova\\defaults.xml',platformRoot + templatePath + '\\config.xml');
+
     // update .vstemplate files for the template zips.
 
     var cleanVersionName = "CordovaWP8_" + versionNum.replace(/\./g, '_');
@@ -296,6 +298,8 @@ function package_templates()
             dest.CopyHere(templateOutFilename, 4|20);
         }
     }
+
+    deleteFileIfExists(platformRoot + templatePath + '\\config.xml');
 }
 
 function zip_project(zip_path, project_path) {
