@@ -179,8 +179,11 @@ function create(path, namespace, name) {
     // copy the version file
     fso.CopyFile(repoRoot +'\\VERSION',path + "\\" );
 
-    fso.CopyFile(platformRoot +'\\bin\\check_reqs.bat',path + "\\cordova\\" );    
-    fso.CopyFile(platformRoot +'\\bin\\check_reqs.js',path + "\\cordova\\" );   
+    fso.CopyFile(platformRoot +'\\bin\\check_reqs.bat',path + "\\cordova\\" );
+    fso.CopyFile(platformRoot +'\\bin\\check_reqs.js',path + "\\cordova\\" );
+
+    // copy the defaults.xml into config.xml so this project can be built when create is called minus the cordova-cli
+    fso.CopyFile(path + "\\cordova\\defaults.xml", path + "\\config.xml");
     
     // remove template cruft
     deleteFileIfExists(path + "\\__PreviewImage.jpg");
@@ -227,8 +230,6 @@ function create(path, namespace, name) {
 
     Log("CREATE SUCCESS : " + path);
 
-    // TODO:
-    // index.html title set to project name?
 }
 
 // MAIN
