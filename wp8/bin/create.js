@@ -33,7 +33,6 @@ var wscript_shell = WScript.CreateObject("WScript.Shell");
 var platformRoot = WScript.ScriptFullName.split('\\bin\\create.js').join('');
 var repoRoot =  fso.GetParentFolderName(platformRoot);
 var args = WScript.Arguments;
-var templatePath = "\\template"
 var destPath;
 
 
@@ -42,10 +41,11 @@ Log("repoRoot = " + repoRoot);
 
 
 function Usage() {
-    Log("Usage: create PathToNewProject [ PackageName AppName ]");
+    Log("Usage: create PathToNewProject [ PackageName AppName TemplatePath ]");
     Log("    PathToNewProject : The path to where you wish to create the project");
-    Log("    PackageName      : The namespace for the project (default is Cordova.Example)")
+    Log("    PackageName      : The namespace for the project (default is Cordova.Example)");
     Log("    AppName          : The name of the application (default is CordovaAppProj)");
+    Log("    TemplatePath      : The path to project template (default is ..\\template)");
     Log("examples:");
     Log("    create C:\\Users\\anonymous\\Desktop\\MyProject");
     Log("    create C:\\Users\\anonymous\\Desktop\\MyProject io.Cordova.Example AnApp");
@@ -154,11 +154,12 @@ function genGuid() {
 }
 
 // creates new project in path, with the given package and app name
-function create(path, namespace, name) {
+function create(path, namespace, name, templatePath) {
     Log("Creating Cordova-WP8 Project:");
     Log("\tPathToNewProject : " + path);
     Log("\tPackageName : " + namespace);
     Log("\tAppName : " + name);
+    Log("\tTemplatePath : " + templatePath);
 
     // test for valid identifiers, alpha-numeric + _$
     if(!/^[a-zA-Z0-9._$]+$/g.test(namespace)) {
@@ -173,7 +174,7 @@ function create(path, namespace, name) {
     }
 
     // Copy the template source files to the new destination
-    fso.CopyFolder(platformRoot + templatePath, path);
+    fso.CopyFolder(templatePath, path);
     // copy over common files
     //fso.CopyFolder(repoRoot + "\\common", path);
     // copy the version file
@@ -272,7 +273,12 @@ if (args.Count() > 0) {
         projName = args(2);
     }
 
-    create(destPath, packageName, projName);
+    var templatePath = platformRoot + "\\template";
+    if (args.Count() > 3) {
+        templatePath = args(3);
+    }
+
+    create(destPath, packageName, projName, templatePath);
 }
 else {
     Usage();
