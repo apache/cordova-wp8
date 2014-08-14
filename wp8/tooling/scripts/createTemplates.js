@@ -174,7 +174,7 @@ function copyCommonItemsToTemplate() {
             + destPath + "\\" + subFlds.item().name);
     }
 
-    copyCommonScripts();
+    
 }
 
 // delete desination items
@@ -190,8 +190,6 @@ function removeCommonItems() {
     for (var subFlds = new Enumerator(folder.SubFolders) ; !subFlds.atEnd() ; subFlds.moveNext()) {
         deleteFolderIfExists(destPath + "\\" + subFlds.item().name);
     }
-
-    removeCommonScripts();
 }
 
 // packages templates into .zip
@@ -212,7 +210,8 @@ function package_templates()
 
     //exec('%comspec% /c xcopy /Y /E /I ' + repoRoot + '\\Plugins ' + platformRoot + templatePath + '\\Plugins');
 
-    copyCommonItemsToTemplate();
+    //copyCommonItemsToTemplate();
+    copyCommonScripts();
 
     copyFile(repoRoot + '\\VERSION',platformRoot + templatePath);
 
@@ -300,6 +299,8 @@ function package_templates()
     }
 
     deleteFileIfExists(platformRoot + templatePath + '\\config.xml');
+
+    cleanUp();
 }
 
 function zip_project(zip_path, project_path) {
@@ -341,7 +342,8 @@ function zip_project(zip_path, project_path) {
 
 // delete any unneeded files when finished
 function cleanUp() {
-    removeCommonItems();
+    //removeCommonItems();
+    removeCommonScripts();
     deleteFileIfExists(platformRoot + templatePath + "\\VERSION");
 }
 
@@ -365,4 +367,3 @@ parseArgs();
 // build/package the templates
 versionNum = read(repoRoot + "\\VERSION");
 package_templates(repoRoot);
-cleanUp();

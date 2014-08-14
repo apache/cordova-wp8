@@ -175,7 +175,7 @@ function create(path, namespace, name) {
     // Copy the template source files to the new destination
     fso.CopyFolder(platformRoot + templatePath, path);
     // copy over common files
-    fso.CopyFolder(repoRoot + "\\common", path);
+    //fso.CopyFolder(repoRoot + "\\common", path);
     // copy the version file
     fso.CopyFile(repoRoot +'\\VERSION',path + "\\" );
 
