@@ -157,41 +157,6 @@ function removeCommonScripts() {
     deleteFileIfExists(destPath + "\\check_reqs.js");
 }
 
-function copyCommonItemsToTemplate() {
-    var srcPath = repoRoot + '\\common';
-    var destPath = platformRoot + templatePath;
-
-    var folder = fso.GetFolder(srcPath);
-    // iterate over the files in the folder
-    for (var files = new Enumerator(folder.files) ; !files.atEnd() ; files.moveNext()) {
-        //Log("File: " + srcPath + "\\" +  files.item().name);
-        copyFile(srcPath + "\\" + files.item().name, destPath + "\\" + files.item().name);
-    }
-    // iterate over the child folders in the folder
-    for (var subFlds = new Enumerator(folder.SubFolders) ; !subFlds.atEnd() ; subFlds.moveNext()) {
-        //Log("Folder: " + srcPath + "\\" + subFlds.item().name);
-        exec('%comspec% /c xcopy /Y /E /I ' + srcPath + "\\" + subFlds.item().name + " "
-            + destPath + "\\" + subFlds.item().name);
-    }
-
-    
-}
-
-// delete desination items
-function removeCommonItems() {
-    var srcPath = repoRoot + '\\common';
-    var destPath = platformRoot + templatePath;
-    var folder = fso.GetFolder(srcPath);
-    // iterate over the files in the folder
-    for (var files = new Enumerator(folder.files) ; !files.atEnd() ; files.moveNext()) {
-        deleteFileIfExists(destPath + "\\" + files.item().name);
-    }
-    // iterate over the child folders in the folder
-    for (var subFlds = new Enumerator(folder.SubFolders) ; !subFlds.atEnd() ; subFlds.moveNext()) {
-        deleteFolderIfExists(destPath + "\\" + subFlds.item().name);
-    }
-}
-
 // packages templates into .zip
 function package_templates()
 {
@@ -208,9 +173,6 @@ function package_templates()
 
     deleteFileIfExists(platformRoot + templatePath + "\\CordovaWP8Solution.v11.suo");
 
-    //exec('%comspec% /c xcopy /Y /E /I ' + repoRoot + '\\Plugins ' + platformRoot + templatePath + '\\Plugins');
-
-    //copyCommonItemsToTemplate();
     copyCommonScripts();
 
     copyFile(repoRoot + '\\VERSION',platformRoot + templatePath);
@@ -298,9 +260,9 @@ function package_templates()
         }
     }
 
+    removeCommonScripts();
     deleteFileIfExists(platformRoot + templatePath + '\\config.xml');
-
-    cleanUp();
+    deleteFileIfExists(platformRoot + templatePath + "\\VERSION");
 }
 
 function zip_project(zip_path, project_path) {
@@ -338,13 +300,6 @@ function zip_project(zip_path, project_path) {
     else {
         Log('Failed to create .zip file.', true);
     }
-}
-
-// delete any unneeded files when finished
-function cleanUp() {
-    //removeCommonItems();
-    removeCommonScripts();
-    deleteFileIfExists(platformRoot + templatePath + "\\VERSION");
 }
 
 function parseArgs() {
