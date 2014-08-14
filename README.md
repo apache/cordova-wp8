@@ -40,43 +40,28 @@ Requires
 Getting Started 
 ---
 
-There are 2 ways to go about creating a new Apache Cordova WP8 application.
 
-### Run the batch file to create and install the templates.
+## Create a new project
 
-
-- The root of the repo contains a file createTemplates.bat.  Double clicking this file will generate a .zip template file. (CordovaWP8_x_x_x.zip where x.x.x is the current version number)  To easily use these files in Visual Studio, copy them to 
-"My Documents\Visual Studio 2012\Templates\ProjectTemplates\" You will then be able to create new Apache Cordova Windows Phone apps from the Visual Studio File->New Project menu.
-- If you run the batch file from the command line, you can also call with a parameter to install automatically
-
-Run the script :
-
-    >createTemplates.bat -install
-
-## Use the create scripts on the command line
-
-Gettings Started from command line
+Getting Started from the command line
 ---
 
     >.\wp8\bin\create PathToNewProject [ PackageName ] [ AppName ]
 
     >PathToNewProject : The path to where you wish to create the project
     >PackageName      : The namespace for the project (default is Cordova.Example)
-    >AppName          : The name of the application (default is CordovaWP8AppProj or CordovaWP7AppProj)
+    >AppName          : The name of the application (default is CordovaWP8AppProj)
 
     >example:
     >.\wp8\bin\create C:\Users\anonymous\Desktop\MyWP8Proj io.cordova.example CordovaWP8App
 
-    Launch Visual Studio and open Solution file (.sln) in (C:\Users\anonymous\Desktop\MyWP7Project)
+    From here you can open it in Visual Studio:
+    - Launch Visual Studio and open Solution file (.sln) in (C:\Users\anonymous\Desktop\MyWP8Proj)
+    - Built and Run it
 
-    Built and Run it
-
-Important!!!
----
-
-When you add or remove files/folders in the www folder you will need to do the following :
-
-- ensure the new item is included in the project ( Content ) This includes ALL images/css/html/js/* and anything that you want available at runtime.
+    Or, you can continue with the command line:
+    - >cd C:\Users\anonymous\Desktop\MyWP8Proj
+      >cordova\run
 
 
 BUGS?
