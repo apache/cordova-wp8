@@ -249,6 +249,19 @@ if (args.Count() > 0) {
         Log("CREATE FAILED.", true);
         WScript.Quit(1);
     }
+    else {
+        // Fix trailing slash issue
+        while(destPath.length && destPath.substr(destPath.length - 1,1) == "\\") {
+            destPath = destPath.substr(0,destPath.length - 1);
+        }
+        if(!destPath.length) {
+            Log("Invalid destination specified: " + args(0),true);
+            WScript.Quit(1);
+        }
+    }
+
+
+
     var packageName = "Cordova.Example";
     if (args.Count() > 1) {
         packageName = args(1);
