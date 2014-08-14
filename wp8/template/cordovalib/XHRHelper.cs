@@ -32,9 +32,28 @@ namespace WPCordovaClassLib.CordovaLib
 
         public void InjectScript()
         {
-
-
             string script = @"(function(win, doc) {
+
+    var __XHRShimAliases = {};
+
+    window.__onXHRLocalCallback = function (responseCode, responseText, reqId) {
+        if (__XHRShimAliases[reqId]){
+            var alias = __XHRShimAliases[reqId];
+            if (alias){
+                delete __XHRShimAliases[reqId];
+                if (responseCode == '200'){
+                    alias.onResult && alias.onResult(responseText);
+                    Object.defineProperty(alias, 'responseXML', {
+                        get: function () {
+                            return new DOMParser().parseFromString(this.responseText, 'text/xml');
+                        }
+                    });
+                } else {
+                    alias.onError && alias.onError(responseText);
+                }
+            }
+        }
+    };
 
     var docDomain = null;
     try {
@@ -235,32 +254,17 @@ namespace WPCordovaClassLib.CordovaLib
                         resolvedUrl = basePath + resolvedUrl; // consider it relative
                     }
 
-                    var funk = function () {
-                        window.__onXHRLocalCallback = function (responseCode, responseText) {
-                            alias.status = responseCode;
-                            if (responseCode == '200') {
-                                alias.responseText = responseText;
-                                Object.defineProperty(alias, 'responseXML', {
-                                    get: function () {
-                                        return new DOMParser().parseFromString(this.responseText, 'text/xml');
-                                    }
-                                });
-                            }
-                            else {
-                                alias.onerror && alias.onerror(responseCode);
-                            }
+                    // Generate unique request ID
+                    var reqId = new Date().getTime().toString() + Math.random();
 
-                            alias.changeReadyState(XHRShim.DONE);
-                        }
+                    var funk = function () {
+                        __XHRShimAliases[reqId] = alias;
+
                         alias.changeReadyState(XHRShim.LOADING);
-                        window.external.Notify('XHRLOCAL/' + resolvedUrl);
-                    }
-                    if (this.isAsync) {
-                        setTimeout(funk, 0);
-                    }
-                    else {
-                        funk();
-                    }
+                        window.external.Notify('XHRLOCAL/' + reqId + '/' + resolvedUrl);
+                    };
+
+                    this.isAsync ? setTimeout(funk, 0) : funk();
                 }
             },
             status: 404
@@ -276,7 +280,9 @@ namespace WPCordovaClassLib.CordovaLib
         {
             if (commandStr.IndexOf("XHRLOCAL") == 0)
             {
-                string url = commandStr.Replace("XHRLOCAL/", "");
+                var reqStr = commandStr.Replace("XHRLOCAL/", "").Split(new char[] {'/'}, 2);
+                string reqId = reqStr[0];
+                string url = reqStr[1];
 
                 Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
 
@@ -287,7 +293,7 @@ namespace WPCordovaClassLib.CordovaLib
                         using (TextReader reader = new StreamReader(isoFile.OpenFile(uri.AbsolutePath, FileMode.Open, FileAccess.Read)))
                         {
                             string text = reader.ReadToEnd();
-                            Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
+                            Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text, reqId });
                             return true;
                         }
                     }
@@ -300,7 +306,7 @@ namespace WPCordovaClassLib.CordovaLib
                 if (resource == null)
                 {
                     // 404 ?
-                    Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404" });
+                    Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404", null, reqId });
                     return true;
                 }
                 else
@@ -308,7 +314,7 @@ namespace WPCordovaClassLib.CordovaLib
                     using (StreamReader streamReader = new StreamReader(resource.Stream))
                     {
                         string text = streamReader.ReadToEnd();
-                        Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text });
+                        Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text, reqId });
                         return true;
                     }
                 }
