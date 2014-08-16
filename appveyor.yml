@@ -1,4 +1,4 @@
-﻿# appveyor file
+# appveyor file
 # http://www.appveyor.com/docs/appveyor-yml
 
 nodejs_version: 0.10
@@ -13,5 +13,4 @@ test_script:
   - node --version
   - npm --version
   - msbuild /version
-  - wp8\bin\create .\testcreate
-  - .\testcreate\cordova\build
+  - npm test
