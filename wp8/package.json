@@ -13,6 +13,13 @@
     "cordova",
     "apache"
   ],
+  "devDependencies": {
+    "jasmine-node": "~1",
+    "shelljs": "0.1.x"
+  },
+  "scripts": {
+    "test": "bin\\create .\\testcreate & .\\testcreate\\cordova\\build & rm -rf .\\testcreate"
+  },
   "author": "Apache Software Foundation",
   "license": "Apache Version 2.0"
 }
