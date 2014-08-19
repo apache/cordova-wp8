@@ -41,11 +41,12 @@ Log("repoRoot = " + repoRoot);
 
 
 function Usage() {
-    Log("Usage: create PathToNewProject [ PackageName AppName TemplatePath ]");
+    Log("Usage: create PathToNewProject [ PackageName [ AppName [ CustomTemplate ] ] ]");
     Log("    PathToNewProject : The path to where you wish to create the project");
     Log("    PackageName      : The namespace for the project (default is Cordova.Example)");
     Log("    AppName          : The name of the application (default is CordovaAppProj)");
-    Log("    TemplatePath      : The path to project template (default is ..\\template)");
+    Log("    CustomTemplate   : The path to project template overrides");
+    Log("                       (will be copied over default platform template files)");
     Log("examples:");
     Log("    create C:\\Users\\anonymous\\Desktop\\MyProject");
     Log("    create C:\\Users\\anonymous\\Desktop\\MyProject io.Cordova.Example AnApp");
@@ -154,12 +155,17 @@ function genGuid() {
 }
 
 // creates new project in path, with the given package and app name
-function create(path, namespace, name, templatePath) {
+function create(path, namespace, name, customTemplatePath) {
+    
+    var templatePath = platformRoot + "\\template";
+
     Log("Creating Cordova-WP8 Project:");
     Log("\tPathToNewProject : " + path);
     Log("\tPackageName : " + namespace);
     Log("\tAppName : " + name);
-    Log("\tTemplatePath : " + templatePath);
+    if (customTemplatePath) {
+        Log("\tCustomTemplatePath : " + customTemplatePath);
+    }
 
     // test for valid identifiers, alpha-numeric + _$
     if(!/^[a-zA-Z0-9._$]+$/g.test(namespace)) {
@@ -175,8 +181,6 @@ function create(path, namespace, name, templatePath) {
 
     // Copy the template source files to the new destination
     fso.CopyFolder(templatePath, path);
-    // copy over common files
-    //fso.CopyFolder(repoRoot + "\\common", path);
     // copy the version file
     fso.CopyFile(repoRoot +'\\VERSION',path + "\\" );
 
@@ -190,6 +194,11 @@ function create(path, namespace, name, templatePath) {
     deleteFileIfExists(path + "\\__PreviewImage.jpg");
     deleteFileIfExists(path + "\\__TemplateIcon.png");
     deleteFileIfExists(path + "\\MyTemplate.vstemplate");
+
+    // if any custom template is provided, just copy it over created project
+    if (customTemplatePath && fso.FolderExists(customTemplatePath)) {
+        fso.CopyFolder(customTemplatePath, path);
+    }
 
     var newProjGuid = genGuid();
     // replace the guid in the AppManifest
@@ -273,12 +282,12 @@ if (args.Count() > 0) {
         projName = args(2);
     }
 
-    var templatePath = platformRoot + "\\template";
+    var customTemplatePath;
     if (args.Count() > 3) {
-        templatePath = args(3);
+        customTemplatePath = args(3);
     }
 
-    create(destPath, packageName, projName, templatePath);
+    create(destPath, packageName, projName, customTemplatePath);
 }
 else {
     Usage();
