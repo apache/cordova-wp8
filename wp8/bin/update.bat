@@ -19,11 +19,12 @@ goto endheader
 # under the License.
 #
 :endheader
-SET full_path=%~dp0
-IF EXIST %full_path%update.js (
-        cscript "%full_path%update.js" %* //nologo
+
+SET script_path="%~dp0update"
+IF EXIST %script_path% (
+    node %script_path% %*
 ) ELSE (
     ECHO.
-    ECHO ERROR: Could not find 'update.js' in 'bin' folder, aborting...>&2
+    ECHO ERROR: Could not find 'update' script in 'bin' folder, aborting...>&2
     EXIT /B 1
 )

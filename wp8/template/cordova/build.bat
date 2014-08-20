@@ -1,3 +1,4 @@
+@ECHO OFF
 goto endheader
 #
 # Licensed to the Apache Software Foundation (ASF) under one
@@ -19,13 +20,11 @@ goto endheader
 #
 :endheader
 
-
-@ECHO OFF
-SET script_path="%~dp0lib\build.js"
+SET script_path="%~dp0build"
 IF EXIST %script_path% (
-    cscript %script_path% %* //nologo
+    node %script_path% %*
 ) ELSE (
     ECHO.
-    ECHO ERROR: Could not find 'build.js' in cordova/lib, aborting...>&2
+    ECHO ERROR: Could not find 'build' in cordova, aborting...>&2
     EXIT /B 1
 )

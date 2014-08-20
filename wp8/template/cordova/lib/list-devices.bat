@@ -20,10 +20,9 @@ goto endheader
 #
 :endheader
 
-@ECHO OFF
 SET script_path="%~dp0target-list.js"
 IF EXIST %script_path% (
-    cscript %script_path% %* --devices //nologo
+    node %script_path% %* --devices
 ) ELSE (
     ECHO. 
     ECHO ERROR: Could not find 'target-list.js' in cordova/lib, aborting...>&2

@@ -20,10 +20,9 @@ goto endheader
 #
 :endheader
 
-@ECHO OFF
 SET script_path="%~dp0lib\win_sdk_version.js"
 IF EXIST %script_path% (
-    cscript %script_path% %* //nologo
+    node %script_path% %*
 ) ELSE (
     ECHO.
     ECHO ERROR: Could not find 'win_sdk_version.js' in 'bin' folder, aborting...>&2

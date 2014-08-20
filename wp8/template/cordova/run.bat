@@ -20,12 +20,11 @@ goto endheader
 #
 :endheader
 
-@ECHO OFF
-SET script_path="%~dp0lib\deploy.js"
+SET script_path="%~dp0run"
 IF EXIST %script_path% (
-        cscript %script_path% %* //nologo
+        node %script_path% %*
 ) ELSE (
     ECHO.
-    ECHO ERROR: Could not find 'deploy.js' in cordova/lib, aborting...>&2
+    ECHO ERROR: Could not find 'run' in cordova, aborting...>&2
     EXIT /B 1
 )

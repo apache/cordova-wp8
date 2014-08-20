@@ -19,11 +19,12 @@ goto endheader
 # under the License.
 #
 :endheader
-SET script_path="%~dp0check_reqs.js"
+
+SET script_path="%~dp0check_reqs"
 IF EXIST %script_path% (
-    cscript %script_path% %* //nologo
+    node %script_path% %*
 ) ELSE (
     ECHO.
-    ECHO ERROR: Could not find 'check_reqs.js' in 'bin' folder, aborting...>&2
+    ECHO ERROR: Could not find 'check_reqs' in 'bin' folder, aborting...>&2
     EXIT /B 1
 )

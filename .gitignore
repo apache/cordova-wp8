@@ -12,8 +12,6 @@ Thumbs.db
 
 # Ignore template zip files
 *.zip
-
-
  
 # Other useful stuff
 *.bak
@@ -24,14 +22,5 @@ Thumbs.db
 
 *.DS_Store
 
-wp8/node_modules/
-
-
 #We want to allow some bin folders ...
 !wp8/bin/
-
-
-
-
-
- 

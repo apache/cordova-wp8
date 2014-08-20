@@ -20,12 +20,11 @@ goto endheader
 #
 :endheader
 
-@ECHO OFF
-SET script_path="%~dp0lib\clean.js"
+SET script_path="%~dp0clean"
 IF EXIST %script_path% (
-    cscript %script_path% %* //nologo
+        node %script_path% %*
 ) ELSE (
     ECHO.
-    ECHO ERROR: Could not find 'clean.js' in cordova/lib, aborting...>&2
+    ECHO ERROR: Could not find 'clean' script in 'cordova' folder, aborting...>&2
     EXIT /B 1
 )

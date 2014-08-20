@@ -13,6 +13,12 @@
     "cordova",
     "apache"
   ],
+  "dependencies": {
+    "nopt": "~3",
+    "shelljs": "~0.3",
+    "node-uuid": "~1.4",
+    "q": "~1"
+  },
   "devDependencies": {
     "jasmine-node": "~1",
     "shelljs": "0.1.x"
