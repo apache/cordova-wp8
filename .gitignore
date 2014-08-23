@@ -22,5 +22,7 @@ Thumbs.db
 
 *.DS_Store
 
+wp8/node_modules
+
 #We want to allow some bin folders ...
 !wp8/bin/
