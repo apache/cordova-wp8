@@ -191,8 +191,6 @@
     <Content Include="Images\appbar.stop.rest.png" />
     <None Include="cordova\lib\build.js" />
     <None Include="cordova\lib\clean.js" />
-    <None Include="cordova\lib\deploy.js" />
-    <None Include="cordova\lib\log.js" />
     <None Include="cordova\lib\target-list.js" />
     <None Include="cordova\build.bat" />
     <None Include="cordova\clean.bat" />
