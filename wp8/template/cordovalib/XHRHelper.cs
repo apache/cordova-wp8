@@ -228,7 +228,10 @@ namespace WPCordovaClassLib.CordovaLib
                     var alias = this;
 
                     var root = window.location.href.split('#')[0];   // remove hash
-                    var basePath = root.substr(0,root.lastIndexOf('/')) + '/';
+                    
+                    var rootPath = root.substr(0,root.lastIndexOf('/')) + '/';
+                    // Removing unwanted slashes after x-wmapp0 from the basePath, URI cannot process x-wmapp0: /www or //www
+                    var basePath = rootPath.replace(/:\/+/gi, ':');
 
                     //console.log( 'Stripping protocol if present and removing leading / characters' );
                     var resolvedUrl =
@@ -285,38 +288,50 @@ namespace WPCordovaClassLib.CordovaLib
                 string url = reqStr[1];
 
                 Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
-
-                using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
+                try
                 {
-                    if (isoFile.FileExists(uri.AbsolutePath))
+                    using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        using (TextReader reader = new StreamReader(isoFile.OpenFile(uri.AbsolutePath, FileMode.Open, FileAccess.Read)))
+                        if (isoFile.FileExists(uri.AbsolutePath))
                         {
-                            string text = reader.ReadToEnd();
-                            Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text, reqId });
-                            return true;
+                            using (TextReader reader = new StreamReader(isoFile.OpenFile(uri.AbsolutePath, FileMode.Open, FileAccess.Read)))
+                            {
+                                string text = reader.ReadToEnd();
+                                Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text, reqId });
+                                return true;
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ERROR: Exception in HandleCommand: " + ex);
                 }
 
                 Uri relUri = new Uri(uri.AbsolutePath, UriKind.Relative);
 
                 var resource = Application.GetResourceStream(relUri);
-
-                if (resource == null)
+                try
                 {
-                    // 404 ?
-                    Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404", null, reqId });
-                    return true;
-                }
-                else
-                {
-                    using (StreamReader streamReader = new StreamReader(resource.Stream))
+                    if (resource == null)
                     {
-                        string text = streamReader.ReadToEnd();
-                        Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text, reqId });
+                        // 404 ?
+                        Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404", null, reqId });
                         return true;
                     }
+                    else
+                    {
+                        using (StreamReader streamReader = new StreamReader(resource.Stream))
+                        {
+                            string text = streamReader.ReadToEnd();
+                            Browser.InvokeScript("__onXHRLocalCallback", new string[] { "200", text, reqId });
+                            return true;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ERROR: Exception in HandleCommand: " + ex);
                 }
             }
 
