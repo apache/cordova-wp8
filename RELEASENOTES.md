@@ -25,6 +25,71 @@ Update these notes using: git log --pretty=format:'* %s' --topo-order --no-merge
 
 Cordova is a static library that enables developers to include the Cordova API in their WP8 application projects easily, and also create new Cordova-based WP8 application projects through the command-line.
 
+### 3.6.0 (September 2, 2015) ###
+
+* updated package.json
+* Update 3.6.x branch
+* update package to 3.6.0-dev
+* update to latest 3.6.x cordova.js file
+* Fix template def missing files
+* Remove unwanted slashes and handle Exceptions
+* Add appveyor badge
+* ignore node_modules
+* CB-7368 --archs="x86" now produces correct binaries.
+* CB-7341 Port tooling/platform scripts from WSH to NodeJS
+* yml must be ansi encoded, okay, force push this then
+* Lemme try addin the yml
+* adding testing to the workflow
+* ignore node_modules
+* [CB-6763] Fixes issue when multiple simultaneous requests are sent.
+* This closes #13, This closes #25, This closes #31
+* CB-4655 WP8: Default native project template should be overridable at project creation time
+* CB-7305 remove trailing slash from dest
+* cleanup file, remove commented out stuff after testing it
+* Update instructions minus createTemplates stuff
+* Fix intermittent issue with invalid app manifest because of xml commented apache header.
+* create needs to copy+rename the defaults.xml file for projects created outside the cordova-cli
+* Removing outdated/unused tooling scripts
+* move createTemplates scripts ( they will live undoc'd for awhile
+* Move common items to their rightful home
+* CB-7028 fixed memory leak in wp with plugins
+* Use wildcard for contents of www/ folder
+* small fix for spaces in path
+* createTemplates script copies defaults.xml->config.xml
+* CB-5049 Create defaults.xml that contains platform config.xml defaults for WP8
+* CB-6788 WP8 - Fix header licenses (Apache RAT report)
+* CB-7060 WP8. Fix large project build performance issue
+* Adds support for chip architectures to run command
+* CB-6924 Fixed memory leak in WP page navigation
+* CB-6939 Replace dash chars in package name and validate it.
+* Fixes handling of UTF-8 encoded project files.
+* Added list of supported architectures in help text
+* Adds support for target architectures to build command
+* Escapes paths in target() function
+* add license header to all bat files, and echo off so we don't see the goto output
+* add license header
+* add license header
+* CB-6788 add license header to template file
+* CB-6788 Add license headers to cs files
+* CB-6788 Add license header to sln files
+* CB-6788 add headers to bat files
+* CB-6788 add header to .md files
+* CB-6788 Add license to CONTRIBUTING.md
+* CB-6775 added support for autoload, splashscreen uses this
+* CB-5653 make visible cordova version. This closes #35
+* wp8.1 and the IE11 WebBrowser control do not support execScript, moving to 'eval'
+* CB-6732 [WP8] Fix "MSBuild 64 bit is not supported" build error
+* CB-6341 Remove windows requirement to have MSBuild in the %PATH%
+* CB-6676 allow extra params to build/run and ignore them
+* CB-6685 [3.5.0rc][WP8] Build error: Command failed with exit code 2
+* update master branch with next dev version number
+* Adds'-wait' flag to CordovaDeploy. Removes unnecessary Program class.
+* Remove WP7 from readme, and tooling
+* [WP7] Goodbye, it has been fun. ;)
+* Update releasenotes, and state that WP7 support is about to disappear
+* Apply app-hello-world update
+
+
 ### 3.5.0 (201405XX) ###
 
 * Apply app-hello-world update
