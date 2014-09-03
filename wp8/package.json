@@ -19,6 +19,12 @@
     "node-uuid": "~1.4",
     "q": "~1"
   },
+  "bundledDependencies": [
+    "nopt",
+    "shelljs",
+    "node-uuid",
+    "q"
+  ],
   "devDependencies": {
     "jasmine-node": "~1",
     "shelljs": "0.1.x"
