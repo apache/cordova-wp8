@@ -316,7 +316,7 @@ namespace WPCordovaClassLib.CordovaLib
                     if (resource == null)
                     {
                         // 404 ?
-                        Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404", null, reqId });
+                        Browser.InvokeScript("__onXHRLocalCallback", new string[] { "404", string.Empty, reqId });
                         return true;
                     }
                     else
