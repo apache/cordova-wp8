@@ -1,6 +1,5 @@
 
 obj
-Bin
 *.csproj.user
 *.suo
 *.cache
@@ -12,7 +11,7 @@ Thumbs.db
 
 # Ignore template zip files
 *.zip
- 
+
 # Other useful stuff
 *.bak
 *.cache
@@ -22,7 +21,4 @@ Thumbs.db
 
 *.DS_Store
 
-wp8/node_modules
-
-#We want to allow some bin folders ...
-!wp8/bin/
+wp8/node_modules/jasmine-node

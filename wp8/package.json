@@ -26,8 +26,7 @@
     "q"
   ],
   "devDependencies": {
-    "jasmine-node": "~1",
-    "shelljs": "0.1.x"
+    "jasmine-node": "~1"
   },
   "scripts": {
     "test": "bin\\create .\\testcreate & .\\testcreate\\cordova\\build & rm -rf .\\testcreate"
