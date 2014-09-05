@@ -21,4 +21,6 @@ Thumbs.db
 
 *.DS_Store
 
-wp8/node_modules/jasmine-node
+wp8/framework/Bin/*
+
+wp8/node_modules/
