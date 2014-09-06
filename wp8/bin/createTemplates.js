@@ -175,7 +175,7 @@ function package_templates()
 
     copyCommonScripts();
 
-    copyFile(repoRoot + '\\VERSION',platformRoot + templatePath);
+    copyFile(platformRoot + '\\VERSION',platformRoot + templatePath);
 
     copyFile(repoRoot + '\\wp8\\template\\cordova\\defaults.xml',platformRoot + templatePath + '\\config.xml');
 
@@ -320,5 +320,5 @@ function parseArgs() {
 // MAIN
 parseArgs();
 // build/package the templates
-versionNum = read(repoRoot + "\\VERSION");
+versionNum = read(platformRoot + "\\VERSION");
 package_templates(repoRoot);

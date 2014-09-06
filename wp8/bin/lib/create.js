@@ -64,7 +64,7 @@ module.exports.run = function (argv) {
     // Copy the template source files to the new destination
     shell.cp("-rf", path.join(templatePath, '*'), projectPath);
     // Copy our unique VERSION file, so peeps can tell what version this project was created from.
-    shell.cp("-rf", path.join(platformRoot, "..", 'VERSION'), projectPath);
+    shell.cp("-rf", path.join(platformRoot, 'VERSION'), projectPath);
     // copy the defaults.xml into config.xml so this project can be built when create is called minus the cordova-cli
     shell.cp(path.join(projectPath, "cordova", "defaults.xml"), path.join(projectPath, "config.xml"));
 
