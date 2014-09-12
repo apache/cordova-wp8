@@ -13,14 +13,14 @@
 -->
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
 	<TemplateData>
-		<Name>CordovaWP8_3_6_1</Name>
-		<Description>Starter project for building a Cordova app for Windows Phone 8 version: 3.6.1</Description>
+		<Name>CordovaWP8_3_6_3</Name>
+		<Description>Starter project for building a Cordova app for Windows Phone 8 version: 3.6.3</Description>
 		<ProjectType>CSharp</ProjectType>
 		<ProjectSubType>
 		</ProjectSubType>
 		<SortOrder>1000</SortOrder>
 		<CreateNewFolder>true</CreateNewFolder>
-		<DefaultName>CordovaWP8_3.6.1</DefaultName>
+		<DefaultName>CordovaWP8_3.6.3</DefaultName>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<LocationField>Enabled</LocationField>
 		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
