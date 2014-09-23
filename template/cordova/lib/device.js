@@ -26,10 +26,11 @@ var Q     = require('q'),
 // returns one of available devices which name match with parovided string
 // return rejected promise if device with name specified not found
 module.exports.findDevice = function (target) {
+    target = target.toLowerCase();
     return module.exports.listDevices()
     .then(function(deviceList) {
         for (var idx in deviceList){
-            if (deviceList[idx].indexOf(target) > -1) {
+            if (deviceList[idx].toLowerCase() == target) {
                 return Q.resolve(idx);
             }
         }
