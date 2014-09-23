@@ -21,6 +21,7 @@ var Q     = require('q'),
     fs    = require('fs'),
     path  = require('path'),
     shell = require('shelljs'),
+    device = require ('./device'),
     utils = require('./utils');
 
 function Package (packagepath) {
@@ -32,7 +33,7 @@ Package.prototype.deployTo = function (deployTarget) {
     return utils.getXapDeploy()
     .then(function (xapDeploy) {
         var getTarget = deployTarget == "device" ? Q("de") :
-            deployTarget == "emulator" ? Q("xd") : module.exports.findDevice(deployTarget);
+            deployTarget == "emulator" ? Q("xd") : device.findDevice(deployTarget);
 
         return getTarget.then(function (target) {
             return utils.spawn(xapDeploy, ['/installlaunch', pkg.packagePath, '/targetdevice:' + target]);
