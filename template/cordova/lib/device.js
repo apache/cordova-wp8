@@ -27,11 +27,14 @@ var Q     = require('q'),
 // return rejected promise if device with name specified not found
 module.exports.findDevice = function (target) {
     target = target.toLowerCase();
-    return module.exports.listDevices()
-    .then(function(deviceList) {
-        for (var idx in deviceList){
-            if (deviceList[idx].toLowerCase() == target) {
-                return Q.resolve(idx);
+    return module.exports.listDevices().then(function(deviceList) {
+        // CB-7616 since we use partial match shorter names should go first,
+        // example case is ['Emulator WVGA 512MB', 'Emulator WVGA']
+        var sortedList = deviceList.concat().sort(function (l, r) { return l.length > r.length; });
+        for (var idx in sortedList) {
+            if (sortedList[idx].toLowerCase().indexOf(target) > -1) {
+                // we should return index based on original list
+                return Q.resolve(deviceList.indexOf(sortedList[idx]));
             }
         }
         return Q.reject('Specified device not found');
