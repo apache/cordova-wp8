@@ -145,19 +145,10 @@ namespace WPCordovaClassLib
         {
             //Debug.WriteLine("Border_ManipulationCompleted");
             // suppress zoom
-            if (!userScalable && e.FinalVelocities != null)
+            if (ScrollDisabled || ( !userScalable && e.FinalVelocities != null) )
             {
                 if (e.FinalVelocities.ExpansionVelocity.X != 0.0 ||
                    e.FinalVelocities.ExpansionVelocity.Y != 0.0)
-                {
-                    e.Handled = true;
-                }
-            }
-
-            if (ScrollDisabled)
-            {
-                if (e.FinalVelocities.LinearVelocity.X != 0.0 ||
-                   e.FinalVelocities.LinearVelocity.Y != 0.0)
                 {
                     e.Handled = true;
                 }
