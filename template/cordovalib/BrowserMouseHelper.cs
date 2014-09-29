@@ -153,6 +153,15 @@ namespace WPCordovaClassLib
                     e.Handled = true;
                 }
             }
+
+            if (ScrollDisabled)
+            {
+                if (e.FinalVelocities.LinearVelocity.X != 0.0 ||
+                   e.FinalVelocities.LinearVelocity.Y != 0.0)
+                {
+                    e.Handled = true;
+                }
+            }
         }
 
 
