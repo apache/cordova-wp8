@@ -196,6 +196,19 @@ namespace WPCordovaClassLib
                     Debug.WriteLine("Unable to parse BackgroundColor value '{0}'. Error: {1}", bgColor, ex.Message);
                 }
             }
+
+            string disallowOverscroll = configHandler.GetPreference("disallowoverscroll");
+            if (!String.IsNullOrEmpty(disallowOverscroll))
+            {
+                try
+                {
+                    this.DisableBouncyScrolling = bool.Parse(disallowOverscroll);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Unable to parse DisallowOverscroll value '{0}'. Error: {1}", disallowOverscroll, ex.Message);
+                }
+            }
         }
 
         /*
