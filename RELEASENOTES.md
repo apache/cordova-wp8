@@ -25,7 +25,19 @@ Update these notes using: git log --pretty=format:'* %s' --topo-order --no-merge
 
 Cordova is a static library that enables developers to include the Cordova API in their WP8 application projects easily, and also create new Cordova-based WP8 application projects through the command-line.
 
-### 3.6.0 (September 2, 2015) ###
+### 3.6.4 (September 30, 2014) ###
+
+* Updated JS snapshot + set version to 3.6.4
+* CB-7616 partial match support for --target
+* CB-7616 Deploy on WP8 fails to run specific target
+* Fixing paths for npm published versions
+* cleanup ignores and add missing windows cmd files, if you want to add a bundledDependency node_module use -f
+* move node_modules up same level as package.json
+* CB-7455 add bundledDependencies
+* Moves node_modules from package root to bin/ folder
+* CB-7444 Fixes XHR callback failure when requested file doesn't exists
+
+### 3.6.0 (September 2, 2014) ###
 
 * updated package.json
 * Update 3.6.x branch
