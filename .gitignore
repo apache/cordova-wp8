@@ -24,3 +24,9 @@ Thumbs.db
 framework/Bin/*
 
 node_modules/
+
+testing/**/bin
+testing/**/Bin
+testing/**/obj
+testing/**/Obj
+testing/packages

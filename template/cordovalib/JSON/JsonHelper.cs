@@ -12,20 +12,8 @@
 	limitations under the License.
 */
 
+using Newtonsoft.Json;
 using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Runtime.Serialization.Json;
-using System.IO;
-using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
 
 namespace WPCordovaClassLib.Cordova.JSON
@@ -42,26 +30,17 @@ namespace WPCordovaClassLib.Cordova.JSON
         /// <returns>JSON representation of the object. Returns 'null' string for null passed as argument</returns>
         public static string Serialize(object obj)
         {
-            if (obj == null)
-            {
-                return "null";
-            }
-
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(obj.GetType());
-
-            MemoryStream ms = new MemoryStream();
-            ser.WriteObject(ms, obj);
-
-            ms.Position = 0;
-
             string json = String.Empty;
 
-            using (StreamReader sr = new StreamReader(ms))
+            try
             {
-                json = sr.ReadToEnd();
+                json = JsonConvert.SerializeObject(obj);
             }
-
-            ms.Close();
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine("Failed to serialize " + obj);
+            }
 
             return json;
 
@@ -75,14 +54,10 @@ namespace WPCordovaClassLib.Cordova.JSON
         /// <returns>Deserialized object instance</returns>
         public static T Deserialize<T>(string json)
         {
-            DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(T));
             object result = null;
             try
             {
-                using (MemoryStream mem = new MemoryStream(Encoding.UTF8.GetBytes(json)))
-                {
-                    result = deserializer.ReadObject(mem);
-                }
+                result = JsonConvert.DeserializeObject<T>(json);
             }
             catch (Exception ex)
             {
