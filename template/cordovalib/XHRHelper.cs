@@ -34,13 +34,15 @@ namespace WPCordovaClassLib.CordovaLib
         {
             string script = @"(function(win, doc) {
 
-    var __XHRShimAliases = {};
+    if (!win.__XHRShimAliases) {
+        win.__XHRShimAliases = {};
+    }
 
-    window.__onXHRLocalCallback = function (responseCode, responseText, reqId) {
-        if (__XHRShimAliases[reqId]){
-            var alias = __XHRShimAliases[reqId];
+    win.__onXHRLocalCallback = function (responseCode, responseText, reqId) {
+        if (win.__XHRShimAliases[reqId]){
+            var alias = win.__XHRShimAliases[reqId];
             if (alias){
-                delete __XHRShimAliases[reqId];
+                delete win.__XHRShimAliases[reqId];
                 if (responseCode == '200'){
                     alias.onResult && alias.onResult(responseText);
                     Object.defineProperty(alias, 'responseXML', {
