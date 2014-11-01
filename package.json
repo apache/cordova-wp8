@@ -1,36 +1,36 @@
 {
-  "name": "cordova-wp8",
-  "version": "3.7.0-dev",
-  "description": "cordova-wp8 v3.7.0-dev",
-  "main": "bin/create",
-  "repository": {
-    "type": "git",
-    "url": "https://git-wip-us.apache.org/repos/asf/cordova-wp8.git"
-  },
-  "keywords": [
-    "wp8",
-    "windowsphone",
-    "cordova",
-    "apache"
-  ],
-  "dependencies": {
-    "nopt": "~3",
-    "shelljs": "~0.3",
-    "node-uuid": "~1.4",
-    "q": "~1"
-  },
-  "bundledDependencies": [
-    "nopt",
-    "shelljs",
-    "node-uuid",
-    "q"
-  ],
-  "devDependencies": {
-    "jasmine-node": "~1"
-  },
-  "scripts": {
-    "test": "RMDIR /s /q \"testcreate 応用\" & bin\\create \"testcreate 応用\" com.test.app 応用 & \".\\testcreate 応用\\cordova\\build\" && RMDIR /s /q \"testcreate 応用\""
-  },
-  "author": "Apache Software Foundation",
-  "license": "Apache Version 2.0"
+    "name": "cordova-wp8",
+    "version": "3.8.0-dev",
+    "description": "cordova-wp8 v3.7.0-dev",
+    "main": "bin/create",
+    "repository": {
+        "type": "git",
+        "url": "https://git-wip-us.apache.org/repos/asf/cordova-wp8.git"
+    },
+    "keywords": [
+        "wp8",
+        "windowsphone",
+        "cordova",
+        "apache"
+    ],
+    "dependencies": {
+        "nopt": "~3",
+        "shelljs": "~0.3",
+        "node-uuid": "~1.4",
+        "q": "~1"
+    },
+    "bundledDependencies": [
+        "nopt",
+        "shelljs",
+        "node-uuid",
+        "q"
+    ],
+    "devDependencies": {
+        "jasmine-node": "~1"
+    },
+    "scripts": {
+        "test": "RMDIR /s /q \"testcreate 応用\" & bin\\create \"testcreate 応用\" com.test.app 応用 & \".\\testcreate 応用\\cordova\\build\" && RMDIR /s /q \"testcreate 応用\""
+    },
+    "author": "Apache Software Foundation",
+    "license": "Apache Version 2.0"
 }
