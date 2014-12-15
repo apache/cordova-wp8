@@ -136,21 +136,7 @@ namespace WPCordovaClassLib
                 return;
             }
 
-
-            StartupMode mode = PhoneApplicationService.Current.StartupMode;
-
-            if (mode == StartupMode.Launch)
-            {
-                PhoneApplicationService service = PhoneApplicationService.Current;
-                service.Activated += new EventHandler<Microsoft.Phone.Shell.ActivatedEventArgs>(AppActivated);
-                service.Launching += new EventHandler<LaunchingEventArgs>(AppLaunching);
-                service.Deactivated += new EventHandler<DeactivatedEventArgs>(AppDeactivated);
-                service.Closing += new EventHandler<ClosingEventArgs>(AppClosing);
-            }
-            else
-            {
-
-            }
+            Debug.WriteLine("Created new CordovaView instance");
 
             // initializes native execution logic
             configHandler = new ConfigHandler();
@@ -270,6 +256,18 @@ namespace WPCordovaClassLib
 
         void CordovaBrowser_Loaded(object sender, RoutedEventArgs e)
         {
+          
+            PhoneApplicationService service = PhoneApplicationService.Current;
+            service.Activated += new EventHandler<Microsoft.Phone.Shell.ActivatedEventArgs>(AppActivated);
+            service.Launching += new EventHandler<LaunchingEventArgs>(AppLaunching);
+            service.Deactivated += new EventHandler<DeactivatedEventArgs>(AppDeactivated);
+            service.Closing += new EventHandler<ClosingEventArgs>(AppClosing);
+
+            foreach (IBrowserDecorator iBD in browserDecorators.Values)
+            {
+                iBD.AttachNativeHandlers();
+            }
+
 
             this.bmHelper.ScrollDisabled = this.DisableBouncyScrolling;
 
@@ -319,6 +317,20 @@ namespace WPCordovaClassLib
             catch (Exception ex)
             {
                 Debug.WriteLine("ERROR: Exception in CordovaBrowser_Loaded :: {0}", ex.Message);
+            }
+        }
+
+        private void CordovaBrowser_Unloaded(object sender, RoutedEventArgs e)
+        {
+            PhoneApplicationService service = PhoneApplicationService.Current;
+            service.Activated -= new EventHandler<Microsoft.Phone.Shell.ActivatedEventArgs>(AppActivated);
+            service.Launching -= new EventHandler<LaunchingEventArgs>(AppLaunching);
+            service.Deactivated -= new EventHandler<DeactivatedEventArgs>(AppDeactivated);
+            service.Closing -= new EventHandler<ClosingEventArgs>(AppClosing);
+
+            foreach (IBrowserDecorator iBD in browserDecorators.Values)
+            {
+                iBD.DetachNativeHandlers();
             }
         }
 
@@ -524,21 +536,6 @@ namespace WPCordovaClassLib
             }
         }
 
-        private void CordovaBrowser_Unloaded(object sender, RoutedEventArgs e)
-        {
-            IBrowserDecorator console;
-            if (browserDecorators.TryGetValue("ConsoleLog", out console))
-            {
-                ((ConsoleHelper)console).DetachHandler();
-            }
-
-            PhoneApplicationService service = PhoneApplicationService.Current;
-            service.Activated -= new EventHandler<Microsoft.Phone.Shell.ActivatedEventArgs>(AppActivated);
-            service.Launching -= new EventHandler<LaunchingEventArgs>(AppLaunching);
-            service.Deactivated -= new EventHandler<DeactivatedEventArgs>(AppDeactivated);
-            service.Closing -= new EventHandler<ClosingEventArgs>(AppClosing);
-        }
-
         private void CordovaBrowser_NavigationFailed(object sender, System.Windows.Navigation.NavigationFailedEventArgs e)
         {
             Debug.WriteLine("CordovaBrowser_NavigationFailed :: " + e.Uri.ToString());
@@ -546,10 +543,10 @@ namespace WPCordovaClassLib
 
         private void CordovaBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-           foreach(IBrowserDecorator iBD in browserDecorators.Values)
-           {
-               iBD.InjectScript();
-           }
+            foreach (IBrowserDecorator iBD in browserDecorators.Values)
+            {
+                iBD.InjectScript();
+            }
         }
 
         /// <summary>
@@ -575,6 +572,11 @@ namespace WPCordovaClassLib
                               (byte)((argb & 0xff00) >> 8),
                               (byte)(argb & 0xff));
             return clr;
+        }
+
+        ~CordovaView()
+        {
+            Debug.WriteLine("CordovaView is destroyed");
         }
     }
 }
