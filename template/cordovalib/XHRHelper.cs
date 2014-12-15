@@ -342,5 +342,15 @@ namespace WPCordovaClassLib.CordovaLib
 
             return false;
         }
+
+        public void AttachNativeHandlers()
+        {
+            // nothing todo
+        }
+
+        public void DetachNativeHandlers()
+        {
+            // nothing to do
+        }
     }
 }
