@@ -20,8 +20,6 @@
 # appveyor file
 # http://www.appveyor.com/docs/appveyor-yml
 
-nodejs_version: 0.10
-
 install:
   - npm install
 
