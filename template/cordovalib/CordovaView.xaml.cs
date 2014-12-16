@@ -574,7 +574,7 @@ namespace WPCordovaClassLib
 
         ~CordovaView()
         {
-            Debug.WriteLine("CordovaView is destroyed");
+            //Debug.WriteLine("CordovaView is destroyed");
         }
     }
 }
