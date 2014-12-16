@@ -136,8 +136,6 @@ namespace WPCordovaClassLib
                 return;
             }
 
-            Debug.WriteLine("Created new CordovaView instance");
-
             // initializes native execution logic
             configHandler = new ConfigHandler();
             configHandler.LoadAppPackageConfig();
