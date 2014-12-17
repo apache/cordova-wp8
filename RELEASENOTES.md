@@ -31,7 +31,6 @@ Cordova is a static library that enables developers to include the Cordova API i
 * Update JS snapshot to version 3.8.0 (via coho)
 * remove node_version which is breaking appveyor
 * CB-8139 WP8. Fix callback for plugins with native ui
-* CB-7028 Memory leak in plugins when navigating from native page
 * CB-7892 XHR to local files poly should only load/run once
 * Fix AutoloadPlugins
 * updated description in package.json
