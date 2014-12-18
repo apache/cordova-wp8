@@ -21,9 +21,15 @@
 
 Release Notes for Cordova (WP8)
 
-Update these notes using: git log --pretty=format:'* %s' --topo-order --no-merges origin/2.7.x...HEAD
-
 Cordova is a static library that enables developers to include the Cordova API in their WP8 application projects easily, and also create new Cordova-based WP8 application projects through the command-line.
+
+### 3.7.1 (December 18, 2014) ###
+
+* Set VERSION to 3.7.1 (via coho)
+* Update JS snapshot to version 3.7.1 (via coho)
+* CB-8139 WP8. Fix callback for plugins with native ui
+* CB-7892 XHR to local files poly should only load/run once
+* Fix AutoloadPlugins
 
 ### 3.7.0 (October 31, 2014) ###
 
