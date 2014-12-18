@@ -1,5 +1,5 @@
-﻿// Platform: windowsphone
-// 91157c2e1bf3eb098c7e2ab31404e895ccb0df2a
+﻿// Platform: wp8
+// 10ffabbd64eb74e345526739d72ab03b682c4793
 /*
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -19,7 +19,7 @@
  under the License.
 */
 ;(function() {
-var PLATFORM_VERSION_BUILD_LABEL = '3.7.0';
+var PLATFORM_VERSION_BUILD_LABEL = '3.7.1';
 // file: src/scripts/require.js
 
 /*jshint -W079 */
@@ -464,9 +464,14 @@ function each(objects, func, context) {
 
 function clobber(obj, key, value) {
     exports.replaceHookForTesting(obj, key);
-    obj[key] = value;
+    var needsProperty = false;
+    try {
+        obj[key] = value;
+    } catch (e) {
+        needsProperty = true;
+    }
     // Getters can only be overridden by getters.
-    if (obj[key] !== value) {
+    if (needsProperty || obj[key] !== value) {
         utils.defineGetter(obj, key, function() {
             return value;
         });
@@ -804,7 +809,7 @@ module.exports = channel;
 
 });
 
-// file: src/windowsphone/exec.js
+// file: src/wp8/exec.js
 define("cordova/exec", function(require, exports, module) {
 
 var cordova = require('cordova'),
@@ -935,7 +940,7 @@ function replaceNavigator(origNavigator) {
         for (var key in origNavigator) {
             if (typeof origNavigator[key] == 'function') {
                 newNavigator[key] = origNavigator[key].bind(origNavigator);
-            } 
+            }
             else {
                 (function(k) {
                     utils.defineGetterSetter(newNavigator,key,function() {
@@ -1063,7 +1068,7 @@ function replaceNavigator(origNavigator) {
         for (var key in origNavigator) {
             if (typeof origNavigator[key] == 'function') {
                 newNavigator[key] = origNavigator[key].bind(origNavigator);
-            } 
+            }
             else {
                 (function(k) {
                     utils.defineGetterSetter(newNavigator,key,function() {
@@ -1118,7 +1123,7 @@ platform.bootstrap && platform.bootstrap();
  * Create all cordova objects once native side is ready.
  */
 channel.join(function() {
-    
+
     platform.initialize && platform.initialize();
 
     // Fire event to notify that all objects are created
@@ -1236,7 +1241,7 @@ exports.reset();
 
 });
 
-// file: src/windowsphone/platform.js
+// file: src/wp8/platform.js
 define("cordova/platform", function(require, exports, module) {
 
 module.exports = {
