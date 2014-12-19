@@ -22,7 +22,7 @@
 
 Apache Cordova for Windows Phone 8
 ===
-[![Build status](https://ci.appveyor.com/api/projects/status/apoby7i5j5xnmhy2)](https://ci.appveyor.com/project/Humbedooh/cordova-wp8)
+[![Build status](https://ci.appveyor.com/api/projects/status/apoby7i5j5xnmhy2/branch/master)](https://ci.appveyor.com/project/Humbedooh/cordova-wp8/branch/master)
 
 
 This repo includes code to build Apache Cordova applications that target Windows Phone 8 SDK.
