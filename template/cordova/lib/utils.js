@@ -25,22 +25,23 @@ var Q    = require('Q'),
 
 // returns path to app deployment util from Windows Phone 8.x SDK
 module.exports.getXapDeploy = function () {
-    // Try the newer AppDeploy first
-    var appDeployUtils = path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
-        'Microsoft SDKs', 'Windows Phone', 'v8.1', 'Tools', 'AppDeploy', 'AppDeployCmd.exe');
-    if (fs.existsSync(appDeployUtils)) {
-        return Q.resolve(appDeployUtils);
+    var toolsLookupLocations = [
+        // Windows Phone 8.1
+        path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
+        'Microsoft SDKs', 'Windows Phone', 'v8.1', 'Tools', 'AppDeploy', 'AppDeployCmd.exe'),
+        // Windows Phone 8.0
+        path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
+        'Microsoft SDKs', 'Windows Phone', 'v8.0', 'Tools', 'Xap Deployment', 'XapDeployCmd.exe')
+    ];
+
+    for (idx in toolsLookupLocations) {
+        if (fs.existsSync(toolsLookupLocations[idx])) {
+            return Q.resolve(toolsLookupLocations[idx]);
+        }
     }
-    
-    // If AppDeployCmd wasn't found, try XapDeployCmd
-    var xapDeployUtils = path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
-        'Microsoft SDKs', 'Windows Phone', 'v8.0', 'Tools', 'Xap Deployment', 'XapDeployCmd.exe');
-    // Check if XapDeployCmd is exists
-    if (!fs.existsSync(xapDeployUtils)) {
-        console.warn("WARNING: XapDeploy tool (XapDeployCmd.exe) didn't found. Assume that it's in %PATH%");
-        return Q.resolve("XapDeployCmd");
-    }
-    return Q.resolve(xapDeployUtils);
+
+    console.warn("WARNING: XapDeploy tool (XapDeployCmd.exe) didn't found. Assume that it's in %PATH%");
+    return Q.resolve("XapDeployCmd");
 };
 
 module.exports.getOSVersion = function () {
