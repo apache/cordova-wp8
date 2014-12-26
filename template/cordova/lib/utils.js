@@ -23,8 +23,16 @@ var Q    = require('Q'),
     proc = require('child_process'),
     msbuildTools = require('./MSBuildTools');
 
-// returns path to XapDeploy util from Windows Phone 8.1 SDK
+// returns path to app deployment util from Windows Phone 8.x SDK
 module.exports.getXapDeploy = function () {
+    // Try the newer AppDeploy first
+    var appDeployUtils = path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
+        'Microsoft SDKs', 'Windows Phone', 'v8.1', 'Tools', 'AppDeploy', 'AppDeployCmd.exe');
+    if (fs.existsSync(appDeployUtils)) {
+        return Q.resolve(appDeployUtils);
+    }
+    
+    // If AppDeployCmd wasn't found, try XapDeployCmd
     var xapDeployUtils = path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
         'Microsoft SDKs', 'Windows Phone', 'v8.0', 'Tools', 'Xap Deployment', 'XapDeployCmd.exe');
     // Check if XapDeployCmd is exists
