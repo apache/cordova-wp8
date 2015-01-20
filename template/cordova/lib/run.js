@@ -27,7 +27,7 @@ var Q = require('q'),
 var ROOT = path.join(__dirname, '..', '..');
 
 module.exports.run = function (argv) {
-    if (!utils.isCordovaProject(ROOT)){
+    if (!utils.isCordovaProject(ROOT)) {
         return Q.reject("Could not find project at " + ROOT);
     }
 
@@ -46,20 +46,32 @@ module.exports.run = function (argv) {
 
     // Get build/deploy options
     var buildType    = args.release ? "release" : "debug",
-        buildArchs   = args.archs ? args.archs.split(' ') : ["anycpu"],
-        deployTarget = args.target ? args.target : args.device ? "device" : "emulator";
+        buildArchs   = args.archs ? args.archs.split(' ') : ["anycpu"];
 
     // if --nobuild isn't specified then build app first
     var buildPackages = args.nobuild ? Q() : build.run(argv);
 
     return buildPackages
-    .then(function () {
-        return packages.getPackage(buildType, buildArchs[0]);
-    })
-    .then(function(builtPackage) {
-        console.log('\nDeploying package to ' + deployTarget);
-        return builtPackage.deployTo(deployTarget);
-    });
+        .then(function () {
+            return packages.getPackage(buildType, buildArchs[0]);
+        })
+        .then(function (builtPackage) {
+            // Get deploy options
+            var deployTarget = args.target ? args.target : args.device ? "device" : 
+                args.emulator ? "emulator" : null;
+
+            if (deployTarget) {
+                console.log('\nDeploying package to ' + deployTarget);
+                return builtPackage.deployTo(deployTarget);
+            }
+            // no deploy target specified - try device first & then emulator
+            console.log("\nTrying to deploy to device");
+            return builtPackage.deployTo("device").catch(function (error) {
+                console.log(error);
+                console.log("\nFalling back to deploy to emulator instead");
+                return builtPackage.deployTo("emulator");
+            });
+        });
 };
 
 module.exports.help = function () {
