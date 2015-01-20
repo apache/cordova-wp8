@@ -78,7 +78,7 @@ module.exports.run = function (argv) {
             return buildopts.buildArchs.reduce(function (promise, buildarch) {
                 return promise.then(function () {
                     buildarch = buildarch == "anycpu" ? "any cpu" : buildarch;
-                    // serach for first solution file found
+                    // search for first solution file found
                     // this is performed due to solution file can be renamed in create
                     var solutionFiles = shell.ls(path.join(ROOT, '*.sln'));
                     if (solutionFiles && solutionFiles[0]) {

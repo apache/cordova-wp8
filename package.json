@@ -26,10 +26,15 @@
         "q"
     ],
     "devDependencies": {
-        "jasmine-node": "~1"
+        "jasmine-node": "~1",
+        "rewire": ">=2.1.3",
+        "istanbul": "^0.3.4"
     },
     "scripts": {
-        "test": "RMDIR /s /q \"testcreate 応用\" & bin\\create \"testcreate 応用\" com.test.app 応用 & \".\\testcreate 応用\\cordova\\build\" && RMDIR /s /q \"testcreate 応用\""
+        "test": "npm run test-unit && npm run test-e2e",
+        "test-unit": "node node_modules/jasmine-node/lib/jasmine-node/cli.js --captureExceptions spec/unit",
+        "test-e2e": "node node_modules/jasmine-node/lib/jasmine-node/cli.js --captureExceptions spec/e2e",
+        "cover": "node node_modules/istanbul/lib/cli.js cover --root template --print detail node_modules/jasmine-node/bin/jasmine-node -- spec/unit"
     },
     "author": "Apache Software Foundation",
     "license": "Apache Version 2.0"
