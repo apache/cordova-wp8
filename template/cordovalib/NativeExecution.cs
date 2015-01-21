@@ -124,7 +124,7 @@ namespace WPCordovaClassLib.Cordova
 
                 bc.OnCustomScript += OnCustomScriptHandler;
 
-                ThreadStart methodInvokation = () =>
+                Windows.System.Threading.ThreadPool.RunAsync((workItem) =>
                 {
                     try
                     {
@@ -141,9 +141,7 @@ namespace WPCordovaClassLib.Cordova
                         this.OnCommandResult(commandCallParams.CallbackId, new PluginResult(PluginResult.Status.INVALID_ACTION));
                         return;
                     }
-                };
-
-                new Thread(methodInvokation).Start();
+                });
 
             }
             catch (Exception ex)
