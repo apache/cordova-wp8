@@ -26,12 +26,12 @@ var Q    = require('Q'),
 // returns path to app deployment util from Windows Phone 8.x SDK
 module.exports.getXapDeploy = function () {
     var toolsLookupLocations = [
-        // Windows Phone 8.1
-        path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
-        'Microsoft SDKs', 'Windows Phone', 'v8.1', 'Tools', 'AppDeploy', 'AppDeployCmd.exe'),
         // Windows Phone 8.0
         path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
-        'Microsoft SDKs', 'Windows Phone', 'v8.0', 'Tools', 'Xap Deployment', 'XapDeployCmd.exe')
+        'Microsoft SDKs', 'Windows Phone', 'v8.0', 'Tools', 'Xap Deployment', 'XapDeployCmd.exe'),
+        // Windows Phone 8.1
+        path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
+        'Microsoft SDKs', 'Windows Phone', 'v8.1', 'Tools', 'AppDeploy', 'AppDeployCmd.exe')
     ];
 
     for (idx in toolsLookupLocations) {
