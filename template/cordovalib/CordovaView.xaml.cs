@@ -210,10 +210,6 @@ namespace WPCordovaClassLib
             orientHelper.Browser = CordovaBrowser;
             browserDecorators.Add("Orientation", orientHelper);
 
-            ConsoleHelper console = new ConsoleHelper();
-            console.Browser = CordovaBrowser;
-            browserDecorators.Add("ConsoleLog", console);
-
         }
 
         void AppClosing(object sender, ClosingEventArgs e)
