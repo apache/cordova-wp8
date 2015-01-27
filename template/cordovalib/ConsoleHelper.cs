@@ -11,6 +11,18 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/************************************************************************
+    This class is intended to supply the minimum expected browser behavior 
+    for console.log|warn|info ...
+    js code that is loaded in a minimal cordova application running on a device 
+    or emulator will output console.log calls to Visual Studio's output window 
+    when run from Visual Studio.
+    
+    For more advanced/complete console logging functions, 
+    look at cordova-plugin-console.
+************************************************************************/
+
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System;
