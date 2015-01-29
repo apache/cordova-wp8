@@ -50,14 +50,30 @@ namespace WPCordovaClassLib.CordovaLib
             {
             }
 
-            string script = @"(function(win) {
-        function exec(msg) { window.external.Notify('ConsoleLog/' + msg); }
+            string script = 
+    @"(function(win) {
+        function stringify() { 
+            // Convert arguments to strings and concat them with comma.
+            return Array.prototype.map.call( arguments, function argumentToString( argument ) { 
+                        // Return primitives as string.
+                        if( typeof argument === 'string' || typeof argument === 'number' ) {
+                            return argument;
+                        }
+                        if( typeof argument === 'function' ) {
+                            return argument.toString();
+                        }
+                        // Convert complex arguments to JSON.
+                        return JSON.stringify( argument );
+                    } )
+                        .join( ',' ); 
+        }
+        function exec() { window.external.Notify( 'ConsoleLog/' + stringify.apply( null, arguments ) ); }
         var cons = win.console = win.console || {};
         cons.log = exec;
         cons.debug = cons.debug || cons.log;
-        cons.info = cons.info   || function(msg) { exec('INFO:' + msg ); };     
-        cons.warn = cons.warn   || function(msg) { exec('WARN:' + msg ); };
-        cons.error = cons.error || function(msg) { exec('ERROR:' + msg ); };
+        cons.info = cons.info   || function() { exec( 'INFO:' + stringify.apply( null, arguments ) ); };
+        cons.warn = cons.warn   || function() { exec( 'WARN:' + stringify.apply( null, arguments ) ); };
+        cons.error = cons.error || function() { exec( 'ERROR:' + stringify.apply( null, arguments ) ); };
     })(window);";
 
             Browser.InvokeScript("eval", new string[] { script });
