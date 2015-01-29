@@ -63,7 +63,11 @@ namespace WPCordovaClassLib.CordovaLib
                             return argument.toString();
                         }
                         // Convert complex arguments to JSON.
-                        return JSON.stringify( argument );
+                        try {
+                            return JSON.stringify( argument );
+                        } catch( ignored ) {
+                            return argument.toString();
+                        }
                     } )
                         .join( ',' ); 
         }
