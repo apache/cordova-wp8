@@ -27,9 +27,9 @@ function MSBuildTools (version, path) {
 }
 
 MSBuildTools.prototype.buildProject = function(projFile, buildType, buildarch) {
-    console.log("\nBuilding project: " + projFile);
-    console.log("\tConfiguration : " + buildType);
-    console.log("\tPlatform      : " + buildarch);
+    console.log('\nBuilding project: ' + projFile);
+    console.log('\tConfiguration : ' + buildType);
+    console.log('\tPlatform      : ' + buildarch);
 
     var args = ['/clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal', '/nologo',
     '/p:Configuration=' + buildType,
