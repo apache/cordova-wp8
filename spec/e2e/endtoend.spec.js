@@ -27,15 +27,19 @@ describe('Cordova create and build', function(){
         anycpuPackageFolder = path.join(buildDirectory, projectFolder, 'Bin', 'Debug'),
         x86PackageFolder = path.join(buildDirectory, projectFolder, 'Bin', 'x86', 'Debug'),
         armPackageFolder = path.join(buildDirectory, projectFolder, 'Bin', 'ARM', 'Debug'),
-        buildScriptPath   = '"' + path.join(buildDirectory, projectFolder, 'cordova', 'build') + '"';
+        buildScriptPath   = '"' + path.join(buildDirectory, projectFolder, 'cordova', 'build') + '"',
+        originalTimeout;
 
     beforeEach(function(){
-      shell.exec(path.join('bin', 'create') + ' "' + projectFolder + '" com.test.app 応用', {silent : true});
+        shell.exec(path.join('bin', 'create') + ' "' + projectFolder + '" com.test.app 応用', {silent : true});
+        originalTimeout = jasmine.getEnv().defaultTimeoutInterval;
+        jasmine.getEnv().defaultTimeoutInterval = 30000;
     });
 
     afterEach(function() {
         shell.cd(buildDirectory);
         shell.rm('-rf', projectFolder);
+        jasmine.getEnv().defaultTimeoutInterval = originalTimeout;
     });
 
     it('spec.1 should create new project', function(){
