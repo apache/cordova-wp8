@@ -20,41 +20,45 @@ var shell = require('shelljs'),
     fs = require('fs'),
     path = require('path');
 
-describe("Cordova create and build", function(){
+describe('Cordova create and build', function(){
 
-    var projectFolder     = "testcreate 応用",
+    var projectFolder     = 'testcreate 応用',
         buildDirectory    = path.join(__dirname, '../..'),
         anycpuPackageFolder = path.join(buildDirectory, projectFolder, 'Bin', 'Debug'),
         x86PackageFolder = path.join(buildDirectory, projectFolder, 'Bin', 'x86', 'Debug'),
         armPackageFolder = path.join(buildDirectory, projectFolder, 'Bin', 'ARM', 'Debug'),
-        buildScriptPath   = '"' + path.join(buildDirectory, projectFolder, 'cordova', 'build') + '"';
+        buildScriptPath   = '"' + path.join(buildDirectory, projectFolder, 'cordova', 'build') + '"',
+        originalTimeout;
 
     beforeEach(function(){
-      shell.exec(path.join('bin', 'create') + ' "' + projectFolder + '" com.test.app 応用', {silent : true});
+        shell.exec(path.join('bin', 'create') + ' "' + projectFolder + '" com.test.app 応用', {silent : true});
+        originalTimeout = jasmine.getEnv().defaultTimeoutInterval;
+        jasmine.getEnv().defaultTimeoutInterval = 30000;
     });
 
     afterEach(function() {
         shell.cd(buildDirectory);
         shell.rm('-rf', projectFolder);
+        jasmine.getEnv().defaultTimeoutInterval = originalTimeout;
     });
 
-    it("spec.1 should create new project", function(){
+    it('spec.1 should create new project', function(){
         expect(fs.existsSync(projectFolder)).toBe(true);
     });
 
-    it("spec.2 should build project", function(){
+    it('spec.2 should build project', function(){
         shell.exec(buildScriptPath, {silent:true});
         var packages = shell.ls(anycpuPackageFolder);
         expect(packages.filter(function(file) { return file.match(/.*AnyCPU\.xap$/); }).length).toBe(1);
     });
 
-    it("spec.3 should build project for particular CPU", function(){
+    it('spec.3 should build project for particular CPU', function(){
         shell.exec(buildScriptPath + ' --archs=\"x86\"', {silent : true});
         var x86Package = shell.ls(x86PackageFolder);
         expect(x86Package.filter(function(file) { return file.match(/.*x86\.xap$/); }).length).toBe(1);
     });
 
-    it("spec.4 should build project for CPUs separated by whitespaces", function(){
+    it('spec.4 should build project for CPUs separated by whitespaces', function(){
         shell.exec(buildScriptPath + ' --archs=\"x86 arm anycpu\"', {silent : true});
         var anycpuPackage = shell.ls(anycpuPackageFolder);
         expect(anycpuPackage.filter(function(file) { return file.match(/.*AnyCPU\.xap$/); }).length).toBe(1);

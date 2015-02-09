@@ -31,11 +31,11 @@ describe('run method', function() {
 
     var isCordovaProjectFalse = function () {
         return false;
-    }
+    };
 
     var isCordovaProjectTrue = function () {
         return true;
-    }
+    };
 
     beforeEach(function () {
         // console output suppression

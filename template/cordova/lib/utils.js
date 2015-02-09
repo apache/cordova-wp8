@@ -17,6 +17,8 @@
        under the License.
 */
 
+/* jshint sub:true */
+
 var Q    = require('Q'),
     fs   = require('fs'),
     path = require('path'),
@@ -27,21 +29,21 @@ var Q    = require('Q'),
 module.exports.getXapDeploy = function () {
     var toolsLookupLocations = [
         // Windows Phone 8.0
-        path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
+        path.join((process.env['ProgramFiles(x86)'] || process.env['ProgramFiles']),
         'Microsoft SDKs', 'Windows Phone', 'v8.0', 'Tools', 'Xap Deployment', 'XapDeployCmd.exe'),
         // Windows Phone 8.1
-        path.join((process.env["ProgramFiles(x86)"] || process.env["ProgramFiles"]),
+        path.join((process.env['ProgramFiles(x86)'] || process.env['ProgramFiles']),
         'Microsoft SDKs', 'Windows Phone', 'v8.1', 'Tools', 'AppDeploy', 'AppDeployCmd.exe')
     ];
 
-    for (idx in toolsLookupLocations) {
+    for (var idx in toolsLookupLocations) {
         if (fs.existsSync(toolsLookupLocations[idx])) {
             return Q.resolve(toolsLookupLocations[idx]);
         }
     }
 
-    console.warn("WARNING: XapDeploy tool (XapDeployCmd.exe) didn't found. Assume that it's in %PATH%");
-    return Q.resolve("XapDeployCmd");
+    console.warn('WARNING: XapDeploy tool (XapDeployCmd.exe) didn\'t found. Assume that it\'s in %PATH%');
+    return Q.resolve('XapDeployCmd');
 };
 
 module.exports.getOSVersion = function () {
@@ -59,7 +61,7 @@ module.exports.getOSVersion = function () {
 };
 
 module.exports.getSDKVersion = function () {
-    var is64bitSystem = process.env["PROCESSOR_ARCHITECTURE"] != 'x86';
+    var is64bitSystem = process.env['PROCESSOR_ARCHITECTURE'] != 'x86';
     return msbuildTools.findAvailableVersion(is64bitSystem)
     .then(function (msbuild) {
         return module.exports.exec(module.exports.quote(path.join(msbuild.path, 'msbuild')) + ' -version')
