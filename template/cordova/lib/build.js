@@ -24,6 +24,8 @@ var Q     = require('Q'),
     nopt  = require('nopt'),
     utils = require('./utils'),
     shell = require('shelljs'),
+    et = require('elementtree'),
+    fs = require('fs'),
     MSBuildTools = require('./MSBuildTools');
 
 // Platform project root folder
@@ -68,6 +70,40 @@ module.exports.run = function (argv) {
     }
 
     return parseAndValidateArgs(argv)
+    .then(function(buildopts) {
+        var csProjFilePath = shell.ls(path.join(ROOT, '*.csproj'))[0];
+        var WMAppManifestFilePath = path.join(ROOT, 'Properties', 'WMAppManifest.xml');
+        var AssemblyInfoFilePath = path.join(ROOT, 'Properties', 'AssemblyInfo.cs');
+        var configFilePath = path.join(ROOT, '..', '..', 'config.xml');
+
+        var configContents = removeBOM(fs.readFileSync(configFilePath, 'utf-8'));
+        var configXML =  new et.ElementTree(et.XML(configContents));
+        var defaultLocale = configXML.getroot().attrib['defaultlocale'] || 'en-US';
+
+        // Change locale on csproj file
+        var csProjContents = removeBOM(fs.readFileSync(csProjFilePath, 'utf-8'));
+        var csProjXML =  new et.ElementTree(et.XML(csProjContents));
+        var csProjDefaultLocale = csProjXML.find('./PropertyGroup/SupportedCultures');
+        csProjDefaultLocale.text = defaultLocale;
+        fs.writeFileSync(csProjFilePath, csProjXML.write({indent: 2}), 'utf-8');
+
+        // Change locale on WMAppManifest file
+        var WMAppManifestContents = removeBOM(fs.readFileSync(WMAppManifestFilePath, 'utf-8'));
+        var WMAppManifestXML =  new et.ElementTree(et.XML(WMAppManifestContents));
+        var WMAppManifestLanguages = WMAppManifestXML.find('./Languages/Language');
+        WMAppManifestLanguages.set('code', defaultLocale);
+        var WMAppManifestDefaultLanguage = WMAppManifestXML.find('./DefaultLanguage');
+        WMAppManifestDefaultLanguage.set('code', defaultLocale);
+        fs.writeFileSync(WMAppManifestFilePath, WMAppManifestXML.write({indent: 2}), 'utf-8');
+
+        // Change locale on AssemblyInfo file
+        var AssemblyInfoContents = removeBOM(fs.readFileSync(AssemblyInfoFilePath, 'utf-8'));
+        AssemblyInfoContents = AssemblyInfoContents.replace(/[\w\[: ]+NeutralResourcesLanguageAttribute\("[\w\-]+"\)]/,
+            '[assembly: NeutralResourcesLanguageAttribute("' + defaultLocale + '")]');
+        fs.writeFileSync(AssemblyInfoFilePath, AssemblyInfoContents, 'utf-8');
+
+        return buildopts;
+    })
     .then(function (buildopts) {
         // WP8 requires x86 version of MSBuild, CB-6732
         var is64bitSystem = process.env['PROCESSOR_ARCHITECTURE'] != 'x86';
@@ -92,3 +128,11 @@ module.exports.run = function (argv) {
         });
     });
 };
+
+// Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+function removeBOM(contents) {
+        if (contents.charCodeAt(0) === 0xFEFF) {
+            contents = contents.slice(1);
+        }
+        return contents;
+}

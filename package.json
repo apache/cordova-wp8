@@ -17,13 +17,15 @@
         "nopt": "~3",
         "shelljs": "~0.3",
         "node-uuid": "~1.4",
-        "q": "~1"
+        "q": "~1",
+        "elementtree": "~0.1.5"
     },
     "bundledDependencies": [
         "nopt",
         "shelljs",
         "node-uuid",
-        "q"
+        "q",
+        "elementtree"
     ],
     "devDependencies": {
         "jasmine-node": "~1",
