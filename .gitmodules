@@ -1,3 +1,0 @@
-[submodule "template/cordovalib/JSON/lib/Newtonsoft.Json"]
-	path = template/cordovalib/JSON/lib/Newtonsoft.Json
-	url = https://github.com/JamesNK/Newtonsoft.Json.git
