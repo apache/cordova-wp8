@@ -23,19 +23,31 @@ Release Notes for Cordova (WP8)
 
 Cordova is a static library that enables developers to include the Cordova API in their WP8 application projects easily, and also create new Cordova-based WP8 application projects through the command-line.
 
-### 3.8.0 (December 17, 2014) ###
-
-* Set VERSION to 3.8.0 (via coho)
-* Update JS snapshot to version 3.8.0 (via coho)
-* remove node_version which is breaking appveyor
-* CB-8139 WP8. Fix callback for plugins with native ui
+### 3.8.0 (March 26, 2015)
+* added ecosystem:cordova keyword
+* CB-8325 minor test improvements with e2e tests
+* CB-8412 Fix all jshint issues for WP8 platform
+* CB-8412 Enable jshint for wp8 platform
+* CB-8417 moved platform specific js into platform
+* Catch possible errors with JSON.stringify()
+* Improved console logging Previously, when using console.log facilities, only the first argument was respected by ConsoleHelper, resulting in information not being logged when cons
+* Add comment block to explain the intent of this code.
+* Use WP8 thread pool for each command, instead of starting new thread
+* CB-8060 AppDeployCmd lookup: prefer original WP8.0 tools
+* CB-8310: Fix to cordova run wp8 to attempt to deploy to device before it tries to deploy to emulator
+* CB-8325 Implemented end-to-end and unit tests using Jasmine
+* CB-8060 Updated AppDeployCmd lookup code
+* Use the newer AppDeployCmd when available The old XapDeployCmd could raise "Error: The parameter is incorrect." with project files that were opened with more recent versions of Vi
+* appveyor: show master branch status instead of latest build
+* CB-8179 Removed CB-7028 from release notes
+* remove destructor trace
+* remove debug trace
+* CB-8139 WP8. Fix callback for plugins with native ui (capture, contactPicker, BarcodeScanner, other)
 * CB-7892 XHR to local files poly should only load/run once
 * Fix AutoloadPlugins
 * updated description in package.json
-* CB-7923 updated release notes
 
-### 3.7.0 (October 31, 2014) ###
-
+### 3.7.0 (October 31, 2014) 
 * Set VERSION to 3.7.0 (via coho)
 * Update JS snapshot to version 3.7.0 (via coho)
 * CB-7843 Fixes angular routing on **WP8**
@@ -50,8 +62,7 @@ Cordova is a static library that enables developers to include the Cordova API i
 * CB-7493 Adds `space-in-path` and `unicode in name` tests for `CI`
 * cleanup ignores and add missing windows cmd files, if you want to add a `bundledDependency` `node_module` use `-f`
 
-### 3.6.4 (September 30, 2014) ###
-
+### 3.6.4 (September 30, 2014)
 * Updated JS snapshot + set version to 3.6.4
 * CB-7616 partial match support for --target
 * CB-7616 Deploy on WP8 fails to run specific target
@@ -62,8 +73,7 @@ Cordova is a static library that enables developers to include the Cordova API i
 * Moves node_modules from package root to bin/ folder
 * CB-7444 Fixes XHR callback failure when requested file doesn't exists
 
-### 3.6.0 (September 2, 2014) ###
-
+### 3.6.0 (September 2, 2014)
 * updated package.json
 * Update 3.6.x branch
 * update package to 3.6.0-dev
@@ -127,8 +137,7 @@ Cordova is a static library that enables developers to include the Cordova API i
 * Apply app-hello-world update
 
 
-### 3.5.0 (201405XX) ###
-
+### 3.5.0 (201405XX)
 * Apply app-hello-world update
 * CB-6558: added package.json files for wp7 & wp8
 * CB-6491 add CONTRIBUTING.md
@@ -156,8 +165,7 @@ Cordova is a static library that enables developers to include the Cordova API i
 * Update to 3.4.0-rc1
 
 
-### 3.4.0 (201402XX) ###
-
+### 3.4.0 (201402XX)
 * Update to 3.4.0 proper
 * CB-6041 createTemplates should install them for VS-2013 as well
 * CB-5951 Added namespace to config.xml
