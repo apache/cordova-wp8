@@ -8,6 +8,7 @@ Thumbs.db
 /temp/*
 
 *.dll
+!template/lib/*
 
 # Ignore template zip files
 *.zip
