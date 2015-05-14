@@ -12,7 +12,11 @@
 	limitations under the License.
 */
 
-using Newtonsoft.Json;
+using System;
+using System.Runtime.Serialization.Json;
+using System.IO;
+using System.Text;
+using System.Diagnostics;
 
 namespace WPCordovaClassLib.Cordova.JSON
 {
@@ -28,7 +32,29 @@ namespace WPCordovaClassLib.Cordova.JSON
         /// <returns>JSON representation of the object. Returns 'null' string for null passed as argument</returns>
         public static string Serialize(object obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            if (obj == null)
+            {
+                return "null";
+            }
+
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(obj.GetType());
+
+            MemoryStream ms = new MemoryStream();
+            ser.WriteObject(ms, obj);
+
+            ms.Position = 0;
+
+            string json = String.Empty;
+
+            using (StreamReader sr = new StreamReader(ms))
+            {
+                json = sr.ReadToEnd();
+            }
+
+            ms.Close();
+
+            return json;
+
         }
 
         /// <summary>
@@ -39,7 +65,23 @@ namespace WPCordovaClassLib.Cordova.JSON
         /// <returns>Deserialized object instance</returns>
         public static T Deserialize<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(T));
+            object result = null;
+            try
+            {
+                using (MemoryStream mem = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+                {
+                    result = deserializer.ReadObject(mem);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine("Failed to deserialize " + typeof(T) + " with JSON value :: " + json);
+            }
+
+            return (T)result;
+
         }
     }
 }
