@@ -1,6 +1,6 @@
 {
     "name": "cordova-wp8",
-    "version": "4.0.0-dev",
+    "version": "3.9.0-dev",
     "description": "cordova-wp8 release",
     "main": "bin/create",
     "repository": {
