@@ -124,7 +124,7 @@ namespace WPCordovaClassLib.Cordova
 
                 bc.OnCustomScript += OnCustomScriptHandler;
 
-                Windows.System.Threading.ThreadPool.RunAsync((workItem) =>
+                var tsk = Windows.System.Threading.ThreadPool.RunAsync((workItem) =>
                 {
                     try
                     {
