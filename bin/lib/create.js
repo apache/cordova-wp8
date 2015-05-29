@@ -70,6 +70,10 @@ module.exports.run = function (argv) {
     // CB-7618 node_modules must be copied to project folder
     shell.cp('-r', path.join(platformRoot, 'node_modules'), path.join(projectPath, 'cordova'));
 
+    // CB-8954 Copy check_reqs module, since it will be required by 'requirements' command
+    shell.cp('-r', path.join(platformRoot, 'bin', 'check_reqs*'), path.join(projectPath, 'cordova'));
+    shell.cp('-r', path.join(platformRoot, 'bin', 'lib', 'check_reqs*'), path.join(projectPath, 'cordova', 'lib'));
+
     // if any custom template is provided, just copy it over created project
     if (customTemplate && fs.existsSync(customTemplate)) {
         console.log('Copying template overrides from ' + customTemplate + ' to ' + projectPath);
