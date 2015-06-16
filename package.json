@@ -11,8 +11,7 @@
         "wp8",
         "windowsphone",
         "cordova",
-        "apache",
-        "ecosystem:cordova"
+        "apache"
     ],
     "dependencies": {
         "nopt": "~3",
