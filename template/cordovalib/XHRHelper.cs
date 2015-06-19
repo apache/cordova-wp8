@@ -153,6 +153,28 @@ namespace WPCordovaClassLib.CordovaLib
                         this.wrappedXHR.onreadystatechange = function() {
                             self.changeReadyState(self.wrappedXHR.readyState);
                         };
+                        if (this.wrappedXHR && this.wrappedXHR.upload) {
+                            this.wrappedXHR.upload.onprogress = function(e) {
+                                if (typeof self.upload.onprogress === 'function') {
+                                    self.upload.onprogress(e);
+                                }
+                            };
+                            this.wrappedXHR.upload.onload = function(e) {
+                                if (typeof self.upload.onload === 'function') {
+                                    self.upload.onload(e);
+                                }
+                            };
+                            this.wrappedXHR.upload.onerror = function(e) {
+                                if (typeof self.upload.onerror === 'function') {
+                                    self.upload.onerror(e);
+                                }
+                            };
+                            this.wrappedXHR.upload.onabort = function(e) {
+                                if (typeof self.upload.onabort === 'function') {
+                                    self.upload.onabort(e);
+                                }
+                            };
+                        }
                     }
                     return this.wrappedXHR.open(reqType, uri, isAsync, user, password);
                 }
@@ -276,7 +298,14 @@ namespace WPCordovaClassLib.CordovaLib
                     this.isAsync ? setTimeout(funk, 0) : funk();
                 }
             },
-            status: 404
+            status: 404,
+			upload: {
+				addEventListener: function (type, listener, useCapture){
+					if (this.wrappedXHR && this.wrappedXHR.upload) {
+						this.wrappedXHR.upload.addEventListener(type, listener, useCapture);
+					}
+				}
+			}
         };
     }
 })(window, document); ";
