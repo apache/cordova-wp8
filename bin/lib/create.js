@@ -61,6 +61,8 @@ module.exports.run = function (argv) {
     }
 
     console.log('Copying necessary files to ' + projectPath);
+    // Copy cordova-js-src directory
+    shell.cp('-rf', path.join(platformRoot, 'cordova-js-src'), path.join(projectPath, 'platform_www'));
     // Copy the template source files to the new destination
     shell.cp('-rf', path.join(templatePath, '*'), projectPath);
     // Copy our unique VERSION file, so peeps can tell what version this project was created from.
