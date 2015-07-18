@@ -77,6 +77,7 @@ namespace WPCordovaClassLib.CordovaLib
         XHRShim.HEADERS_RECEIVED = 2;
         XHRShim.LOADING = 3;
         XHRShim.DONE = 4;
+        XHRShim.incrementedCounter = 0;
         XHRShim.prototype = {
             isAsync: false,
             onreadystatechange: null,
@@ -263,7 +264,7 @@ namespace WPCordovaClassLib.CordovaLib
                     }
 
                     // Generate unique request ID
-                    var reqId = new Date().getTime().toString() + Math.random();
+                    var reqId = new Date().getTime().toString() + XHRShim.incrementedCounter++;
 
                     var funk = function () {
                         __XHRShimAliases[reqId] = alias;
