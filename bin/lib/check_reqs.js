@@ -17,7 +17,7 @@
     under the License.
 */
 
-var Q     = require('Q'),
+var Q     = require('q'),
     os    = require('os'),
     MSBuildTools = require('../../template/cordova/lib/MSBuildTools');
 
