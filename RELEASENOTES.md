@@ -23,6 +23,10 @@ Release Notes for Cordova (WP8)
 
 Cordova is a static library that enables developers to include the Cordova API in their WP8 application projects easily, and also create new Cordova-based WP8 application projects through the command-line.
 
+### 3.9.2 (November 16, 2015)
+* CB-9820 Module q is lowercase
+* CB-9820 Updates other occurences of 'Q' to lowercase 
+
 ### 3.8.0 (March 26, 2015)
 * added ecosystem:cordova keyword
 * CB-8325 minor test improvements with e2e tests
