@@ -22,6 +22,17 @@
 
 Apache Cordova for Windows Phone 8
 ===
+
+---
+📌 **Deprecation Notice**
+
+This repository is deprecated and no more work will be done on this by Apache Cordova. You can continue to use this and it should work as-is but any future issues will not be fixed by the Cordova community.
+
+Feel free to fork this repository and improve your fork. Existing forks are listed in [Network](../../network) and [Forks](../../network/members).
+
+- Learn more: https://github.com/apache/cordova/blob/master/deprecated.md#deprecated-platforms
+---
+
 [![Build status](https://ci.appveyor.com/api/projects/status/apoby7i5j5xnmhy2/branch/master)](https://ci.appveyor.com/project/Humbedooh/cordova-wp8/branch/master)
 
 
